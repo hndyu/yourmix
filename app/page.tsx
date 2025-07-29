@@ -1,14 +1,15 @@
-import Image from "next/image";
+import MixButton from "./_components/mix-button";
+import Footer from "./_components/footer";
+import Header from "./_components/header";
 
 export default function Home() {
-  return (
-    <>
-      <main>
-
-      </main>
-      <footer>
-
-      </footer>
-    </>
-  );
+	return (
+		<>
+			<Header />
+			<main>
+				<MixButton />
+			</main>
+			<Footer />
+		</>
+	);
 }
