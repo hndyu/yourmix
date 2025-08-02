@@ -1,4 +1,4 @@
-import MixButton from "./_components/mix-button";
+import CocktailMixer from "./_components/cocktail-mixer";
 import Footer from "./_components/footer";
 import Header from "./_components/header";
 
@@ -7,7 +7,7 @@ export default function Home() {
 		<>
 			<Header />
 			<main>
-				<MixButton />
+				<CocktailMixer />
 			</main>
 			<Footer />
 		</>

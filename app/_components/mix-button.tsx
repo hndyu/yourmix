@@ -2,8 +2,6 @@
 
 import * as React from "react";
 import Button from "@mui/material/Button";
-import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
 import { styled } from "@mui/material/styles";
 
 // カスタムスタイルのボタン
@@ -33,79 +31,23 @@ const StyledMixButton = styled(Button)(({ theme }) => ({
 	},
 }));
 
-// アニメーション用のコンテナ
-const AnimatedContainer = styled(Box)(({ theme }) => ({
-	display: "flex",
-	flexDirection: "column",
-	alignItems: "center",
-	justifyContent: "center",
-	minHeight: "300px",
-	padding: theme.spacing(4),
+interface MixButtonProps {
+	onClick: () => void;
+	disabled?: boolean;
+}
 
-	// パルスアニメーション
-	"@keyframes pulse": {
-		"0%": {
-			transform: "scale(1)",
-		},
-		"50%": {
-			transform: "scale(1.02)",
-		},
-		"100%": {
-			transform: "scale(1)",
-		},
-	},
-
-	"&:hover": {
-		animation: "pulse 2s infinite",
-	},
-}));
-
-export default function MixButton() {
-	// モックアップ用のクリックハンドラー
-	const handleMixClick = () => {
-		console.log("Mixボタンがクリックされました！");
-		// ここに実際のレシピ検索・生成ロジックが入ります
-		alert("レシピ検索・生成機能は現在開発中です！");
-	};
-
+export default function MixButton({
+	onClick,
+	disabled = false,
+}: MixButtonProps) {
 	return (
-		<AnimatedContainer>
-			{/* 説明テキスト */}
-			<Typography
-				variant="h5"
-				component="h2"
-				gutterBottom
-				sx={{
-					textAlign: "center",
-					color: "text.secondary",
-					mb: 3,
-					fontWeight: "medium",
-				}}
-			>
-				あなただけのカクテルを作ってみよう
-			</Typography>
-
-			{/* Mixボタン */}
-			<StyledMixButton
-				onClick={handleMixClick}
-				variant="contained"
-				size="large"
-			>
-				🍹 Mix!
-			</StyledMixButton>
-
-			{/* サブテキスト */}
-			<Typography
-				variant="body2"
-				sx={{
-					mt: 2,
-					textAlign: "center",
-					color: "text.secondary",
-					opacity: 0.8,
-				}}
-			>
-				お好みの材料からレシピを生成します
-			</Typography>
-		</AnimatedContainer>
+		<StyledMixButton
+			onClick={onClick}
+			variant="contained"
+			size="large"
+			disabled={disabled}
+		>
+			🍹 Mix!
+		</StyledMixButton>
 	);
 }
