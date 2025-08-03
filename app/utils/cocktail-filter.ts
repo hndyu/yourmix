@@ -1,6 +1,93 @@
 import type { Cocktail } from "../types/cocktail";
 
 /**
+ * 材料名から量を除去して純粋な材料名を取得する関数
+ * @param ingredientWithAmount 量を含む材料名（例：「ラム（ホワイト） 60ml」）
+ * @returns 純粋な材料名（例：「ラム（ホワイト）」）
+ */
+function extractIngredientName(ingredientWithAmount: string): string {
+	// 量の部分を除去（数字 + 単位のパターンを削除）
+	return ingredientWithAmount.replace(/\s+\d+[a-zA-Z]*$/, "").trim();
+}
+
+/**
+ * 選択された材料に完全一致するカクテルを検索する関数
+ * @param cocktails 検索対象のカクテル配列
+ * @param selectedIngredients 選択された材料の配列
+ * @returns 完全一致するカクテル配列
+ */
+export function findExactMatchCocktails(
+	cocktails: Cocktail[],
+	selectedIngredients: string[],
+): Cocktail[] {
+	// 材料が選択されていない場合は空配列を返す
+	if (selectedIngredients.length === 0) {
+		return [];
+	}
+
+	return cocktails.filter((cocktail) => {
+		// カクテルの材料名を抽出（量を除去）
+		const cocktailIngredientNames = cocktail.ingredients.map(
+			extractIngredientName,
+		);
+
+		// 選択された材料とカクテルの材料が完全に一致するかチェック
+		// 順序は考慮しない（配列の要素が同じであれば良い）
+		if (selectedIngredients.length !== cocktailIngredientNames.length) {
+			return false;
+		}
+
+		// 全ての選択された材料がカクテルに含まれているかチェック
+		const allSelectedIncluded = selectedIngredients.every(
+			(selectedIngredient) =>
+				cocktailIngredientNames.some((cocktailIngredient) =>
+					cocktailIngredient
+						.toLowerCase()
+						.includes(selectedIngredient.toLowerCase()),
+				),
+		);
+
+		// 全てのカクテル材料が選択された材料に含まれているかチェック
+		const allCocktailIncluded = cocktailIngredientNames.every(
+			(cocktailIngredient) =>
+				selectedIngredients.some((selectedIngredient) =>
+					cocktailIngredient
+						.toLowerCase()
+						.includes(selectedIngredient.toLowerCase()),
+				),
+		);
+
+		return allSelectedIncluded && allCocktailIncluded;
+	});
+}
+
+/**
+ * 生成AIによるオリジナルカクテルを生成する関数（仮実装）
+ * @param selectedIngredients 選択された材料の配列
+ * @returns 生成されたオリジナルカクテル
+ */
+export function generateOriginalCocktail(
+	selectedIngredients: string[],
+): Cocktail {
+	// TODO: 実際の生成AI処理を実装
+	return {
+		id: `generated-${Date.now()}`,
+		name: `${selectedIngredients.join(" & ")} オリジナル`,
+		description: `選択された材料（${selectedIngredients.join(", ")}）を使用したオリジナルカクテルです。`,
+		ingredients: selectedIngredients.map((ingredient) => `${ingredient} 適量`),
+		instructions: [
+			"選択された材料を適切な比率で混ぜ合わせます",
+			"お好みに応じて調整してください",
+			"※このレシピは生成AIによる提案です",
+		],
+		glassType: "カクテルグラス",
+		garnish: "お好みのガーニッシュ",
+		difficulty: "medium",
+		prepTime: "5分",
+	};
+}
+
+/**
  * 選択された材料に基づいてカクテルをフィルタリングする関数
  * @param cocktails フィルタリング対象のカクテル配列
  * @param selectedIngredients 選択された材料の配列

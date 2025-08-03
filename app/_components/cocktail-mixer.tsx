@@ -8,6 +8,8 @@ import { mockCocktails, type Cocktail } from "../types/cocktail";
 import {
 	filterCocktailsByIngredients,
 	sortCocktailsByMatchScore,
+	findExactMatchCocktails,
+	generateOriginalCocktail,
 } from "../utils/cocktail-filter";
 
 export default function CocktailMixer() {
@@ -25,32 +27,24 @@ export default function CocktailMixer() {
 	const selectCocktailByIngredients = (selectedIngredients: string[]) => {
 		console.log("選択された材料:", selectedIngredients);
 
-		// 材料に基づいてカクテルをフィルタリング
-		const filteredCocktails = filterCocktailsByIngredients(
+		// 完全一致するカクテルを検索
+		const exactMatches = findExactMatchCocktails(
 			mockCocktails,
 			selectedIngredients,
 		);
 
-		if (filteredCocktails.length === 0) {
-			// フィルタリング結果が空の場合は、全てのカクテルからランダム選択
-			console.log(
-				"材料にマッチするカクテルが見つかりませんでした。ランダム選択します。",
-			);
-			const randomIndex = Math.floor(Math.random() * mockCocktails.length);
-			return mockCocktails[randomIndex];
+		if (exactMatches.length > 0) {
+			// 完全一致するカクテルが見つかった場合、最初のものを選択
+			const exactMatch = exactMatches[0];
+			console.log("完全一致するカクテルが見つかりました:", exactMatch.name);
+			return exactMatch;
 		}
 
-		// マッチ度順にソート
-		const sortedCocktails = sortCocktailsByMatchScore(
-			filteredCocktails,
-			selectedIngredients,
+		// 完全一致しない場合は生成AIによるオリジナルカクテルを生成
+		console.log(
+			"完全一致するカクテルが見つかりませんでした。オリジナルカクテルを生成します。",
 		);
-
-		// 最もマッチ度の高いカクテルを選択
-		const bestMatch = sortedCocktails[0];
-		console.log("選択されたカクテル:", bestMatch.name);
-
-		return bestMatch;
+		return generateOriginalCocktail(selectedIngredients);
 	};
 
 	// クリックハンドラー
@@ -60,7 +54,7 @@ export default function CocktailMixer() {
 		// 選択された材料を保存
 		setLastSelectedIngredients(selectedIngredients);
 
-		// 材料に基づいてカクテルをフィルタリング
+		// 材料に基づいてカクテルをフィルタリング（検索結果表示用）
 		const filteredCocktails = filterCocktailsByIngredients(
 			mockCocktails,
 			selectedIngredients,
@@ -104,7 +98,7 @@ export default function CocktailMixer() {
 				/>
 			)}
 
-			{/* 検索結果の一覧表示 */}
+			{/* 検索結果の一覧表示（1件以上ある場合のみ表示） */}
 			{searchResults.length > 0 && (
 				<CocktailSearchResults
 					cocktails={searchResults}
