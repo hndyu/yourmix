@@ -14,6 +14,16 @@ import {
 	AccordionDetails,
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+// カテゴリ用のアイコンをインポート
+import { LocalBar, WineBar, LocalDrink, Restaurant } from "@mui/icons-material";
+
+// カテゴリとアイコンのマッピング
+const categoryIcons: Record<string, React.ComponentType> = {
+	ベーススピリッツ: LocalBar,
+	リキュール: WineBar,
+	ジュースシロップ: LocalDrink,
+	その他: Restaurant,
+};
 
 // 利用可能な材料のリスト
 const availableIngredients = [
@@ -186,9 +196,13 @@ export default function IngredientSelector({
 			{Object.entries(ingredientCategories).map(([category, ingredients]) => (
 				<Accordion key={category} defaultExpanded>
 					<AccordionSummary expandIcon={<ExpandMoreIcon />}>
-						<Typography variant="subtitle1" sx={{ fontWeight: "medium" }}>
-							{category}
-						</Typography>
+						<Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+							{categoryIcons[category] &&
+								React.createElement(categoryIcons[category])}
+							<Typography variant="subtitle1" sx={{ fontWeight: "medium" }}>
+								{category}
+							</Typography>
+						</Box>
 					</AccordionSummary>
 					<AccordionDetails>
 						<FormGroup>
