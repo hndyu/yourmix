@@ -1,18 +1,23 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from "@playwright/test";
 
-test('has title', async ({ page }) => {
-  await page.goto('https://playwright.dev/');
+test.describe("ホーム画面", () => {
+	test("タイトル/ヘッダー/案内が表示され、初期はMixが無効", async ({
+		page,
+	}) => {
+		await page.goto("/");
 
-  // Expect a title "to contain" a substring.
-  await expect(page).toHaveTitle(/Playwright/);
-});
+		await expect(page).toHaveTitle(/YourMix/);
 
-test('get started link', async ({ page }) => {
-  await page.goto('https://playwright.dev/');
+		await expect(page.getByRole("button", { name: /menu/i })).toBeVisible();
+		await expect(page.getByRole("banner").getByText("YourMix")).toBeVisible();
 
-  // Click the get started link.
-  await page.getByRole('link', { name: 'Get started' }).click();
+		await expect(
+			page.getByRole("heading", { name: "あなただけのカクテルを作ってみよう" }),
+		).toBeVisible();
+		await expect(
+			page.getByRole("heading", { name: "材料を選択してください" }),
+		).toBeVisible();
 
-  // Expects page to have a heading with the name of Installation.
-  await expect(page.getByRole('heading', { name: 'Installation' })).toBeVisible();
+		await expect(page.getByRole("button", { name: /Mix/ })).toBeDisabled();
+	});
 });
