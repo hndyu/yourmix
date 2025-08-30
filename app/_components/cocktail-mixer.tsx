@@ -76,17 +76,16 @@ export default function CocktailMixer() {
 
 			// 選択された材料に基づいてカクテルを選択して表示
 			const matchedCocktail = selectCocktailByIngredients(selectedIngredients);
-			
+
 			// 少し遅延を入れてローディング感を演出
-			await new Promise(resolve => setTimeout(resolve, 800));
-			
+			await new Promise((resolve) => setTimeout(resolve, 800));
+
 			setSelectedCocktail(matchedCocktail);
-			
+
 			// 結果表示のアニメーションを開始
 			setTimeout(() => {
 				setShowResults(true);
 			}, 100);
-
 		} catch (error) {
 			console.error("カクテル生成エラー:", error);
 		} finally {
@@ -116,10 +115,7 @@ export default function CocktailMixer() {
 	return (
 		<>
 			{/* Mixセクション */}
-			<MixSection 
-				onMixClick={handleMixClick} 
-				isLoading={isLoading}
-			/>
+			<MixSection onMixClick={handleMixClick} isLoading={isLoading} />
 
 			{/* カクテルが選択されている場合のみ表示 */}
 			{selectedCocktail && (
