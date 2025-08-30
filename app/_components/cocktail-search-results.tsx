@@ -15,6 +15,11 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import type { Cocktail } from "../types/cocktail";
+// 共通化された関数をインポート
+import {
+	calculateMatchScore,
+	sortCocktailsByMatchScore,
+} from "../utils/cocktail-filter";
 
 // カスタムスタイルのカード
 const StyledResultCard = styled(Card)(({ theme }) => ({
@@ -59,28 +64,13 @@ export default function CocktailSearchResults({
 	onCocktailSelect,
 	show = true,
 }: CocktailSearchResultsProps) {
-	// マッチ度を計算する関数
-	const calculateMatchScore = (cocktail: Cocktail): number => {
-		if (selectedIngredients.length === 0) return 0;
+	// 独自のcalculateMatchScore関数を削除し、共通化された関数を使用
 
-		const cocktailIngredientsText = cocktail.ingredients
-			.join(" ")
-			.toLowerCase();
-
-		const matchedIngredients = selectedIngredients.filter((ingredient) => {
-			const ingredientLower = ingredient.toLowerCase();
-			return cocktailIngredientsText.includes(ingredientLower);
-		});
-
-		return matchedIngredients.length / selectedIngredients.length;
-	};
-
-	// マッチ度順にソート
-	const sortedCocktails = [...cocktails].sort((a, b) => {
-		const scoreA = calculateMatchScore(a);
-		const scoreB = calculateMatchScore(b);
-		return scoreB - scoreA;
-	});
+	// マッチ度順にソート（共通化された関数を使用）
+	const sortedCocktails = sortCocktailsByMatchScore(
+		cocktails,
+		selectedIngredients,
+	);
 
 	if (cocktails.length === 0) {
 		return (
@@ -143,7 +133,11 @@ export default function CocktailSearchResults({
 				{/* 検索結果グリッド */}
 				<Grid container spacing={3}>
 					{sortedCocktails.map((cocktail) => {
-						const matchScore = calculateMatchScore(cocktail);
+						// 共通化された関数を使用してマッチ度を計算
+						const matchScore = calculateMatchScore(
+							cocktail,
+							selectedIngredients,
+						);
 						return (
 							<Grid item key={cocktail.name} xs={12} sm={6} md={4}>
 								<StyledResultCard onClick={() => onCocktailSelect(cocktail)}>

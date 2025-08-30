@@ -120,7 +120,7 @@ export function filterCocktailsByIngredients(
 }
 
 /**
- * カクテルと選択された材料のマッチ度を計算する関数
+ * カクテルと選択された材料のマッチ度を計算する関数（改善版）
  * @param cocktail カクテル
  * @param selectedIngredients 選択された材料の配列
  * @returns マッチ度（0-1の数値、1が完全一致）
@@ -133,13 +133,19 @@ export function calculateMatchScore(
 		return 0;
 	}
 
-	// カクテルの材料リストを文字列として結合
-	const cocktailIngredientsText = cocktail.ingredients.join(" ").toLowerCase();
+	// カクテルの材料名を抽出（量を除去）
+	const cocktailIngredientNames = cocktail.ingredients.map(
+		extractIngredientName,
+	);
 
 	// 選択された材料のうち、カクテルに含まれている材料の数をカウント
 	const matchedIngredients = selectedIngredients.filter((ingredient) => {
 		const ingredientLower = ingredient.toLowerCase();
-		return cocktailIngredientsText.includes(ingredientLower);
+
+		// カクテルの材料リストで部分一致をチェック
+		return cocktailIngredientNames.some((cocktailIngredient) =>
+			cocktailIngredient.toLowerCase().includes(ingredientLower),
+		);
 	});
 
 	// マッチ度を計算（選択された材料のうち、カクテルに含まれている材料の割合）
