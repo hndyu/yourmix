@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { useRouter } from "next/navigation";
 import {
 	Box,
 	Typography,
@@ -16,13 +17,13 @@ import { getDailyRecommendation } from "../utils/cocktail-filter";
 
 interface DailyRecommendationProps {
 	cocktails: Cocktail[];
-	onCocktailSelect: (cocktail: Cocktail) => void;
 }
 
 export default function DailyRecommendation({
 	cocktails,
-	onCocktailSelect,
 }: DailyRecommendationProps) {
+	const router = useRouter();
+
 	// 日替わりおすすめカクテルを取得
 	const dailyCocktail = React.useMemo(() => {
 		return getDailyRecommendation(cocktails);
@@ -56,6 +57,11 @@ export default function DailyRecommendation({
 			default:
 				return difficulty;
 		}
+	};
+
+	// 詳細ページに遷移する関数
+	const handleViewRecipe = () => {
+		router.push(`/recipes/${dailyCocktail.id}`);
 	};
 
 	return (
@@ -171,7 +177,7 @@ export default function DailyRecommendation({
 					<Button
 						variant="contained"
 						fullWidth
-						onClick={() => onCocktailSelect(dailyCocktail)}
+						onClick={handleViewRecipe}
 						sx={{
 							background: "linear-gradient(45deg, #667eea 0%, #764ba2 100%)",
 							color: "white",

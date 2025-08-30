@@ -191,3 +191,30 @@ export function getDailyRecommendation(cocktails: Cocktail[]): Cocktail {
 	const index = seed % cocktails.length;
 	return cocktails[index];
 }
+
+/**
+ * カクテルIDからカクテルデータを取得する関数
+ * @param cocktails カクテル配列
+ * @param id 検索するカクテルID
+ * @returns カクテルデータ（見つからない場合はundefined）
+ */
+export function getCocktailById(
+	cocktails: Cocktail[],
+	id: string,
+): Cocktail | undefined {
+	return cocktails.find((cocktail) => cocktail.id === id);
+}
+
+/**
+ * カクテルIDからカクテルデータを取得する関数（非同期版）
+ * @param id 検索するカクテルID
+ * @returns Promise<Cocktail | undefined>
+ */
+export async function getCocktailByIdAsync(
+	id: string,
+): Promise<Cocktail | undefined> {
+	// 実際の実装では、ここでAPIからデータを取得
+	// 現在はモックデータを使用
+	const { mockCocktails } = await import("../types/cocktail");
+	return mockCocktails.find((cocktail) => cocktail.id === id);
+}

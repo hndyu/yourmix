@@ -113,28 +113,10 @@ export default function CocktailMixer() {
 		}, 100);
 	};
 
-	// 日替わりおすすめカクテルが選択された場合の処理
-	const handleDailyRecommendationSelect = (cocktail: Cocktail) => {
-		setSelectedCocktail(cocktail);
-		setSearchResults([]);
-		setShowResults(true);
-
-		// 選択されたカクテルまでスクロール
-		setTimeout(() => {
-			window.scrollTo({
-				top: 0,
-				behavior: "smooth",
-			});
-		}, 100);
-	};
-
 	return (
 		<>
 			{/* 日替わりおすすめセクション */}
-			<DailyRecommendation
-				cocktails={mockCocktails}
-				onCocktailSelect={handleDailyRecommendationSelect}
-			/>
+			<DailyRecommendation cocktails={mockCocktails} />
 
 			{/* Mixセクション */}
 			<MixSection onMixClick={handleMixClick} isLoading={isLoading} />

@@ -20,6 +20,7 @@ import {
 	calculateMatchScore,
 	sortCocktailsByMatchScore,
 } from "../utils/cocktail-filter";
+import { useRouter } from "next/navigation";
 
 // カスタムスタイルのカード
 const StyledResultCard = styled(Card)(({ theme }) => ({
@@ -29,7 +30,7 @@ const StyledResultCard = styled(Card)(({ theme }) => ({
 	border: "1px solid rgba(255, 255, 255, 0.2)",
 	overflow: "hidden",
 	transition: "all 0.3s ease-in-out",
-	cursor: "pointer",
+	// cursor: "pointer" を削除
 
 	"&:hover": {
 		transform: "translateY(-4px)",
@@ -64,7 +65,7 @@ export default function CocktailSearchResults({
 	onCocktailSelect,
 	show = true,
 }: CocktailSearchResultsProps) {
-	// 独自のcalculateMatchScore関数を削除し、共通化された関数を使用
+	const router = useRouter();
 
 	// マッチ度順にソート（共通化された関数を使用）
 	const sortedCocktails = sortCocktailsByMatchScore(
@@ -100,6 +101,20 @@ export default function CocktailSearchResults({
 			</Fade>
 		);
 	}
+
+	// カクテル詳細ページに遷移する関数
+	const handleCocktailClick = React.useCallback(
+		(cocktail: Cocktail) => {
+			console.log(
+				"カクテルをクリックしました:",
+				cocktail.name,
+				"ID:",
+				cocktail.id,
+			); // デバッグ用
+			router.push(`/recipes/${cocktail.id}`);
+		},
+		[router],
+	);
 
 	return (
 		<Fade in={show} timeout={1000} easing="ease-out">
@@ -140,7 +155,16 @@ export default function CocktailSearchResults({
 						);
 						return (
 							<Grid item key={cocktail.name} xs={12} sm={6} md={4}>
-								<StyledResultCard onClick={() => onCocktailSelect(cocktail)}>
+								<StyledResultCard
+									// onClick、onKeyDown、role、tabIndexを削除
+									sx={{
+										// cursor: "pointer" を削除
+										"&:focus": {
+											outline: "2px solid #1976d2",
+											outlineOffset: "2px",
+										},
+									}}
+								>
 									<CardContent sx={{ p: 3 }}>
 										{/* カクテル名 */}
 										<Typography
@@ -235,6 +259,7 @@ export default function CocktailSearchResults({
 											variant="outlined"
 											size="small"
 											fullWidth
+											onClick={() => handleCocktailClick(cocktail)}
 											sx={{
 												mt: 2,
 												borderRadius: "20px",
