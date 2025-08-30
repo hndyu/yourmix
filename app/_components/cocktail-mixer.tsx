@@ -4,6 +4,7 @@ import * as React from "react";
 import MixSection from "./mix-section";
 import CocktailDisplay from "./cocktail-display";
 import CocktailSearchResults from "./cocktail-search-results";
+import DailyRecommendation from "./daily-recommendation";
 import { mockCocktails, type Cocktail } from "../types/cocktail";
 import {
 	filterCocktailsByIngredients,
@@ -112,8 +113,29 @@ export default function CocktailMixer() {
 		}, 100);
 	};
 
+	// 日替わりおすすめカクテルが選択された場合の処理
+	const handleDailyRecommendationSelect = (cocktail: Cocktail) => {
+		setSelectedCocktail(cocktail);
+		setSearchResults([]);
+		setShowResults(true);
+
+		// 選択されたカクテルまでスクロール
+		setTimeout(() => {
+			window.scrollTo({
+				top: 0,
+				behavior: "smooth",
+			});
+		}, 100);
+	};
+
 	return (
 		<>
+			{/* 日替わりおすすめセクション */}
+			<DailyRecommendation
+				cocktails={mockCocktails}
+				onCocktailSelect={handleDailyRecommendationSelect}
+			/>
+
 			{/* Mixセクション */}
 			<MixSection onMixClick={handleMixClick} isLoading={isLoading} />
 

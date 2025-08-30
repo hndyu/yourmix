@@ -7,6 +7,7 @@ export default function Home() {
 		<>
 			<Header />
 			<main>
+				{/* カクテルミキサー（日替わりおすすめ機能を含む） */}
 				<CocktailMixer />
 			</main>
 			<Footer />

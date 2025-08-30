@@ -1,0 +1,191 @@
+"use client";
+
+import * as React from "react";
+import {
+	Box,
+	Typography,
+	Card,
+	CardContent,
+	CardMedia,
+	Chip,
+	Button,
+} from "@mui/material";
+import { LocalBar, AccessTime, TrendingUp } from "@mui/icons-material";
+import type { Cocktail } from "../types/cocktail";
+import { getDailyRecommendation } from "../utils/cocktail-filter";
+
+interface DailyRecommendationProps {
+	cocktails: Cocktail[];
+	onCocktailSelect: (cocktail: Cocktail) => void;
+}
+
+export default function DailyRecommendation({
+	cocktails,
+	onCocktailSelect,
+}: DailyRecommendationProps) {
+	// 日替わりおすすめカクテルを取得
+	const dailyCocktail = React.useMemo(() => {
+		return getDailyRecommendation(cocktails);
+	}, [cocktails]);
+
+	// 難易度に応じた色を取得
+	const getDifficultyColor = (
+		difficulty: string,
+	): "success" | "warning" | "error" | "default" => {
+		switch (difficulty) {
+			case "easy":
+				return "success";
+			case "medium":
+				return "warning";
+			case "hard":
+				return "error";
+			default:
+				return "default";
+		}
+	};
+
+	// 難易度の日本語表示
+	const getDifficultyLabel = (difficulty: string) => {
+		switch (difficulty) {
+			case "easy":
+				return "初級";
+			case "medium":
+				return "中級";
+			case "hard":
+				return "上級";
+			default:
+				return difficulty;
+		}
+	};
+
+	return (
+		<Box sx={{ mb: 4, textAlign: "center" }}>
+			{/* セクションタイトル */}
+			<Box
+				sx={{
+					display: "flex",
+					alignItems: "center",
+					gap: 1,
+					mb: 2,
+					justifyContent: "center",
+				}}
+			>
+				<TrendingUp color="primary" />
+				<Typography variant="h5" component="h2" sx={{ fontWeight: "bold" }}>
+					今日のおすすめ
+				</Typography>
+			</Box>
+
+			{/* おすすめカクテルカード */}
+			<Card
+				elevation={3}
+				sx={{
+					maxWidth: 400,
+					mx: "auto",
+					background: "linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)",
+					borderRadius: 3,
+					overflow: "hidden",
+					transition: "transform 0.3s ease, box-shadow 0.3s ease",
+					"&:hover": {
+						transform: "translateY(-4px)",
+						boxShadow: 6,
+					},
+				}}
+			>
+				{/* カクテル画像（プレースホルダー） */}
+				<CardMedia
+					component="div"
+					sx={{
+						height: 200,
+						background: "linear-gradient(45deg, #667eea 0%, #764ba2 100%)",
+						display: "flex",
+						alignItems: "center",
+						justifyContent: "center",
+						position: "relative",
+					}}
+				>
+					<LocalBar sx={{ fontSize: 60, color: "white" }} />
+					{/* おすすめバッジ */}
+					<Chip
+						label="おすすめ"
+						color="primary"
+						size="small"
+						sx={{
+							position: "absolute",
+							top: 16,
+							right: 16,
+							fontWeight: "bold",
+						}}
+					/>
+				</CardMedia>
+
+				<CardContent sx={{ p: 3 }}>
+					{/* カクテル名 */}
+					<Typography
+						variant="h6"
+						component="h3"
+						gutterBottom
+						sx={{ fontWeight: "bold", color: "text.primary" }}
+					>
+						{dailyCocktail.name}
+					</Typography>
+
+					{/* 説明 */}
+					<Typography
+						variant="body2"
+						color="text.secondary"
+						sx={{ mb: 2, lineHeight: 1.6 }}
+					>
+						{dailyCocktail.description}
+					</Typography>
+
+					{/* 材料のプレビュー */}
+					<Typography variant="body2" sx={{ mb: 2 }}>
+						<strong>材料:</strong>{" "}
+						{dailyCocktail.ingredients.slice(0, 3).join(", ")}
+						{dailyCocktail.ingredients.length > 3 && "..."}
+					</Typography>
+
+					{/* メタ情報 */}
+					<Box sx={{ display: "flex", gap: 1, mb: 2, flexWrap: "wrap" }}>
+						<Chip
+							icon={<AccessTime />}
+							label={dailyCocktail.prepTime}
+							size="small"
+							variant="outlined"
+						/>
+						<Chip
+							label={getDifficultyLabel(dailyCocktail.difficulty)}
+							color={getDifficultyColor(dailyCocktail.difficulty)}
+							size="small"
+							variant="outlined"
+						/>
+						<Chip
+							label={dailyCocktail.glassType}
+							size="small"
+							variant="outlined"
+						/>
+					</Box>
+
+					{/* 詳細を見るボタン */}
+					<Button
+						variant="contained"
+						fullWidth
+						onClick={() => onCocktailSelect(dailyCocktail)}
+						sx={{
+							background: "linear-gradient(45deg, #667eea 0%, #764ba2 100%)",
+							color: "white",
+							fontWeight: "bold",
+							py: 1,
+							"&:hover": {
+								background: "linear-gradient(45deg, #5a6fd8 0%, #6a4190 100%)",
+							},
+						}}
+					>
+						レシピを見る
+					</Button>
+				</CardContent>
+			</Card>
+		</Box>
+	);
+}

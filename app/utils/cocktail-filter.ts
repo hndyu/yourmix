@@ -162,3 +162,26 @@ export function sortCocktailsByMatchScore(
 		return scoreB - scoreA; // 降順（マッチ度の高い順）
 	});
 }
+
+/**
+ * 日付シードベースでカクテルを選択する関数
+ * @param cocktails 選択対象のカクテル配列
+ * @returns 日替わりで選択されたカクテル
+ */
+export function getDailyRecommendation(cocktails: Cocktail[]): Cocktail {
+	// 今日の日付を取得
+	const today = new Date();
+
+	// 日付を文字列として結合（YYYY-MM-DD形式）
+	const dateString = today.toISOString().split("T")[0];
+
+	// 日付文字列から数値シードを生成
+	let seed = 0;
+	for (let i = 0; i < dateString.length; i++) {
+		seed += dateString.charCodeAt(i);
+	}
+
+	// シードを使用してカクテルを選択
+	const index = seed % cocktails.length;
+	return cocktails[index];
+}
