@@ -23,6 +23,12 @@ export default function CocktailMixer() {
 		string[]
 	>([]);
 
+	// ローディング状態の管理
+	const [isLoading, setIsLoading] = React.useState(false);
+
+	// 表示アニメーションの状態管理
+	const [showResults, setShowResults] = React.useState(false);
+
 	// 選択された材料に基づいてカクテルを選択する関数
 	const selectCocktailByIngredients = (selectedIngredients: string[]) => {
 		console.log("選択された材料:", selectedIngredients);
@@ -48,29 +54,51 @@ export default function CocktailMixer() {
 	};
 
 	// クリックハンドラー
-	const handleMixClick = (selectedIngredients: string[]) => {
+	const handleMixClick = async (selectedIngredients: string[]) => {
 		console.log("Mixボタンがクリックされました！");
 
-		// 選択された材料を保存
-		setLastSelectedIngredients(selectedIngredients);
+		// ローディング状態を開始
+		setIsLoading(true);
+		setShowResults(false);
 
-		// 材料に基づいてカクテルをフィルタリング（検索結果表示用）
-		const filteredCocktails = filterCocktailsByIngredients(
-			mockCocktails,
-			selectedIngredients,
-		);
+		try {
+			// 選択された材料を保存
+			setLastSelectedIngredients(selectedIngredients);
 
-		// 検索結果を保存
-		setSearchResults(filteredCocktails);
+			// 材料に基づいてカクテルをフィルタリング（検索結果表示用）
+			const filteredCocktails = filterCocktailsByIngredients(
+				mockCocktails,
+				selectedIngredients,
+			);
 
-		// 選択された材料に基づいてカクテルを選択して表示
-		const matchedCocktail = selectCocktailByIngredients(selectedIngredients);
-		setSelectedCocktail(matchedCocktail);
+			// 検索結果を保存
+			setSearchResults(filteredCocktails);
+
+			// 選択された材料に基づいてカクテルを選択して表示
+			const matchedCocktail = selectCocktailByIngredients(selectedIngredients);
+			
+			// 少し遅延を入れてローディング感を演出
+			await new Promise(resolve => setTimeout(resolve, 800));
+			
+			setSelectedCocktail(matchedCocktail);
+			
+			// 結果表示のアニメーションを開始
+			setTimeout(() => {
+				setShowResults(true);
+			}, 100);
+
+		} catch (error) {
+			console.error("カクテル生成エラー:", error);
+		} finally {
+			// ローディング状態を終了
+			setIsLoading(false);
+		}
 	};
 
 	// カクテル表示を閉じる関数
 	const handleCloseCocktail = () => {
 		setSelectedCocktail(null);
+		setShowResults(false);
 	};
 
 	// 検索結果からカクテルを選択する関数
@@ -88,13 +116,17 @@ export default function CocktailMixer() {
 	return (
 		<>
 			{/* Mixセクション */}
-			<MixSection onMixClick={handleMixClick} />
+			<MixSection 
+				onMixClick={handleMixClick} 
+				isLoading={isLoading}
+			/>
 
 			{/* カクテルが選択されている場合のみ表示 */}
 			{selectedCocktail && (
 				<CocktailDisplay
 					cocktail={selectedCocktail}
 					onRemove={handleCloseCocktail}
+					show={showResults}
 				/>
 			)}
 
@@ -104,6 +136,7 @@ export default function CocktailMixer() {
 					cocktails={searchResults}
 					selectedIngredients={lastSelectedIngredients}
 					onCocktailSelect={handleCocktailSelect}
+					show={showResults}
 				/>
 			)}
 		</>

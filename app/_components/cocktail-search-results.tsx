@@ -50,12 +50,14 @@ interface CocktailSearchResultsProps {
 	cocktails: Cocktail[];
 	selectedIngredients: string[];
 	onCocktailSelect: (cocktail: Cocktail) => void;
+	show?: boolean;
 }
 
 export default function CocktailSearchResults({
 	cocktails,
 	selectedIngredients,
 	onCocktailSelect,
+	show = true,
 }: CocktailSearchResultsProps) {
 	// マッチ度を計算する関数
 	const calculateMatchScore = (cocktail: Cocktail): number => {
@@ -82,7 +84,7 @@ export default function CocktailSearchResults({
 
 	if (cocktails.length === 0) {
 		return (
-			<Fade in={true} timeout={600}>
+			<Fade in={show} timeout={800} easing="ease-out">
 				<Paper
 					elevation={1}
 					sx={{
@@ -90,6 +92,9 @@ export default function CocktailSearchResults({
 						textAlign: "center",
 						backgroundColor: "#fafafa",
 						borderRadius: "15px",
+						transform: show ? "translateY(0)" : "translateY(20px)",
+						opacity: show ? 1 : 0,
+						transition: "all 0.8s cubic-bezier(0.4, 0, 0.2, 1)",
 					}}
 				>
 					<Typography variant="h6" color="text.secondary" gutterBottom>
@@ -107,8 +112,15 @@ export default function CocktailSearchResults({
 	}
 
 	return (
-		<Fade in={true} timeout={600}>
-			<Box sx={{ mt: 4 }}>
+		<Fade in={show} timeout={1000} easing="ease-out">
+			<Box
+				sx={{
+					mt: 4,
+					transform: show ? "translateY(0)" : "translateY(20px)",
+					opacity: show ? 1 : 0,
+					transition: "all 0.8s cubic-bezier(0.4, 0, 0.2, 1)",
+				}}
+			>
 				{/* ヘッダー */}
 				<Box sx={{ mb: 3, textAlign: "center" }}>
 					<Typography

@@ -64,11 +64,13 @@ const getDifficultyColor = (difficulty: string) => {
 interface CocktailDisplayProps {
 	cocktail: Cocktail;
 	onRemove?: () => void;
+	show?: boolean;
 }
 
 export default function CocktailDisplay({
 	cocktail,
 	onRemove,
+	show = true,
 }: CocktailDisplayProps) {
 	// 共有成功時の通知状態
 	const [shareSuccess, setShareSuccess] = React.useState(false);
@@ -119,8 +121,14 @@ export default function CocktailDisplay({
 	return (
 		<>
 			{/* カクテルカードをFadeでアニメーション */}
-			<Fade in={true} timeout={800}>
-				<StyledCocktailCard>
+			<Fade in={show} timeout={1200} easing="ease-out">
+				<StyledCocktailCard
+					sx={{
+						transform: show ? "translateY(0)" : "translateY(20px)",
+						opacity: show ? 1 : 0,
+						transition: "all 0.8s cubic-bezier(0.4, 0, 0.2, 1)",
+					}}
+				>
 					<CardContent sx={{ p: 4 }}>
 						{/* ヘッダー部分 */}
 						<Box sx={{ mb: 3 }}>

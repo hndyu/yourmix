@@ -62,11 +62,13 @@ const availableIngredients = [
 interface IngredientSelectorProps {
 	selectedIngredients: string[];
 	onIngredientsChange: (ingredients: string[]) => void;
+	disabled?: boolean;
 }
 
 export default function IngredientSelector({
 	selectedIngredients,
 	onIngredientsChange,
+	disabled = false,
 }: IngredientSelectorProps) {
 	// 材料のカテゴリ分け
 	const ingredientCategories = {
@@ -108,6 +110,8 @@ export default function IngredientSelector({
 
 	// 材料の選択状態を変更する関数
 	const handleIngredientToggle = (ingredient: string) => {
+		if (disabled) return; // ローディング中は無効化
+
 		const newSelected = selectedIngredients.includes(ingredient)
 			? selectedIngredients.filter((item) => item !== ingredient)
 			: [...selectedIngredients, ingredient];
@@ -116,10 +120,12 @@ export default function IngredientSelector({
 
 	// 全選択・全解除の関数
 	const handleSelectAll = () => {
+		if (disabled) return; // ローディング中は無効化
 		onIngredientsChange(availableIngredients);
 	};
 
 	const handleClearAll = () => {
+		if (disabled) return; // ローディング中は無効化
 		onIngredientsChange([]);
 	};
 
@@ -149,6 +155,8 @@ export default function IngredientSelector({
 						mb: 3,
 						backgroundColor: "primary.light",
 						color: "primary.contrastText",
+						opacity: disabled ? 0.6 : 1,
+						transition: "opacity 0.3s ease",
 					}}
 				>
 					<Typography variant="subtitle2" gutterBottom>
@@ -182,6 +190,11 @@ export default function IngredientSelector({
 					variant="outlined"
 					color="primary"
 					clickable
+					disabled={disabled}
+					sx={{
+						opacity: disabled ? 0.6 : 1,
+						cursor: disabled ? "not-allowed" : "pointer",
+					}}
 				/>
 				<Chip
 					label="全解除"
@@ -189,12 +202,25 @@ export default function IngredientSelector({
 					variant="outlined"
 					color="secondary"
 					clickable
+					disabled={disabled}
+					sx={{
+						opacity: disabled ? 0.6 : 1,
+						cursor: disabled ? "not-allowed" : "pointer",
+					}}
 				/>
 			</Box>
 
 			{/* 材料カテゴリ別の選択UI */}
 			{Object.entries(ingredientCategories).map(([category, ingredients]) => (
-				<Accordion key={category} defaultExpanded>
+				<Accordion
+					key={category}
+					defaultExpanded
+					disabled={disabled}
+					sx={{
+						opacity: disabled ? 0.6 : 1,
+						pointerEvents: disabled ? "none" : "auto",
+					}}
+				>
 					<AccordionSummary expandIcon={<ExpandMoreIcon />}>
 						<Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
 							{categoryIcons[category] &&

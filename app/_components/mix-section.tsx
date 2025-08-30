@@ -9,11 +9,13 @@ import IngredientSelector from "./ingredient-selector";
 interface MixSectionProps {
 	onMixClick: (selectedIngredients: string[]) => void;
 	disabled?: boolean;
+	isLoading?: boolean;
 }
 
 export default function MixSection({
 	onMixClick,
 	disabled = false,
+	isLoading = false,
 }: MixSectionProps) {
 	// 選択された材料の状態管理
 	const [selectedIngredients, setSelectedIngredients] = React.useState<
@@ -60,12 +62,14 @@ export default function MixSection({
 			<IngredientSelector
 				selectedIngredients={selectedIngredients}
 				onIngredientsChange={handleIngredientsChange}
+				disabled={isLoading}
 			/>
 
 			{/* Mixボタン */}
 			<MixButton
 				onClick={handleMixClick}
 				disabled={disabled || selectedIngredients.length === 0}
+				isLoading={isLoading}
 			/>
 
 			{/* サブテキスト */}
@@ -77,7 +81,9 @@ export default function MixSection({
 					opacity: 0.8,
 				}}
 			>
-				{selectedIngredients.length > 0
+				{isLoading
+					? "カクテルを生成中です..."
+					: selectedIngredients.length > 0
 					? `選択された材料 (${selectedIngredients.length}個) からレシピを生成します`
 					: "材料を選択してからMixボタンを押してください"}
 			</Typography>
