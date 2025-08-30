@@ -24,6 +24,7 @@ import {
 	Share as ShareIcon,
 	Twitter as TwitterIcon,
 	ContentCopy as CopyIcon,
+	ShoppingCart as ShoppingCartIcon,
 } from "@mui/icons-material";
 import type { Cocktail } from "../types/cocktail";
 import {
@@ -31,6 +32,10 @@ import {
 	shareViaTwitter,
 	copyToClipboard,
 } from "../utils/share-utils";
+import {
+	getAffiliateLink,
+	extractIngredientKeyword,
+} from "../utils/affiliate-links";
 
 // カスタムスタイルのカード
 const StyledCocktailCard = styled(Card)(({ theme }) => ({
@@ -94,6 +99,21 @@ export default function CocktailDisplay({
 	// 通知を閉じる
 	const handleCloseNotification = () => {
 		setShareSuccess(false);
+	};
+
+	// 材料にアフィリエイトリンクがあるかチェックする関数
+	const hasAffiliateLink = (ingredient: string): boolean => {
+		const keyword = extractIngredientKeyword(ingredient);
+		return getAffiliateLink(keyword) !== null;
+	};
+
+	// アフィリエイトリンクを開く関数
+	const handleAffiliateClick = (ingredient: string) => {
+		const keyword = extractIngredientKeyword(ingredient);
+		const link = getAffiliateLink(keyword);
+		if (link) {
+			window.open(link, "_blank", "noopener,noreferrer");
+		}
 	};
 
 	return (
@@ -223,18 +243,61 @@ export default function CocktailDisplay({
 									<List dense>
 										{cocktail.ingredients.map((ingredient, index) => (
 											<ListItem key={ingredient} sx={{ py: 0.5 }}>
-												<ListItemText
-													primary={ingredient}
+												<Box
 													sx={{
-														"& .MuiListItemText-primary": {
-															fontSize: "0.95rem",
-														},
+														display: "flex",
+														justifyContent: "space-between",
+														alignItems: "center",
+														width: "100%",
 													}}
-												/>
+												>
+													<ListItemText
+														primary={ingredient}
+														sx={{
+															"& .MuiListItemText-primary": {
+																fontSize: "0.95rem",
+															},
+														}}
+													/>
+													{/* アフィリエイトリンクがある場合のみ「材料を買う」チップを表示 */}
+													{hasAffiliateLink(ingredient) && (
+														<Chip
+															icon={<ShoppingCartIcon />}
+															label="材料を買う"
+															onClick={() => handleAffiliateClick(ingredient)}
+															sx={{
+																backgroundColor: "#ff6b35",
+																color: "white",
+																fontSize: "0.75rem",
+																height: "24px",
+																"&:hover": {
+																	backgroundColor: "#e55a2b",
+																},
+																cursor: "pointer",
+															}}
+															size="small"
+														/>
+													)}
+												</Box>
 											</ListItem>
 										))}
 									</List>
 								</Paper>
+
+								{/* アフィリエイトリンクの説明 */}
+								<Box
+									sx={{
+										mt: 2,
+										p: 2,
+										backgroundColor: "#fff3e0",
+										borderRadius: 1,
+									}}
+								>
+									<Typography variant="caption" color="text.secondary">
+										💡
+										オレンジ色の「材料を買う」チップをクリックすると、該当する材料の購入ページが新しいタブで開きます。
+									</Typography>
+								</Box>
 							</Box>
 
 							{/* 作り方 */}
