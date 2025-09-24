@@ -153,7 +153,7 @@ export default function RecipeDetailPage() {
 
 					<Grid container spacing={4}>
 						{/* メインコンテンツ */}
-						<Grid item xs={12} lg={8}>
+						<Grid size={{ xs: 12, lg: 8 }}>
 							{/* 材料セクション */}
 							<StyledDetailCard sx={{ mb: 4 }}>
 								<CardContent sx={{ p: 4 }}>
@@ -174,7 +174,7 @@ export default function RecipeDetailPage() {
 									</Typography>
 									<Grid container spacing={2}>
 										{cocktail.ingredients.map((ingredient, index) => (
-											<Grid item xs={12} sm={6} key={index}>
+											<Grid size={{ xs: 12, sm: 6 }} key={index}>
 												<Paper
 													elevation={1}
 													sx={{
@@ -241,7 +241,7 @@ export default function RecipeDetailPage() {
 						</Grid>
 
 						{/* サイドバー */}
-						<Grid item xs={12} lg={4}>
+						<Grid size={{ xs: 12, lg: 4 }}>
 							{/* 基本情報 */}
 							<StyledDetailCard sx={{ mb: 4 }}>
 								<CardContent sx={{ p: 3 }}>

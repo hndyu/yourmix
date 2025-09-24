@@ -154,7 +154,7 @@ export default function CocktailSearchResults({
 							selectedIngredients,
 						);
 						return (
-							<Grid item key={cocktail.name} xs={12} sm={6} md={4}>
+							<Grid key={cocktail.name} size={{ xs: 12, sm: 6, md: 4 }}>
 								<StyledResultCard
 									// onClick、onKeyDown、role、tabIndexを削除
 									sx={{
