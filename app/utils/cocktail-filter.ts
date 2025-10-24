@@ -62,29 +62,43 @@ export function findExactMatchCocktails(
 }
 
 /**
- * 生成AIによるオリジナルカクテルを生成する関数（仮実装）
+ * 生成AIによるオリジナルカクテルを生成する関数
  * @param selectedIngredients 選択された材料の配列
  * @returns 生成されたオリジナルカクテル
  */
-export function generateOriginalCocktail(
+export async function generateOriginalCocktail(
 	selectedIngredients: string[],
-): Cocktail {
-	// TODO: 実際の生成AI処理を実装
-	return {
-		id: `generated-${Date.now()}`,
-		name: `${selectedIngredients.join(" & ")} オリジナル`,
-		description: `選択された材料（${selectedIngredients.join(", ")}）を使用したオリジナルカクテルです。`,
-		ingredients: selectedIngredients.map((ingredient) => `${ingredient} 適量`),
-		instructions: [
-			"選択された材料を適切な比率で混ぜ合わせます",
-			"お好みに応じて調整してください",
-			"※このレシピは生成AIによる提案です",
-		],
-		glassType: "カクテルグラス",
-		garnish: "お好みのガーニッシュ",
-		difficulty: "medium",
-		prepTime: "5分",
-	};
+): Promise<Cocktail> {
+	try {
+		const response = await fetch("/api/generate-cocktail", {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({ ingredients: selectedIngredients }),
+		});
+
+		if (!response.ok) {
+			const errorData = await response.json();
+			throw new Error(errorData.error || "カクテルの生成に失敗しました。");
+		}
+
+		const cocktailData = await response.json();
+
+		// APIからのデータがCocktail型に準拠していることを確認
+		// ここでは簡単なチェックのみ
+		if (!cocktailData.name || !cocktailData.ingredients) {
+			throw new Error("受信したカクテルデータの形式が正しくありません。");
+		}
+
+		return cocktailData as Cocktail;
+	} catch (error) {
+		console.error("オリジナルカクテルの生成に失敗しました:", error);
+		// エラーが発生した場合、フォールバックとして簡単なカクテル情報を返すか、
+		// エラーを呼び出し元にスローしてUI側でハンドリングする
+		// ここではエラーを再スローする
+		throw error;
+	}
 }
 
 /**

@@ -31,7 +31,9 @@ export default function CocktailMixer() {
 	const [showResults, setShowResults] = React.useState(false);
 
 	// 選択された材料に基づいてカクテルを選択する関数
-	const selectCocktailByIngredients = (selectedIngredients: string[]) => {
+	const selectCocktailByIngredients = async (
+		selectedIngredients: string[],
+	): Promise<Cocktail> => {
 		console.log("選択された材料:", selectedIngredients);
 
 		// 完全一致するカクテルを検索
@@ -51,7 +53,7 @@ export default function CocktailMixer() {
 		console.log(
 			"完全一致するカクテルが見つかりませんでした。オリジナルカクテルを生成します。",
 		);
-		return generateOriginalCocktail(selectedIngredients);
+		return await generateOriginalCocktail(selectedIngredients);
 	};
 
 	// クリックハンドラー
@@ -76,7 +78,8 @@ export default function CocktailMixer() {
 			setSearchResults(filteredCocktails);
 
 			// 選択された材料に基づいてカクテルを選択して表示
-			const matchedCocktail = selectCocktailByIngredients(selectedIngredients);
+			const matchedCocktail =
+				await selectCocktailByIngredients(selectedIngredients);
 
 			// 少し遅延を入れてローディング感を演出
 			await new Promise((resolve) => setTimeout(resolve, 800));
@@ -89,6 +92,7 @@ export default function CocktailMixer() {
 			}, 100);
 		} catch (error) {
 			console.error("カクテル生成エラー:", error);
+			// TODO: ユーザーにエラーを通知するUIを追加
 		} finally {
 			// ローディング状態を終了
 			setIsLoading(false);
