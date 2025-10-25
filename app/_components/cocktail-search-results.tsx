@@ -228,8 +228,8 @@ export default function CocktailSearchResults({
 										<Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
 											{cocktail.ingredients.slice(0, 3).map((ingredient) => (
 												<Chip
-													key={ingredient}
-													label={ingredient}
+													key={ingredient.name}
+													label={ingredient.name}
 													size="small"
 													variant="outlined"
 													sx={{ fontSize: "0.7rem" }}

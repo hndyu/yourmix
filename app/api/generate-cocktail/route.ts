@@ -36,7 +36,9 @@ export async function POST(request: Request) {
 
 		const response = await ai.models.generateContent({
 			model: "gemini-2.5-flash",
-			contents: `${ingredients.join("、")}をすべて材料として使い、独創的で美味しいオリジナルカクテルのレシピを1つ提案してください。回答は必ず日本語で行ってください。`,
+			contents: `${ingredients.join(
+				"、",
+			)}をすべて材料として使い、独創的で美味しいオリジナルカクテルのレシピを1つ提案してください。回答は必ず日本語で行ってください。各材料について、名前と量を分けてJSON形式で回答してください。`,
 			config: {
 				responseMimeType: "application/json",
 				responseSchema: {
@@ -54,7 +56,16 @@ export async function POST(request: Request) {
 							ingredients: {
 								type: Type.ARRAY,
 								items: {
-									type: Type.STRING,
+									type: Type.OBJECT,
+									properties: {
+										name: {
+											type: Type.STRING,
+										},
+										amount: {
+											type: Type.STRING,
+										},
+									},
+									required: ["name", "amount"],
 								},
 							},
 							instructions: {

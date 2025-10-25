@@ -154,10 +154,15 @@ export default function RecipeDetailPage() {
 														p: 2,
 														backgroundColor: "#f8f9fa",
 														borderRadius: "10px",
+														display: "flex",
+														justifyContent: "space-between",
 													}}
 												>
 													<Typography variant="body1" fontWeight="medium">
-														{ingredient}
+														{ingredient.name}
+													</Typography>
+													<Typography variant="body1" color="text.secondary">
+														{ingredient.amount}
 													</Typography>
 												</Paper>
 											</Grid>

@@ -8,11 +8,11 @@ const mockCocktail: Cocktail = {
 	name: "モヒート",
 	description: "キューバ発祥の爽やかなラムベースのカクテル",
 	ingredients: [
-		"ラム（ホワイト） 60ml",
-		"ライムジュース 30ml",
-		"シンプルシロップ 15ml",
-		"ミントの葉 8-10枚",
-		"ソーダ水 適量",
+		{ name: "ラム（ホワイト）", amount: "60ml" },
+		{ name: "ライムジュース", amount: "30ml" },
+		{ name: "シンプルシロップ", amount: "15ml" },
+		{ name: "ミントの葉", amount: "8-10枚" },
+		{ name: "ソーダ水", amount: "適量" },
 	],
 	instructions: [
 		"ミントの葉をグラスに入れて軽く押しつぶす",

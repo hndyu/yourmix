@@ -1,9 +1,15 @@
+// 材料の型定義
+export interface Ingredient {
+	name: string;
+	amount: string;
+}
+
 // カクテルの型定義
 export interface Cocktail {
 	id: string;
 	name: string;
 	description: string;
-	ingredients: string[];
+	ingredients: Ingredient[];
 	instructions: string[];
 	garnish?: string;
 }
@@ -15,11 +21,11 @@ export const mockCocktails: Cocktail[] = [
 		name: "モヒート",
 		description: "キューバ発祥の爽やかなラムベースのカクテル",
 		ingredients: [
-			"ラム（ホワイト） 60ml",
-			"ライムジュース 30ml",
-			"シンプルシロップ 15ml",
-			"ミントの葉 8-10枚",
-			"ソーダ水 適量",
+			{ name: "ラム（ホワイト）", amount: "60ml" },
+			{ name: "ライムジュース", amount: "30ml" },
+			{ name: "シンプルシロップ", amount: "15ml" },
+			{ name: "ミントの葉", amount: "8-10枚" },
+			{ name: "ソーダ水", amount: "適量" },
 		],
 		instructions: [
 			"ミントの葉をグラスに入れて軽く押しつぶす",
@@ -34,9 +40,9 @@ export const mockCocktails: Cocktail[] = [
 		name: "マルガリータ",
 		description: "テキーラベースの定番カクテル",
 		ingredients: [
-			"テキーラ（ブランコ） 50ml",
-			"ライムジュース 25ml",
-			"トリプルセック 20ml",
+			{ name: "テキーラ（ブランコ）", amount: "50ml" },
+			{ name: "ライムジュース", amount: "25ml" },
+			{ name: "トリプルセック", amount: "20ml" },
 		],
 		instructions: [
 			"シェーカーに氷を入れる",
@@ -51,10 +57,10 @@ export const mockCocktails: Cocktail[] = [
 		name: "オールドファッションド",
 		description: "クラシックなウイスキーベースのカクテル",
 		ingredients: [
-			"バーボンウイスキー 60ml",
-			"アンゴスチュラビターズ 2-3滴",
-			"シンプルシロップ 5ml",
-			"オレンジビターズ 1滴",
+			{ name: "バーボンウイスキー", amount: "60ml" },
+			{ name: "アンゴスチュラビターズ", amount: "2-3滴" },
+			{ name: "シンプルシロップ", amount: "5ml" },
+			{ name: "オレンジビターズ", amount: "1滴" },
 		],
 		instructions: [
 			"グラスに氷を入れる",
@@ -69,9 +75,9 @@ export const mockCocktails: Cocktail[] = [
 		name: "ジントニック",
 		description: "爽やかなジンベースの定番カクテル",
 		ingredients: [
-			"ジン 45ml",
-			"トニックウォーター 120ml",
-			"ライムジュース 15ml",
+			{ name: "ジン", amount: "45ml" },
+			{ name: "トニックウォーター", amount: "120ml" },
+			{ name: "ライムジュース", amount: "15ml" },
 		],
 		instructions: [
 			"グラスに氷を入れる",

@@ -1,14 +1,4 @@
-import type { Cocktail } from "../types/cocktail";
-
-/**
- * 材料名から量を除去して純粋な材料名を取得する関数
- * @param ingredientWithAmount 量を含む材料名（例：「ラム（ホワイト） 60ml」）
- * @returns 純粋な材料名（例：「ラム（ホワイト）」）
- */
-function extractIngredientName(ingredientWithAmount: string): string {
-	// 量の部分を除去（数字 + 単位のパターンを削除）
-	return ingredientWithAmount.replace(/\s+\d+[a-zA-Z]*$/, "").trim();
-}
+import type { Cocktail, Ingredient } from "../types/cocktail";
 
 /**
  * 選択された材料に完全一致するカクテルを検索する関数
@@ -26,9 +16,9 @@ export function findExactMatchCocktails(
 	}
 
 	return cocktails.filter((cocktail) => {
-		// カクテルの材料名を抽出（量を除去）
+		// カクテルの材料名を抽出
 		const cocktailIngredientNames = cocktail.ingredients.map(
-			extractIngredientName,
+			(ingredient) => ingredient.name,
 		);
 
 		// 選択された材料とカクテルの材料が完全に一致するかチェック
@@ -38,13 +28,12 @@ export function findExactMatchCocktails(
 		}
 
 		// 全ての選択された材料がカクテルに含まれているかチェック
-		const allSelectedIncluded = selectedIngredients.every(
-			(selectedIngredient) =>
-				cocktailIngredientNames.some((cocktailIngredient) =>
-					cocktailIngredient
-						.toLowerCase()
-						.includes(selectedIngredient.toLowerCase()),
-				),
+		const allSelectedIncluded = selectedIngredients.every((selectedIngredient) =>
+			cocktailIngredientNames.some((cocktailIngredient) =>
+				cocktailIngredient
+					.toLowerCase()
+					.includes(selectedIngredient.toLowerCase()),
+			),
 		);
 
 		// 全てのカクテル材料が選択された材料に含まれているかチェック
@@ -119,6 +108,7 @@ export function filterCocktailsByIngredients(
 	return cocktails.filter((cocktail) => {
 		// カクテルの材料リストを文字列として結合
 		const cocktailIngredientsText = cocktail.ingredients
+			.map((i) => i.name)
 			.join(" ")
 			.toLowerCase();
 
@@ -147,9 +137,9 @@ export function calculateMatchScore(
 		return 0;
 	}
 
-	// カクテルの材料名を抽出（量を除去）
+	// カクテルの材料名を抽出
 	const cocktailIngredientNames = cocktail.ingredients.map(
-		extractIngredientName,
+		(ingredient) => ingredient.name,
 	);
 
 	// 選択された材料のうち、カクテルに含まれている材料の数をカウント

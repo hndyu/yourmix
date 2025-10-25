@@ -118,7 +118,7 @@ export default function DailyRecommendation({
 					{/* 材料のプレビュー */}
 					<Typography variant="body2" sx={{ mb: 2 }}>
 						<strong>材料:</strong>{" "}
-						{dailyCocktail.ingredients.slice(0, 3).join(", ")}
+						{dailyCocktail.ingredients.slice(0, 3).map(i => i.name).join(", ")}
 						{dailyCocktail.ingredients.length > 3 && "..."}
 					</Typography>
 

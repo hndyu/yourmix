@@ -46,9 +46,9 @@ describe("統合テスト", () => {
 			for (const cocktail of filtered) {
 				// 各材料についてアフィリエイトリンクを確認
 				for (const ingredient of cocktail.ingredients) {
-					const affiliateLink = getAffiliateLink(ingredient);
+					const affiliateLink = getAffiliateLink(ingredient.name);
 					// 一部の材料にはアフィリエイトリンクが存在することを確認
-					if (ingredient.includes("ラム") || ingredient.includes("ライム")) {
+					if (ingredient.name.includes("ラム") || ingredient.name.includes("ライム")) {
 						expect(affiliateLink).toBeTruthy();
 					}
 				}

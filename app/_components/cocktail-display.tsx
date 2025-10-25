@@ -222,8 +222,8 @@ export default function CocktailDisplay({
 								</Typography>
 								<Paper elevation={1} sx={{ p: 2, backgroundColor: "#fafafa" }}>
 									<List dense>
-										{cocktail.ingredients.map((ingredient, index) => (
-											<ListItem key={ingredient} sx={{ py: 0.5 }}>
+										{cocktail.ingredients.map((ingredient) => (
+											<ListItem key={ingredient.name} sx={{ py: 0.5 }}>
 												<Box
 													sx={{
 														display: "flex",
@@ -233,7 +233,8 @@ export default function CocktailDisplay({
 													}}
 												>
 													<ListItemText
-														primary={ingredient}
+														primary={ingredient.name}
+														secondary={ingredient.amount}
 														sx={{
 															"& .MuiListItemText-primary": {
 																fontSize: "0.95rem",
@@ -241,11 +242,11 @@ export default function CocktailDisplay({
 														}}
 													/>
 													{/* アフィリエイトリンクがある場合のみ「材料を買う」チップを表示 */}
-													{hasAffiliateLink(ingredient) && (
+													{hasAffiliateLink(ingredient.name) && (
 														<Chip
 															icon={<ShoppingCartIcon />}
 															label="材料を買う"
-															onClick={() => handleAffiliateClick(ingredient)}
+															onClick={() => handleAffiliateClick(ingredient.name)}
 															sx={{
 																backgroundColor: "#ff6b35",
 																color: "white",
@@ -261,8 +262,7 @@ export default function CocktailDisplay({
 													)}
 												</Box>
 											</ListItem>
-										))}
-									</List>
+										))}									</List>
 								</Paper>
 
 								{/* アフィリエイトリンクの説明 */}
