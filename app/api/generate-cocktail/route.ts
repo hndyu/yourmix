@@ -21,7 +21,7 @@ export async function POST(request: Request) {
 	}
 
 	try {
-		const { ingredients } = await request.json();
+		const { ingredients } = (await request.json()) as { ingredients: string[] };
 
 		if (
 			!ingredients ||
@@ -91,7 +91,11 @@ export async function POST(request: Request) {
 		});
 
 		try {
-			const cocktailData = JSON.parse(response.text)[0];
+			const responseText = response.text;
+			if (!responseText) {
+				throw new Error("AIからの応答が空です。");
+			}
+			const cocktailData = JSON.parse(responseText)[0];
 			// AIが生成したデータにidを付与（クライアント側で必要になるため）
 			return NextResponse.json({
 				...cocktailData,

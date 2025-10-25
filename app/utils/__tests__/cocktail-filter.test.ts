@@ -203,9 +203,9 @@ describe("cocktail-filter", () => {
 	});
 
 	describe("generateOriginalCocktail", () => {
-		it("選択された材料に基づいてオリジナルカクテルを生成する", () => {
+		it("選択された材料に基づいてオリジナルカクテルを生成する", async () => {
 			const selectedIngredients = ["ラム", "ライム"];
-			const cocktail = generateOriginalCocktail(selectedIngredients);
+			const cocktail = await generateOriginalCocktail(selectedIngredients);
 
 			expect(cocktail.name).toBe("ラム & ライム オリジナル");
 			expect(cocktail.ingredients).toEqual(["ラム 適量", "ライム 適量"]);
@@ -213,15 +213,15 @@ describe("cocktail-filter", () => {
 			expect(cocktail.prepTime).toBe("5分");
 		});
 
-		it("空の材料配列でもカクテルを生成する", () => {
-			const cocktail = generateOriginalCocktail([]);
+		it("空の材料配列でもカクテルを生成する", async () => {
+			const cocktail = await generateOriginalCocktail([]);
 			expect(cocktail.name).toBe(" オリジナル");
 			expect(cocktail.ingredients).toEqual([]);
 		});
 
-		it("生成されたカクテルに一意のIDが設定される", () => {
-			const cocktail1 = generateOriginalCocktail(["ラム"]);
-			const cocktail2 = generateOriginalCocktail(["ラム"]);
+		it("生成されたカクテルに一意のIDが設定される", async () => {
+			const cocktail1 = await generateOriginalCocktail(["ラム"]);
+			const cocktail2 = await generateOriginalCocktail(["ラム"]);
 			expect(cocktail1.id).not.toBe(cocktail2.id);
 		});
 	});

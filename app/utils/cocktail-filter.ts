@@ -79,11 +79,11 @@ export async function generateOriginalCocktail(
 		});
 
 		if (!response.ok) {
-			const errorData = await response.json();
+			const errorData = (await response.json()) as { error?: string };
 			throw new Error(errorData.error || "カクテルの生成に失敗しました。");
 		}
 
-		const cocktailData = await response.json();
+		const cocktailData = (await response.json()) as Cocktail;
 
 		// APIからのデータがCocktail型に準拠していることを確認
 		// ここでは簡単なチェックのみ
