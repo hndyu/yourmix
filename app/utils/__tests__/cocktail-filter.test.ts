@@ -25,10 +25,7 @@ const mockCocktails: Cocktail[] = [
 			"グラスにミントと砂糖を入れて軽く潰す",
 			"ラムとライムジュースを加えて混ぜる",
 		],
-		glassType: "タンブラー",
 		garnish: "ミントの葉",
-		difficulty: "easy",
-		prepTime: "5分",
 	},
 	{
 		id: "2",
@@ -40,10 +37,7 @@ const mockCocktails: Cocktail[] = [
 			"トリプルセック 25ml",
 		],
 		instructions: ["シェイカーに材料を入れてシェイク", "グラスに注ぐ"],
-		glassType: "カクテルグラス",
 		garnish: "ライムのくし切り",
-		difficulty: "medium",
-		prepTime: "3分",
 	},
 	{
 		id: "3",
@@ -51,10 +45,7 @@ const mockCocktails: Cocktail[] = [
 		description: "ジンとトニックウォーターの組み合わせ",
 		ingredients: ["ジン 45ml", "トニックウォーター 適量"],
 		instructions: ["グラスにジンを注ぐ", "トニックウォーターを加える"],
-		glassType: "タンブラー",
 		garnish: "ライムのくし切り",
-		difficulty: "easy",
-		prepTime: "2分",
 	},
 ];
 
@@ -209,8 +200,6 @@ describe("cocktail-filter", () => {
 
 			expect(cocktail.name).toBe("ラム & ライム オリジナル");
 			expect(cocktail.ingredients).toEqual(["ラム 適量", "ライム 適量"]);
-			expect(cocktail.difficulty).toBe("medium");
-			expect(cocktail.prepTime).toBe("5分");
 		});
 
 		it("空の材料配列でもカクテルを生成する", async () => {

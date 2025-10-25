@@ -29,33 +29,6 @@ const StyledDetailCard = styled(Card)(({ theme }) => ({
 	overflow: "hidden",
 }));
 
-// 難易度に応じた色を取得
-const getDifficultyColor = (difficulty: string) => {
-	switch (difficulty) {
-		case "easy":
-			return "#4caf50";
-		case "medium":
-			return "#ff9800";
-		case "hard":
-			return "#f44336";
-		default:
-			return "#757575";
-	}
-};
-
-// 難易度を日本語で表示
-const getDifficultyText = (difficulty: string) => {
-	switch (difficulty) {
-		case "easy":
-			return "簡単";
-		case "medium":
-			return "普通";
-		case "hard":
-			return "難しい";
-		default:
-			return "不明";
-	}
-};
 
 export default function RecipeDetailPage() {
 	const params = useParams();
@@ -259,18 +232,6 @@ export default function RecipeDetailPage() {
 									<Box
 										sx={{ display: "flex", flexDirection: "column", gap: 2 }}
 									>
-										<Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-											<Timer sx={{ color: "#9b59b6" }} />
-											<Typography variant="body2" color="text.secondary">
-												調理時間: {cocktail.prepTime}
-											</Typography>
-										</Box>
-										<Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-											<Restaurant sx={{ color: "#e74c3c" }} />
-											<Typography variant="body2" color="text.secondary">
-												グラスタイプ: {cocktail.glassType}
-											</Typography>
-										</Box>
 										{cocktail.garnish && (
 											<Box
 												sx={{ display: "flex", alignItems: "center", gap: 1 }}
@@ -282,33 +243,6 @@ export default function RecipeDetailPage() {
 											</Box>
 										)}
 									</Box>
-								</CardContent>
-							</StyledDetailCard>
-
-							{/* 難易度 */}
-							<StyledDetailCard sx={{ mb: 4 }}>
-								<CardContent sx={{ p: 3 }}>
-									<Typography
-										variant="h6"
-										component="h3"
-										sx={{
-											fontWeight: "bold",
-											color: "#2c3e50",
-											mb: 2,
-										}}
-									>
-										難易度
-									</Typography>
-									<Chip
-										label={getDifficultyText(cocktail.difficulty)}
-										sx={{
-											backgroundColor: getDifficultyColor(cocktail.difficulty),
-											color: "white",
-											fontWeight: "bold",
-											fontSize: "1rem",
-											padding: "8px 16px",
-										}}
-									/>
 								</CardContent>
 							</StyledDetailCard>
 

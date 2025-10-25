@@ -63,17 +63,7 @@ export async function POST(request: Request) {
 									type: Type.STRING,
 								},
 							},
-							glassType: {
-								type: Type.STRING,
-							},
 							garnish: {
-								type: Type.STRING,
-							},
-							difficulty: {
-								type: Type.STRING,
-								enum: ["easy", "medium", "hard"],
-							},
-							prepTime: {
 								type: Type.STRING,
 							},
 						},
@@ -81,8 +71,6 @@ export async function POST(request: Request) {
 							"name",
 							"ingredients",
 							"instructions",
-							"glassType",
-							"prepTime",
 						],
 						propertyOrdering: ["name", "ingredients"],
 					},

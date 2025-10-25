@@ -20,10 +20,7 @@ const mockCocktail: Cocktail = {
 		"ラムを注ぎ、氷を入れて軽くステア",
 		"ソーダ水で満たして完成",
 	],
-	glassType: "ハイボールグラス",
 	garnish: "ミントの葉、ライムスライス",
-	difficulty: "easy",
-	prepTime: "5分",
 };
 
 describe("affiliate-links", () => {

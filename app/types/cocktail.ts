@@ -5,10 +5,7 @@ export interface Cocktail {
 	description: string;
 	ingredients: string[];
 	instructions: string[];
-	glassType: string;
 	garnish?: string;
-	difficulty: "easy" | "medium" | "hard";
-	prepTime: string;
 }
 
 // モックカクテルデータ
@@ -30,10 +27,7 @@ export const mockCocktails: Cocktail[] = [
 			"ラムを注ぎ、氷を入れて軽くステア",
 			"ソーダ水で満たして完成",
 		],
-		glassType: "ハイボールグラス",
 		garnish: "ミントの葉、ライムスライス",
-		difficulty: "easy",
-		prepTime: "5分",
 	},
 	{
 		id: "2",
@@ -50,10 +44,7 @@ export const mockCocktails: Cocktail[] = [
 			"シェイクしてグラスに注ぐ",
 			"グラスの縁に塩を付けて完成",
 		],
-		glassType: "カクテルグラス",
 		garnish: "ライムスライス",
-		difficulty: "medium",
-		prepTime: "7分",
 	},
 	{
 		id: "3",
@@ -71,10 +62,7 @@ export const mockCocktails: Cocktail[] = [
 			"ステアして混ぜる",
 			"オレンジピールでガーニッシュ",
 		],
-		glassType: "ロックグラス",
 		garnish: "オレンジピール",
-		difficulty: "easy",
-		prepTime: "4分",
 	},
 	{
 		id: "4",
@@ -91,9 +79,6 @@ export const mockCocktails: Cocktail[] = [
 			"トニックウォーターで満たす",
 			"軽くステアして完成",
 		],
-		glassType: "ハイボールグラス",
 		garnish: "ライムスライス",
-		difficulty: "easy",
-		prepTime: "3分",
 	},
 ];

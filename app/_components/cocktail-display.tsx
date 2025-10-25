@@ -47,19 +47,7 @@ const StyledCocktailCard = styled(Card)(({ theme }) => ({
 	marginBottom: theme.spacing(3),
 }));
 
-// 難易度に応じた色を取得
-const getDifficultyColor = (difficulty: string) => {
-	switch (difficulty) {
-		case "easy":
-			return "#4caf50";
-		case "medium":
-			return "#ff9800";
-		case "hard":
-			return "#f44336";
-		default:
-			return "#757575";
-	}
-};
+
 
 interface CocktailDisplayProps {
 	cocktail: Cocktail;
@@ -214,22 +202,7 @@ export default function CocktailDisplay({
 
 							{/* メタ情報 */}
 							<Box sx={{ display: "flex", gap: 1, flexWrap: "wrap", mb: 2 }}>
-								<Chip
-									label={`難易度: ${cocktail.difficulty === "easy" ? "簡単" : cocktail.difficulty === "medium" ? "普通" : "難しい"}`}
-									sx={{
-										backgroundColor: getDifficultyColor(cocktail.difficulty),
-										color: "white",
-										fontWeight: "bold",
-									}}
-								/>
-								<Chip
-									label={`準備時間: ${cocktail.prepTime}`}
-									variant="outlined"
-								/>
-								<Chip
-									label={`グラス: ${cocktail.glassType}`}
-									variant="outlined"
-								/>
+
 							</Box>
 						</Box>
 

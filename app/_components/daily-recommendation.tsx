@@ -29,36 +29,6 @@ export default function DailyRecommendation({
 		return getDailyRecommendation(cocktails);
 	}, [cocktails]);
 
-	// 難易度に応じた色を取得
-	const getDifficultyColor = (
-		difficulty: string,
-	): "success" | "warning" | "error" | "default" => {
-		switch (difficulty) {
-			case "easy":
-				return "success";
-			case "medium":
-				return "warning";
-			case "hard":
-				return "error";
-			default:
-				return "default";
-		}
-	};
-
-	// 難易度の日本語表示
-	const getDifficultyLabel = (difficulty: string) => {
-		switch (difficulty) {
-			case "easy":
-				return "初級";
-			case "medium":
-				return "中級";
-			case "hard":
-				return "上級";
-			default:
-				return difficulty;
-		}
-	};
-
 	// 詳細ページに遷移する関数
 	const handleViewRecipe = () => {
 		router.push(`/recipes/${dailyCocktail.id}`);
@@ -154,23 +124,7 @@ export default function DailyRecommendation({
 
 					{/* メタ情報 */}
 					<Box sx={{ display: "flex", gap: 1, mb: 2, flexWrap: "wrap" }}>
-						<Chip
-							icon={<AccessTime />}
-							label={dailyCocktail.prepTime}
-							size="small"
-							variant="outlined"
-						/>
-						<Chip
-							label={getDifficultyLabel(dailyCocktail.difficulty)}
-							color={getDifficultyColor(dailyCocktail.difficulty)}
-							size="small"
-							variant="outlined"
-						/>
-						<Chip
-							label={dailyCocktail.glassType}
-							size="small"
-							variant="outlined"
-						/>
+
 					</Box>
 
 					{/* 詳細を見るボタン */}

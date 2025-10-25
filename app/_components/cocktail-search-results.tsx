@@ -210,16 +210,7 @@ export default function CocktailSearchResults({
 													fontSize: "0.75rem",
 												}}
 											/>
-											<Chip
-												label={`難易度: ${cocktail.difficulty === "easy" ? "簡単" : cocktail.difficulty === "medium" ? "普通" : "難しい"}`}
-												size="small"
-												variant="outlined"
-											/>
-											<Chip
-												label={`${cocktail.prepTime}`}
-												size="small"
-												variant="outlined"
-											/>
+
 										</Box>
 
 										{/* 材料（一部表示） */}
