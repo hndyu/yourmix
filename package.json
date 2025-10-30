@@ -12,7 +12,9 @@
     "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts",
     "test": "vitest",
     "test:ui": "vitest --ui",
-    "test:run": "vitest run"
+    "test:run": "vitest run",
+    "db:generate": "drizzle-kit generate",
+    "db:seed": "tsx scripts/seed.ts"
   },
   "dependencies": {
     "@emotion/cache": "^11.14.0",
@@ -23,9 +25,12 @@
     "@mui/material": "^7.1.0",
     "@mui/material-nextjs": "^7.1.0",
     "@opennextjs/cloudflare": "~1.0.0-beta.0 || ^1.0.0",
+    "drizzle-kit": "^0.31.5",
+    "drizzle-orm": "^0.44.7",
     "next": "15.3.1",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "uuid": "^13.0.0"
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
@@ -34,8 +39,10 @@
     "@types/node": "^20.19.23",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@types/uuid": "^10.0.0",
     "jsdom": "^26.1.0",
     "tailwindcss": "^4",
+    "tsx": "^4.20.6",
     "typescript": "^5",
     "vitest": "^3.2.4",
     "wrangler": "^4.45.0"

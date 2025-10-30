@@ -17,7 +17,7 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { ArrowBack, Share, Timer, Restaurant } from "@mui/icons-material";
-import type { Cocktail } from "../../types/cocktail";
+import type { Cocktail, Ingredient } from "../../types/cocktail";
 import { mockCocktails } from "../../types/cocktail";
 
 // カスタムスタイルのカード
@@ -37,6 +37,37 @@ export default function RecipeDetailPage() {
 
 	// カクテルデータを取得（実際の実装ではAPIから取得）
 	const cocktail = mockCocktails.find((c) => c.id === cocktailId);
+
+	// 材料をグループ化する処理
+	const processedIngredients = React.useMemo(() => {
+		if (!cocktail?.ingredients) return [];
+
+		const ingredientsMap = new Map<number, Ingredient[]>();
+		const otherIngredients: Ingredient[] = [];
+
+		// option_group ごとに材料を分類
+		cocktail.ingredients.forEach((ingredient) => {
+			if (ingredient.option_group) {
+				if (!ingredientsMap.has(ingredient.option_group)) {
+					ingredientsMap.set(ingredient.option_group, []);
+				}
+				ingredientsMap.get(ingredient.option_group)!.push(ingredient);
+			} else {
+				otherIngredients.push(ingredient);
+			}
+		});
+
+		// グループ化された材料を「または」で連結
+		const groupedIngredients: Ingredient[] = [];
+		ingredientsMap.forEach((group) => {
+			groupedIngredients.push({
+				name: group.map((ing) => ing.name).join(" または "),
+				amount: group[0].amount, //量は同じと仮定
+			});
+		});
+
+		return [...groupedIngredients, ...otherIngredients];
+	}, [cocktail]);
 
 	// カクテルが見つからない場合
 	if (!cocktail) {
@@ -146,7 +177,7 @@ export default function RecipeDetailPage() {
 										材料
 									</Typography>
 									<Grid container spacing={2}>
-										{cocktail.ingredients.map((ingredient, index) => (
+										{processedIngredients.map((ingredient, index) => (
 											<Grid size={{ xs: 12, sm: 6 }} key={index}>
 												<Paper
 													elevation={1}

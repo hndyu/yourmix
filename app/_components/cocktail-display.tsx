@@ -25,6 +25,7 @@ import {
 	Twitter as TwitterIcon,
 	ContentCopy as CopyIcon,
 	ShoppingCart as ShoppingCartIcon,
+	LocalOffer as LocalOfferIcon,
 } from "@mui/icons-material";
 import type { Cocktail } from "../types/cocktail";
 import {
@@ -46,8 +47,6 @@ const StyledCocktailCard = styled(Card)(({ theme }) => ({
 	overflow: "hidden",
 	marginBottom: theme.spacing(3),
 }));
-
-
 
 interface CocktailDisplayProps {
 	cocktail: Cocktail;
@@ -188,7 +187,6 @@ export default function CocktailDisplay({
 									</Tooltip>
 								</Box>
 							</Box>
-
 							<Typography
 								variant="body1"
 								sx={{
@@ -199,11 +197,22 @@ export default function CocktailDisplay({
 							>
 								{cocktail.description}
 							</Typography>
-
 							{/* メタ情報 */}
 							<Box sx={{ display: "flex", gap: 1, flexWrap: "wrap", mb: 2 }}>
-
-							</Box>
+								{cocktail.tags?.map((tag) => (
+									<Chip
+										key={tag}
+										icon={<LocalOfferIcon />}
+										label={tag}
+										size="small"
+										sx={{
+											backgroundColor: "#e0e0e0",
+											color: "#333",
+											fontWeight: "medium",
+										}}
+									/>
+								))}
+							</Box>{" "}
 						</Box>
 
 						{/* 材料と作り方を横並びで表示 */}
@@ -246,7 +255,9 @@ export default function CocktailDisplay({
 														<Chip
 															icon={<ShoppingCartIcon />}
 															label="材料を買う"
-															onClick={() => handleAffiliateClick(ingredient.name)}
+															onClick={() =>
+																handleAffiliateClick(ingredient.name)
+															}
 															sx={{
 																backgroundColor: "#ff6b35",
 																color: "white",
@@ -262,7 +273,8 @@ export default function CocktailDisplay({
 													)}
 												</Box>
 											</ListItem>
-										))}									</List>
+										))}{" "}
+									</List>
 								</Paper>
 
 								{/* アフィリエイトリンクの説明 */}
