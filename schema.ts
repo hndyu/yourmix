@@ -18,6 +18,7 @@ export const cocktails = sqliteTable('cocktails', {
 export const ingredients = sqliteTable('ingredients', {
   id: integer('id').primaryKey({ autoIncrement: true }),
   name: text('name').notNull().unique(),
+  description: text('description'),
 });
 
 // cocktail_ingredients 中間テーブル
@@ -42,6 +43,7 @@ export const instructions = sqliteTable('instructions', {
 export const tags = sqliteTable('tags', {
   id: integer('id').primaryKey({ autoIncrement: true }),
   name: text('name').notNull().unique(),
+  description: text('description'),
 });
 
 // cocktail_tags 中間テーブル

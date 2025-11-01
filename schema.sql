@@ -20,7 +20,8 @@ CREATE TABLE cocktails (
 -- ingredients テーブル
 CREATE TABLE ingredients (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
-  name TEXT NOT NULL UNIQUE
+  name TEXT NOT NULL UNIQUE,
+  description TEXT
 );
 
 -- cocktail_ingredients 中間テーブル
@@ -46,7 +47,8 @@ CREATE TABLE instructions (
 -- tags テーブル
 CREATE TABLE tags (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
-  name TEXT NOT NULL UNIQUE
+  name TEXT NOT NULL UNIQUE,
+  description TEXT
 );
 
 -- cocktail_tags 中間テーブル
