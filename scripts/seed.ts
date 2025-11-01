@@ -14,8 +14,24 @@ interface Env {
 	DB: D1Database;
 }
 
+// シードデータの型定義
+interface IngredientData {
+	name: string;
+	amount: string;
+	option_group?: number;
+}
+
+interface CocktailData {
+	name: string;
+	ingredients: IngredientData[];
+	instructions: string[];
+	garnish: string;
+	tags: string[];
+	imageUrl: string;
+}
+
 // シードデータ
-const contemporaryClassics = [
+const contemporaryClassics: CocktailData[] = [
 	{
 		name: "ベリーニ",
 		ingredients: [
@@ -552,7 +568,7 @@ const contemporaryClassics = [
 	},
 ];
 
-const newEra = [
+const newEra: CocktailData[] = [
 	{
 		name: "ビーズ・ニーズ",
 		ingredients: [
@@ -1119,7 +1135,7 @@ const newEra = [
 	},
 ];
 
-const unforgettables = [
+const unforgettables: CocktailData[] = [
 	{
 		name: "アレクサンダー",
 		ingredients: [
@@ -1296,7 +1312,7 @@ const unforgettables = [
 	{
 		name: "ジン・フィズ",
 		ingredients: [
-			{ name: "ジン", amount: "45ml" }
+			{ name: "ジン", amount: "45ml" },
 			{ name: "レモンジュース", amount: "30ml" },
 			{ name: "シンプルシロップ", amount: "10ml" },
 			{ name: "炭酸水", amount: "適量" },
@@ -1734,7 +1750,7 @@ export async function seed(env: Env) {
 
 		// cocktail_ingredients テーブル
 		await db.insert(cocktailIngredients).values(
-			cocktailData.ingredients.map((ing: any) => ({
+			cocktailData.ingredients.map((ing: IngredientData) => ({
 				cocktailId,
 				ingredientId: ingredientMap.get(ing.name)!,
 				amount: ing.amount,
