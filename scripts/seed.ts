@@ -1750,20 +1750,32 @@ export async function seed(env: Env) {
 
 		// cocktail_ingredients テーブル
 		await db.insert(cocktailIngredients).values(
-			cocktailData.ingredients.map((ing: IngredientData) => ({
-				cocktailId,
-				ingredientId: ingredientMap.get(ing.name)!,
-				amount: ing.amount,
-				option_group: ing.option_group,
-			})),
+			cocktailData.ingredients.map((ing: IngredientData) => {
+				const ingredientId = ingredientMap.get(ing.name);
+				if (ingredientId === undefined) {
+					throw new Error(`Ingredient not found: ${ing.name}`);
+				}
+				return {
+					cocktailId,
+					ingredientId,
+					amount: ing.amount,
+					option_group: ing.option_group,
+				};
+			}),
 		);
 
 		// cocktail_tags テーブル
 		await db.insert(cocktailTags).values(
-			cocktailData.tags.map((tagName) => ({
-				cocktailId,
-				tagId: tagMap.get(tagName)!,
-			})),
+			cocktailData.tags.map((tagName) => {
+				const tagId = tagMap.get(tagName);
+				if (tagId === undefined) {
+					throw new Error(`Tag not found: ${tagName}`);
+				}
+				return {
+					cocktailId,
+					tagId,
+				};
+			}),
 		);
 	}
 	console.log(`🍹 Seeded ${allCocktails.length} cocktails.`);
