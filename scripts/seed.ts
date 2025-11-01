@@ -1830,7 +1830,7 @@ export async function seed(env: Env) {
 	// カクテル、作り方、中間テーブルの登録
 	for (const cocktailData of allCocktails) {
 		const cocktailId = uuidv4();
-		const slug = slugify(cocktailData.name);
+		const slug = cocktailData.imageUrl.replace(/\.[^/.]+$/, "");
 
 		// cocktails テーブル
 		await db.insert(cocktails).values({
