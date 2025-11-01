@@ -23,6 +23,7 @@ interface IngredientData {
 
 interface CocktailData {
 	name: string;
+	description: string;
 	ingredients: IngredientData[];
 	instructions: string[];
 	garnish: string;
@@ -34,6 +35,7 @@ interface CocktailData {
 const contemporaryClassics: CocktailData[] = [
 	{
 		name: "ベリーニ",
+		description: "ベリーニの簡単な説明文です。",
 		ingredients: [
 			{ name: "プロセッコ", amount: "100ml" },
 			{ name: "白桃ピュレ", amount: "50ml" },
@@ -48,6 +50,7 @@ const contemporaryClassics: CocktailData[] = [
 	},
 	{
 		name: "ブラック・ルシアン",
+		description: "ブラック・ルシアンの簡単な説明文です。",
 		ingredients: [
 			{ name: "ウォッカ", amount: "50ml" },
 			{ name: "コーヒーリキュール", amount: "20ml" },
@@ -62,6 +65,7 @@ const contemporaryClassics: CocktailData[] = [
 	},
 	{
 		name: "ブラッディ・マリー",
+		description: "ブラッディ・マリーの簡単な説明文です。",
 		ingredients: [
 			{ name: "ウォッカ", amount: "45ml" },
 			{ name: "トマトジュース", amount: "90ml" },
@@ -80,6 +84,7 @@ const contemporaryClassics: CocktailData[] = [
 	},
 	{
 		name: "カイピリーニャ",
+		description: "カイピリーニャの簡単な説明文です。",
 		ingredients: [
 			{ name: "カシャッサ", amount: "60ml" },
 			{ name: "ライムのくし切り", amount: "1個" },
@@ -95,6 +100,7 @@ const contemporaryClassics: CocktailData[] = [
 	},
 	{
 		name: "カーディナル",
+		description: "カーディナルの簡単な説明文です。",
 		ingredients: [
 			{ name: "ジン", amount: "90ml" },
 			{ name: "ベルモット", amount: "10ml" },
@@ -110,6 +116,7 @@ const contemporaryClassics: CocktailData[] = [
 	},
 	{
 		name: "シャンパン・カクテル",
+		description: "シャンパン・カクテルの簡単な説明文です。",
 		ingredients: [
 			{ name: "シャンパン（冷）", amount: "90ml" },
 			{ name: "コニャック", amount: "10ml" },
@@ -127,6 +134,7 @@ const contemporaryClassics: CocktailData[] = [
 	},
 	{
 		name: "コープス・リバイバー #2",
+		description: "コープス・リバイバー #2の簡単な説明文です。",
 		ingredients: [
 			{ name: "ジン", amount: "30ml" },
 			{ name: "コアントロー", amount: "30ml" },
@@ -144,6 +152,7 @@ const contemporaryClassics: CocktailData[] = [
 	},
 	{
 		name: "コスモポリタン",
+		description: "コスモポリタンの簡単な説明文です。",
 		ingredients: [
 			{ name: "ウォッカ", amount: "40ml" },
 			{ name: "コアントロー", amount: "15ml" },
@@ -160,6 +169,7 @@ const contemporaryClassics: CocktailData[] = [
 	},
 	{
 		name: "キューバ・リブレ",
+		description: "キューバ・リブレの簡単な説明文です。",
 		ingredients: [
 			{ name: "ホワイト・ラム", amount: "50ml" },
 			{ name: "コーラ", amount: "120ml" },
@@ -172,6 +182,7 @@ const contemporaryClassics: CocktailData[] = [
 	},
 	{
 		name: "フレンチ75",
+		description: "フレンチ75の簡単な説明文です。",
 		ingredients: [
 			{ name: "ジン", amount: "30ml" },
 			{ name: "レモンジュース", amount: "15ml" },
@@ -190,6 +201,7 @@ const contemporaryClassics: CocktailData[] = [
 	},
 	{
 		name: "フレンチ・コネクション",
+		description: "フレンチ・コネクションの簡単な説明文です。",
 		ingredients: [
 			{ name: "コニャック", amount: "35ml" },
 			{ name: "アマレット", amount: "35ml" },
@@ -204,6 +216,7 @@ const contemporaryClassics: CocktailData[] = [
 	},
 	{
 		name: "ガリバルディ",
+		description: "ガリバルディの簡単な説明文です。",
 		ingredients: [
 			{ name: "カンパリ", amount: "45ml" },
 			{ name: "オレンジジュース ", amount: "120ml" },
@@ -217,6 +230,7 @@ const contemporaryClassics: CocktailData[] = [
 	},
 	{
 		name: "グラスホッパー",
+		description: "グラスホッパーの簡単な説明文です。",
 		ingredients: [
 			{ name: "クレーム・ド・カカオ", amount: "20ml" },
 			{ name: "クレーム・ド・ミント", amount: "20ml" },
@@ -232,6 +246,7 @@ const contemporaryClassics: CocktailData[] = [
 	},
 	{
 		name: "ヘミングウェイ・スペシャル",
+		description: "ヘミングウェイ・スペシャルの簡単な説明文です。",
 		ingredients: [
 			{ name: "ラム", amount: "60ml" },
 			{ name: "グレープフルーツジュース", amount: "40ml" },
@@ -248,6 +263,7 @@ const contemporaryClassics: CocktailData[] = [
 	},
 	{
 		name: "ホーセズ・ネック",
+		description: "ホーセズ・ネックの簡単な説明文です。",
 		ingredients: [
 			{ name: "コニャック", amount: "40ml" },
 			{ name: "ジンジャーエール", amount: "120ml" },
@@ -264,6 +280,7 @@ const contemporaryClassics: CocktailData[] = [
 	},
 	{
 		name: "アイリッシュ・コーヒー",
+		description: "アイリッシュ・コーヒーの簡単な説明文です。",
 		ingredients: [
 			{ name: "アイリッシュ・ウイスキー", amount: "50ml" },
 			{ name: "ホットコーヒー", amount: "120ml" },
@@ -283,6 +300,7 @@ const contemporaryClassics: CocktailData[] = [
 	},
 	{
 		name: "キール",
+		description: "キールの簡単な説明文です。",
 		ingredients: [
 			{ name: "白ワイン", amount: "90ml" },
 			{ name: "クレーム・ド・カシス", amount: "10ml" },
@@ -294,6 +312,7 @@ const contemporaryClassics: CocktailData[] = [
 	},
 	{
 		name: "レモン・ドロップ・マティーニ",
+		description: "レモン・ドロップ・マティーニの簡単な説明文です。",
 		ingredients: [
 			{ name: "ウォッカ", amount: "30ml" },
 			{ name: "トリプルセック", amount: "20ml" },
@@ -309,6 +328,7 @@ const contemporaryClassics: CocktailData[] = [
 	},
 	{
 		name: "ロングアイランド・アイスティー",
+		description: "ロングアイランド・アイスティーの簡単な説明文です。",
 		ingredients: [
 			{ name: "ウォッカ", amount: "15ml" },
 			{ name: "テキーラ", amount: "15ml" },
@@ -329,6 +349,7 @@ const contemporaryClassics: CocktailData[] = [
 	},
 	{
 		name: "マイタイ",
+		description: "マイタイの簡単な説明文です。",
 		ingredients: [
 			{ name: "ゴールド・ラム", amount: "30ml" },
 			{ name: "ダーク・ラム", amount: "30ml" },
@@ -347,6 +368,7 @@ const contemporaryClassics: CocktailData[] = [
 	},
 	{
 		name: "マルガリータ",
+		description: "マルガリータの簡単な説明文です。",
 		ingredients: [
 			{ name: "テキーラ", amount: "50ml" },
 			{ name: "トリプルセック", amount: "20ml" },
@@ -362,6 +384,7 @@ const contemporaryClassics: CocktailData[] = [
 	},
 	{
 		name: "ミモザ",
+		description: "ミモザの簡単な説明文です。",
 		ingredients: [
 			{ name: "オレンジジュース", amount: "75ml" },
 			{ name: "プロセッコ", amount: "75ml" },
@@ -376,6 +399,7 @@ const contemporaryClassics: CocktailData[] = [
 	},
 	{
 		name: "ミント・ジュレップ",
+		description: "ミント・ジュレップの簡単な説明文です。",
 		ingredients: [
 			{ name: "バーボン・ウイスキー", amount: "60ml" },
 			{ name: "ミントの小枝", amount: "4本" },
@@ -392,6 +416,7 @@ const contemporaryClassics: CocktailData[] = [
 	},
 	{
 		name: "モヒート",
+		description: "モヒートの簡単な説明文です。",
 		ingredients: [
 			{ name: "ホワイト・ラム", amount: "45ml" },
 			{ name: "ライムジュース", amount: "20ml" },
@@ -410,6 +435,7 @@ const contemporaryClassics: CocktailData[] = [
 	},
 	{
 		name: "モスコミュール",
+		description: "モスコミュールの簡単な説明文です。",
 		ingredients: [
 			{ name: "ウォッカ", amount: "45ml" },
 			{ name: "ジンジャービール", amount: "120ml" },
@@ -425,6 +451,7 @@ const contemporaryClassics: CocktailData[] = [
 	},
 	{
 		name: "ピニャ・コラーダ",
+		description: "ピニャ・コラーダの簡単な説明文です。",
 		ingredients: [
 			{ name: "ホワイト・ラム", amount: "50ml" },
 			{ name: "ココナッツクリーム", amount: "30ml" },
@@ -440,6 +467,7 @@ const contemporaryClassics: CocktailData[] = [
 	},
 	{
 		name: "ピスコ・サワー",
+		description: "ピスコ・サワーの簡単な説明文です。",
 		ingredients: [
 			{ name: "ピスコ", amount: "60ml" },
 			{ name: "レモンジュース", amount: "30ml" },
@@ -456,6 +484,7 @@ const contemporaryClassics: CocktailData[] = [
 	},
 	{
 		name: "ラボ・デ・ガロ",
+		description: "ラボ・デ・ガロの簡単な説明文です。",
 		ingredients: [
 			{ name: "カシャッサ", amount: "60ml" },
 			{ name: "ベルモット", amount: "20ml" },
@@ -471,6 +500,7 @@ const contemporaryClassics: CocktailData[] = [
 	},
 	{
 		name: "シー・ブリーズ",
+		description: "シー・ブリーズの簡単な説明文です。",
 		ingredients: [
 			{ name: "ウォッカ", amount: "40ml" },
 			{ name: "クランベリージュース", amount: "120ml" },
@@ -483,6 +513,7 @@ const contemporaryClassics: CocktailData[] = [
 	},
 	{
 		name: "セックス・オン・ザ・ビーチ",
+		description: "セックス・オン・ザ・ビーチの簡単な説明文です。",
 		ingredients: [
 			{ name: "ウォッカ", amount: "40ml" },
 			{ name: "シュナップス", amount: "20ml" },
@@ -496,6 +527,7 @@ const contemporaryClassics: CocktailData[] = [
 	},
 	{
 		name: "シンガポール・スリング",
+		description: "シンガポール・スリングの簡単な説明文です。",
 		ingredients: [
 			{ name: "ジン", amount: "30ml" },
 			{ name: "モラッコ・チェリー", amount: "15ml" },
@@ -517,6 +549,7 @@ const contemporaryClassics: CocktailData[] = [
 	},
 	{
 		name: "テキーラ・サンライズ",
+		description: "テキーラ・サンライズの簡単な説明文です。",
 		ingredients: [
 			{ name: "テキーラ", amount: "45ml" },
 			{ name: "オレンジジュース", amount: "90ml" },
@@ -532,6 +565,7 @@ const contemporaryClassics: CocktailData[] = [
 	},
 	{
 		name: "ヴェスパー",
+		description: "ヴェスパーの簡単な説明文です。",
 		ingredients: [
 			{ name: "ジン", amount: "45ml" },
 			{ name: "ウォッカ", amount: "15ml" },
@@ -547,6 +581,7 @@ const contemporaryClassics: CocktailData[] = [
 	},
 	{
 		name: "ゾンビ",
+		description: "ゾンビの簡単な説明文です。",
 		ingredients: [
 			{ name: "ダーク・ラム", amount: "45ml" },
 			{ name: "ゴールド・ラム", amount: "45ml" },
@@ -571,6 +606,7 @@ const contemporaryClassics: CocktailData[] = [
 const newEra: CocktailData[] = [
 	{
 		name: "ビーズ・ニーズ",
+		description: "ビーズ・ニーズの簡単な説明文です。",
 		ingredients: [
 			{ name: "ジン", amount: "52.5ml" },
 			{ name: "はちみつシロップ", amount: "小さじ2杯" },
@@ -586,6 +622,7 @@ const newEra: CocktailData[] = [
 	},
 	{
 		name: "ブランブル",
+		description: "ブランブルの簡単な説明文です。",
 		ingredients: [
 			{ name: "ジン", amount: "50ml" },
 			{ name: "レモンジュース", amount: "25ml" },
@@ -601,6 +638,7 @@ const newEra: CocktailData[] = [
 	},
 	{
 		name: "カンチャンチャラ",
+		description: "カンチャンチャラの簡単な説明文です。",
 		ingredients: [
 			{ name: "アグアルディエンテ", amount: "60ml" },
 			{ name: "ライムジュース", amount: "15ml" },
@@ -618,6 +656,7 @@ const newEra: CocktailData[] = [
 	},
 	{
 		name: "シャルトリューズ・スウィズル",
+		description: "シャルトリューズ・スウィズルの簡単な説明文です。",
 		ingredients: [
 			{ name: "シャルトリューズ", amount: "45ml" },
 			{ name: "パイナップルジュース", amount: "30ml" },
@@ -634,6 +673,7 @@ const newEra: CocktailData[] = [
 	},
 	{
 		name: "ダーク・アンド・ストーミー",
+		description: "ダーク・アンド・ストーミーの簡単な説明文です。",
 		ingredients: [
 			{ name: "ラム", amount: "60ml" },
 			{ name: "ジンジャービール", amount: "100ml" },
@@ -647,6 +687,7 @@ const newEra: CocktailData[] = [
 	},
 	{
 		name: "ドンズ・スペシャル・ダイキリ",
+		description: "ドンズ・スペシャル・ダイキリの簡単な説明文です。",
 		ingredients: [
 			{ name: "ゴールド・ラム", amount: "30ml" },
 			{ name: "キューバ産ラム", amount: "15ml" },
@@ -664,6 +705,7 @@ const newEra: CocktailData[] = [
 	},
 	{
 		name: "エスプレッソ・マティーニ",
+		description: "エスプレッソ・マティーニの簡単な説明文です。",
 		ingredients: [
 			{ name: "ウォッカ", amount: "50ml" },
 			{ name: "カルーア", amount: "30ml" },
@@ -679,6 +721,7 @@ const newEra: CocktailData[] = [
 	},
 	{
 		name: "フェルナンディート",
+		description: "フェルナンディートの簡単な説明文です。",
 		ingredients: [
 			{ name: "フェルネット・ブランカ", amount: "50ml" },
 			{ name: "コーラ", amount: "適量" },
@@ -692,6 +735,7 @@ const newEra: CocktailData[] = [
 	},
 	{
 		name: "フレンチ・マティーニ",
+		description: "フレンチ・マティーニの簡単な説明文です。",
 		ingredients: [
 			{ name: "ウォッカ", amount: "45ml" },
 			{ name: "ラズベリー・リキュール", amount: "15ml" },
@@ -706,6 +750,7 @@ const newEra: CocktailData[] = [
 	},
 	{
 		name: "ジン・バジル・スマッシュ",
+		description: "ジン・バジル・スマッシュの簡単な説明文です。",
 		ingredients: [
 			{ name: "ジン", amount: "60ml" },
 			{ name: "レモンジュース", amount: "22.5ml" },
@@ -722,6 +767,7 @@ const newEra: CocktailData[] = [
 	},
 	{
 		name: "グラン・マルガリータ",
+		description: "グラン・マルガリータの簡単な説明文です。",
 		ingredients: [
 			{ name: "テキーラ", amount: "45ml" },
 			{ name: "グラン・マルニエ", amount: "30ml" },
@@ -738,6 +784,7 @@ const newEra: CocktailData[] = [
 	},
 	{
 		name: "IBA Tiki",
+		description: "IBA Tikiの簡単な説明文です。",
 		ingredients: [
 			{ name: "ハバナ・クラブ プロフンド", amount: "30ml" },
 			{ name: "ハバナ・クラブ スモーキー", amount: "30ml" },
@@ -760,6 +807,7 @@ const newEra: CocktailData[] = [
 	},
 	{
 		name: "イリーガル",
+		description: "イリーガルの簡単な説明文です。",
 		ingredients: [
 			{ name: "エスパディンメスカル", amount: "30ml" },
 			{ name: "ホワイト・ラム", amount: "15ml" },
@@ -779,6 +827,7 @@ const newEra: CocktailData[] = [
 	},
 	{
 		name: "ジャングル・バード",
+		description: "ジャングル・バードの簡単な説明文です。",
 		ingredients: [
 			{ name: "ラム", amount: "45ml" },
 			{ name: "カンパリ", amount: "22.5ml" },
@@ -796,6 +845,7 @@ const newEra: CocktailData[] = [
 	},
 	{
 		name: "ミッショナリー・ダウンフォール",
+		description: "ミッショナリー・ダウンフォールの簡単な説明文です。",
 		ingredients: [
 			{ name: "ホワイト・ラム", amount: "30ml" },
 			{ name: "ピーチブランデー", amount: "15ml" },
@@ -813,6 +863,7 @@ const newEra: CocktailData[] = [
 	},
 	{
 		name: "ネイキッド・アンド・フェイマス",
+		description: "ネイキッド・アンド・フェイマスの簡単な説明文です。",
 		ingredients: [
 			{ name: "メスカル", amount: "22.5ml" },
 			{ name: "シャルトリューズ", amount: "22.5ml" },
@@ -828,6 +879,7 @@ const newEra: CocktailData[] = [
 	},
 	{
 		name: "ニューヨーク・サワー",
+		description: "ニューヨーク・サワーの簡単な説明文です。",
 		ingredients: [
 			{ name: "ライ・ウイスキー", amount: "60ml", option_group: 2 },
 			{ name: "バーボン", amount: "60ml", option_group: 2 },
@@ -846,6 +898,7 @@ const newEra: CocktailData[] = [
 	},
 	{
 		name: "オールド・キューバン",
+		description: "オールド・キューバンの簡単な説明文です。",
 		ingredients: [
 			{ name: "ミントの葉", amount: "6～8枚" },
 			{ name: "ラム", amount: "45ml" },
@@ -865,6 +918,7 @@ const newEra: CocktailData[] = [
 	},
 	{
 		name: "パロマ",
+		description: "パロマの簡単な説明文です。",
 		ingredients: [
 			{ name: "テキーラ", amount: "50ml" },
 			{ name: "フレッシュライム", amount: "5ml" },
@@ -882,6 +936,7 @@ const newEra: CocktailData[] = [
 	},
 	{
 		name: "ペーパー・プレーン",
+		description: "ペーパー・プレーンの簡単な説明文です。",
 		ingredients: [
 			{ name: "バーボン・ウイスキー", amount: "30ml" },
 			{ name: "アマーロ・ノニーノ", amount: "30ml" },
@@ -897,6 +952,7 @@ const newEra: CocktailData[] = [
 	},
 	{
 		name: "ペニシリン",
+		description: "ペニシリンの簡単な説明文です。",
 		ingredients: [
 			{ name: "スコッチ・ウイスキー", amount: "60ml" },
 			{ name: "ラガヴーリン", amount: "7.5ml" },
@@ -916,6 +972,7 @@ const newEra: CocktailData[] = [
 	},
 	{
 		name: "ピスコパンチ",
+		description: "ピスコパンチの簡単な説明文です。",
 		ingredients: [
 			{ name: "ピスコ", amount: "60ml" },
 			{ name: "パイナップルジュース", amount: "22.5ml" },
@@ -935,6 +992,7 @@ const newEra: CocktailData[] = [
 	},
 	{
 		name: "ポルノスター・マティーニ",
+		description: "ポルノスター・マティーニの簡単な説明文です。",
 		ingredients: [
 			{ name: "ウォッカ", amount: "50ml" },
 			{ name: "パッションフルーツリキュール", amount: "20ml" },
@@ -952,6 +1010,7 @@ const newEra: CocktailData[] = [
 	},
 	{
 		name: "ロシアン・スプリング・パンチ",
+		description: "ロシアン・スプリング・パンチの簡単な説明文です。",
 		ingredients: [
 			{ name: "ウォッカ", amount: "25ml" },
 			{ name: "レモンジュース", amount: "25ml" },
@@ -969,6 +1028,7 @@ const newEra: CocktailData[] = [
 	},
 	{
 		name: "シェリー・コブラー",
+		description: "シェリー・コブラーの簡単な説明文です。",
 		ingredients: [
 			{ name: "シェリー", amount: "45ml" },
 			{ name: "パロ・コルタド", amount: "45ml" },
@@ -985,6 +1045,7 @@ const newEra: CocktailData[] = [
 	},
 	{
 		name: "サウスサイド",
+		description: "サウスサイドの簡単な説明文です。",
 		ingredients: [
 			{ name: "ジン", amount: "60ml" },
 			{ name: "レモンジュース", amount: "30ml" },
@@ -1002,6 +1063,7 @@ const newEra: CocktailData[] = [
 	},
 	{
 		name: "スパイシー・フィフティ",
+		description: "スパイシー・フィフティの簡単な説明文です。",
 		ingredients: [
 			{ name: "ウォッカ", amount: "50ml" },
 			{ name: "エルダーフラワー・コーディアル", amount: "15ml" },
@@ -1018,6 +1080,7 @@ const newEra: CocktailData[] = [
 	},
 	{
 		name: "スプリッツ",
+		description: "スプリッツの簡単な説明文です。",
 		ingredients: [
 			{ name: "プロセッコ", amount: "90ml" },
 			{ name: "アペロール", amount: "60ml" },
@@ -1033,6 +1096,7 @@ const newEra: CocktailData[] = [
 	},
 	{
 		name: "サファリング・バスタード",
+		description: "サファリング・バスタードの簡単な説明文です。",
 		ingredients: [
 			{ name: "コニャック", amount: "30ml", option_group: 4 },
 			{ name: "ブランデー", amount: "30ml", option_group: 4 },
@@ -1052,6 +1116,7 @@ const newEra: CocktailData[] = [
 	},
 	{
 		name: "スリー・ドッツ・アンド・ダッシュ",
+		description: "スリー・ドッツ・アンド・ダッシュの簡単な説明文です。",
 		ingredients: [
 			{ name: "マルティニーク・ラム", amount: "45ml" },
 			{ name: "ブレンド熟成ラム", amount: "15ml" },
@@ -1072,6 +1137,7 @@ const newEra: CocktailData[] = [
 	},
 	{
 		name: "ティペラリー",
+		description: "ティペラリーの簡単な説明文です。",
 		ingredients: [
 			{ name: "アイリッシュ・ウイスキー", amount: "50ml" },
 			{ name: "ベルモット", amount: "25ml" },
@@ -1088,6 +1154,7 @@ const newEra: CocktailData[] = [
 	},
 	{
 		name: "トミーズ・マルガリータ",
+		description: "トミーズ・マルガリータの簡単な説明文です。",
 		ingredients: [
 			{ name: "テキーラ", amount: "60ml" },
 			{ name: "ライムジュース", amount: "30ml" },
@@ -1102,6 +1169,7 @@ const newEra: CocktailData[] = [
 	},
 	{
 		name: "トリニダード・サワー",
+		description: "トリニダード・サワーの簡単な説明文です。",
 		ingredients: [
 			{ name: "ビターズ", amount: "45ml" },
 			{ name: "オルジェー・シロップ", amount: "30ml" },
@@ -1118,6 +1186,7 @@ const newEra: CocktailData[] = [
 	},
 	{
 		name: "VE.N.TO",
+		description: "VE.N.TOの簡単な説明文です。",
 		ingredients: [
 			{ name: "グラッパ", amount: "45ml" },
 			{ name: "レモンジュース", amount: "22.5ml" },
@@ -1138,6 +1207,7 @@ const newEra: CocktailData[] = [
 const unforgettables: CocktailData[] = [
 	{
 		name: "アレクサンダー",
+		description: "アレクサンダーの簡単な説明文です。",
 		ingredients: [
 			{ name: "コニャック", amount: "30ml" },
 			{ name: "クレーム・ド・カカオ", amount: "30ml" },
@@ -1153,6 +1223,7 @@ const unforgettables: CocktailData[] = [
 	},
 	{
 		name: "アメリカーノ",
+		description: "アメリカーノの簡単な説明文です。",
 		ingredients: [
 			{ name: "カンパリ", amount: "30ml" },
 			{ name: "ベルモット", amount: "30ml" },
@@ -1168,6 +1239,7 @@ const unforgettables: CocktailData[] = [
 	},
 	{
 		name: "アビエーション",
+		description: "アビエーションの簡単な説明文です。",
 		ingredients: [
 			{ name: "ジン", amount: "45ml" },
 			{ name: "マラスキーノ・リキュール", amount: "15ml" },
@@ -1184,6 +1256,7 @@ const unforgettables: CocktailData[] = [
 	},
 	{
 		name: "エンジェル・フェイス",
+		description: "エンジェル・フェイスの簡単な説明文です。",
 		ingredients: [
 			{ name: "ジン", amount: "30ml" },
 			{ name: "アプリコット・ブランデー", amount: "30ml" },
@@ -1199,6 +1272,7 @@ const unforgettables: CocktailData[] = [
 	},
 	{
 		name: "ビトウィーン・ザ・シーツ",
+		description: "ビトウィーン・ザ・シーツの簡単な説明文です。",
 		ingredients: [
 			{ name: "ホワイト・ラム", amount: "30ml" },
 			{ name: "コニャック", amount: "30ml" },
@@ -1215,6 +1289,7 @@ const unforgettables: CocktailData[] = [
 	},
 	{
 		name: "ブールヴァルディエ",
+		description: "ブールヴァルディエの簡単な説明文です。",
 		ingredients: [
 			{ name: "バーボン", amount: "45ml", option_group: 1 },
 			{ name: "ライ・ウイスキー", amount: "45ml", option_group: 1 },
@@ -1231,6 +1306,7 @@ const unforgettables: CocktailData[] = [
 	},
 	{
 		name: "ブランデー・クラスタ",
+		description: "ブランデー・クラスタの簡単な説明文です。",
 		ingredients: [
 			{ name: "ブランデー", amount: "52.5ml" },
 			{ name: "マラスキーノ・リキュール", amount: "7.5ml" },
@@ -1250,6 +1326,7 @@ const unforgettables: CocktailData[] = [
 	},
 	{
 		name: "カジノ",
+		description: "カジノの簡単な説明文です。",
 		ingredients: [
 			{ name: "ジン", amount: "40ml" },
 			{ name: "マラスキーノ・リキュール", amount: "10ml" },
@@ -1266,6 +1343,7 @@ const unforgettables: CocktailData[] = [
 	},
 	{
 		name: "クローバー・クラブ",
+		description: "クローバー・クラブの簡単な説明文です。",
 		ingredients: [
 			{ name: "ジン", amount: "45ml" },
 			{ name: "ラズベリーシロップ", amount: "15ml" },
@@ -1281,6 +1359,7 @@ const unforgettables: CocktailData[] = [
 	},
 	{
 		name: "ダイキリ",
+		description: "ダイキリの簡単な説明文です。",
 		ingredients: [
 			{ name: "ホワイト・ラム", amount: "60ml" },
 			{ name: "ライムジュース", amount: "20ml" },
@@ -1296,6 +1375,7 @@ const unforgettables: CocktailData[] = [
 	},
 	{
 		name: "ドライ・マティーニ",
+		description: "ドライ・マティーニの簡単な説明文です。",
 		ingredients: [
 			{ name: "ジン", amount: "60ml" },
 			{ name: "ベルモット", amount: "10ml" },
@@ -1311,6 +1391,7 @@ const unforgettables: CocktailData[] = [
 	},
 	{
 		name: "ジン・フィズ",
+		description: "ジン・フィズの簡単な説明文です。",
 		ingredients: [
 			{ name: "ジン", amount: "45ml" },
 			{ name: "レモンジュース", amount: "30ml" },
@@ -1328,6 +1409,7 @@ const unforgettables: CocktailData[] = [
 	},
 	{
 		name: "ハンキー・パンキー",
+		description: "ハンキー・パンキーの簡単な説明文です。",
 		ingredients: [
 			{ name: "ジン", amount: "45ml" },
 			{ name: "ベルモット", amount: "45ml" },
@@ -1343,6 +1425,7 @@ const unforgettables: CocktailData[] = [
 	},
 	{
 		name: "ジョン・コリンズ",
+		description: "ジョン・コリンズの簡単な説明文です。",
 		ingredients: [
 			{ name: "ジン", amount: "45ml" },
 			{ name: "レモンジュース", amount: "30ml" },
@@ -1358,6 +1441,7 @@ const unforgettables: CocktailData[] = [
 	},
 	{
 		name: "ラスト・ワード",
+		description: "ラスト・ワードの簡単な説明文です。",
 		ingredients: [
 			{ name: "ジン", amount: "22.5ml" },
 			{ name: "シャルトルーズ", amount: "22.5ml" },
@@ -1373,6 +1457,7 @@ const unforgettables: CocktailData[] = [
 	},
 	{
 		name: "マンハッタン",
+		description: "マンハッタンの簡単な説明文です。",
 		ingredients: [
 			{ name: "ライ・ウイスキー", amount: "50ml" },
 			{ name: "ベルモット", amount: "20ml" },
@@ -1388,6 +1473,7 @@ const unforgettables: CocktailData[] = [
 	},
 	{
 		name: "マルティネス",
+		description: "マルティネスの簡単な説明文です。",
 		ingredients: [
 			{ name: "ジン", amount: "45ml" },
 			{ name: "ベルモット", amount: "45ml" },
@@ -1404,6 +1490,7 @@ const unforgettables: CocktailData[] = [
 	},
 	{
 		name: "メアリー・ピックフォード",
+		description: "メアリー・ピックフォードの簡単な説明文です。",
 		ingredients: [
 			{ name: "ホワイト・ラム", amount: "45ml" },
 			{ name: "パイナップルジュース", amount: "45ml" },
@@ -1419,6 +1506,7 @@ const unforgettables: CocktailData[] = [
 	},
 	{
 		name: "モンキー・グランド",
+		description: "モンキー・グランドの簡単な説明文です。",
 		ingredients: [
 			{ name: "ジン", amount: "45ml" },
 			{ name: "オレンジジュース", amount: "45ml" },
@@ -1434,6 +1522,7 @@ const unforgettables: CocktailData[] = [
 	},
 	{
 		name: "ネグローニ",
+		description: "ネグローニの簡単な説明文です。",
 		ingredients: [
 			{ name: "ジン", amount: "30ml" },
 			{ name: "カンパリ", amount: "30ml" },
@@ -1449,6 +1538,7 @@ const unforgettables: CocktailData[] = [
 	},
 	{
 		name: "オールド・ファッションド",
+		description: "オールド・ファッションドの簡単な説明文です。",
 		ingredients: [
 			{ name: "バーボン", amount: "45ml", option_group: 1 },
 			{ name: "ライ・ウイスキー", amount: "45ml", option_group: 1 },
@@ -1465,6 +1555,7 @@ const unforgettables: CocktailData[] = [
 	},
 	{
 		name: "パラダイス",
+		description: "パラダイスの簡単な説明文です。",
 		ingredients: [
 			{ name: "ジン", amount: "30ml" },
 			{ name: "アプリコット・ブランデー", amount: "20ml" },
@@ -1479,6 +1570,7 @@ const unforgettables: CocktailData[] = [
 	},
 	{
 		name: "プランターズ・パンチ",
+		description: "プランターズ・パンチの簡単な説明文です。",
 		ingredients: [
 			{ name: "ラム", amount: "45ml" },
 			{ name: "ライムジュース", amount: "15ml" },
@@ -1493,6 +1585,7 @@ const unforgettables: CocktailData[] = [
 	},
 	{
 		name: "ポート・フリップ",
+		description: "ポート・フリップの簡単な説明文です。",
 		ingredients: [
 			{ name: "ブランデー", amount: "15ml" },
 			{ name: "ポートワイン", amount: "45ml" },
@@ -1507,6 +1600,7 @@ const unforgettables: CocktailData[] = [
 	},
 	{
 		name: "ラモス・フィズ",
+		description: "ラモス・フィズの簡単な説明文です。",
 		ingredients: [
 			{ name: "ジン", amount: "45ml" },
 			{ name: "ライムジュース", amount: "15ml" },
@@ -1529,6 +1623,7 @@ const unforgettables: CocktailData[] = [
 	},
 	{
 		name: "リメンバー・ザ・メイン",
+		description: "リメンバー・ザ・メインの簡単な説明文です。",
 		ingredients: [
 			{ name: "ライ・ウイスキー", amount: "60ml" },
 			{ name: "ベルモット", amount: "22.5ml" },
@@ -1544,6 +1639,7 @@ const unforgettables: CocktailData[] = [
 	},
 	{
 		name: "ラスティ・ネイル",
+		description: "ラスティ・ネイルの簡単な説明文です。",
 		ingredients: [
 			{ name: "スコッチ・ウイスキー", amount: "45ml" },
 			{ name: "ドランブイ", amount: "25ml" },
@@ -1558,6 +1654,7 @@ const unforgettables: CocktailData[] = [
 	},
 	{
 		name: "サゼラック",
+		description: "サゼラックの簡単な説明文です。",
 		ingredients: [
 			{ name: "コニャック", amount: "50ml" },
 			{ name: "アブサン", amount: "10ml" },
@@ -1574,6 +1671,7 @@ const unforgettables: CocktailData[] = [
 	},
 	{
 		name: "サイドカー",
+		description: "サイドカーの簡単な説明文です。",
 		ingredients: [
 			{ name: "コニャック", amount: "50ml" },
 			{ name: "トリプルセック", amount: "20ml" },
@@ -1588,6 +1686,7 @@ const unforgettables: CocktailData[] = [
 	},
 	{
 		name: "スティンガー",
+		description: "スティンガーの簡単な説明文です。",
 		ingredients: [
 			{ name: "コニャック", amount: "50ml" },
 			{ name: "ミントクリーム ", amount: "20ml" },
@@ -1601,6 +1700,7 @@ const unforgettables: CocktailData[] = [
 	},
 	{
 		name: "タキシード",
+		description: "タキシードの簡単な説明文です。",
 		ingredients: [
 			{ name: "ジン", amount: "30ml" },
 			{ name: "ベルモット", amount: "30ml" },
@@ -1618,6 +1718,7 @@ const unforgettables: CocktailData[] = [
 	},
 	{
 		name: "ヴュー・カレ",
+		description: "ヴュー・カレの簡単な説明文です。",
 		ingredients: [
 			{ name: "ライ・ウイスキー", amount: "30ml" },
 			{ name: "コニャック", amount: "30ml" },
@@ -1635,6 +1736,7 @@ const unforgettables: CocktailData[] = [
 	},
 	{
 		name: "ウィスキー・サワー",
+		description: "ウィスキー・サワーの簡単な説明文です。",
 		ingredients: [
 			{ name: "バーボン・ウイスキー", amount: "45ml" },
 			{ name: "レモンジュース", amount: "25ml" },
@@ -1653,6 +1755,7 @@ const unforgettables: CocktailData[] = [
 	},
 	{
 		name: "ホワイト・レディ",
+		description: "ホワイト・レディの簡単な説明文です。",
 		ingredients: [
 			{ name: "ジン", amount: "40ml" },
 			{ name: "トリプルセック", amount: "30ml" },
@@ -1734,7 +1837,7 @@ export async function seed(env: Env) {
 			id: cocktailId,
 			name: cocktailData.name,
 			slug,
-			description: "", // OpenAPIで生成するため空にする
+			description: cocktailData.description,
 			garnish: cocktailData.garnish,
 			imageUrl: cocktailData.imageUrl,
 		});
