@@ -31,7 +31,7 @@ export default function DailyRecommendation({
 
 	// 詳細ページに遷移する関数
 	const handleViewRecipe = () => {
-		router.push(`/recipes/${dailyCocktail.id}`);
+		router.push(`/recipes/${dailyCocktail.slug}`);
 	};
 
 	return (

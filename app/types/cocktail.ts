@@ -9,6 +9,7 @@ export interface Ingredient {
 export interface Cocktail {
 	id: string;
 	name: string;
+	slug: string;
 	description: string;
 	ingredients: Ingredient[];
 	instructions: string[];
@@ -21,6 +22,7 @@ export const mockCocktails: Cocktail[] = [
 	{
 		id: "1",
 		name: "モヒート",
+		slug: "mojito",
 		description: "キューバ発祥の爽やかなラムベースのカクテル",
 		ingredients: [
 			{ name: "ラム（ホワイト）", amount: "60ml" },
@@ -41,6 +43,7 @@ export const mockCocktails: Cocktail[] = [
 	{
 		id: "2",
 		name: "マルガリータ",
+		slug: "margarita",
 		description: "テキーラベースの定番カクテル",
 		ingredients: [
 			{ name: "テキーラ（ブランコ）", amount: "50ml" },
@@ -59,6 +62,7 @@ export const mockCocktails: Cocktail[] = [
 	{
 		id: "3",
 		name: "オールドファッションド",
+		slug: "old-fashioned",
 		description: "クラシックなウイスキーベースのカクテル",
 		ingredients: [
 			{ name: "バーボンウイスキー", amount: "60ml" },
@@ -78,6 +82,7 @@ export const mockCocktails: Cocktail[] = [
 	{
 		id: "4",
 		name: "ジントニック",
+		slug: "gin-and-tonic",
 		description: "爽やかなジンベースの定番カクテル",
 		ingredients: [
 			{ name: "ジン", amount: "45ml" },
@@ -96,7 +101,8 @@ export const mockCocktails: Cocktail[] = [
 	{
 		id: "boulevardier",
 		name: "ブールヴァルディエ",
-		description: "ネグローニのウイスキー版とも言える、複雑で豊かな味わいのカクテル。",
+		slug: "boulevardier",
+		description: "ネグローニのウイスキー版とも言える、複雑で豊かな味わいのカクテル。 ",
 		ingredients: [
 			{ name: "バーボン", amount: "45ml", option_group: 1 },
 			{ name: "ライ・ウイスキー", amount: "45ml", option_group: 1 },
@@ -114,6 +120,7 @@ export const mockCocktails: Cocktail[] = [
 	{
 		id: "new-york-sour",
 		name: "ニューヨーク・サワー",
+		slug: "new-york-sour",
 		description: "ウイスキーサワーに赤ワインをフロートさせた、見た目も美しいカクテル。",
 		ingredients: [
 			{ name: "ライウイスキー", amount: "60ml", option_group: 2 },

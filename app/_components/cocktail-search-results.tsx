@@ -111,7 +111,7 @@ export default function CocktailSearchResults({
 				"ID:",
 				cocktail.id,
 			); // デバッグ用
-			router.push(`/recipes/${cocktail.id}`);
+			router.push(`/recipes/${cocktail.slug}`);
 		},
 		[router],
 	);

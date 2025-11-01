@@ -9,6 +9,7 @@ DROP TABLE IF EXISTS cocktails;
 CREATE TABLE cocktails (
   id TEXT PRIMARY KEY,
   name TEXT NOT NULL,
+  slug TEXT NOT NULL UNIQUE,
   description TEXT,
   garnish TEXT,
   image_url TEXT,
