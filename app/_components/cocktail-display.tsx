@@ -336,7 +336,7 @@ export default function CocktailDisplay({
 										mb: 1,
 									}}
 								>
-									🌿 ガーニッシュ
+									🌿 飾り
 								</Typography>
 								<Typography variant="body2" color="text.secondary">
 									{cocktail.garnish}
