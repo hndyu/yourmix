@@ -120,7 +120,7 @@ export default function CocktailMixer() {
 	return (
 		<>
 			{/* 日替わりおすすめセクション */}
-			<DailyRecommendation cocktails={mockCocktails} />
+			{/* <DailyRecommendation cocktails={mockCocktails} /> */}
 
 			{/* Mixセクション */}
 			<MixSection onMixClick={handleMixClick} isLoading={isLoading} />
