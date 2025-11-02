@@ -35,7 +35,8 @@ interface CocktailData {
 const contemporaryClassics: CocktailData[] = [
 	{
 		name: "ベリーニ",
-		description: "ベリーニの簡単な説明文です。",
+		description:
+			"白桃とスパークリングワインを合わせた、優しい甘さと爽やかな香りが楽しめるイタリア生まれのカクテル。",
 		ingredients: [
 			{ name: "プロセッコ", amount: "100ml" },
 			{ name: "白桃ピュレ", amount: "50ml" },
@@ -50,22 +51,21 @@ const contemporaryClassics: CocktailData[] = [
 	},
 	{
 		name: "ブラック・ルシアン",
-		description: "ブラック・ルシアンの簡単な説明文です。",
+		description:
+			"ウォッカとコーヒーリキュールを使った、濃厚でほろ苦い味わいの大人向けカクテル。",
 		ingredients: [
 			{ name: "ウォッカ", amount: "50ml" },
 			{ name: "コーヒーリキュール", amount: "20ml" },
 		],
-		instructions: [
-			"氷を入れたグラスに材料を注ぎます。",
-			"軽くかき混ぜます。",
-		],
+		instructions: ["氷を入れたグラスに材料を注ぎます。", "軽くかき混ぜます。"],
 		garnish: "",
 		tags: ["国際バーテンダー協会公認カクテル - 現代のクラシック"],
 		imageUrl: "black-russian.jpg",
 	},
 	{
 		name: "ブラッディ・マリー",
-		description: "ブラッディ・マリーの簡単な説明文です。",
+		description:
+			"トマトジュースとスパイスを合わせた、食事にも合うピリッとした風味のカクテル。",
 		ingredients: [
 			{ name: "ウォッカ", amount: "45ml" },
 			{ name: "トマトジュース", amount: "90ml" },
@@ -84,7 +84,8 @@ const contemporaryClassics: CocktailData[] = [
 	},
 	{
 		name: "カイピリーニャ",
-		description: "カイピリーニャの簡単な説明文です。",
+		description:
+			"ライムと砂糖の甘酸っぱさが心地よい、ブラジルを代表する爽やかなカクテル。",
 		ingredients: [
 			{ name: "カシャッサ", amount: "60ml" },
 			{ name: "ライムのくし切り", amount: "1個" },
@@ -100,7 +101,8 @@ const contemporaryClassics: CocktailData[] = [
 	},
 	{
 		name: "カーディナル",
-		description: "カーディナルの簡単な説明文です。",
+		description:
+			"ジンとカンパリを合わせた、苦味と柑橘の香りがバランスのよい上品な一杯。",
 		ingredients: [
 			{ name: "ジン", amount: "90ml" },
 			{ name: "ベルモット", amount: "10ml" },
@@ -116,7 +118,8 @@ const contemporaryClassics: CocktailData[] = [
 	},
 	{
 		name: "シャンパン・カクテル",
-		description: "シャンパン・カクテルの簡単な説明文です。",
+		description:
+			"角砂糖とビターズを加えたシャンパンで、華やかで気品ある味わいを楽しめる定番カクテル。",
 		ingredients: [
 			{ name: "シャンパン（冷）", amount: "90ml" },
 			{ name: "コニャック", amount: "10ml" },
@@ -134,7 +137,8 @@ const contemporaryClassics: CocktailData[] = [
 	},
 	{
 		name: "コープス・リバイバー #2",
-		description: "コープス・リバイバー #2の簡単な説明文です。",
+		description:
+			"ジンに柑橘とリキュールを合わせた、すっきりと目が覚めるような爽快なカクテル。",
 		ingredients: [
 			{ name: "ジン", amount: "30ml" },
 			{ name: "コアントロー", amount: "30ml" },
@@ -152,7 +156,8 @@ const contemporaryClassics: CocktailData[] = [
 	},
 	{
 		name: "コスモポリタン",
-		description: "コスモポリタンの簡単な説明文です。",
+		description:
+			"クランベリーの酸味とライムの爽やかさが広がる、軽やかで飲みやすいウォッカカクテル。",
 		ingredients: [
 			{ name: "ウォッカ", amount: "40ml" },
 			{ name: "コアントロー", amount: "15ml" },
@@ -169,7 +174,8 @@ const contemporaryClassics: CocktailData[] = [
 	},
 	{
 		name: "キューバ・リブレ",
-		description: "キューバ・リブレの簡単な説明文です。",
+		description:
+			"ラムとコーラにライムを加えた、手軽で南国気分を味わえる爽やかな一杯。",
 		ingredients: [
 			{ name: "ホワイト・ラム", amount: "50ml" },
 			{ name: "コーラ", amount: "120ml" },
@@ -182,7 +188,8 @@ const contemporaryClassics: CocktailData[] = [
 	},
 	{
 		name: "フレンチ75",
-		description: "フレンチ75の簡単な説明文です。",
+		description:
+			"ジンとレモンをスパークリングワインで割った、華やかで飲みやすいシャンパン系カクテル。",
 		ingredients: [
 			{ name: "ジン", amount: "30ml" },
 			{ name: "レモンジュース", amount: "15ml" },
@@ -201,7 +208,8 @@ const contemporaryClassics: CocktailData[] = [
 	},
 	{
 		name: "フレンチ・コネクション",
-		description: "フレンチ・コネクションの簡単な説明文です。",
+		description:
+			"コニャックとアマレットの組み合わせが香ばしく、落ち着いた甘さのあるカクテル。",
 		ingredients: [
 			{ name: "コニャック", amount: "35ml" },
 			{ name: "アマレット", amount: "35ml" },
@@ -216,21 +224,21 @@ const contemporaryClassics: CocktailData[] = [
 	},
 	{
 		name: "ガリバルディ",
-		description: "ガリバルディの簡単な説明文です。",
+		description:
+			"カンパリとオレンジジュースの鮮やかな色合いが美しい、軽やかな苦味のカクテル。",
 		ingredients: [
 			{ name: "カンパリ", amount: "45ml" },
 			{ name: "オレンジジュース ", amount: "120ml" },
 		],
-		instructions: [
-			"氷を入れたグラスにすべての材料を入れます。",
-		],
+		instructions: ["氷を入れたグラスにすべての材料を入れます。"],
 		garnish: "オレンジのくし切りを添えます。",
 		tags: ["国際バーテンダー協会公認カクテル - 現代のクラシック"],
 		imageUrl: "garibaldi.jpg",
 	},
 	{
 		name: "グラスホッパー",
-		description: "グラスホッパーの簡単な説明文です。",
+		description:
+			"チョコミントのような甘く爽やかな風味が特徴の、デザート感覚のカクテル。",
 		ingredients: [
 			{ name: "クレーム・ド・カカオ", amount: "20ml" },
 			{ name: "クレーム・ド・ミント", amount: "20ml" },
@@ -246,7 +254,8 @@ const contemporaryClassics: CocktailData[] = [
 	},
 	{
 		name: "ヘミングウェイ・スペシャル",
-		description: "ヘミングウェイ・スペシャルの簡単な説明文です。",
+		description:
+			"文豪ヘミングウェイの名を冠した、グレープフルーツとライムが香る爽快なラムカクテル。",
 		ingredients: [
 			{ name: "ラム", amount: "60ml" },
 			{ name: "グレープフルーツジュース", amount: "40ml" },
@@ -263,7 +272,8 @@ const contemporaryClassics: CocktailData[] = [
 	},
 	{
 		name: "ホーセズ・ネック",
-		description: "ホーセズ・ネックの簡単な説明文です。",
+		description:
+			"コニャックとジンジャーエールにレモンの皮を添えた、すっきりとした辛口のカクテル。",
 		ingredients: [
 			{ name: "コニャック", amount: "40ml" },
 			{ name: "ジンジャーエール", amount: "120ml" },
@@ -280,7 +290,8 @@ const contemporaryClassics: CocktailData[] = [
 	},
 	{
 		name: "アイリッシュ・コーヒー",
-		description: "アイリッシュ・コーヒーの簡単な説明文です。",
+		description:
+			"ウイスキーとホットコーヒーにクリームを重ねた、香り高く温かみのあるカクテル。",
 		ingredients: [
 			{ name: "アイリッシュ・ウイスキー", amount: "50ml" },
 			{ name: "ホットコーヒー", amount: "120ml" },
@@ -300,19 +311,23 @@ const contemporaryClassics: CocktailData[] = [
 	},
 	{
 		name: "キール",
-		description: "キールの簡単な説明文です。",
+		description:
+			"白ワインにカシスを加えた、やさしい甘さと果実の香りが心地よいフランスの定番。",
 		ingredients: [
 			{ name: "白ワイン", amount: "90ml" },
 			{ name: "クレーム・ド・カシス", amount: "10ml" },
 		],
-		instructions: ["グラスにクレーム・ド・カシスを注ぎ、白ワインで満たします。"],
+		instructions: [
+			"グラスにクレーム・ド・カシスを注ぎ、白ワインで満たします。",
+		],
 		garnish: "",
 		tags: ["国際バーテンダー協会公認カクテル - 現代のクラシック"],
 		imageUrl: "kir.jpg",
 	},
 	{
 		name: "レモン・ドロップ・マティーニ",
-		description: "レモン・ドロップ・マティーニの簡単な説明文です。",
+		description:
+			"レモンの酸味と甘みが調和した、すっきりとした味わいのウォッカカクテル。",
 		ingredients: [
 			{ name: "ウォッカ", amount: "30ml" },
 			{ name: "トリプルセック", amount: "20ml" },
@@ -328,7 +343,8 @@ const contemporaryClassics: CocktailData[] = [
 	},
 	{
 		name: "ロングアイランド・アイスティー",
-		description: "ロングアイランド・アイスティーの簡単な説明文です。",
+		description:
+			"複数のスピリッツを合わせて作る、コーラ風味で飲みやすい見た目以上に強いカクテル。",
 		ingredients: [
 			{ name: "ウォッカ", amount: "15ml" },
 			{ name: "テキーラ", amount: "15ml" },
@@ -349,7 +365,8 @@ const contemporaryClassics: CocktailData[] = [
 	},
 	{
 		name: "マイタイ",
-		description: "マイタイの簡単な説明文です。",
+		description:
+			"ラムとライム、オレンジの香りが広がる、トロピカルで甘酸っぱい人気カクテル。",
 		ingredients: [
 			{ name: "ゴールド・ラム", amount: "30ml" },
 			{ name: "ダーク・ラム", amount: "30ml" },
@@ -368,7 +385,8 @@ const contemporaryClassics: CocktailData[] = [
 	},
 	{
 		name: "マルガリータ",
-		description: "マルガリータの簡単な説明文です。",
+		description:
+			"テキーラとライムの酸味が爽やかな、塩のアクセントが印象的な定番カクテル。",
 		ingredients: [
 			{ name: "テキーラ", amount: "50ml" },
 			{ name: "トリプルセック", amount: "20ml" },
@@ -384,7 +402,8 @@ const contemporaryClassics: CocktailData[] = [
 	},
 	{
 		name: "ミモザ",
-		description: "ミモザの簡単な説明文です。",
+		description:
+			"オレンジジュースとスパークリングワインを合わせた、朝にもぴったりの軽やかな一杯。",
 		ingredients: [
 			{ name: "オレンジジュース", amount: "75ml" },
 			{ name: "プロセッコ", amount: "75ml" },
@@ -399,7 +418,8 @@ const contemporaryClassics: CocktailData[] = [
 	},
 	{
 		name: "ミント・ジュレップ",
-		description: "ミント・ジュレップの簡単な説明文です。",
+		description:
+			"ミントの香りが清涼感を添える、バーボンベースの爽やかなアメリカ南部のカクテル。",
 		ingredients: [
 			{ name: "バーボン・ウイスキー", amount: "60ml" },
 			{ name: "ミントの小枝", amount: "4本" },
@@ -416,7 +436,8 @@ const contemporaryClassics: CocktailData[] = [
 	},
 	{
 		name: "モヒート",
-		description: "モヒートの簡単な説明文です。",
+		description:
+			"ミントとライムの香りが広がる、夏に人気のすっきりとしたラムカクテル。",
 		ingredients: [
 			{ name: "ホワイト・ラム", amount: "45ml" },
 			{ name: "ライムジュース", amount: "20ml" },
@@ -435,7 +456,8 @@ const contemporaryClassics: CocktailData[] = [
 	},
 	{
 		name: "モスコミュール",
-		description: "モスコミュールの簡単な説明文です。",
+		description:
+			"ウォッカとジンジャービールを組み合わせた、さっぱりとした辛口の定番カクテル。",
 		ingredients: [
 			{ name: "ウォッカ", amount: "45ml" },
 			{ name: "ジンジャービール", amount: "120ml" },
@@ -451,7 +473,8 @@ const contemporaryClassics: CocktailData[] = [
 	},
 	{
 		name: "ピニャ・コラーダ",
-		description: "ピニャ・コラーダの簡単な説明文です。",
+		description:
+			"パイナップルとココナッツの甘い香りが南国気分を誘う、トロピカルなカクテル。",
 		ingredients: [
 			{ name: "ホワイト・ラム", amount: "50ml" },
 			{ name: "ココナッツクリーム", amount: "30ml" },
@@ -467,7 +490,8 @@ const contemporaryClassics: CocktailData[] = [
 	},
 	{
 		name: "ピスコ・サワー",
-		description: "ピスコ・サワーの簡単な説明文です。",
+		description:
+			"ピスコとレモンを合わせた、軽い酸味とまろやかな口当たりが特徴の南米生まれのカクテル。",
 		ingredients: [
 			{ name: "ピスコ", amount: "60ml" },
 			{ name: "レモンジュース", amount: "30ml" },
@@ -484,23 +508,23 @@ const contemporaryClassics: CocktailData[] = [
 	},
 	{
 		name: "ラボ・デ・ガロ",
-		description: "ラボ・デ・ガロの簡単な説明文です。",
+		description:
+			"カシャッサとベルモットを合わせた、ほんのり苦味とコクのあるブラジル生まれのカクテル。",
 		ingredients: [
 			{ name: "カシャッサ", amount: "60ml" },
 			{ name: "ベルモット", amount: "20ml" },
-			{ name: "チナール ", amount: "15ml" },
+			{ name: "チナール", amount: "15ml" },
 			{ name: "ビターズ（お好みで）", amount: "2滴" },
 		],
-		instructions: [
-			"グラスにすべての材料を入れ、氷を加えて軽くかき混ぜます。",
-		],
+		instructions: ["グラスにすべての材料を入れ、氷を加えて軽くかき混ぜます。"],
 		garnish: "オレンジの皮をねじったものを添えます。",
 		tags: ["国際バーテンダー協会公認カクテル - 現代のクラシック"],
 		imageUrl: "rabo-de-galo.jpg",
 	},
 	{
 		name: "シー・ブリーズ",
-		description: "シー・ブリーズの簡単な説明文です。",
+		description:
+			"ウォッカにクランベリーとグレープフルーツを合わせた、軽くてさっぱりとしたフルーティーな一杯。",
 		ingredients: [
 			{ name: "ウォッカ", amount: "40ml" },
 			{ name: "クランベリージュース", amount: "120ml" },
@@ -513,7 +537,8 @@ const contemporaryClassics: CocktailData[] = [
 	},
 	{
 		name: "セックス・オン・ザ・ビーチ",
-		description: "セックス・オン・ザ・ビーチの簡単な説明文です。",
+		description:
+			"オレンジとクランベリーが調和した、甘酸っぱく飲みやすい人気のカクテル。",
 		ingredients: [
 			{ name: "ウォッカ", amount: "40ml" },
 			{ name: "シュナップス", amount: "20ml" },
@@ -527,7 +552,8 @@ const contemporaryClassics: CocktailData[] = [
 	},
 	{
 		name: "シンガポール・スリング",
-		description: "シンガポール・スリングの簡単な説明文です。",
+		description:
+			"ジンとチェリーリキュールを使い、甘酸っぱくトロピカルな味わいが楽しめるシンガポールの定番カクテル。",
 		ingredients: [
 			{ name: "ジン", amount: "30ml" },
 			{ name: "モラッコ・チェリー", amount: "15ml" },
@@ -549,7 +575,8 @@ const contemporaryClassics: CocktailData[] = [
 	},
 	{
 		name: "テキーラ・サンライズ",
-		description: "テキーラ・サンライズの簡単な説明文です。",
+		description:
+			"オレンジジュースとグレナデンで朝焼けのような色を表現した、甘く爽やかなテキーラカクテル。",
 		ingredients: [
 			{ name: "テキーラ", amount: "45ml" },
 			{ name: "オレンジジュース", amount: "90ml" },
@@ -565,7 +592,8 @@ const contemporaryClassics: CocktailData[] = [
 	},
 	{
 		name: "ヴェスパー",
-		description: "ヴェスパーの簡単な説明文です。",
+		description:
+			"ジンとウォッカをブレンドした、キリッとした味わいが特徴の映画「007」で知られるカクテル。",
 		ingredients: [
 			{ name: "ジン", amount: "45ml" },
 			{ name: "ウォッカ", amount: "15ml" },
@@ -581,13 +609,14 @@ const contemporaryClassics: CocktailData[] = [
 	},
 	{
 		name: "ゾンビ",
-		description: "ゾンビの簡単な説明文です。",
+		description:
+			"ラムを贅沢に使った濃厚なトロピカルカクテルで、甘く力強い味わいが楽しめる。",
 		ingredients: [
 			{ name: "ダーク・ラム", amount: "45ml" },
 			{ name: "ゴールド・ラム", amount: "45ml" },
 			{ name: "デメララ・ラム", amount: "30ml" },
 			{ name: "ライムジュース", amount: "20ml" },
-			{ name: "ファレルナム", amount: "15ml" },
+			{ name: "ファレナム", amount: "15ml" },
 			{ name: "ドンズ・ミックス", amount: "15ml" },
 			{ name: "グレナデンシロップ", amount: "小さじ1杯" },
 			{ name: "ビターズ", amount: "1振" },
@@ -606,15 +635,16 @@ const contemporaryClassics: CocktailData[] = [
 const newEra: CocktailData[] = [
 	{
 		name: "ビーズ・ニーズ",
-		description: "ビーズ・ニーズの簡単な説明文です。",
+		description:
+			"レモンとハチミツの優しい甘みとジンの爽やかさが調和した、軽やかな現代風カクテル。",
 		ingredients: [
 			{ name: "ジン", amount: "52.5ml" },
-			{ name: "はちみつシロップ", amount: "小さじ2杯" },
+			{ name: "ハチミツシロップ", amount: "小さじ2杯" },
 			{ name: "レモンジュース", amount: "22.5ml" },
 			{ name: "オレンジジュース", amount: "22.5ml" },
 		],
 		instructions: [
-			"はちみつシロップ、レモンジュース、オレンジジュースを溶けるまでかき混ぜ、ジンを加えて氷と一緒にシェイクします。冷やしたグラスに注ぎます。",
+			"ハチミツシロップ、レモンジュース、オレンジジュースを溶けるまでかき混ぜ、ジンを加えて氷と一緒にシェイクします。冷やしたグラスに注ぎます。",
 		],
 		garnish: "お好みでレモンまたはオレンジの皮を添えます。",
 		tags: ["国際バーテンダー協会公認カクテル - 新時代の一杯"],
@@ -622,7 +652,8 @@ const newEra: CocktailData[] = [
 	},
 	{
 		name: "ブランブル",
-		description: "ブランブルの簡単な説明文です。",
+		description:
+			"ジンにブラックベリーのリキュールを加えて、果実の風味が豊かで飲みやすいモダンな一杯。",
 		ingredients: [
 			{ name: "ジン", amount: "50ml" },
 			{ name: "レモンジュース", amount: "25ml" },
@@ -638,15 +669,16 @@ const newEra: CocktailData[] = [
 	},
 	{
 		name: "カンチャンチャラ",
-		description: "カンチャンチャラの簡単な説明文です。",
+		description:
+			"ライムとハチミツを使い、蒸留酒で仕上げた、シンプルで爽快な南国テイストのカクテル。",
 		ingredients: [
 			{ name: "アグアルディエンテ", amount: "60ml" },
 			{ name: "ライムジュース", amount: "15ml" },
-			{ name: "はちみつ", amount: "15ml" },
+			{ name: "ハチミツ", amount: "15ml" },
 			{ name: "水", amount: "50ml" },
 		],
 		instructions: [
-			"はちみつを水とライムジュースと混ぜ、グラスの底と側面に塗ります。",
+			"ハチミツを水とライムジュースと混ぜ、グラスの底と側面に塗ります。",
 			"砕いた氷を加え、次にアグアルディエンテを加えます。",
 			"最後に下から上に向かって勢いよくかき混ぜます。",
 		],
@@ -656,12 +688,13 @@ const newEra: CocktailData[] = [
 	},
 	{
 		name: "シャルトリューズ・スウィズル",
-		description: "シャルトリューズ・スウィズルの簡単な説明文です。",
+		description:
+			"ハーブ香るリキュールとパイナップル果汁を組み合わせた、南国感と個性的な香りが響く一杯。",
 		ingredients: [
 			{ name: "シャルトリューズ", amount: "45ml" },
 			{ name: "パイナップルジュース", amount: "30ml" },
 			{ name: "ライムジュース", amount: "22.5ml" },
-			{ name: "ファレルナム", amount: "15ml" },
+			{ name: "ファレナム", amount: "15ml" },
 		],
 		instructions: [
 			"すべての材料をグラスに注ぎ、氷を加えます。",
@@ -673,7 +706,8 @@ const newEra: CocktailData[] = [
 	},
 	{
 		name: "ダーク・アンド・ストーミー",
-		description: "ダーク・アンド・ストーミーの簡単な説明文です。",
+		description:
+			"ラムとジンジャービールの組み合わせが生み出す、辛口ながらリラックスできる現代カクテル。",
 		ingredients: [
 			{ name: "ラム", amount: "60ml" },
 			{ name: "ジンジャービール", amount: "100ml" },
@@ -687,13 +721,14 @@ const newEra: CocktailData[] = [
 	},
 	{
 		name: "ドンズ・スペシャル・ダイキリ",
-		description: "ドンズ・スペシャル・ダイキリの簡単な説明文です。",
+		description:
+			"ラムとライムにパイナップルを加えた、南国らしい甘酸っぱく軽やかなトロピカルカクテル。",
 		ingredients: [
 			{ name: "ゴールド・ラム", amount: "30ml" },
 			{ name: "キューバ産ラム", amount: "15ml" },
 			{ name: "パッションフルーツシロップ", amount: "15ml" },
 			{ name: "ライムジュース", amount: "15ml" },
-			{ name: "はちみつシロップ", amount: "15ml" },
+			{ name: "ハチミツシロップ", amount: "15ml" },
 		],
 		instructions: [
 			"砕いた氷と一緒にかき混ぜ、グラスに注ぎます。",
@@ -705,7 +740,8 @@ const newEra: CocktailData[] = [
 	},
 	{
 		name: "エスプレッソ・マティーニ",
-		description: "エスプレッソ・マティーニの簡単な説明文です。",
+		description:
+			"コーヒーの香りとウォッカのキレが合わさった、夜の時間にぴったりのスタイリッシュな一杯。",
 		ingredients: [
 			{ name: "ウォッカ", amount: "50ml" },
 			{ name: "カルーア", amount: "30ml" },
@@ -721,7 +757,8 @@ const newEra: CocktailData[] = [
 	},
 	{
 		name: "フェルナンディート",
-		description: "フェルナンディートの簡単な説明文です。",
+		description:
+			"フェルネットとコーラを合わせた、ほろ苦く爽快なアルゼンチン生まれのシンプルな一杯。",
 		ingredients: [
 			{ name: "フェルネット・ブランカ", amount: "50ml" },
 			{ name: "コーラ", amount: "適量" },
@@ -735,7 +772,8 @@ const newEra: CocktailData[] = [
 	},
 	{
 		name: "フレンチ・マティーニ",
-		description: "フレンチ・マティーニの簡単な説明文です。",
+		description:
+			"ラズベリーのリキュールとウォッカ、パイナップルの甘みが織りなす、華やかで軽快なカクテル。",
 		ingredients: [
 			{ name: "ウォッカ", amount: "45ml" },
 			{ name: "ラズベリー・リキュール", amount: "15ml" },
@@ -750,7 +788,8 @@ const newEra: CocktailData[] = [
 	},
 	{
 		name: "ジン・バジル・スマッシュ",
-		description: "ジン・バジル・スマッシュの簡単な説明文です。",
+		description:
+			"バジルの爽やかな香りとジンの爽快感が重なった、今風で気軽に楽しめる一杯。",
 		ingredients: [
 			{ name: "ジン", amount: "60ml" },
 			{ name: "レモンジュース", amount: "22.5ml" },
@@ -767,7 +806,8 @@ const newEra: CocktailData[] = [
 	},
 	{
 		name: "グラン・マルガリータ",
-		description: "グラン・マルガリータの簡単な説明文です。",
+		description:
+			"テキーラとオレンジリキュールの組み合わせにライムを効かせた、特別感のある定番マルガリータの進化版。",
 		ingredients: [
 			{ name: "テキーラ", amount: "45ml" },
 			{ name: "グラン・マルニエ", amount: "30ml" },
@@ -784,7 +824,8 @@ const newEra: CocktailData[] = [
 	},
 	{
 		name: "IBA Tiki",
-		description: "IBA Tikiの簡単な説明文です。",
+		description:
+			"ラムとトロピカルフルーツを合わせた、明るく甘い香りが広がる南国スタイルのカクテル。",
 		ingredients: [
 			{ name: "ハバナ・クラブ プロフンド", amount: "30ml" },
 			{ name: "ハバナ・クラブ スモーキー", amount: "30ml" },
@@ -794,7 +835,7 @@ const newEra: CocktailData[] = [
 			{ name: "パッションフルーツピュレ", amount: "30ml" },
 			{ name: "パイナップルジュース", amount: "90ml" },
 			{ name: "ライムジュース", amount: "30ml" },
-			{ name: "生姜スライス", amount: "1枚" },
+			{ name: "ショウガスライス", amount: "1枚" },
 		],
 		instructions: [
 			"カクテルシェイカーにジンジブレの薄切りを入れて混ぜ、他の材料をすべて注ぎます。",
@@ -807,11 +848,12 @@ const newEra: CocktailData[] = [
 	},
 	{
 		name: "イリーガル",
-		description: "イリーガルの簡単な説明文です。",
+		description:
+			"メスカルをベースにした、スモーキーでコクのある深い味わいのモダンカクテル。",
 		ingredients: [
 			{ name: "エスパディンメスカル", amount: "30ml" },
 			{ name: "ホワイト・ラム", amount: "15ml" },
-			{ name: "ファレルナム", amount: "15ml" },
+			{ name: "ファレナム", amount: "15ml" },
 			{ name: "マラスキーノ・リキュール", amount: "茶匙1杯" },
 			{ name: "フレッシュライムジュース", amount: "22.5ml" },
 			{ name: "シンプルシロップ", amount: "15ml" },
@@ -827,7 +869,8 @@ const newEra: CocktailData[] = [
 	},
 	{
 		name: "ジャングル・バード",
-		description: "ジャングル・バードの簡単な説明文です。",
+		description:
+			"ラムとカンパリを使い、苦味と甘みのバランスが絶妙なマレーシア発トロピカルカクテル。",
 		ingredients: [
 			{ name: "ラム", amount: "45ml" },
 			{ name: "カンパリ", amount: "22.5ml" },
@@ -845,25 +888,25 @@ const newEra: CocktailData[] = [
 	},
 	{
 		name: "ミッショナリー・ダウンフォール",
-		description: "ミッショナリー・ダウンフォールの簡単な説明文です。",
+		description:
+			"ラムにミントとパイナップルを合わせた、すっきり甘くて香り豊かなフルーツカクテル。",
 		ingredients: [
 			{ name: "ホワイト・ラム", amount: "30ml" },
 			{ name: "ピーチブランデー", amount: "15ml" },
 			{ name: "ライムジュース", amount: "15ml" },
-			{ name: "はちみつシロップ", amount: "30ml" },
+			{ name: "ハチミツシロップ", amount: "30ml" },
 			{ name: "ミントの葉", amount: "10枚" },
 			{ name: "パイナップルの塊", amount: "3～4個" },
 		],
-		instructions: [
-			"すべての材料を砕いた氷と一緒に混ぜます。",
-		],
+		instructions: ["すべての材料を砕いた氷と一緒に混ぜます。"],
 		garnish: "ミントの小枝とパイナップルのスライスを添えます。",
 		tags: ["国際バーテンダー協会公認カクテル - 新時代の一杯"],
 		imageUrl: "missionarys-downfall.jpg",
 	},
 	{
 		name: "ネイキッド・アンド・フェイマス",
-		description: "ネイキッド・アンド・フェイマスの簡単な説明文です。",
+		description:
+			"メスカルとリキュール、ライムの酸味が絶妙に合わさった、力強さと軽さを兼ね備えたモダンカクテル。",
 		ingredients: [
 			{ name: "メスカル", amount: "22.5ml" },
 			{ name: "シャルトリューズ", amount: "22.5ml" },
@@ -879,7 +922,8 @@ const newEra: CocktailData[] = [
 	},
 	{
 		name: "ニューヨーク・サワー",
-		description: "ニューヨーク・サワーの簡単な説明文です。",
+		description:
+			"ウイスキーのコクと赤ワインの浮き浮きとした甘さがアクセントとなった、大人向けモダンカクテル。",
 		ingredients: [
 			{ name: "ライ・ウイスキー", amount: "60ml", option_group: 2 },
 			{ name: "バーボン", amount: "60ml", option_group: 2 },
@@ -898,7 +942,8 @@ const newEra: CocktailData[] = [
 	},
 	{
 		name: "オールド・キューバン",
-		description: "オールド・キューバンの簡単な説明文です。",
+		description:
+			"ラムにミントとスパークリングワインを合わせた、上品で華やかな印象のモダンカクテル。",
 		ingredients: [
 			{ name: "ミントの葉", amount: "6～8枚" },
 			{ name: "ラム", amount: "45ml" },
@@ -918,7 +963,8 @@ const newEra: CocktailData[] = [
 	},
 	{
 		name: "パロマ",
-		description: "パロマの簡単な説明文です。",
+		description:
+			"テキーラとグレープフルーツソーダを使った、さっぱりとした風味で昼から楽しみたくなる一杯。",
 		ingredients: [
 			{ name: "テキーラ", amount: "50ml" },
 			{ name: "フレッシュライム", amount: "5ml" },
@@ -936,7 +982,8 @@ const newEra: CocktailData[] = [
 	},
 	{
 		name: "ペーパー・プレーン",
-		description: "ペーパー・プレーンの簡単な説明文です。",
+		description:
+			"バーボンとレモン、アペロールの軽快な組み合わせが、飲みやすくて印象に残る今どきカクテル。",
 		ingredients: [
 			{ name: "バーボン・ウイスキー", amount: "30ml" },
 			{ name: "アマーロ・ノニーノ", amount: "30ml" },
@@ -952,27 +999,29 @@ const newEra: CocktailData[] = [
 	},
 	{
 		name: "ペニシリン",
-		description: "ペニシリンの簡単な説明文です。",
+		description:
+			"スコッチ・ウイスキー、ハチミツ、ショウガを組み合わせた、温かみと清涼感が風味に広がる一杯。",
 		ingredients: [
 			{ name: "スコッチ・ウイスキー", amount: "60ml" },
 			{ name: "ラガヴーリン", amount: "7.5ml" },
 			{ name: "レモンジュース", amount: "22.5ml" },
-			{ name: "はちみつシロップ", amount: "22.5ml" },
+			{ name: "ハチミツシロップ", amount: "22.5ml" },
 			{ name: "新鮮なショウガのスライス", amount: "2～3枚" },
 		],
 		instructions: [
-			"シェイカーに生姜を入れて混ぜ、ラガヴーリン以外の残りの材料を加えます。",
+			"シェイカーにショウガを入れて混ぜ、ラガヴーリン以外の残りの材料を加えます。",
 			"シェイカーに氷を入れてシェイクします。",
 			"氷を入れたよく冷やしたグラスに注ぎます。",
 			"その上にラガヴーリンを浮かべます。",
 		],
-		garnish: "砂糖漬けの生姜のスライスを添えます。",
+		garnish: "砂糖漬けのショウガのスライスを添えます。",
 		tags: ["国際バーテンダー協会公認カクテル - 新時代の一杯"],
 		imageUrl: "penicillin.jpg",
 	},
 	{
 		name: "ピスコパンチ",
-		description: "ピスコパンチの簡単な説明文です。",
+		description:
+			"ピスコとパイナップルの甘酸っぱさが心地よく、まろやかで飲みやすい南米の一杯。",
 		ingredients: [
 			{ name: "ピスコ", amount: "60ml" },
 			{ name: "パイナップルジュース", amount: "22.5ml" },
@@ -992,7 +1041,8 @@ const newEra: CocktailData[] = [
 	},
 	{
 		name: "ポルノスター・マティーニ",
-		description: "ポルノスター・マティーニの簡単な説明文です。",
+		description:
+			"パッションフルーツとバニラが香る、甘く華やかなデザート感覚の人気カクテル。",
 		ingredients: [
 			{ name: "ウォッカ", amount: "50ml" },
 			{ name: "パッションフルーツリキュール", amount: "20ml" },
@@ -1010,7 +1060,8 @@ const newEra: CocktailData[] = [
 	},
 	{
 		name: "ロシアン・スプリング・パンチ",
-		description: "ロシアン・スプリング・パンチの簡単な説明文です。",
+		description:
+			"ウォッカにレモンとカシスを合わせた、フルーティーで軽快なスパークリングカクテル。",
 		ingredients: [
 			{ name: "ウォッカ", amount: "25ml" },
 			{ name: "レモンジュース", amount: "25ml" },
@@ -1028,7 +1079,8 @@ const newEra: CocktailData[] = [
 	},
 	{
 		name: "シェリー・コブラー",
-		description: "シェリー・コブラーの簡単な説明文です。",
+		description:
+			"シェリーにオレンジ・レモンと砂糖を合わせた、穏やかな甘さと果実味が魅力の伝統的カクテル。",
 		ingredients: [
 			{ name: "シェリー", amount: "45ml" },
 			{ name: "パロ・コルタド", amount: "45ml" },
@@ -1045,7 +1097,8 @@ const newEra: CocktailData[] = [
 	},
 	{
 		name: "サウスサイド",
-		description: "サウスサイドの簡単な説明文です。",
+		description:
+			"ミントとレモンが爽やかに香るジンベースのカクテルで、気分をリフレッシュしたい時にぴったり。",
 		ingredients: [
 			{ name: "ジン", amount: "60ml" },
 			{ name: "レモンジュース", amount: "30ml" },
@@ -1063,12 +1116,13 @@ const newEra: CocktailData[] = [
 	},
 	{
 		name: "スパイシー・フィフティ",
-		description: "スパイシー・フィフティの簡単な説明文です。",
+		description:
+			"バニラとハチミツに唐辛子の刺激を効かせた、甘さとスパイスのバランスが楽しい一杯。",
 		ingredients: [
 			{ name: "ウォッカ", amount: "50ml" },
 			{ name: "エルダーフラワー・コーディアル", amount: "15ml" },
 			{ name: "ライムジュース", amount: "15ml" },
-			{ name: "はちみつシロップ", amount: "10ml" },
+			{ name: "ハチミツシロップ", amount: "10ml" },
 			{ name: "赤唐辛子薄切り", amount: "2枚" },
 		],
 		instructions: [
@@ -1080,7 +1134,8 @@ const newEra: CocktailData[] = [
 	},
 	{
 		name: "スプリッツ",
-		description: "スプリッツの簡単な説明文です。",
+		description:
+			"アペロールなどのオレンジ系リキュールとスパークリングを使った、軽やかで華やかな乾杯向けカクテル。",
 		ingredients: [
 			{ name: "プロセッコ", amount: "90ml" },
 			{ name: "アペロール", amount: "60ml" },
@@ -1096,7 +1151,8 @@ const newEra: CocktailData[] = [
 	},
 	{
 		name: "サファリング・バスタード",
-		description: "サファリング・バスタードの簡単な説明文です。",
+		description:
+			"ジンとブランデーをジンジャービールで割った、スッキリとした辛口の歴史あるカクテル。",
 		ingredients: [
 			{ name: "コニャック", amount: "30ml", option_group: 4 },
 			{ name: "ブランデー", amount: "30ml", option_group: 4 },
@@ -1116,15 +1172,16 @@ const newEra: CocktailData[] = [
 	},
 	{
 		name: "スリー・ドッツ・アンド・ダッシュ",
-		description: "スリー・ドッツ・アンド・ダッシュの簡単な説明文です。",
+		description:
+			"ラムとスパイスの香りが調和した、戦時中に生まれた華やかで力強いトロピカルカクテル。",
 		ingredients: [
 			{ name: "マルティニーク・ラム", amount: "45ml" },
 			{ name: "ブレンド熟成ラム", amount: "15ml" },
-			{ name: "ファレルナム", amount: "7.5ml" },
+			{ name: "ファレナム", amount: "7.5ml" },
 			{ name: "セントエリザベス・オールスパイス・ダム", amount: "7.5ml" },
 			{ name: "ライムジュース", amount: "15ml" },
 			{ name: "オレンジジュース", amount: "15ml" },
-			{ name: "はちみつシロップ", amount: "15ml" },
+			{ name: "ハチミツシロップ", amount: "15ml" },
 			{ name: "ビターズ", amount: "2振" },
 		],
 		instructions: [
@@ -1137,7 +1194,8 @@ const newEra: CocktailData[] = [
 	},
 	{
 		name: "ティペラリー",
-		description: "ティペラリーの簡単な説明文です。",
+		description:
+			"アイリッシュ・ウイスキーとベルモットを合わせた、なめらかで少し甘みのある落ち着いたカクテル。",
 		ingredients: [
 			{ name: "アイリッシュ・ウイスキー", amount: "50ml" },
 			{ name: "ベルモット", amount: "25ml" },
@@ -1154,7 +1212,8 @@ const newEra: CocktailData[] = [
 	},
 	{
 		name: "トミーズ・マルガリータ",
-		description: "トミーズ・マルガリータの簡単な説明文です。",
+		description:
+			"テキーラにライムとアガベシロップを加えた、自然な甘みと爽やかさが特徴の新定番カクテル。",
 		ingredients: [
 			{ name: "テキーラ", amount: "60ml" },
 			{ name: "ライムジュース", amount: "30ml" },
@@ -1169,7 +1228,8 @@ const newEra: CocktailData[] = [
 	},
 	{
 		name: "トリニダード・サワー",
-		description: "トリニダード・サワーの簡単な説明文です。",
+		description:
+			"ビターズを多く使った独特な苦味と、ナッツの甘みが印象的な個性派カクテル。",
 		ingredients: [
 			{ name: "ビターズ", amount: "45ml" },
 			{ name: "オルジェー・シロップ", amount: "30ml" },
@@ -1186,11 +1246,12 @@ const newEra: CocktailData[] = [
 	},
 	{
 		name: "VE.N.TO",
-		description: "VE.N.TOの簡単な説明文です。",
+		description:
+			"グラッパとハチミツ、レモンを合わせた、やさしい甘みと爽やかさが広がるイタリアの一杯。",
 		ingredients: [
 			{ name: "グラッパ", amount: "45ml" },
 			{ name: "レモンジュース", amount: "22.5ml" },
-			{ name: "はちみつシロップ", amount: "15ml" },
+			{ name: "ハチミツシロップ", amount: "15ml" },
 			{ name: "カモミール・コーディアル", amount: "15ml" },
 			{ name: "卵白（お好みで）", amount: "数滴" },
 		],
@@ -1207,7 +1268,8 @@ const newEra: CocktailData[] = [
 const unforgettables: CocktailData[] = [
 	{
 		name: "アレクサンダー",
-		description: "アレクサンダーの簡単な説明文です。",
+		description:
+			"コニャックとココアリキュールのまろやかな甘さが心地よい、古典的なカクテル。",
 		ingredients: [
 			{ name: "コニャック", amount: "30ml" },
 			{ name: "クレーム・ド・カカオ", amount: "30ml" },
@@ -1223,7 +1285,8 @@ const unforgettables: CocktailData[] = [
 	},
 	{
 		name: "アメリカーノ",
-		description: "アメリカーノの簡単な説明文です。",
+		description:
+			"カンパリと甘いベルモットを炭酸で軽く割った、イタリア発の爽やかなひと口カクテル。",
 		ingredients: [
 			{ name: "カンパリ", amount: "30ml" },
 			{ name: "ベルモット", amount: "30ml" },
@@ -1239,7 +1302,8 @@ const unforgettables: CocktailData[] = [
 	},
 	{
 		name: "アビエーション",
-		description: "アビエーションの簡単な説明文です。",
+		description:
+			"ジンにマラスキーノとレモンを合わせ、ほのかな花の香りも感じるクラシックカクテル。",
 		ingredients: [
 			{ name: "ジン", amount: "45ml" },
 			{ name: "マラスキーノ・リキュール", amount: "15ml" },
@@ -1256,7 +1320,8 @@ const unforgettables: CocktailData[] = [
 	},
 	{
 		name: "エンジェル・フェイス",
-		description: "エンジェル・フェイスの簡単な説明文です。",
+		description:
+			"ジンと杏のリキュール、カルヴァドスを合わせた、果実の香りが立つ古き良き一杯です。",
 		ingredients: [
 			{ name: "ジン", amount: "30ml" },
 			{ name: "アプリコット・ブランデー", amount: "30ml" },
@@ -1272,7 +1337,8 @@ const unforgettables: CocktailData[] = [
 	},
 	{
 		name: "ビトウィーン・ザ・シーツ",
-		description: "ビトウィーン・ザ・シーツの簡単な説明文です。",
+		description:
+			"ラムとコニャックにレモンを重ねた、軽やかながら力のある古典的なカクテル。",
 		ingredients: [
 			{ name: "ホワイト・ラム", amount: "30ml" },
 			{ name: "コニャック", amount: "30ml" },
@@ -1289,7 +1355,8 @@ const unforgettables: CocktailData[] = [
 	},
 	{
 		name: "ブールヴァルディエ",
-		description: "ブールヴァルディエの簡単な説明文です。",
+		description:
+			"バーボンとカンパリ、ベルモットという濃厚で大人の味わいが香る、イタリア風の古典カクテル。",
 		ingredients: [
 			{ name: "バーボン", amount: "45ml", option_group: 1 },
 			{ name: "ライ・ウイスキー", amount: "45ml", option_group: 1 },
@@ -1306,7 +1373,8 @@ const unforgettables: CocktailData[] = [
 	},
 	{
 		name: "ブランデー・クラスタ",
-		description: "ブランデー・クラスタの簡単な説明文です。",
+		description:
+			"ブランデーとチェリーリキュールをレモンと共に使った、アメリカ19世紀由来の上品なカクテル。",
 		ingredients: [
 			{ name: "ブランデー", amount: "52.5ml" },
 			{ name: "マラスキーノ・リキュール", amount: "7.5ml" },
@@ -1326,7 +1394,8 @@ const unforgettables: CocktailData[] = [
 	},
 	{
 		name: "カジノ",
-		description: "カジノの簡単な説明文です。",
+		description:
+			"ジンとチェリーリキュールにオレンジの酸味を加えた、1900年代初頭生まれのクラシカルな軽めの一杯。",
 		ingredients: [
 			{ name: "ジン", amount: "40ml" },
 			{ name: "マラスキーノ・リキュール", amount: "10ml" },
@@ -1343,7 +1412,8 @@ const unforgettables: CocktailData[] = [
 	},
 	{
 		name: "クローバー・クラブ",
-		description: "クローバー・クラブの簡単な説明文です。",
+		description:
+			"ジンにラズベリーシロップとレモンを合わせ、卵白でなめらかに仕上げた、ゆったり楽しむクラシックカクテル。",
 		ingredients: [
 			{ name: "ジン", amount: "45ml" },
 			{ name: "ラズベリーシロップ", amount: "15ml" },
@@ -1359,7 +1429,8 @@ const unforgettables: CocktailData[] = [
 	},
 	{
 		name: "ダイキリ",
-		description: "ダイキリの簡単な説明文です。",
+		description:
+			"キューバ生まれのラムとライム、砂糖を合わせた、誰にも親しみやすいシンプル＆爽やかな定番カクテル。",
 		ingredients: [
 			{ name: "ホワイト・ラム", amount: "60ml" },
 			{ name: "ライムジュース", amount: "20ml" },
@@ -1375,7 +1446,8 @@ const unforgettables: CocktailData[] = [
 	},
 	{
 		name: "ドライ・マティーニ",
-		description: "ドライ・マティーニの簡単な説明文です。",
+		description:
+			"ジンとベルモット少量で作る、洗練された味わいのバー定番カクテル。",
 		ingredients: [
 			{ name: "ジン", amount: "60ml" },
 			{ name: "ベルモット", amount: "10ml" },
@@ -1391,7 +1463,8 @@ const unforgettables: CocktailData[] = [
 	},
 	{
 		name: "ジン・フィズ",
-		description: "ジン・フィズの簡単な説明文です。",
+		description:
+			"ジンとレモン、砂糖に炭酸を加えた、軽やかで泡立つ爽快な古典ドリンク。",
 		ingredients: [
 			{ name: "ジン", amount: "45ml" },
 			{ name: "レモンジュース", amount: "30ml" },
@@ -1409,7 +1482,8 @@ const unforgettables: CocktailData[] = [
 	},
 	{
 		name: "ハンキー・パンキー",
-		description: "ハンキー・パンキーの簡単な説明文です。",
+		description:
+			"ジンと甘いベルモットをベースに、ほろ苦いフェルネットを加えた、味に深みのある一杯。",
 		ingredients: [
 			{ name: "ジン", amount: "45ml" },
 			{ name: "ベルモット", amount: "45ml" },
@@ -1425,23 +1499,23 @@ const unforgettables: CocktailData[] = [
 	},
 	{
 		name: "ジョン・コリンズ",
-		description: "ジョン・コリンズの簡単な説明文です。",
+		description:
+			"ジン、レモン、砂糖、炭酸を合わせた、爽やかで軽快なクラシックカクテル。",
 		ingredients: [
 			{ name: "ジン", amount: "45ml" },
 			{ name: "レモンジュース", amount: "30ml" },
 			{ name: "シンプルシロップ", amount: "15ml" },
 			{ name: "炭酸水", amount: "60ml" },
 		],
-		instructions: [
-			"氷を入れたグラスに材料をすべて注ぎ、軽く混ぜます。",
-		],
+		instructions: ["氷を入れたグラスに材料をすべて注ぎ、軽く混ぜます。"],
 		garnish: "レモンスライスとマラスキーノ・チェリーを添えます。",
 		tags: ["国際バーテンダー協会公認カクテル - 忘れられないカクテル"],
 		imageUrl: "john-collins.jpg",
 	},
 	{
 		name: "ラスト・ワード",
-		description: "ラスト・ワードの簡単な説明文です。",
+		description:
+			"ジンとシャルトルーズ、チェリーリキュール、ライムを等量で合わせた、特徴的でバランスの良い名作。",
 		ingredients: [
 			{ name: "ジン", amount: "22.5ml" },
 			{ name: "シャルトルーズ", amount: "22.5ml" },
@@ -1450,14 +1524,16 @@ const unforgettables: CocktailData[] = [
 		],
 		instructions: [
 			"すべての材料をカクテルシェイカーに加えます。",
-			"氷と一緒にシェイクし、冷やしたグラスに注ぎます。",],
+			"氷と一緒にシェイクし、冷やしたグラスに注ぎます。",
+		],
 		garnish: "",
 		tags: ["国際バーテンダー協会公認カクテル - 忘れられないカクテル"],
 		imageUrl: "last-word.jpg",
 	},
 	{
 		name: "マンハッタン",
-		description: "マンハッタンの簡単な説明文です。",
+		description:
+			"ウイスキーと甘いベルモット＋ビターズの組み合わせで、ニューヨークで生まれた洗練されたスタイルのカクテル。",
 		ingredients: [
 			{ name: "ライ・ウイスキー", amount: "50ml" },
 			{ name: "ベルモット", amount: "20ml" },
@@ -1473,7 +1549,8 @@ const unforgettables: CocktailData[] = [
 	},
 	{
 		name: "マルティネス",
-		description: "マルティネスの簡単な説明文です。",
+		description:
+			"ジンと甘いベルモット、チェリーリキュールを使った、マティーニの原型ともいわれる歴史ある一杯。",
 		ingredients: [
 			{ name: "ジン", amount: "45ml" },
 			{ name: "ベルモット", amount: "45ml" },
@@ -1490,7 +1567,8 @@ const unforgettables: CocktailData[] = [
 	},
 	{
 		name: "メアリー・ピックフォード",
-		description: "メアリー・ピックフォードの簡単な説明文です。",
+		description:
+			"ホワイト・ラムにパイナップルジュースとグレナデンを加えた、同名の女優にちなんで名付けられた軽やかなカクテル。",
 		ingredients: [
 			{ name: "ホワイト・ラム", amount: "45ml" },
 			{ name: "パイナップルジュース", amount: "45ml" },
@@ -1506,7 +1584,8 @@ const unforgettables: CocktailData[] = [
 	},
 	{
 		name: "モンキー・グランド",
-		description: "モンキー・グランドの簡単な説明文です。",
+		description:
+			"ジンにオレンジとグレナデンを加えた、1920年代のパリ発祥とされる遊び心あるクラシックカクテル。",
 		ingredients: [
 			{ name: "ジン", amount: "45ml" },
 			{ name: "オレンジジュース", amount: "45ml" },
@@ -1522,7 +1601,8 @@ const unforgettables: CocktailData[] = [
 	},
 	{
 		name: "ネグローニ",
-		description: "ネグローニの簡単な説明文です。",
+		description:
+			"ジン、カンパリ、甘いベルモットを同量で作る、イタリアで生まれた苦味と甘みが絶妙な定番カクテル。",
 		ingredients: [
 			{ name: "ジン", amount: "30ml" },
 			{ name: "カンパリ", amount: "30ml" },
@@ -1538,7 +1618,8 @@ const unforgettables: CocktailData[] = [
 	},
 	{
 		name: "オールド・ファッションド",
-		description: "オールド・ファッションドの簡単な説明文です。",
+		description:
+			"ウイスキーに砂糖とビターズを加えた、シンプルで力強い味わいの王道カクテル。",
 		ingredients: [
 			{ name: "バーボン", amount: "45ml", option_group: 1 },
 			{ name: "ライ・ウイスキー", amount: "45ml", option_group: 1 },
@@ -1548,14 +1629,16 @@ const unforgettables: CocktailData[] = [
 		],
 		instructions: [
 			"角砂糖をグラスに入れ、ビターズで十分に浸し、少量の水を加えます。溶けるまで混ぜます。グラスに氷を入れ、ウイスキーを注ぎます。",
-			"軽くかき混ぜます。",],
+			"軽くかき混ぜます。",
+		],
 		garnish: "オレンジのスライスまたは皮とカクテルチェリーを添えます。",
 		tags: ["国際バーテンダー協会公認カクテル - 忘れられないカクテル"],
 		imageUrl: "old-fashioned.jpg",
 	},
 	{
 		name: "パラダイス",
-		description: "パラダイスの簡単な説明文です。",
+		description:
+			"ジンとアプリコット・ブランデーにオレンジを合わせた、やわらかく華やかな香りのカクテル。",
 		ingredients: [
 			{ name: "ジン", amount: "30ml" },
 			{ name: "アプリコット・ブランデー", amount: "20ml" },
@@ -1570,7 +1653,8 @@ const unforgettables: CocktailData[] = [
 	},
 	{
 		name: "プランターズ・パンチ",
-		description: "プランターズ・パンチの簡単な説明文です。",
+		description:
+			"ラムとトロピカルジュースを使った、南国らしい甘酸っぱく陽気なカクテル。",
 		ingredients: [
 			{ name: "ラム", amount: "45ml" },
 			{ name: "ライムジュース", amount: "15ml" },
@@ -1578,14 +1662,16 @@ const unforgettables: CocktailData[] = [
 		],
 		instructions: [
 			"すべての材料をグラスに直接注ぎます。",
-			"注記：お好みに応じて水や氷、フレッシュジュースなどで割ってお召し上がりください。",],
+			"注記：お好みに応じて水や氷、フレッシュジュースなどで割ってお召し上がりください。",
+		],
 		garnish: "オレンジの皮を添えます。",
 		tags: ["国際バーテンダー協会公認カクテル - 忘れられないカクテル"],
 		imageUrl: "planters-punch.jpg",
 	},
 	{
 		name: "ポート・フリップ",
-		description: "ポート・フリップの簡単な説明文です。",
+		description:
+			"ポートワインに卵を加えた、まろやかでコクのあるデザート風カクテル。",
 		ingredients: [
 			{ name: "ブランデー", amount: "15ml" },
 			{ name: "ポートワイン", amount: "45ml" },
@@ -1600,7 +1686,8 @@ const unforgettables: CocktailData[] = [
 	},
 	{
 		name: "ラモス・フィズ",
-		description: "ラモス・フィズの簡単な説明文です。",
+		description:
+			"ジンとレモン、クリームを泡立てた、なめらかで軽やかな口当たりの老舗カクテル。",
 		ingredients: [
 			{ name: "ジン", amount: "45ml" },
 			{ name: "ライムジュース", amount: "15ml" },
@@ -1623,7 +1710,8 @@ const unforgettables: CocktailData[] = [
 	},
 	{
 		name: "リメンバー・ザ・メイン",
-		description: "リメンバー・ザ・メインの簡単な説明文です。",
+		description:
+			"ライ・ウイスキー、チェリー・ブランデー、ベルモット、アブサンを使った、伝説的な味わいの一杯。",
 		ingredients: [
 			{ name: "ライ・ウイスキー", amount: "60ml" },
 			{ name: "ベルモット", amount: "22.5ml" },
@@ -1632,14 +1720,16 @@ const unforgettables: CocktailData[] = [
 		],
 		instructions: [
 			"アブサンをグラスに注ぎ、内側が完全に覆われるまで回します。",
-			"アブサンを捨て、グラスを脇に置きます。残りの材料をミキシンググラスに入れ、氷を4分の3まで入れます。冷えるまでかき混ぜ、アブサンで冷やしたグラスに注ぎます。",],
+			"アブサンを捨て、グラスを脇に置きます。残りの材料をミキシンググラスに入れ、氷を4分の3まで入れます。冷えるまでかき混ぜ、アブサンで冷やしたグラスに注ぎます。",
+		],
 		garnish: "レモンの皮を添えます。",
 		tags: ["国際バーテンダー協会公認カクテル - 忘れられないカクテル"],
 		imageUrl: "remember-the-maine.jpg",
 	},
 	{
 		name: "ラスティ・ネイル",
-		description: "ラスティ・ネイルの簡単な説明文です。",
+		description:
+			"スコッチとドランブイの蜂蜜のような甘みが溶け合う、穏やかで深みのあるカクテル。",
 		ingredients: [
 			{ name: "スコッチ・ウイスキー", amount: "45ml" },
 			{ name: "ドランブイ", amount: "25ml" },
@@ -1654,7 +1744,8 @@ const unforgettables: CocktailData[] = [
 	},
 	{
 		name: "サゼラック",
-		description: "サゼラックの簡単な説明文です。",
+		description:
+			"コニャックとアブサン、ビターズを使った、香り高くスパイシーなニューオーリンズの名作。",
 		ingredients: [
 			{ name: "コニャック", amount: "50ml" },
 			{ name: "アブサン", amount: "10ml" },
@@ -1671,7 +1762,8 @@ const unforgettables: CocktailData[] = [
 	},
 	{
 		name: "サイドカー",
-		description: "サイドカーの簡単な説明文です。",
+		description:
+			"ブランデーにオレンジリキュールとレモンを合わせた、バランスの良い酸味と甘みのクラシックカクテル。",
 		ingredients: [
 			{ name: "コニャック", amount: "50ml" },
 			{ name: "トリプルセック", amount: "20ml" },
@@ -1686,21 +1778,24 @@ const unforgettables: CocktailData[] = [
 	},
 	{
 		name: "スティンガー",
-		description: "スティンガーの簡単な説明文です。",
+		description:
+			"ブランデーにミントクリームを合わせた、清涼感のある食後にぴったりのカクテル。",
 		ingredients: [
 			{ name: "コニャック", amount: "50ml" },
 			{ name: "ミントクリーム ", amount: "20ml" },
 		],
 		instructions: [
 			"すべての材料を氷を入れたミキシンググラスに注ぎ、よくかき混ぜます。",
-			"冷やしたグラスに注ぎます。",],
+			"冷やしたグラスに注ぎます。",
+		],
 		garnish: "お好みでミントの葉を添えます。",
 		tags: ["国際バーテンダー協会公認カクテル - 忘れられないカクテル"],
 		imageUrl: "stinger.jpg",
 	},
 	{
 		name: "タキシード",
-		description: "タキシードの簡単な説明文です。",
+		description:
+			"ジンとベルモットをベースに、ほのかに甘く香る上品なクラシックカクテル。",
 		ingredients: [
 			{ name: "ジン", amount: "30ml" },
 			{ name: "ベルモット", amount: "30ml" },
@@ -1718,7 +1813,8 @@ const unforgettables: CocktailData[] = [
 	},
 	{
 		name: "ヴュー・カレ",
-		description: "ヴュー・カレの簡単な説明文です。",
+		description:
+			"ウイスキーとコニャック、ベルモットが溶け合う、重厚で香り豊かなニューオーリンズ発の一杯。",
 		ingredients: [
 			{ name: "ライ・ウイスキー", amount: "30ml" },
 			{ name: "コニャック", amount: "30ml" },
@@ -1736,7 +1832,8 @@ const unforgettables: CocktailData[] = [
 	},
 	{
 		name: "ウィスキー・サワー",
-		description: "ウィスキー・サワーの簡単な説明文です。",
+		description:
+			"ウイスキーとレモン、砂糖を合わせた、爽やかな酸味と甘みが調和した定番カクテル。",
 		ingredients: [
 			{ name: "バーボン・ウイスキー", amount: "45ml" },
 			{ name: "レモンジュース", amount: "25ml" },
@@ -1749,13 +1846,15 @@ const unforgettables: CocktailData[] = [
 			"氷が入ったグラスに注ぎます。",
 			"注記：卵白を使用する場合は、卵白の泡を出して混ぜ合わせるために、少し強く振ってください。",
 		],
-		garnish: "オレンジのスライス半分とマラスキーノチェリーを飾り、お好みでオレンジの皮を添えます。",
+		garnish:
+			"オレンジのスライス半分とマラスキーノチェリーを飾り、お好みでオレンジの皮を添えます。",
 		tags: ["国際バーテンダー協会公認カクテル - 忘れられないカクテル"],
 		imageUrl: "whiskey-sour.jpg",
 	},
 	{
 		name: "ホワイト・レディ",
-		description: "ホワイト・レディの簡単な説明文です。",
+		description:
+			"ジンとレモン、オレンジリキュールを合わせた、キリッとした酸味が心地よい上品なカクテル。",
 		ingredients: [
 			{ name: "ジン", amount: "40ml" },
 			{ name: "トリプルセック", amount: "30ml" },
