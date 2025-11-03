@@ -20,10 +20,10 @@
 	},
 	"d1_databases": [
 		{
-			"binding": "yourmix_db",
+			"binding": "DB",
 			"database_name": "yourmix-db",
 			"database_id": "b75ba118-4b45-4422-b9fb-d6479824229f",
-			"remote": true
+			"migrations_dir": "drizzle"
 		}
 	]
 	/**

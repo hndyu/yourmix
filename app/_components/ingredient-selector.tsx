@@ -15,49 +15,30 @@ import {
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 // カテゴリ用のアイコンをインポート
-import { LocalBar, WineBar, LocalDrink, Restaurant } from "@mui/icons-material";
+import {
+	LocalBar,
+	WineBar,
+	LocalDrink,
+	Restaurant,
+	Liquor,
+	BubbleChart,
+} from "@mui/icons-material";
 
 // カテゴリとアイコンのマッピング
 const categoryIcons: Record<string, React.ComponentType> = {
-	ベーススピリッツ: LocalBar,
-	リキュール: WineBar,
-	ジュースシロップ: LocalDrink,
+	スピリッツ: LocalBar,
+	リキュール: Liquor,
+	ワイン: WineBar,
+	ジュース: LocalDrink,
+	シロップ: BubbleChart,
 	その他: Restaurant,
 };
 
-// 利用可能な材料のリスト
-const availableIngredients = [
-	// ベーススピリッツ
-	"ラム",
-	"テキーラ",
-	"ウイスキー",
-	"ジン",
-	"ウォッカ",
-	"ブランデー",
-	// リキュール
-	"トリプルセック",
-	"ブルーキュラソー",
-	"アマレット",
-	"カンパリ",
-	// ジュース・シロップ
-	"ライムジュース",
-	"レモンジュース",
-	"オレンジジュース",
-	"グレープフルーツジュース",
-	"シンプルシロップ",
-	"グレナデンシロップ",
-	// その他
-	"トニックウォーター",
-	"ソーダ水",
-	"ジンジャーエール",
-	"コーラ",
-	"アンゴスチュラビターズ",
-	"オレンジビターズ",
-	"ミントの葉",
-	"ライムスライス",
-	"レモンスライス",
-	"オレンジスライス",
-];
+interface Ingredient {
+	id: number;
+	name: string;
+	category: string | null;
+}
 
 interface IngredientSelectorProps {
 	selectedIngredients: string[];
@@ -70,58 +51,44 @@ export default function IngredientSelector({
 	onIngredientsChange,
 	disabled = false,
 }: IngredientSelectorProps) {
+	const [ingredients, setIngredients] = React.useState<Ingredient[]>([]);
+
+	React.useEffect(() => {
+		const fetchIngredients = async () => {
+			const res = await fetch("/api/ingredients");
+			const data = (await res.json()) as Ingredient[];
+			setIngredients(data);
+		};
+		fetchIngredients();
+	}, []);
+
 	// 材料のカテゴリ分け
-	const ingredientCategories = {
-		ベーススピリッツ: [
-			"ラム",
-			"テキーラ",
-			"ウイスキー",
-			"ジン",
-			"ウォッカ",
-			"ブランデー",
-		],
-		リキュール: [
-			"トリプルセック",
-			"ブルーキュラソー",
-			"アマレット",
-			"カンパリ",
-		],
-		ジュースシロップ: [
-			"ライムジュース",
-			"レモンジュース",
-			"オレンジジュース",
-			"グレープフルーツジュース",
-			"シンプルシロップ",
-			"グレナデンシロップ",
-		],
-		その他: [
-			"トニックウォーター",
-			"ソーダ水",
-			"ジンジャーエール",
-			"コーラ",
-			"アンゴスチュラビターズ",
-			"オレンジビターズ",
-			"ミントの葉",
-			"ライムスライス",
-			"レモンスライス",
-			"オレンジスライス",
-		],
-	};
+	const ingredientCategories = React.useMemo(() => {
+		const categories: Record<string, Ingredient[]> = {};
+		for (const ingredient of ingredients) {
+			const category = ingredient.category || "その他";
+			if (!categories[category]) {
+				categories[category] = [];
+			}
+			categories[category].push(ingredient);
+		}
+		return categories;
+	}, [ingredients]);
 
 	// 材料の選択状態を変更する関数
-	const handleIngredientToggle = (ingredient: string) => {
+	const handleIngredientToggle = (ingredientName: string) => {
 		if (disabled) return; // ローディング中は無効化
 
-		const newSelected = selectedIngredients.includes(ingredient)
-			? selectedIngredients.filter((item) => item !== ingredient)
-			: [...selectedIngredients, ingredient];
+		const newSelected = selectedIngredients.includes(ingredientName)
+			? selectedIngredients.filter((item) => item !== ingredientName)
+			: [...selectedIngredients, ingredientName];
 		onIngredientsChange(newSelected);
 	};
 
 	// 全選択・全解除の関数
 	const handleSelectAll = () => {
 		if (disabled) return; // ローディング中は無効化
-		onIngredientsChange(availableIngredients);
+		onIngredientsChange(ingredients.map((ing) => ing.name));
 	};
 
 	const handleClearAll = () => {
@@ -241,15 +208,19 @@ export default function IngredientSelector({
 							>
 								{ingredients.map((ingredient) => (
 									<FormControlLabel
-										key={ingredient}
+										key={ingredient.id}
 										control={
 											<Checkbox
-												checked={selectedIngredients.includes(ingredient)}
-												onChange={() => handleIngredientToggle(ingredient)}
+												checked={selectedIngredients.includes(
+													ingredient.name,
+												)}
+												onChange={() =>
+													handleIngredientToggle(ingredient.name)
+												}
 												color="primary"
 											/>
 										}
-										label={ingredient}
+										label={ingredient.name}
 										sx={{
 											"& .MuiFormControlLabel-label": {
 												fontSize: "0.9rem",
