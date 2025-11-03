@@ -19,6 +19,7 @@ export const ingredients = sqliteTable('ingredients', {
   id: integer('id').primaryKey({ autoIncrement: true }),
   name: text('name').notNull().unique(),
   description: text('description'),
+  category: text('category'),
 });
 
 // cocktail_ingredients 中間テーブル

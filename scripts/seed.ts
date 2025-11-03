@@ -19,6 +19,7 @@ interface IngredientData {
 	name: string;
 	amount: string;
 	option_group?: number;
+	category: string;
 }
 
 interface CocktailData {
@@ -1918,7 +1919,7 @@ export async function seed(env: Env) {
 			if (!ingredientMap.has(ing.name)) {
 				const [newIngredient] = await db
 					.insert(ingredients)
-					.values({ name: ing.name })
+					.values({ name: ing.name, category: ing.category })
 					.returning({ id: ingredients.id });
 				ingredientMap.set(ing.name, newIngredient.id);
 			}

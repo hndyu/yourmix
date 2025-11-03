@@ -21,7 +21,8 @@ CREATE TABLE cocktails (
 CREATE TABLE ingredients (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   name TEXT NOT NULL UNIQUE,
-  description TEXT
+  description TEXT,
+  category TEXT
 );
 
 -- cocktail_ingredients 中間テーブル
