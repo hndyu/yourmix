@@ -13,7 +13,10 @@
     "test": "vitest",
     "test:ui": "vitest --ui",
     "test:run": "vitest run",
-    "db:generate": "drizzle-kit generate"
+    "db:generate": "drizzle-kit generate",
+    "seed": "echo '⚠️  Please use seed:local or seed:remote instead' && exit 1",
+    "seed:local": "tsx scripts/seed-worker.ts local",
+    "seed:remote": "tsx scripts/seed-worker.ts remote"
   },
   "dependencies": {
     "@emotion/cache": "^11.14.0",

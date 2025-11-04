@@ -2167,3 +2167,43 @@ export async function seed(env: Env) {
 
 	console.log("✅ Seeding complete.");
 }
+
+// エラーハンドリングを改善したseed関数のラッパー
+export async function runSeed(env: Env) {
+	try {
+		await seed(env);
+		console.log("✅ Seed script completed successfully.");
+		return true;
+	} catch (error) {
+		console.error("❌ Seed script failed:", error);
+		if (error instanceof Error) {
+			console.error("Error details:", error.message);
+			console.error("Stack trace:", error.stack);
+		}
+		throw error;
+	}
+}
+
+// Node.js環境で直接実行される場合（開発用）
+// この場合、WranglerのローカルD1環境を使用する必要があります
+if (
+	typeof require !== "undefined" &&
+	require.main === module &&
+	typeof process !== "undefined"
+) {
+	console.log("⚠️  This script requires a Cloudflare D1 database connection.");
+	console.log("");
+	console.log("💡 To run this script, use one of the following methods:");
+	console.log("");
+	console.log("   Method 1: Using Wrangler (Recommended)");
+	console.log("   npx wrangler d1 execute yourmix-db --local --file=./scripts/seed-executor.ts");
+	console.log("");
+	console.log("   Method 2: Using npm script");
+	console.log("   npm run seed:local  (for local database)");
+	console.log("   npm run seed:remote (for remote database)");
+	console.log("");
+	console.log("   Method 3: Create a worker that calls this script");
+	console.log("   See wrangler.jsonc for D1 database configuration");
+	console.log("");
+	process.exit(1);
+}
