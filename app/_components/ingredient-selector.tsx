@@ -24,7 +24,7 @@ import {
 	BubbleChart,
 } from "@mui/icons-material";
 
-// カテゴリとアイコンのマッピング
+// カテゴリとアイコンのマッピング（フォールバック用）
 const categoryIcons: Record<string, React.ComponentType> = {
 	スピリッツ: LocalBar,
 	リキュール: Liquor,
@@ -33,6 +33,14 @@ const categoryIcons: Record<string, React.ComponentType> = {
 	シロップ: BubbleChart,
 	その他: Restaurant,
 };
+
+interface Category {
+	id: number;
+	name: string;
+	sortOrder: number;
+	icon: string | null;
+	description: string | null;
+}
 
 interface Ingredient {
 	id: number;
@@ -52,28 +60,47 @@ export default function IngredientSelector({
 	disabled = false,
 }: IngredientSelectorProps) {
 	const [ingredients, setIngredients] = React.useState<Ingredient[]>([]);
+	const [categories, setCategories] = React.useState<Category[]>([]);
 
 	React.useEffect(() => {
-		const fetchIngredients = async () => {
+		const fetchData = async () => {
 			const res = await fetch("/api/ingredients");
-			const data = (await res.json()) as Ingredient[];
-			setIngredients(data);
+			const data = (await res.json()) as {
+				categories: Category[];
+				ingredients: Ingredient[];
+			};
+			setCategories(data.categories);
+			setIngredients(data.ingredients);
 		};
-		fetchIngredients();
+		fetchData();
 	}, []);
 
 	// 材料のカテゴリ分け
 	const ingredientCategories = React.useMemo(() => {
-		const categories: Record<string, Ingredient[]> = {};
+		const categorized: Record<string, Ingredient[]> = {};
 		for (const ingredient of ingredients) {
 			const category = ingredient.category || "その他";
-			if (!categories[category]) {
-				categories[category] = [];
+			if (!categorized[category]) {
+				categorized[category] = [];
 			}
-			categories[category].push(ingredient);
+			categorized[category].push(ingredient);
 		}
-		return categories;
+		return categorized;
 	}, [ingredients]);
+
+	// カテゴリをデータベースの並び順でソートする関数
+	const sortedCategoryEntries = React.useMemo(() => {
+		return Object.entries(ingredientCategories).sort(
+			([categoryA], [categoryB]) => {
+				const catA = categories.find((c) => c.name === categoryA);
+				const catB = categories.find((c) => c.name === categoryB);
+				// 定義されていないカテゴリは最後に表示
+				const sortOrderA = catA?.sortOrder ?? Infinity;
+				const sortOrderB = catB?.sortOrder ?? Infinity;
+				return sortOrderA - sortOrderB;
+			},
+		);
+	}, [ingredientCategories, categories]);
 
 	// 材料の選択状態を変更する関数
 	const handleIngredientToggle = (ingredientName: string) => {
@@ -178,7 +205,14 @@ export default function IngredientSelector({
 			</Box>
 
 			{/* 材料カテゴリ別の選択UI */}
-			{Object.entries(ingredientCategories).map(([category, ingredients]) => (
+			{sortedCategoryEntries.map(([category, ingredients]) => {
+				// カテゴリ情報からアイコン名を取得（フォールバック用に既存のマッピングも使用）
+				const categoryInfo = categories.find((c) => c.name === category);
+				const iconName = categoryInfo?.icon || category;
+				const IconComponent =
+					categoryIcons[iconName] || categoryIcons[category];
+				
+				return (
 				<Accordion
 					key={category}
 					defaultExpanded
@@ -190,8 +224,8 @@ export default function IngredientSelector({
 				>
 					<AccordionSummary expandIcon={<ExpandMoreIcon />}>
 						<Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-							{categoryIcons[category] &&
-								React.createElement(categoryIcons[category])}
+							{IconComponent &&
+								React.createElement(IconComponent)}
 							<Typography variant="subtitle1" sx={{ fontWeight: "medium" }}>
 								{category}
 							</Typography>
@@ -232,7 +266,8 @@ export default function IngredientSelector({
 						</FormGroup>
 					</AccordionDetails>
 				</Accordion>
-			))}
+				);
+			})}
 		</Box>
 	);
 }

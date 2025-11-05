@@ -40,6 +40,15 @@ export const instructions = sqliteTable('instructions', {
   text: text('text').notNull(),
 });
 
+// categories テーブル（材料カテゴリの並び順を管理）
+export const categories = sqliteTable('categories', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  name: text('name').notNull().unique(),
+  sortOrder: integer('sort_order').notNull(),
+  icon: text('icon'),
+  description: text('description'),
+});
+
 // tags テーブル
 export const tags = sqliteTable('tags', {
   id: integer('id').primaryKey({ autoIncrement: true }),
@@ -62,7 +71,15 @@ export const cocktailsRelations = relations(cocktails, ({ many }) => ({
   cocktailTags: many(cocktailTags),
 }));
 
-export const ingredientsRelations = relations(ingredients, ({ many }) => ({
+export const categoriesRelations = relations(categories, ({ many }) => ({
+  ingredients: many(ingredients),
+}));
+
+export const ingredientsRelations = relations(ingredients, ({ one, many }) => ({
+  categoryRelation: one(categories, {
+    fields: [ingredients.category],
+    references: [categories.name],
+  }),
   cocktailIngredients: many(cocktailIngredients),
 }));
 

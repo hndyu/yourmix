@@ -6,6 +6,7 @@ import {
 	instructions,
 	tags,
 	cocktailTags,
+	categories,
 } from "../schema"; // Drizzle ORM のスキーマ定義
 import { v4 as uuidv4 } from "uuid";
 
@@ -2075,9 +2076,25 @@ export async function seed(env: Env) {
 	await db.delete(cocktailIngredients);
 	await db.delete(ingredients);
 	await db.delete(cocktails);
+	await db.delete(categories);
 	console.log("🗑️ Cleared existing data.");
 
 	const allCocktails = [...unforgettables, ...contemporaryClassics, ...newEra];
+
+	// カテゴリの登録（並び順を管理）
+	const categoryData = [
+		{ name: "スピリッツ", sortOrder: 1, icon: "LocalBar" },
+		{ name: "リキュール", sortOrder: 2, icon: "Liquor" },
+		{ name: "ワイン", sortOrder: 3, icon: "WineBar" },
+		{ name: "ジュース", sortOrder: 4, icon: "LocalDrink" },
+		{ name: "シロップ", sortOrder: 5, icon: "BubbleChart" },
+		{ name: "その他", sortOrder: 6, icon: "Restaurant" },
+	];
+
+	for (const category of categoryData) {
+		await db.insert(categories).values(category);
+	}
+	console.log("📁 Seeded categories.");
 
 	// タグの登録
 	const tagMap = new Map<string, number>();

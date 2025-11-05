@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { drizzle } from "drizzle-orm/d1";
-import { ingredients } from "../../../schema";
+import { ingredients, categories } from "../../../schema";
+import { asc } from "drizzle-orm";
 
 /**
  * カクテルの材料一覧を取得するAPIエンドポイント
@@ -33,11 +34,23 @@ export async function GET() {
 		}
 		const db = drizzle(env.DB);
 
+		// カテゴリを並び順で取得
+		const allCategories = await db
+			.select()
+			.from(categories)
+			.orderBy(asc(categories.sortOrder));
+
 		// 材料テーブルから全データを取得
 		const allIngredients = await db.select().from(ingredients);
 
-		// 取得したデータをJSON形式で返す
-		return NextResponse.json(allIngredients, { status: 200 });
+		// カテゴリ情報と材料を一緒に返す
+		return NextResponse.json(
+			{
+				categories: allCategories,
+				ingredients: allIngredients,
+			},
+			{ status: 200 },
+		);
 	} catch (error) {
 		// エラーが発生した場合のログ出力とエラーレスポンス
 		console.error("Error fetching ingredients:", error);
