@@ -16,20 +16,20 @@ import {
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 // カテゴリ用のアイコンをインポート
 import {
-	LocalBar,
 	WineBar,
-	LocalDrink,
-	Restaurant,
 	Liquor,
+	LocalBar,
+	LocalDrink,
 	BubbleChart,
+	Restaurant,
 } from "@mui/icons-material";
 
 // カテゴリとアイコンのマッピング（フォールバック用）
 const categoryIcons: Record<string, React.ComponentType> = {
-	スピリッツ: LocalBar,
-	リキュール: Liquor,
-	ワイン: WineBar,
-	ジュース: LocalDrink,
+	醸造酒: WineBar,
+	蒸留酒: Liquor,
+	混成酒: LocalBar,
+	ノンアルコール: LocalDrink,
 	シロップ: BubbleChart,
 	その他: Restaurant,
 };
@@ -46,6 +46,7 @@ interface Ingredient {
 	id: number;
 	name: string;
 	category: string | null;
+	actualNames: string[]; // グループ化された材料の実際の名称リスト
 }
 
 interface IngredientSelectorProps {
@@ -61,6 +62,7 @@ export default function IngredientSelector({
 }: IngredientSelectorProps) {
 	const [ingredients, setIngredients] = React.useState<Ingredient[]>([]);
 	const [categories, setCategories] = React.useState<Category[]>([]);
+	const [groupMapping, setGroupMapping] = React.useState<Record<string, string[]>>({});
 
 	React.useEffect(() => {
 		const fetchData = async () => {
@@ -68,9 +70,13 @@ export default function IngredientSelector({
 			const data = (await res.json()) as {
 				categories: Category[];
 				ingredients: Ingredient[];
+				groupMapping?: Record<string, string[]>;
 			};
 			setCategories(data.categories);
 			setIngredients(data.ingredients);
+			if (data.groupMapping) {
+				setGroupMapping(data.groupMapping);
+			}
 		};
 		fetchData();
 	}, []);
@@ -103,19 +109,49 @@ export default function IngredientSelector({
 	}, [ingredientCategories, categories]);
 
 	// 材料の選択状態を変更する関数
-	const handleIngredientToggle = (ingredientName: string) => {
+	const handleIngredientToggle = (displayName: string) => {
 		if (disabled) return; // ローディング中は無効化
 
-		const newSelected = selectedIngredients.includes(ingredientName)
-			? selectedIngredients.filter((item) => item !== ingredientName)
-			: [...selectedIngredients, ingredientName];
+		// グループ化された材料の場合、実際の材料名を展開
+		const ingredient = ingredients.find((ing) => ing.name === displayName);
+		const actualNames = ingredient?.actualNames || [displayName];
+
+		// 選択状態を確認（表示名または実際の材料名のいずれかが選択されているか）
+		const isCurrentlySelected =
+			selectedIngredients.includes(displayName) ||
+			actualNames.some((name) => selectedIngredients.includes(name));
+
+		let newSelected: string[];
+		if (isCurrentlySelected) {
+			// 解除: 表示名と全ての実際の材料名を削除
+			newSelected = selectedIngredients.filter(
+				(item) => item !== displayName && !actualNames.includes(item),
+			);
+		} else {
+			// 選択: 表示名と全ての実際の材料名を追加
+			newSelected = [
+				...selectedIngredients.filter(
+					(item) => item !== displayName && !actualNames.includes(item),
+				),
+				displayName,
+				...actualNames,
+			];
+		}
+
 		onIngredientsChange(newSelected);
 	};
 
 	// 全選択・全解除の関数
 	const handleSelectAll = () => {
 		if (disabled) return; // ローディング中は無効化
-		onIngredientsChange(ingredients.map((ing) => ing.name));
+		// 全ての表示名と実際の材料名を選択
+		const allIngredientNames: string[] = [];
+		for (const ing of ingredients) {
+			allIngredientNames.push(ing.name); // 表示名
+			allIngredientNames.push(...ing.actualNames); // 実際の材料名
+		}
+		// 重複を除去
+		onIngredientsChange([...new Set(allIngredientNames)]);
 	};
 
 	const handleClearAll = () => {
@@ -240,28 +276,35 @@ export default function IngredientSelector({
 									gap: 1,
 								}}
 							>
-								{ingredients.map((ingredient) => (
-									<FormControlLabel
-										key={ingredient.id}
-										control={
-											<Checkbox
-												checked={selectedIngredients.includes(
-													ingredient.name,
-												)}
-												onChange={() =>
-													handleIngredientToggle(ingredient.name)
-												}
-												color="primary"
-											/>
-										}
-										label={ingredient.name}
-										sx={{
-											"& .MuiFormControlLabel-label": {
-												fontSize: "0.9rem",
-											},
-										}}
-									/>
-								))}
+								{ingredients.map((ingredient) => {
+									// 選択状態を確認（表示名または実際の材料名のいずれかが選択されているか）
+									const isSelected =
+										selectedIngredients.includes(ingredient.name) ||
+										ingredient.actualNames.some((actualName) =>
+											selectedIngredients.includes(actualName),
+										);
+
+									return (
+										<FormControlLabel
+											key={ingredient.id}
+											control={
+												<Checkbox
+													checked={isSelected}
+													onChange={() =>
+														handleIngredientToggle(ingredient.name)
+													}
+													color="primary"
+												/>
+											}
+											label={ingredient.name}
+											sx={{
+												"& .MuiFormControlLabel-label": {
+													fontSize: "0.9rem",
+												},
+											}}
+										/>
+									);
+								})}
 							</Box>
 						</FormGroup>
 					</AccordionDetails>

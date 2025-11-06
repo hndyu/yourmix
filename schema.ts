@@ -18,6 +18,7 @@ export const cocktails = sqliteTable('cocktails', {
 export const ingredients = sqliteTable('ingredients', {
   id: integer('id').primaryKey({ autoIncrement: true }),
   name: text('name').notNull().unique(),
+  groupId: integer('group_id').references(() => ingredientGroups.id, { onDelete: 'set null' }),
   description: text('description'),
   category: text('category'),
 });
@@ -49,6 +50,15 @@ export const categories = sqliteTable('categories', {
   description: text('description'),
 });
 
+// ingredient_groups テーブル（材料の表示グループを管理）
+export const ingredientGroups = sqliteTable('ingredient_groups', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  displayName: text('display_name').notNull().unique(),
+  sortOrder: integer('sort_order'),
+  description: text('description'),
+  icon: text('icon'), // 将来的にグループ用アイコンを設定可能
+});
+
 // tags テーブル
 export const tags = sqliteTable('tags', {
   id: integer('id').primaryKey({ autoIncrement: true }),
@@ -75,10 +85,18 @@ export const categoriesRelations = relations(categories, ({ many }) => ({
   ingredients: many(ingredients),
 }));
 
+export const ingredientGroupsRelations = relations(ingredientGroups, ({ many }) => ({
+  ingredients: many(ingredients),
+}));
+
 export const ingredientsRelations = relations(ingredients, ({ one, many }) => ({
   categoryRelation: one(categories, {
     fields: [ingredients.category],
     references: [categories.name],
+  }),
+  group: one(ingredientGroups, {
+    fields: [ingredients.groupId],
+    references: [ingredientGroups.id],
   }),
   cocktailIngredients: many(cocktailIngredients),
 }));
