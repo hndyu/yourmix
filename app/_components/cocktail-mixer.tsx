@@ -11,6 +11,7 @@ import {
 	sortCocktailsByMatchScore,
 	findExactMatchCocktails,
 	generateOriginalCocktail,
+	type GroupMapping,
 } from "../utils/cocktail-filter";
 
 export default function CocktailMixer() {
@@ -30,6 +31,27 @@ export default function CocktailMixer() {
 	// 表示アニメーションの状態管理
 	const [showResults, setShowResults] = React.useState(false);
 
+	// グループマッピングの状態管理
+	const [groupMapping, setGroupMapping] = React.useState<GroupMapping>({});
+
+	// グループマッピングを取得
+	React.useEffect(() => {
+		const fetchGroupMapping = async () => {
+			try {
+				const res = await fetch("/api/ingredients");
+				const data = (await res.json()) as {
+					groupMapping?: GroupMapping;
+				};
+				if (data.groupMapping) {
+					setGroupMapping(data.groupMapping);
+				}
+			} catch (error) {
+				console.error("グループマッピングの取得に失敗しました:", error);
+			}
+		};
+		fetchGroupMapping();
+	}, []);
+
 	// 選択された材料に基づいてカクテルを選択する関数
 	const selectCocktailByIngredients = async (
 		selectedIngredients: string[],
@@ -40,6 +62,7 @@ export default function CocktailMixer() {
 		const exactMatches = findExactMatchCocktails(
 			mockCocktails,
 			selectedIngredients,
+			groupMapping,
 		);
 
 		if (exactMatches.length > 0) {
@@ -72,6 +95,7 @@ export default function CocktailMixer() {
 			const filteredCocktails = filterCocktailsByIngredients(
 				mockCocktails,
 				selectedIngredients,
+				groupMapping,
 			);
 
 			// 検索結果を保存
@@ -141,6 +165,7 @@ export default function CocktailMixer() {
 					selectedIngredients={lastSelectedIngredients}
 					onCocktailSelect={handleCocktailSelect}
 					show={showResults}
+					groupMapping={groupMapping}
 				/>
 			)}
 		</>

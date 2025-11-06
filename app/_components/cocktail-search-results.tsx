@@ -19,6 +19,7 @@ import type { Cocktail } from "../types/cocktail";
 import {
 	calculateMatchScore,
 	sortCocktailsByMatchScore,
+	type GroupMapping,
 } from "../utils/cocktail-filter";
 import { useRouter } from "next/navigation";
 
@@ -57,6 +58,7 @@ interface CocktailSearchResultsProps {
 	selectedIngredients: string[];
 	onCocktailSelect: (cocktail: Cocktail) => void;
 	show?: boolean;
+	groupMapping?: GroupMapping;
 }
 
 export default function CocktailSearchResults({
@@ -64,6 +66,7 @@ export default function CocktailSearchResults({
 	selectedIngredients,
 	onCocktailSelect,
 	show = true,
+	groupMapping,
 }: CocktailSearchResultsProps) {
 	const router = useRouter();
 
@@ -71,6 +74,7 @@ export default function CocktailSearchResults({
 	const sortedCocktails = sortCocktailsByMatchScore(
 		cocktails,
 		selectedIngredients,
+		groupMapping,
 	);
 
 	if (cocktails.length === 0) {
@@ -152,6 +156,7 @@ export default function CocktailSearchResults({
 						const matchScore = calculateMatchScore(
 							cocktail,
 							selectedIngredients,
+							groupMapping,
 						);
 						return (
 							<Grid key={cocktail.name} size={{ xs: 12, sm: 6, md: 4 }}>
