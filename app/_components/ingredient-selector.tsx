@@ -101,8 +101,8 @@ export default function IngredientSelector({
 				const catA = categories.find((c) => c.name === categoryA);
 				const catB = categories.find((c) => c.name === categoryB);
 				// 定義されていないカテゴリは最後に表示
-				const sortOrderA = catA?.sortOrder ?? Infinity;
-				const sortOrderB = catB?.sortOrder ?? Infinity;
+				const sortOrderA = catA?.sortOrder ?? Number.POSITIVE_INFINITY;
+				const sortOrderB = catB?.sortOrder ?? Number.POSITIVE_INFINITY;
 				return sortOrderA - sortOrderB;
 			},
 		);
