@@ -20,7 +20,6 @@ import {
 	Liquor,
 	LocalBar,
 	LocalDrink,
-	BubbleChart,
 	Restaurant,
 } from "@mui/icons-material";
 
@@ -30,7 +29,6 @@ const categoryIcons: Record<string, React.ComponentType> = {
 	蒸留酒: Liquor,
 	混成酒: LocalBar,
 	ノンアルコール: LocalDrink,
-	シロップ: BubbleChart,
 	その他: Restaurant,
 };
 
