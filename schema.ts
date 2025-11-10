@@ -54,7 +54,7 @@ export const categories = sqliteTable('categories', {
 export const ingredientGroups = sqliteTable('ingredient_groups', {
   id: integer('id').primaryKey({ autoIncrement: true }),
   displayName: text('display_name').notNull().unique(),
-  sortOrder: integer('sort_order'),
+  sortOrder: integer('sort_order').notNull(),
   description: text('description'),
   icon: text('icon'), // 将来的にグループ用アイコンを設定可能
 });

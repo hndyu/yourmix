@@ -15,6 +15,13 @@
       "when": 1762311743509,
       "tag": "0001_ambitious_vampiro",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1762311743510,
+      "tag": "0002_kind_silvermane",
+      "breakpoints": true
     }
   ]
 }

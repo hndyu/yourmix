@@ -1,3 +1,4 @@
+
 /**
  * 材料名から表示グループへのマッピング
  * キー: 実際の材料名（レシピで使用される名前）
@@ -164,4 +165,3 @@ export function getIngredientNamesByGroup(displayName: string): string[] {
 		.filter(([_, groupName]) => groupName === displayName)
 		.map(([ingredientName]) => ingredientName);
 }
-

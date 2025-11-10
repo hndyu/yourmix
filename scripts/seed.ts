@@ -1,5 +1,4 @@
 import { drizzle } from "drizzle-orm/d1";
-import { eq } from "drizzle-orm";
 import {
 	cocktails,
 	ingredients,
@@ -11,7 +10,6 @@ import {
 	ingredientGroups,
 } from "../schema"; // Drizzle ORM のスキーマ定義
 import { v4 as uuidv4 } from "uuid";
-import { getGroupDisplayName } from "../app/utils/ingredient-groups";
 
 // D1 Client の型定義 (wrangler.jsonc の設定に合わせる)
 interface Env {
@@ -2056,6 +2054,173 @@ const unforgettables: CocktailData[] = [
 	},
 ];
 
+const ingredientGroupMap: Record<string, string> = {
+	// 醸造酒
+	"白ワイン": "ワイン",
+	"赤ワイン": "ワイン",
+	"スパークリングワイン": "ワイン",
+	"シェリー": "ワイン",
+	"シャンパン": "ワイン",
+	"ポートワイン": "ワイン",
+	"ベルモット": "ワイン",
+	"プロセッコ": "ワイン",
+	"リレ・ブラン": "ワイン",
+	"パロ・コルタド": "ワイン",
+	// 蒸留酒
+	"ラム": "ラム",
+	"ホワイト・ラム": "ラム",
+	"ダーク・ラム": "ラム",
+	"ゴールド・ラム": "ラム",
+	"デメララ・ラム": "ラム",
+	"マルティニーク・ラム": "ラム",
+	"ブレンド熟成ラム": "ラム",
+	"熟成ラム": "ラム",
+	"キューバ産ラム": "ラム",
+	"ジャマイカ産ラム": "ラム",
+	"ゴスリングス・ラム": "ラム",
+	"ハバナ・クラブ プロフンド": "ラム",
+	"ハバナ・クラブ スモーキー": "ラム",
+	"ブラックストラップ・ラム": "ラム",
+	"ジン": "ジン",
+	"ウォッカ": "ウォッカ",
+	"テキーラ": "テキーラ",
+	"カルヴァドス": "ブランデー",
+	"ブランデー": "ブランデー",
+	"コニャック": "ブランデー",
+	"ピスコ": "ブランデー",
+	"グラッパ": "ブランデー",
+	"ライ・ウイスキー": "ウイスキー",
+	"スコッチ・ウイスキー": "ウイスキー",
+	"アイリッシュ・ウイスキー": "ウイスキー",
+	"バーボン・ウイスキー": "ウイスキー",
+	"ラガヴーリン": "ウイスキー",
+	"カシャッサ": "その他の蒸留酒",
+	"アグアルディエンテ": "その他の蒸留酒",
+	"メスカル": "その他の蒸留酒",
+	"シュナップス": "その他の蒸留酒",
+	// 混成酒
+	"マラスキーノ・リキュール": "リキュール",
+	"ラズベリー・リキュール": "リキュール",
+	"アマレット・リキュール": "リキュール",
+	"フランジェリコ・リキュール": "リキュール",
+	"パッションフルーツ・リキュール": "リキュール",
+	"チェリー・ブランデー": "リキュール",
+	"アプリコット・ブランデー": "リキュール",
+	"ピーチ・ブランデー": "リキュール",
+	"クレーム・ド・バイオレット": "リキュール",
+	"クレーム・ド・カカオ": "リキュール",
+	"クレーム・ド・ミント": "リキュール",
+	"クレーム・ド・カシス": "リキュール",
+	"クレーム・ド・ミュール": "リキュール",
+	"グラン・マルニエ": "リキュール",
+	"ペルノ": "リキュール",
+	"アブサン": "リキュール",
+	"カンパリ": "リキュール",
+	"トリプルセック": "リキュール",
+	"キュラソー": "リキュール",
+	"フェルネット": "リキュール",
+	"ドランブイ": "リキュール",
+	"ベネディクティン": "リキュール",
+	"コアントロー": "リキュール",
+	"アマレット": "リキュール",
+	"チナール": "リキュール",
+	"モラッコ・チェリー": "リキュール",
+	"ファレナム": "リキュール",
+	"シャルトリューズ": "リキュール",
+	"カルーア": "リキュール",
+	"フェルネット・ブランカ": "リキュール",
+	"コーヒー・リキュール": "リキュール",
+	"アペロール": "リキュール",
+	"アマーロ・ノニーノ": "リキュール",
+	"セントエリザベス・オールスパイス・ドラム": "リキュール",
+	"オレンジ・ビターズ": "ビターズ",
+	"アンゴスチュラ・ビターズ": "ビターズ",
+	"ペイショーズ・ビターズ": "ビターズ",
+	"アロマティック・ビターズ": "ビターズ",
+	// ノンアルコール
+	"炭酸水": "炭酸水",
+	"水": "水",
+	"レモン・ジュース": "ジュース",
+	"ライム・ジュース": "ジュース",
+	"パイナップル・ジュース": "ジュース",
+	"オレンジ・ジュース": "ジュース",
+	"サトウキビ・ジュース": "ジュース",
+	"トマト・ジュース": "ジュース",
+	"クランベリー・ジュース": "ジュース",
+	"グレープフルーツ・ジュース": "ジュース",
+	"ピンクグレープフルーツソーダ": "ジュース",
+	"コーラ": "ジュース",
+	"ジンジャーエール": "ジュース",
+	"ジンジャービール": "ジュース",
+	"ホットコーヒー": "コーヒー",
+	"エスプレッソ": "コーヒー",
+	// その他
+	"シンプル・シロップ": "シロップ",
+	"ラズベリー・シロップ": "シロップ",
+	"グレナデン・シロップ": "シロップ",
+	"シュガー・シロップ": "シロップ",
+	"オルジェー・シロップ": "シロップ",
+	"ハチミツ・シロップ": "シロップ",
+	"パッションフルーツ・シロップ": "シロップ",
+	"エルダーフラワー・コーディアル": "シロップ",
+	"アガベ・シロップ": "シロップ",
+	"カモミール・コーディアル": "シロップ",
+	"塩": "塩",
+	"セロリソルト": "塩",
+	"砂糖": "砂糖",
+	"角砂糖": "砂糖",
+	"卵白": "卵",
+	"卵黄": "卵",
+	"パイナップルの塊": "果物",
+	"ライム": "果物",
+	"ライムのくし切り": "果物",
+	"オレンジの輪切り": "果物",
+	"レモンの輪切り": "果物",
+	"白桃ピュレ": "ピュレ",
+	"パッションフルーツピュレ": "ピュレ",
+	"生クリーム": "クリーム",
+	"ココナッツクリーム": "クリーム",
+	"オレンジフラワーウォーター": "その他",
+	"バニラエッセンス": "その他",
+	"バニラシュガー": "その他",
+	"ドンズ・ミックス": "その他",
+	"ハチミツ": "その他",
+	"ショウガのスライス": "その他",
+	"ミントの小枝": "その他",
+	"ミントの葉": "その他",
+	"イタリアンバジルの葉": "その他",
+	"チョウジ": "その他",
+	"コショウ": "その他",
+	"赤唐辛子薄切り": "その他",
+	"ウスターソース": "その他",
+	"タバスコ": "その他",
+};
+
+const ingredientGroupsData = [
+	{ displayName: "ジン", order: 1 },
+	{ displayName: "ウォッカ", order: 2 },
+	{ displayName: "ラム", order: 3 },
+	{ displayName: "テキーラ", order: 4 },
+	{ displayName: "ウイスキー", order: 5 },
+	{ displayName: "ブランデー", order: 6 },
+	{ displayName: "ワイン", order: 7 },
+	{ displayName: "リキュール", order: 8 },
+	{ displayName: "ビターズ", order: 9 },
+	{ displayName: "その他の蒸留酒", order: 10 },
+	{ displayName: "ジュース", order: 11 },
+	{ displayName: "炭酸水", order: 12 },
+	{ displayName: "コーヒー", order: 13 },
+	{ displayName: "クリーム", order: 14 },
+	{ displayName: "シロップ", order: 15 },
+	{ displayName: "果物", order: 16 },
+	{ displayName: "ピュレ", order: 17 },
+	{ displayName: "卵", order: 18 },
+	{ displayName: "砂糖", order: 19 },
+	{ displayName: "塩", order: 20 },
+	{ displayName: "水", order: 21 },
+	{ displayName: "その他", order: 99 },
+];
+
 export async function seed(env: Env) {
 	const db = drizzle(env.DB);
 
@@ -2104,36 +2269,12 @@ export async function seed(env: Env) {
 
 	// 材料グループの登録
 	const groupMap = new Map<string, number>();
-	// 全ての材料からグループ名を抽出
-	const allGroupNames = new Set<string>();
-	for (const cocktailData of allCocktails) {
-		for (const ing of cocktailData.ingredients) {
-			const groupDisplayName = getGroupDisplayName(ing.name);
-			if (groupDisplayName) {
-				allGroupNames.add(groupDisplayName);
-			}
-		}
-	}
-
-	// グループを登録
-	let sortOrder = 1;
-	for (const groupName of Array.from(allGroupNames).sort()) {
-	const existingGroup = await db
-		.select()
-		.from(ingredientGroups)
-		.where(eq(ingredientGroups.displayName, groupName));
-
-	if (existingGroup.length > 0) {
-		groupMap.set(groupName, existingGroup[0].id);
-		continue;
-	}
-
-	const [newGroup] = await db
-		.insert(ingredientGroups)
-		.values({ displayName: groupName, sortOrder: sortOrder++ })
-		.returning({ id: ingredientGroups.id });
-
-	groupMap.set(groupName, newGroup.id);
+	for (const group of ingredientGroupsData) {
+		const [newGroup] = await db
+			.insert(ingredientGroups)
+			.values({ displayName: group.displayName, sortOrder: group.order })
+			.returning({ id: ingredientGroups.id });
+		groupMap.set(group.displayName, newGroup.id);
 	}
 	console.log("📦 Seeded ingredient groups.");
 
@@ -2142,7 +2283,7 @@ export async function seed(env: Env) {
 	for (const cocktailData of allCocktails) {
 		for (const ing of cocktailData.ingredients) {
 			if (!ingredientMap.has(ing.name)) {
-				const groupDisplayName = getGroupDisplayName(ing.name);
+				const groupDisplayName = ingredientGroupMap[ing.name] || null;
 				const groupId = groupDisplayName ? groupMap.get(groupDisplayName) : null;
 
 				const [newIngredient] = await db
