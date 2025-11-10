@@ -139,19 +139,6 @@ export default function IngredientSelector({
 		onIngredientsChange(newSelected);
 	};
 
-	// 全選択・全解除の関数
-	const handleSelectAll = () => {
-		if (disabled) return; // ローディング中は無効化
-		// 全ての表示名と実際の材料名を選択
-		const allIngredientNames: string[] = [];
-		for (const ing of ingredients) {
-			allIngredientNames.push(ing.name); // 表示名
-			allIngredientNames.push(...ing.actualNames); // 実際の材料名
-		}
-		// 重複を除去
-		onIngredientsChange([...new Set(allIngredientNames)]);
-	};
-
 	const handleClearAll = () => {
 		if (disabled) return; // ローディング中は無効化
 		onIngredientsChange([]);
@@ -210,20 +197,8 @@ export default function IngredientSelector({
 				</Paper>
 			)}
 
-			{/* 全選択・全解除ボタン */}
+			{/* 全解除ボタン */}
 			<Box sx={{ display: "flex", gap: 1, mb: 2, justifyContent: "center" }}>
-				<Chip
-					label="全選択"
-					onClick={handleSelectAll}
-					variant="outlined"
-					color="primary"
-					clickable
-					disabled={disabled}
-					sx={{
-						opacity: disabled ? 0.6 : 1,
-						cursor: disabled ? "not-allowed" : "pointer",
-					}}
-				/>
 				<Chip
 					label="全解除"
 					onClick={handleClearAll}
