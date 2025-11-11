@@ -49,7 +49,7 @@ interface Ingredient {
 
 interface IngredientSelectorProps {
 	selectedIngredients: string[];
-	onIngredientsChange: (ingredients: string[]) => void;
+	onIngredientsChange: (ingredients: string[], count: number) => void;
 	disabled?: boolean;
 }
 
@@ -153,20 +153,22 @@ export default function IngredientSelector({
 
 		if (isCurrentlySelected) {
 			// 解除: 表示名と関連する全ての実際の材料名を削除
-			onIngredientsChange(selectedIngredients.filter(
+			const newSelection = selectedIngredients.filter(
 				(item) => item !== displayName && !actualNames.includes(item),
-			));
+			);
+			onIngredientsChange(newSelection, selectedCount - 1);
 		} else {
 			if (selectedCount < 5) {
 				// 選択: 表示名と関連する全ての実際の材料名を追加
-				onIngredientsChange([...selectedIngredients, displayName, ...actualNames]);
+				const newSelection = [...selectedIngredients, displayName, ...actualNames];
+				onIngredientsChange(newSelection, selectedCount + 1);
 			}
 		}
 	};
 
 	const handleClearAll = () => {
 		if (disabled) return; // ローディング中は無効化
-		onIngredientsChange([]);
+		onIngredientsChange([], 0);
 	};
 
 	return (
@@ -199,7 +201,7 @@ export default function IngredientSelector({
 			)}
 
 			{/* 選択された材料の表示 */}
-			{selectedIngredients.length > 0 && (
+			{selectedCount > 0 && (
 				<Paper
 					elevation={1}
 					sx={{

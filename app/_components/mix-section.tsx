@@ -21,10 +21,15 @@ export default function MixSection({
 	const [selectedIngredients, setSelectedIngredients] = React.useState<
 		string[]
 	>([]);
+	const [selectedCount, setSelectedCount] = React.useState(0);
 
 	// 材料選択の変更ハンドラー
-	const handleIngredientsChange = (ingredients: string[]) => {
+	const handleIngredientsChange = (
+		ingredients: string[],
+		count: number,
+	) => {
 		setSelectedIngredients(ingredients);
+		setSelectedCount(count);
 	};
 
 	// Mixボタンクリックハンドラー
@@ -68,7 +73,7 @@ export default function MixSection({
 			{/* Mixボタン */}
 			<MixButton
 				onClick={handleMixClick}
-				disabled={disabled || selectedIngredients.length === 0}
+				disabled={disabled || selectedCount === 0}
 				isLoading={isLoading}
 			/>
 
@@ -83,8 +88,8 @@ export default function MixSection({
 			>
 				{isLoading
 					? "カクテルを生成中です..."
-					: selectedIngredients.length > 0
-					? `選択された材料 (${selectedIngredients.length}個) からレシピを生成します`
+					: selectedCount > 0
+					? `選択された材料 (${selectedCount}個) からレシピを生成します`
 					: "材料を選択してからMixボタンを押してください"}
 			</Typography>
 		</Box>
