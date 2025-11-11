@@ -79,6 +79,18 @@ export default function IngredientSelector({
 		fetchData();
 	}, []);
 
+	// 選択されている材料の数を計算
+	const selectedCount = React.useMemo(() => {
+		return ingredients.filter((ing) => {
+			return (
+				selectedIngredients.includes(ing.name) ||
+				ing.actualNames.some((actualName) =>
+					selectedIngredients.includes(actualName),
+				)
+			);
+		}).length;
+	}, [ingredients, selectedIngredients]);
+
 	// 材料のカテゴリ分け
 	const ingredientCategories = React.useMemo(() => {
 		const categorized: Record<string, Ingredient[]> = {};
@@ -126,6 +138,11 @@ export default function IngredientSelector({
 				(item) => item !== displayName && !actualNames.includes(item),
 			);
 		} else {
+			if (selectedCount >= 5) {
+				// 上限に達している場合は何もしない
+				return;
+			}
+
 			// 選択: 表示名と全ての実際の材料名を追加
 			newSelected = [
 				...selectedIngredients.filter(
@@ -161,6 +178,18 @@ export default function IngredientSelector({
 				材料を選択してください
 			</Typography>
 
+			{/* 上限メッセージ */}
+			{selectedCount >= 5 && (
+				<Typography
+					variant="body2"
+					color="text.secondary"
+					textAlign="center"
+					sx={{ mb: 2 }}
+				>
+					材料は5つまで選択できます。
+				</Typography>
+			)}
+
 			{/* 選択された材料の表示 */}
 			{selectedIngredients.length > 0 && (
 				<Paper
@@ -175,7 +204,7 @@ export default function IngredientSelector({
 					}}
 				>
 					<Typography variant="subtitle2" gutterBottom>
-						選択された材料 ({selectedIngredients.length}個):
+						選択された材料 ({selectedCount}個):
 					</Typography>
 					<Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
 						{selectedIngredients.map((ingredient) => (
@@ -256,6 +285,7 @@ export default function IngredientSelector({
 										ingredient.actualNames.some((actualName) =>
 											selectedIngredients.includes(actualName),
 										);
+									const isLimitReached = selectedCount >= 5;
 
 									return (
 										<FormControlLabel
@@ -267,6 +297,7 @@ export default function IngredientSelector({
 														handleIngredientToggle(ingredient.name)
 													}
 													color="primary"
+													disabled={!isSelected && isLimitReached}
 												/>
 											}
 											label={ingredient.name}
