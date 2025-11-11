@@ -39,12 +39,8 @@ export default function CocktailMixer() {
 		const fetchGroupMapping = async () => {
 			try {
 				const res = await fetch("/api/ingredients");
-				const data = (await res.json()) as {
-					groupMapping?: GroupMapping;
-				};
-				if (data.groupMapping) {
-					setGroupMapping(data.groupMapping);
-				}
+				const data = (await res.json()) as { groupMapping: GroupMapping };
+				setGroupMapping(data.groupMapping);
 			} catch (error) {
 				console.error("グループマッピングの取得に失敗しました:", error);
 			}

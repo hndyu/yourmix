@@ -68,13 +68,11 @@ export default function IngredientSelector({
 			const data = (await res.json()) as {
 				categories: Category[];
 				ingredients: Ingredient[];
-				groupMapping?: Record<string, string[]>;
+				groupMapping: Record<string, string[]>;
 			};
 			setCategories(data.categories);
 			setIngredients(data.ingredients);
-			if (data.groupMapping) {
-				setGroupMapping(data.groupMapping);
-			}
+			setGroupMapping(data.groupMapping);
 		};
 		fetchData();
 	}, []);
@@ -118,42 +116,50 @@ export default function IngredientSelector({
 		);
 	}, [ingredientCategories, categories]);
 
+	// 表示用の選択材料リストを作成
+	const displayedIngredients = React.useMemo(() => {
+		const selectedSet = new Set(selectedIngredients);
+		const displayed = new Set<string>();
+
+		// 最初にグループ化された材料（表示名）を追加
+		for (const ing of ingredients) {
+			if (ing.actualNames.length > 1 && selectedSet.has(ing.name)) {
+				displayed.add(ing.name);
+			}
+		}
+
+		// 次に、どのグループにも属さない単体の選択材料を追加
+		for (const selected of selectedIngredients) {
+			const isPartOfGroup = Object.values(groupMapping).some(names => names.includes(selected));
+			const isGroupItself = groupMapping[selected];
+
+			if (!isGroupItself && !isPartOfGroup) {
+				displayed.add(selected);
+			}
+		}
+
+		return Array.from(displayed);
+	}, [selectedIngredients, ingredients, groupMapping]);
+
 	// 材料の選択状態を変更する関数
 	const handleIngredientToggle = (displayName: string) => {
 		if (disabled) return; // ローディング中は無効化
 
-		// グループ化された材料の場合、実際の材料名を展開
 		const ingredient = ingredients.find((ing) => ing.name === displayName);
 		const actualNames = ingredient?.actualNames || [displayName];
+		const isCurrentlySelected = selectedIngredients.includes(displayName);
 
-		// 選択状態を確認（表示名または実際の材料名のいずれかが選択されているか）
-		const isCurrentlySelected =
-			selectedIngredients.includes(displayName) ||
-			actualNames.some((name) => selectedIngredients.includes(name));
-
-		let newSelected: string[];
 		if (isCurrentlySelected) {
-			// 解除: 表示名と全ての実際の材料名を削除
-			newSelected = selectedIngredients.filter(
+			// 解除: 表示名と関連する全ての実際の材料名を削除
+			onIngredientsChange(selectedIngredients.filter(
 				(item) => item !== displayName && !actualNames.includes(item),
-			);
+			));
 		} else {
-			if (selectedCount >= 5) {
-				// 上限に達している場合は何もしない
-				return;
+			if (selectedCount < 5) {
+				// 選択: 表示名と関連する全ての実際の材料名を追加
+				onIngredientsChange([...selectedIngredients, displayName, ...actualNames]);
 			}
-
-			// 選択: 表示名と全ての実際の材料名を追加
-			newSelected = [
-				...selectedIngredients.filter(
-					(item) => item !== displayName && !actualNames.includes(item),
-				),
-				displayName,
-				...actualNames,
-			];
 		}
-
-		onIngredientsChange(newSelected);
 	};
 
 	const handleClearAll = () => {
@@ -207,7 +213,7 @@ export default function IngredientSelector({
 						選択された材料 ({selectedCount}個):
 					</Typography>
 					<Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
-						{selectedIngredients.map((ingredient) => (
+						{displayedIngredients.map((ingredient) => (
 							<Chip
 								key={ingredient}
 								label={ingredient}
