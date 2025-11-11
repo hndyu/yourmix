@@ -7,7 +7,7 @@ import MixButton from "./mix-button";
 import IngredientSelector from "./ingredient-selector";
 
 interface MixSectionProps {
-	onMixClick: (selectedIngredients: string[]) => void;
+	onMixClick: (selectedGroups: string[]) => void;
 	disabled?: boolean;
 	isLoading?: boolean;
 }
@@ -22,19 +22,22 @@ export default function MixSection({
 		string[]
 	>([]);
 	const [selectedCount, setSelectedCount] = React.useState(0);
+	const [selectedGroups, setSelectedGroups] = React.useState<string[]>([]);
 
 	// 材料選択の変更ハンドラー
 	const handleIngredientsChange = (
 		ingredients: string[],
 		count: number,
+		groups: string[],
 	) => {
 		setSelectedIngredients(ingredients);
 		setSelectedCount(count);
+		setSelectedGroups(groups);
 	};
 
 	// Mixボタンクリックハンドラー
 	const handleMixClick = () => {
-		onMixClick(selectedIngredients);
+		onMixClick(selectedGroups);
 	};
 
 	return (

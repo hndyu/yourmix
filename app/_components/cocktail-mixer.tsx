@@ -49,7 +49,7 @@ export default function CocktailMixer() {
 	}, []);
 
 	// クリックハンドラー
-	const handleMixClick = async (selectedIngredients: string[]) => {
+	const handleMixClick = async (selectedGroups: string[]) => {
 		console.log("Mixボタンがクリックされました！");
 
 		// ローディング状態を開始
@@ -58,12 +58,12 @@ export default function CocktailMixer() {
 
 		try {
 			// 選択された材料を保存
-			setLastSelectedIngredients(selectedIngredients);
+			setLastSelectedIngredients(selectedGroups);
 
 			// 材料に基づいてカクテルをフィルタリング（検索結果表示用）
 			const filteredCocktails = filterCocktailsByIngredients(
 				mockCocktails,
-				selectedIngredients,
+				selectedGroups,
 				groupMapping,
 			);
 
@@ -72,7 +72,7 @@ export default function CocktailMixer() {
 
 			// オリジナルカクテルを生成
 			console.log("オリジナルカクテルを生成します。");
-			const generatedCocktail = await generateOriginalCocktail(selectedIngredients);
+			const generatedCocktail = await generateOriginalCocktail(selectedGroups);
 
 			// 少し遅延を入れてローディング感を演出
 			// await new Promise((resolve) => setTimeout(resolve, 800));

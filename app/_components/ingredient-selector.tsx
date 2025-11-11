@@ -49,7 +49,7 @@ interface Ingredient {
 
 interface IngredientSelectorProps {
 	selectedIngredients: string[];
-	onIngredientsChange: (ingredients: string[], count: number) => void;
+	onIngredientsChange: (ingredients: string[], count: number, groups: string[]) => void;
 	disabled?: boolean;
 }
 
@@ -116,6 +116,29 @@ export default function IngredientSelector({
 		);
 	}, [ingredientCategories, categories]);
 
+	// 表示用の選択材料リストを計算する関数
+	const calculateDisplayedIngredients = (
+		currentSelected: string[],
+	): string[] => {
+		const selectedSet = new Set(currentSelected);
+		const displayed = new Set<string>();
+
+		// グループ表示名を追加
+		for (const ing of ingredients) {
+			if (selectedSet.has(ing.name)) {
+				displayed.add(ing.name);
+			}
+		}
+
+		// グループに属さない単体の材料名を追加
+		for (const name of currentSelected) {
+			if (!groupMapping[name] && !ingredients.some(ing => ing.actualNames.includes(name))) {
+				displayed.add(name);
+			}
+		}
+		return Array.from(displayed);
+	};
+
 	// 表示用の選択材料リストを作成
 	const displayedIngredients = React.useMemo(() => {
 		const selectedSet = new Set(selectedIngredients);
@@ -156,19 +179,21 @@ export default function IngredientSelector({
 			const newSelection = selectedIngredients.filter(
 				(item) => item !== displayName && !actualNames.includes(item),
 			);
-			onIngredientsChange(newSelection, selectedCount - 1);
+			const newGroups = calculateDisplayedIngredients(newSelection);
+			onIngredientsChange(newSelection, selectedCount - 1, newGroups);
 		} else {
 			if (selectedCount < 5) {
 				// 選択: 表示名と関連する全ての実際の材料名を追加
 				const newSelection = [...selectedIngredients, displayName, ...actualNames];
-				onIngredientsChange(newSelection, selectedCount + 1);
+				const newGroups = calculateDisplayedIngredients(newSelection);
+				onIngredientsChange(newSelection, selectedCount + 1, newGroups);
 			}
 		}
 	};
 
 	const handleClearAll = () => {
 		if (disabled) return; // ローディング中は無効化
-		onIngredientsChange([], 0);
+		onIngredientsChange([], 0, []);
 	};
 
 	return (
