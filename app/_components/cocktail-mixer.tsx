@@ -48,33 +48,6 @@ export default function CocktailMixer() {
 		fetchGroupMapping();
 	}, []);
 
-	// 選択された材料に基づいてカクテルを選択する関数
-	const selectCocktailByIngredients = async (
-		selectedIngredients: string[],
-	): Promise<Cocktail> => {
-		console.log("選択された材料:", selectedIngredients);
-
-		// 完全一致するカクテルを検索
-		const exactMatches = findExactMatchCocktails(
-			mockCocktails,
-			selectedIngredients,
-			groupMapping,
-		);
-
-		if (exactMatches.length > 0) {
-			// 完全一致するカクテルが見つかった場合、最初のものを選択
-			const exactMatch = exactMatches[0];
-			console.log("完全一致するカクテルが見つかりました:", exactMatch.name);
-			return exactMatch;
-		}
-
-		// 完全一致しない場合は生成AIによるオリジナルカクテルを生成
-		console.log(
-			"完全一致するカクテルが見つかりませんでした。オリジナルカクテルを生成します。",
-		);
-		return await generateOriginalCocktail(selectedIngredients);
-	};
-
 	// クリックハンドラー
 	const handleMixClick = async (selectedIngredients: string[]) => {
 		console.log("Mixボタンがクリックされました！");
@@ -97,14 +70,14 @@ export default function CocktailMixer() {
 			// 検索結果を保存
 			setSearchResults(filteredCocktails);
 
-			// 選択された材料に基づいてカクテルを選択して表示
-			const matchedCocktail =
-				await selectCocktailByIngredients(selectedIngredients);
+			// オリジナルカクテルを生成
+			console.log("オリジナルカクテルを生成します。");
+			const generatedCocktail = await generateOriginalCocktail(selectedIngredients);
 
 			// 少し遅延を入れてローディング感を演出
-			await new Promise((resolve) => setTimeout(resolve, 800));
+			// await new Promise((resolve) => setTimeout(resolve, 800));
 
-			setSelectedCocktail(matchedCocktail);
+			setSelectedCocktail(generatedCocktail);
 
 			// 結果表示のアニメーションを開始
 			setTimeout(() => {
