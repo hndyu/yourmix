@@ -130,10 +130,12 @@ export default function IngredientSelector({
 
 		// 次に、どのグループにも属さない単体の選択材料を追加
 		for (const selected of selectedIngredients) {
-			const isPartOfGroup = Object.values(groupMapping).some(names => names.includes(selected));
-			const isGroupItself = groupMapping[selected];
+			const isGroupDisplayName = groupMapping[selected] !== undefined;
+			const isPartOfAnotherGroup = Object.values(groupMapping).some(names => names.includes(selected) && names.length > 1);
 
-			if (!isGroupItself && !isPartOfGroup) {
+			if (isGroupDisplayName && !isPartOfAnotherGroup) {
+				displayed.add(selected);
+			} else if (!isGroupDisplayName && !isPartOfAnotherGroup) {
 				displayed.add(selected);
 			}
 		}
