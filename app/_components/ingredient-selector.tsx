@@ -77,18 +77,6 @@ export default function IngredientSelector({
 		fetchData();
 	}, []);
 
-	// 選択されている材料の数を計算
-	const selectedCount = React.useMemo(() => {
-		return ingredients.filter((ing) => {
-			return (
-				selectedIngredients.includes(ing.name) ||
-				ing.actualNames.some((actualName) =>
-					selectedIngredients.includes(actualName),
-				)
-			);
-		}).length;
-	}, [ingredients, selectedIngredients]);
-
 	// 材料のカテゴリ分け
 	const ingredientCategories = React.useMemo(() => {
 		const categorized: Record<string, Ingredient[]> = {};
@@ -116,79 +104,65 @@ export default function IngredientSelector({
 		);
 	}, [ingredientCategories, categories]);
 
-	// 表示用の選択材料リストを計算する関数
-	const calculateDisplayedIngredients = (
-		currentSelected: string[],
-	): string[] => {
-		const selectedSet = new Set(currentSelected);
-		const displayed = new Set<string>();
-
-		// グループ表示名を追加
-		for (const ing of ingredients) {
-			if (selectedSet.has(ing.name)) {
-				displayed.add(ing.name);
-			}
-		}
-
-		// グループに属さない単体の材料名を追加
-		for (const name of currentSelected) {
-			if (!groupMapping[name] && !ingredients.some(ing => ing.actualNames.includes(name))) {
-				displayed.add(name);
-			}
-		}
-		return Array.from(displayed);
-	};
-
-	// 表示用の選択材料リストを作成
+// 選択されている材料の表示名リストを作成
 	const displayedIngredients = React.useMemo(() => {
-		const selectedSet = new Set(selectedIngredients);
-		const displayed = new Set<string>();
-
-		// 最初にグループ化された材料（表示名）を追加
+		const selectedDisplayNames = new Set<string>();
 		for (const ing of ingredients) {
-			if (ing.actualNames.length > 1 && selectedSet.has(ing.name)) {
-				displayed.add(ing.name);
+			// selectedIngredientsには表示名とその実際の材料名が含まれるため、
+			// ing.name（表示名）がselectedIngredientsに含まれていれば選択されていると判断
+			if (selectedIngredients.includes(ing.name)) {
+				selectedDisplayNames.add(ing.name);
 			}
 		}
 
-		// 次に、どのグループにも属さない単体の選択材料を追加
-		for (const selected of selectedIngredients) {
-			const isGroupDisplayName = groupMapping[selected] !== undefined;
-			const isPartOfAnotherGroup = Object.values(groupMapping).some(names => names.includes(selected) && names.length > 1);
+		return Array.from(selectedDisplayNames);
+	}, [selectedIngredients, ingredients]);
 
-			if (isGroupDisplayName && !isPartOfAnotherGroup) {
-				displayed.add(selected);
-			} else if (!isGroupDisplayName && !isPartOfAnotherGroup) {
-				displayed.add(selected);
-			}
-		}
-
-		return Array.from(displayed);
-	}, [selectedIngredients, ingredients, groupMapping]);
+	// 選択されている材料の数を計算 (表示名の数)
+	const selectedCount = React.useMemo(() => {
+		return displayedIngredients.length;
+	}, [displayedIngredients]);
 
 	// 材料の選択状態を変更する関数
 	const handleIngredientToggle = (displayName: string) => {
 		if (disabled) return; // ローディング中は無効化
 
 		const ingredient = ingredients.find((ing) => ing.name === displayName);
+		// ingredientが見つからない場合は、そのdisplayName自体が実際の材料名とみなす
 		const actualNames = ingredient?.actualNames || [displayName];
 		const isCurrentlySelected = selectedIngredients.includes(displayName);
 
+		let newRawSelection: string[]; // onIngredientsChangeの第一引数（生の選択リスト）
+		let newDisplayedSelection: string[]; // onIngredientsChangeの第三引数（表示名リスト）
+
 		if (isCurrentlySelected) {
-			// 解除: 表示名と関連する全ての実際の材料名を削除
-			const newSelection = selectedIngredients.filter(
+			// 解除: 表示名と関連する全ての実際の材料名をnewRawSelectionから削除
+			newRawSelection = selectedIngredients.filter(
 				(item) => item !== displayName && !actualNames.includes(item),
 			);
-			const newGroups = calculateDisplayedIngredients(newSelection);
-			onIngredientsChange(newSelection, selectedCount - 1, newGroups);
 		} else {
+			// 選択: 選択上限に達していないか確認
 			if (selectedCount < 5) {
-				// 選択: 表示名と関連する全ての実際の材料名を追加
-				const newSelection = [...selectedIngredients, displayName, ...actualNames];
-				const newGroups = calculateDisplayedIngredients(newSelection);
-				onIngredientsChange(newSelection, selectedCount + 1, newGroups);
+				// 表示名と関連する全ての実際の材料名をnewRawSelectionに追加
+				newRawSelection = [...selectedIngredients, displayName, ...actualNames];
+			} else {
+				return; // 5個以上選択できない場合は何もしない
 			}
 		}
+			// 新しい生の選択リストに基づいて、新しい表示名リストを計算
+		const tempDisplayed = new Set<string>();
+		for (const ing of ingredients) {
+			if (newRawSelection.includes(ing.name)) {
+				tempDisplayed.add(ing.name);
+			}
+		}
+		newDisplayedSelection = Array.from(tempDisplayed);
+
+		onIngredientsChange(
+			newRawSelection,
+			newDisplayedSelection.length, // countは表示名の数
+			newDisplayedSelection, // groupsは表示名のリスト
+		);
 	};
 
 	const handleClearAll = () => {
@@ -316,10 +290,7 @@ export default function IngredientSelector({
 								{ingredients.map((ingredient) => {
 									// 選択状態を確認（表示名または実際の材料名のいずれかが選択されているか）
 									const isSelected =
-										selectedIngredients.includes(ingredient.name) ||
-										ingredient.actualNames.some((actualName) =>
-											selectedIngredients.includes(actualName),
-										);
+										selectedIngredients.includes(ingredient.name); // ingredient.nameはdisplayName
 									const isLimitReached = selectedCount >= 5;
 
 									return (

@@ -22,6 +22,13 @@
       "when": 1762311743510,
       "tag": "0002_kind_silvermane",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1762909717692,
+      "tag": "0003_sweet_major_mapleleaf",
+      "breakpoints": true
     }
   ]
 }

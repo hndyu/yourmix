@@ -18,7 +18,7 @@ export const cocktails = sqliteTable('cocktails', {
 export const ingredients = sqliteTable('ingredients', {
   id: integer('id').primaryKey({ autoIncrement: true }),
   name: text('name').notNull().unique(),
-  groupId: integer('group_id').references(() => ingredientGroups.id, { onDelete: 'set null' }),
+  groupId: integer('group_id').notNull().references(() => ingredientGroups.id, { onDelete: 'cascade' }),
   description: text('description'),
   category: text('category'),
 });
