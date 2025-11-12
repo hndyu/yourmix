@@ -2283,16 +2283,18 @@ export async function seed(env: Env) {
 	for (const cocktailData of allCocktails) {
 		for (const ing of cocktailData.ingredients) {
 			if (!ingredientMap.has(ing.name)) {
-				const groupDisplayName = ingredientGroupMap[ing.name] || null;
-				const groupId = groupDisplayName ? groupMap.get(groupDisplayName) : null;
+				const groupDisplayName = ingredientGroupMap[ing.name];
+				if (!groupDisplayName) {
+					throw new Error(`Ingredient group not found for ingredient: ${ing.name}`);
+				}
+				const groupId = groupMap.get(groupDisplayName);
+				if (groupId === undefined) {
+					throw new Error(`Group ID not found for group display name: ${groupDisplayName}`);
+				}
 
 				const [newIngredient] = await db
 					.insert(ingredients)
-					.values({
-						name: ing.name,
-						groupId: groupId || null,
-						category: ing.category,
-					})
+					.values({ name: ing.name, groupId, category: ing.category })
 					.returning({ id: ingredients.id });
 				ingredientMap.set(ing.name, newIngredient.id);
 			}

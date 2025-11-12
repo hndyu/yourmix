@@ -1,5 +1,7 @@
 import type { Cocktail, Ingredient } from "../types/cocktail";
 import { getIngredientNamesByGroup } from "./ingredient-groups";
+import type { DrizzleD1Database } from "drizzle-orm/d1";
+import type * as schema from "@/schema";
 
 /**
  * グループマッピングの型定義
@@ -12,57 +14,65 @@ export type GroupMapping = Record<string, string[]>;
  * @param cocktails 検索対象のカクテル配列
  * @param selectedIngredients 選択された材料の配列（表示名と実際の材料名が混在）
  * @param groupMapping データベースから取得したグループマッピング（オプショナル）
+ * @param db Drizzleデータベースインスタンス
  * @returns 完全一致するカクテル配列
  */
-export function findExactMatchCocktails(
+export async function findExactMatchCocktails(
 	cocktails: Cocktail[],
 	selectedIngredients: string[],
 	groupMapping?: GroupMapping,
-): Cocktail[] {
+	db?: DrizzleD1Database<typeof schema>,
+): Promise<Cocktail[]> {
 	// 材料が選択されていない場合は空配列を返す
 	if (selectedIngredients.length === 0) {
-		return [];
+		return Promise.resolve([]);
 	}
 
-	return cocktails.filter((cocktail) => {
-		// カクテルの材料名を抽出
-		const cocktailIngredientNames = cocktail.ingredients.map(
-			(ingredient) => ingredient.name,
-		);
+	// 表示名を実際の材料名に展開
+	const expandedIngredients = await expandSelectedIngredients(
+		selectedIngredients,
+		groupMapping,
+		db,
+	);
 
-		// 表示名を実際の材料名に展開
-		const expandedIngredients = expandSelectedIngredients(
-			selectedIngredients,
-			groupMapping,
-		);
+	// 各カクテルが条件に一致するかどうかを非同期で判定
+	const filterResults = await Promise.all(
+		cocktails.map(async (cocktail) => {
+			const cocktailIngredientNames = cocktail.ingredients.map(
+				(ingredient) => ingredient.name,
+			);
 
-		// 展開後の材料数とカクテルの材料数が一致するかチェック
-		// 順序は考慮しない（配列の要素が同じであれば良い）
-		if (expandedIngredients.length !== cocktailIngredientNames.length) {
-			return false;
-		}
+			// 材料数が一致しない場合は除外
+			if (expandedIngredients.length !== cocktailIngredientNames.length) {
+				return false;
+			}
 
-		// 全ての選択された材料がカクテルに含まれているかチェック
-		const allSelectedIncluded = expandedIngredients.every((selectedIngredient) =>
-			cocktailIngredientNames.some((cocktailIngredient) =>
-				cocktailIngredient
-					.toLowerCase()
-					.includes(selectedIngredient.toLowerCase()),
-			),
-		);
+			// 順序を無視して配列の要素が一致するかをチェック
+			const sortedExpanded = [...expandedIngredients].sort();
+			const sortedCocktail = [...cocktailIngredientNames].sort();
 
-		// 全てのカクテル材料が選択された材料に含まれているかチェック
-		const allCocktailIncluded = cocktailIngredientNames.every(
-			(cocktailIngredient) =>
-				expandedIngredients.some((selectedIngredient) =>
+			const allSelectedIncluded = sortedExpanded.every((selectedIngredient) =>
+				sortedCocktail.some((cocktailIngredient) =>
 					cocktailIngredient
 						.toLowerCase()
 						.includes(selectedIngredient.toLowerCase()),
 				),
-		);
+			);
 
-		return allSelectedIncluded && allCocktailIncluded;
-	});
+			const allCocktailIncluded = sortedCocktail.every((cocktailIngredient) =>
+				sortedExpanded.some((selectedIngredient) =>
+					cocktailIngredient
+						.toLowerCase()
+						.includes(selectedIngredient.toLowerCase()),
+				),
+			);
+
+			return allSelectedIncluded && allCocktailIncluded;
+		}),
+	);
+
+	// 判定結果に基づいてカクテルをフィルタリング
+	return cocktails.filter((_, index) => filterResults[index]);
 }
 
 /**
@@ -109,28 +119,28 @@ export async function generateOriginalCocktail(
  * 選択された材料名を展開する関数（表示名 → 実際の材料名）
  * @param selectedIngredients 選択された材料名の配列（表示名と実際の材料名が混在）
  * @param groupMapping データベースから取得したグループマッピング（オプショナル）
+ * @param db Drizzleデータベースインスタンス
  * @returns 展開された実際の材料名の配列
  */
-function expandSelectedIngredients(
+async function expandSelectedIngredients(
 	selectedIngredients: string[],
 	groupMapping?: GroupMapping,
-): string[] {
+	db?: DrizzleD1Database<typeof schema>,
+): Promise<string[]> {
 	const expanded: string[] = [];
 
 	for (const ingredient of selectedIngredients) {
-		let actualNames: string[] = [];
-
 		// データベースから取得したマッピングを優先使用
 		if (groupMapping && groupMapping[ingredient]) {
-			actualNames = groupMapping[ingredient];
-		} else {
+			expanded.push(...groupMapping[ingredient]);
+		} else if (db) {
 			// フォールバック: コード内のマッピングを使用（シードスクリプトなどで使用）
-			actualNames = getIngredientNamesByGroup(ingredient);
-		}
-
-		if (actualNames.length > 0) {
-			// グループ化されている場合、実際の材料名を追加
-			expanded.push(...actualNames);
+			const actualNames = await getIngredientNamesByGroup(db, ingredient);
+			if (actualNames.length > 0) {
+				expanded.push(...actualNames);
+			} else {
+				expanded.push(ingredient);
+			}
 		} else {
 			// グループ化されていない場合、元の名称をそのまま追加
 			expanded.push(ingredient);
@@ -146,20 +156,22 @@ function expandSelectedIngredients(
  * @param cocktails フィルタリング対象のカクテル配列
  * @param selectedIngredients 選択された材料の配列（表示名と実際の材料名が混在）
  * @param groupMapping データベースから取得したグループマッピング（オプショナル）
+ * @param db Drizzleデータベースインスタンス
  * @returns フィルタリングされたカクテル配列
  */
-export function filterCocktailsByIngredients(
+export async function filterCocktailsByIngredients(
 	cocktails: Cocktail[],
 	selectedIngredients: string[],
 	groupMapping?: GroupMapping,
-): Cocktail[] {
+	db?: DrizzleD1Database<typeof schema>,
+): Promise<Cocktail[]> {
 	// 材料が選択されていない場合は全てのカクテルを返す
 	if (selectedIngredients.length === 0) {
 		return cocktails;
 	}
 
 	// 表示名を実際の材料名に展開
-	const expandedIngredients = expandSelectedIngredients(
+	const expandedIngredients = await expandSelectedIngredients(
 		selectedIngredients,
 		groupMapping,
 	);
@@ -187,21 +199,24 @@ export function filterCocktailsByIngredients(
  * @param cocktail カクテル
  * @param selectedIngredients 選択された材料の配列（表示名と実際の材料名が混在）
  * @param groupMapping データベースから取得したグループマッピング（オプショナル）
+ * @param db Drizzleデータベースインスタンス
  * @returns マッチ度（0-1の数値、1が完全一致）
  */
-export function calculateMatchScore(
+export async function calculateMatchScore(
 	cocktail: Cocktail,
 	selectedIngredients: string[],
 	groupMapping?: GroupMapping,
-): number {
+	db?: DrizzleD1Database<typeof schema>,
+): Promise<number> {
 	if (selectedIngredients.length === 0) {
 		return 0;
 	}
 
 	// 表示名を実際の材料名に展開
-	const expandedIngredients = expandSelectedIngredients(
+	const expandedIngredients = await expandSelectedIngredients(
 		selectedIngredients,
 		groupMapping,
+		db,
 	);
 
 	// カクテルの材料名を抽出
@@ -229,18 +244,22 @@ export function calculateMatchScore(
  * @param cocktails ソート対象のカクテル配列
  * @param selectedIngredients 選択された材料の配列（表示名と実際の材料名が混在）
  * @param groupMapping データベースから取得したグループマッピング（オプショナル）
+ * @param db Drizzleデータベースインスタンス
  * @returns マッチ度順にソートされたカクテル配列
  */
-export function sortCocktailsByMatchScore(
+export async function sortCocktailsByMatchScore(
 	cocktails: Cocktail[],
 	selectedIngredients: string[],
 	groupMapping?: GroupMapping,
-): Cocktail[] {
-	return [...cocktails].sort((a, b) => {
-		const scoreA = calculateMatchScore(a, selectedIngredients, groupMapping);
-		const scoreB = calculateMatchScore(b, selectedIngredients, groupMapping);
-		return scoreB - scoreA; // 降順（マッチ度の高い順）
-	});
+	db?: DrizzleD1Database<typeof schema>,
+): Promise<Cocktail[]> {
+	const scores = await Promise.all(
+		cocktails.map(async (cocktail) => ({
+			cocktail,
+			score: await calculateMatchScore(cocktail, selectedIngredients, groupMapping, db),
+		})),
+	);
+	return scores.sort((a, b) => b.score - a.score).map((item) => item.cocktail);
 }
 
 /**
