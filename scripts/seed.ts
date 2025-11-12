@@ -2197,27 +2197,27 @@ const ingredientGroupMap: Record<string, string> = {
 };
 
 const ingredientGroupsData = [
-	{ displayName: "ワイン", order: 1 },
-	{ displayName: "ジン", order: 2 },
-	{ displayName: "ウォッカ", order: 3 },
-	{ displayName: "ラム", order: 4 },
-	{ displayName: "テキーラ", order: 5 },
-	{ displayName: "ウイスキー", order: 6 },
-	{ displayName: "ブランデー", order: 7 },
-	{ displayName: "その他の蒸留酒", order: 8 },
-	{ displayName: "リキュール", order: 9 },
-	{ displayName: "ビターズ", order: 10 },
+	{ displayName: "ジン", order: 1 },
+	{ displayName: "ウォッカ", order: 2 },
+	{ displayName: "ラム", order: 3 },
+	{ displayName: "テキーラ", order: 4 },
+	{ displayName: "ウイスキー", order: 5 },
+	{ displayName: "ブランデー", order: 6 },
+	{ displayName: "ワイン", order: 7 },
+	{ displayName: "リキュール", order: 8 },
+	{ displayName: "ビターズ", order: 9 },
+	{ displayName: "その他の蒸留酒", order: 10 },
 	{ displayName: "ジュース", order: 11 },
 	{ displayName: "炭酸水", order: 12 },
 	{ displayName: "コーヒー", order: 13 },
-	{ displayName: "水", order: 14 },
-	{ displayName: "クリーム", order: 15 },
-	{ displayName: "シロップ", order: 16 },
-	{ displayName: "果物", order: 17 },
-	{ displayName: "ピュレ", order: 18 },
-	{ displayName: "卵", order: 19 },
-	{ displayName: "砂糖", order: 20 },
-	{ displayName: "塩", order: 21 },
+	{ displayName: "クリーム", order: 14 },
+	{ displayName: "シロップ", order: 15 },
+	{ displayName: "果物", order: 16 },
+	{ displayName: "ピュレ", order: 17 },
+	{ displayName: "卵", order: 18 },
+	{ displayName: "砂糖", order: 19 },
+	{ displayName: "塩", order: 20 },
+	{ displayName: "水", order: 21 },
 	{ displayName: "その他", order: 99 },
 ];
 
@@ -2283,22 +2283,16 @@ export async function seed(env: Env) {
 	for (const cocktailData of allCocktails) {
 		for (const ing of cocktailData.ingredients) {
 			if (!ingredientMap.has(ing.name)) {
-				const groupDisplayName = ingredientGroupMap[ing.name];
-				if (!groupDisplayName) {
-					throw new Error(
-						`Ingredient "${ing.name}" does not have a corresponding group in ingredientGroupMap.`,
-					);
-				}
-				const groupId = groupMap.get(groupDisplayName);
-				if (groupId === undefined) {
-					throw new Error(
-						`Group display name "${groupDisplayName}" for ingredient "${ing.name}" not found in seeded ingredient groups.`,
-					);
-				}
+				const groupDisplayName = ingredientGroupMap[ing.name] || null;
+				const groupId = groupDisplayName ? groupMap.get(groupDisplayName) : null;
 
 				const [newIngredient] = await db
 					.insert(ingredients)
-					.values({ name: ing.name, groupId, category: ing.category })
+					.values({
+						name: ing.name,
+						groupId: groupId || null,
+						category: ing.category,
+					})
 					.returning({ id: ingredients.id });
 				ingredientMap.set(ing.name, newIngredient.id);
 			}
