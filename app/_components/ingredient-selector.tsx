@@ -45,6 +45,7 @@ interface Ingredient {
 	name: string;
 	category: string | null;
 	actualNames: string[]; // グループ化された材料の実際の名称リスト
+	sortOrder: number | null;
 }
 
 interface IngredientSelectorProps {
@@ -106,16 +107,24 @@ export default function IngredientSelector({
 
 // 選択されている材料の表示名リストを作成
 	const displayedIngredients = React.useMemo(() => {
-		const selectedDisplayNames = new Set<string>();
+		const selected = [];
 		for (const ing of ingredients) {
 			// selectedIngredientsには表示名とその実際の材料名が含まれるため、
 			// ing.name（表示名）がselectedIngredientsに含まれていれば選択されていると判断
 			if (selectedIngredients.includes(ing.name)) {
-				selectedDisplayNames.add(ing.name);
+				selected.push(ing);
 			}
 		}
 
-		return Array.from(selectedDisplayNames);
+		// sortOrderに基づいてソート
+		selected.sort((a, b) => {
+			const sortA = a.sortOrder ?? Infinity;
+			const sortB = b.sortOrder ?? Infinity;
+			return sortA - sortB;
+		});
+
+		// 表示名だけの配列を返す
+		return selected.map(ing => ing.name);
 	}, [selectedIngredients, ingredients]);
 
 	// 選択されている材料の数を計算 (表示名の数)
