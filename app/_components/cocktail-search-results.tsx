@@ -56,7 +56,6 @@ const getMatchScoreText = (score: number) => {
 interface CocktailSearchResultsProps {
 	cocktails: Cocktail[];
 	selectedIngredients: string[];
-	onCocktailSelect: (cocktail: Cocktail) => void;
 	show?: boolean;
 	groupMapping?: GroupMapping;
 }
@@ -64,7 +63,6 @@ interface CocktailSearchResultsProps {
 export default function CocktailSearchResults({
 	cocktails,
 	selectedIngredients,
-	onCocktailSelect,
 	show = true,
 	groupMapping,
 }: CocktailSearchResultsProps) {

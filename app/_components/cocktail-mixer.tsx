@@ -98,18 +98,6 @@ export default function CocktailMixer() {
 		setShowResults(false);
 	};
 
-	// 検索結果からカクテルを選択する関数
-	const handleCocktailSelect = (cocktail: Cocktail) => {
-		setSelectedCocktail(cocktail);
-		// 選択されたカクテルまでスクロール
-		setTimeout(() => {
-			window.scrollTo({
-				top: 0,
-				behavior: "smooth",
-			});
-		}, 100);
-	};
-
 	return (
 		<>
 			{/* 日替わりおすすめセクション */}
@@ -132,7 +120,6 @@ export default function CocktailMixer() {
 				<CocktailSearchResults
 					cocktails={searchResults}
 					selectedIngredients={lastSelectedIngredients}
-					onCocktailSelect={handleCocktailSelect}
 					show={showResults}
 					groupMapping={groupMapping}
 				/>
