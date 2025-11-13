@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { getCloudflareContext } from "@opennextjs/cloudflare";
-import { drizzle } from "drizzle-orm/d1";
+import { drizzle, DrizzleD1Database } from "drizzle-orm/d1";
 import { ingredients, categories, ingredientGroups } from "../../../schema";
 import { asc, eq } from "drizzle-orm";
 
@@ -8,25 +8,28 @@ import { asc, eq } from "drizzle-orm";
  * カクテルの材料一覧を取得するAPIエンドポイント
  * GET /api/ingredients
  */
+
+interface Env {
+	DB: D1Database;
+}
+
+interface GroupedIngredient {
+	id: number;
+	name:string;
+	categoryName: string | null;
+	actualNames: string[];
+	sortOrder: number | null;
+	description: string | null;
+}
+
 export async function GET() {
 	try {
 		// Cloudflare環境からコンテキストを取得
 		const context = getCloudflareContext();
-		
-		// コンテキストまたはenvが存在しない場合のエラーハンドリング
-		if (!context || !context.env) {
-			console.error("Cloudflare context or env is not available");
-			return NextResponse.json(
-				{ error: "データベース接続に失敗しました。" },
-				{ status: 500 },
-			);
-		}
+		const env = context.env as Env;
 
-		// D1データベースに接続（型アサーションを使用してDBバインディングにアクセス）
-		// Cloudflare Workers環境では、env.DBがD1Databaseとして利用可能
-		const env = context.env as { DB?: D1Database };
 		if (!env.DB) {
-			console.error("DB binding is not available");
+			console.error("DB binding is not available.");
 			return NextResponse.json(
 				{ error: "データベース接続に失敗しました。" },
 				{ status: 500 },
@@ -34,92 +37,77 @@ export async function GET() {
 		}
 		const db = drizzle(env.DB);
 
-		// カテゴリを並び順で取得
-		const allCategories = await db
-			.select()
-			.from(categories)
-			.orderBy(asc(categories.sortOrder));
+		const [allCategories, allIngredientsWithGroups] = await Promise.all([
+			// カテゴリを並び順で取得
+			db.select().from(categories).orderBy(asc(categories.sortOrder)),
+			// 材料テーブルとグループテーブル、カテゴリテーブルをJOINして取得
+			db
+				.select({
+					id: ingredients.id,
+					name: ingredients.name,
+					categoryName: categories.name,
+					groupId: ingredients.groupId,
+					groupDisplayName: ingredientGroups.displayName,
+					groupSortOrder: ingredientGroups.sortOrder,
+					groupDescription: ingredientGroups.description,
+				})
+				.from(ingredients)
+				.leftJoin(ingredientGroups, eq(ingredients.groupId, ingredientGroups.id))
+				.leftJoin(categories, eq(ingredients.category, categories.name)),
+		]);
 
-		// 材料テーブルとグループテーブルをJOINして取得
-		const allIngredientsWithGroups = await db
-			.select({
-				id: ingredients.id,
-				name: ingredients.name,
-				category: ingredients.category,
-				groupId: ingredients.groupId,
-				groupDisplayName: ingredientGroups.displayName,
-				groupSortOrder: ingredientGroups.sortOrder,
-				groupDescription: ingredientGroups.description,
-			})
-			.from(ingredients)
-			.leftJoin(ingredientGroups, eq(ingredients.groupId, ingredientGroups.id));
+		// 表示用に材料をグループ化
+		const groupedIngredientsMap = allIngredientsWithGroups.reduce(
+			(acc, ing) => {
+				const displayName = ing.groupDisplayName || ing.name;
+				let group = acc.get(displayName);
 
-		// 表示用にグループ化（displayNameでグループ化）
-		const groupedIngredientsMap = new Map<
-			string,
-			{
-				id: number;
-				name: string;
-				category: string | null;
-				actualNames: string[];
-				sortOrder: number | null;
-				description: string | null;
-			}
-		>();
+				if (group) {
+					group.actualNames.push(ing.name);
+				} else {
+					group = {
+						id: ing.id,
+						name: displayName,
+						categoryName: ing.categoryName,
+						actualNames: [ing.name],
+						sortOrder: ing.groupSortOrder,
+						description: ing.groupDescription,
+					};
+					acc.set(displayName, group);
+				}
+				return acc;
+			},
+			new Map<string, GroupedIngredient>(),
+		);
 
-		for (const ing of allIngredientsWithGroups) {
-			// 表示名を決定（グループがあればグループ名、なければ材料名）
-			const displayName = ing.groupDisplayName || ing.name;
-
-			if (groupedIngredientsMap.has(displayName)) {
-				// 既存のグループに実際の材料名を追加
-				const existing = groupedIngredientsMap.get(displayName)!;
-				existing.actualNames.push(ing.name);
-			} else {
-				// 新しいグループを作成
-				groupedIngredientsMap.set(displayName, {
-					id: ing.id, // 最初に見つかった材料のIDを使用
-					name: displayName,
-					category: ing.category,
-					actualNames: [ing.name],
-					sortOrder: ing.groupSortOrder,
-					description: ing.groupDescription,
-				});
-			}
-		}
-
-		// グループ化された材料を配列に変換し、sortOrderでソート
+		// sortOrderでソート
 		const groupedIngredients = Array.from(groupedIngredientsMap.values()).sort(
 			(a, b) => {
-				// sortOrderがnullのものは最後に
-				if (a.sortOrder === null && b.sortOrder === null) return 0;
-				if (a.sortOrder === null) return 1;
-				if (b.sortOrder === null) return -1;
-				return a.sortOrder - b.sortOrder;
+				const orderA = a.sortOrder ?? Infinity;
+				const orderB = b.sortOrder ?? Infinity;
+				return orderA - orderB;
 			},
 		);
 
 		// グループ情報のマッピングを作成（検索時の展開に使用）
-		// キー: 表示グループ名、値: 実際の材料名の配列
-		const groupMapping: Record<string, string[]> = {};
-		for (const ing of allIngredientsWithGroups) {
-			if (ing.groupDisplayName) {
-				if (!groupMapping[ing.groupDisplayName]) {
-					groupMapping[ing.groupDisplayName] = [];
+		const groupMapping = allIngredientsWithGroups.reduce<Record<string, string[]>>(
+			(acc, ing) => {
+				if (ing.groupDisplayName && !acc[ing.groupDisplayName]) {
+					acc[ing.groupDisplayName] = allIngredientsWithGroups
+						.filter((i) => i.groupDisplayName === ing.groupDisplayName)
+						.map((i) => i.name);
 				}
-				// 重複を避ける
-				if (!groupMapping[ing.groupDisplayName].includes(ing.name)) {
-					groupMapping[ing.groupDisplayName].push(ing.name);
-				}
-			}
-		}
+				return acc;
+			},
+			{},
+		);
 
 		// カテゴリ情報と材料、グループマッピングを一緒に返す
 		return NextResponse.json(
 			{
 				categories: allCategories,
 				ingredients: groupedIngredients,
-				groupMapping: groupMapping,
+				groupMapping,
 			},
 			{ status: 200 },
 		);

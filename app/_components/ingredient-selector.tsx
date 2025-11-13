@@ -45,7 +45,7 @@ interface Category {
 interface Ingredient {
 	id: number;
 	name: string;
-	category: string | null;
+	categoryName: string | null;
 	actualNames: string[]; // グループ化された材料の実際の名称リスト
 	sortOrder: number | null;
 	description: string | null;
@@ -85,7 +85,7 @@ export default function IngredientSelector({
 	const ingredientCategories = React.useMemo(() => {
 		const categorized: Record<string, Ingredient[]> = {};
 		for (const ingredient of ingredients) {
-			const category = ingredient.category || "その他";
+			const category = ingredient.categoryName || "その他";
 			if (!categorized[category]) {
 				categorized[category] = [];
 			}
