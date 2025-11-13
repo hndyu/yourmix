@@ -332,12 +332,25 @@ export default function IngredientSelector({
 													disabled={!isSelected && isLimitReached}
 												/>
 											}
-											label={ingredient.name}
-											sx={{
-												"& .MuiFormControlLabel-label": {
-													fontSize: "0.9rem",
-												},
-											}}
+											label={
+												<Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+													<Typography sx={{ fontSize: "0.9rem" }}>
+														{ingredient.name}
+													</Typography>
+													{ingredient.description && (
+														<Tooltip title={ingredient.description} arrow>
+															<HelpOutlineIcon
+																fontSize="small"
+																sx={{
+																	color: "text.secondary",
+																	cursor: "pointer",
+																	verticalAlign: "middle",
+																}}
+															/>
+														</Tooltip>
+													)}
+												</Box>
+											}
 										/>
 									);
 								})}

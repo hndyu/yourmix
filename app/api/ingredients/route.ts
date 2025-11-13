@@ -49,6 +49,7 @@ export async function GET() {
 				groupId: ingredients.groupId,
 				groupDisplayName: ingredientGroups.displayName,
 				groupSortOrder: ingredientGroups.sortOrder,
+				groupDescription: ingredientGroups.description,
 			})
 			.from(ingredients)
 			.leftJoin(ingredientGroups, eq(ingredients.groupId, ingredientGroups.id));
@@ -62,6 +63,7 @@ export async function GET() {
 				category: string | null;
 				actualNames: string[];
 				sortOrder: number | null;
+				description: string | null;
 			}
 		>();
 
@@ -81,6 +83,7 @@ export async function GET() {
 					category: ing.category,
 					actualNames: [ing.name],
 					sortOrder: ing.groupSortOrder,
+					description: ing.groupDescription,
 				});
 			}
 		}
@@ -129,4 +132,3 @@ export async function GET() {
 		);
 	}
 }
-
