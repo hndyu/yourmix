@@ -76,46 +76,6 @@ export async function findExactMatchCocktails(
 }
 
 /**
- * 生成AIによるオリジナルカクテルを生成する関数
- * @param selectedIngredients 選択された材料の配列
- * @returns 生成されたオリジナルカクテル
- */
-export async function generateOriginalCocktail(
-	selectedIngredients: string[],
-): Promise<Cocktail> {
-	try {
-		const response = await fetch("/api/generate-cocktail", {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-			},
-			body: JSON.stringify({ ingredients: selectedIngredients }),
-		});
-
-		if (!response.ok) {
-			const errorData = (await response.json()) as { error?: string };
-			throw new Error(errorData.error || "カクテルの生成に失敗しました。");
-		}
-
-		const cocktailData = (await response.json()) as Cocktail;
-
-		// APIからのデータがCocktail型に準拠していることを確認
-		// ここでは簡単なチェックのみ
-		if (!cocktailData.name || !cocktailData.ingredients) {
-			throw new Error("受信したカクテルデータの形式が正しくありません。");
-		}
-
-		return cocktailData as Cocktail;
-	} catch (error) {
-		console.error("オリジナルカクテルの生成に失敗しました:", error);
-		// エラーが発生した場合、フォールバックとして簡単なカクテル情報を返すか、
-		// エラーを呼び出し元にスローしてUI側でハンドリングする
-		// ここではエラーを再スローする
-		throw error;
-	}
-}
-
-/**
  * 選択された材料名を展開する関数（表示名 → 実際の材料名）
  * @param selectedIngredients 選択された材料名の配列（表示名と実際の材料名が混在）
  * @param groupMapping データベースから取得したグループマッピング（オプショナル）

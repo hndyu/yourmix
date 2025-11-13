@@ -8,11 +8,11 @@ import DailyRecommendation from "./daily-recommendation";
 import { mockCocktails, type Cocktail } from "../types/cocktail";
 import {
 	filterCocktailsByIngredients,
-	sortCocktailsByMatchScore,
-	findExactMatchCocktails,
-	generateOriginalCocktail,
 	type GroupMapping,
 } from "../utils/cocktail-filter";
+import {
+	generateOriginalCocktail,
+} from "../utils/cocktail-generator";
 
 export default function CocktailMixer() {
 	// カクテル表示の状態管理
@@ -61,7 +61,7 @@ export default function CocktailMixer() {
 			setLastSelectedIngredients(selectedGroups);
 
 			// 材料に基づいてカクテルをフィルタリング（検索結果表示用）
-			const filteredCocktails = filterCocktailsByIngredients(
+			const filteredCocktails = await filterCocktailsByIngredients(
 				mockCocktails,
 				selectedGroups,
 				groupMapping,
