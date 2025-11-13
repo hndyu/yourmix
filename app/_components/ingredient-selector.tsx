@@ -64,7 +64,6 @@ export default function IngredientSelector({
 }: IngredientSelectorProps) {
 	const [ingredients, setIngredients] = React.useState<Ingredient[]>([]);
 	const [categories, setCategories] = React.useState<Category[]>([]);
-	const [groupMapping, setGroupMapping] = React.useState<Record<string, string[]>>({});
 
 	React.useEffect(() => {
 		const fetchData = async () => {
@@ -72,11 +71,9 @@ export default function IngredientSelector({
 			const data = (await res.json()) as {
 				categories: Category[];
 				ingredients: Ingredient[];
-				groupMapping: Record<string, string[]>;
 			};
 			setCategories(data.categories);
 			setIngredients(data.ingredients);
-			setGroupMapping(data.groupMapping);
 		};
 		fetchData();
 	}, []);
@@ -173,7 +170,7 @@ export default function IngredientSelector({
 		onIngredientsChange(
 			newRawSelection,
 			newDisplayedSelection.length, // countは表示名の数
-			newDisplayedSelection, // groupsは表示名のリスト
+			newDisplayedSelection,
 		);
 	};
 
