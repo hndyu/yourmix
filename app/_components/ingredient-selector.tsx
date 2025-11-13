@@ -12,8 +12,10 @@ import {
 	Accordion,
 	AccordionSummary,
 	AccordionDetails,
+	Tooltip,
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 // カテゴリ用のアイコンをインポート
 import {
 	WineBar,
@@ -46,6 +48,7 @@ interface Ingredient {
 	category: string | null;
 	actualNames: string[]; // グループ化された材料の実際の名称リスト
 	sortOrder: number | null;
+	description: string | null;
 }
 
 interface IngredientSelectorProps {
@@ -279,12 +282,26 @@ export default function IngredientSelector({
 					}}
 				>
 					<AccordionSummary expandIcon={<ExpandMoreIcon />}>
-						<Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-							{IconComponent &&
-								React.createElement(IconComponent)}
+						<Box
+							sx={{
+								display: "flex",
+								alignItems: "center",
+								gap: 1,
+								width: "100%",
+							}}
+						>
+							{IconComponent && React.createElement(IconComponent)}
 							<Typography variant="subtitle1" sx={{ fontWeight: "medium" }}>
 								{category}
 							</Typography>
+							{categoryInfo?.description && (
+								<Tooltip title={categoryInfo.description} arrow>
+									<HelpOutlineIcon
+										fontSize="small"
+										sx={{ color: "text.secondary", cursor: "pointer" }}
+									/>
+								</Tooltip>
+							)}
 						</Box>
 					</AccordionSummary>
 					<AccordionDetails>
