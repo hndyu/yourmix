@@ -2196,6 +2196,7 @@ const ingredientDetails: Record<string, { group: string; description: string }> 
 	"タバスコ": { group: "その他", description: "唐辛子と酢、塩を原料とする辛いソース。" },
 };
 
+
 const ingredientGroupsData = [
 	{ displayName: "ワイン", order: 1, description: "ブドウを発酵させて造られる醸造酒。ワインカクテルや風味付けに使われます。" },
 	{ displayName: "ジン", order: 20, description: "ジュニパーベリーを主原料とする蒸留酒。爽やかな香りが特徴です。" },
@@ -2317,10 +2318,16 @@ export async function seed(env: Env) {
 				if (groupId === undefined) {
 					throw new Error(`Group ID not found for group display name: ${groupDisplayName}`);
 				}
+				const description = ingredientDetails[ing.name]?.description;
 
 				const [newIngredient] = await db
 					.insert(ingredients)
-					.values({ name: ing.name, groupId, category: ing.category })
+					.values({
+						name: ing.name,
+						groupId: groupId,
+						category: ing.category,
+						description: description ?? null,
+					})
 					.returning({ id: ingredients.id });
 				ingredientMap.set(ing.name, newIngredient.id);
 			}
