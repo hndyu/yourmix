@@ -25,7 +25,7 @@ async function expandSelectedIngredients(
 
 	for (const ingredient of selectedIngredients) {
 		// データベースから取得したマッピングを優先使用
-		if (groupMapping && groupMapping[ingredient]) {
+		if (groupMapping?.[ingredient]) {
 			expanded.push(...groupMapping[ingredient]);
 		} else if (db) {
 			// フォールバック: コード内のマッピングを使用（シードスクリプトなどで使用）
