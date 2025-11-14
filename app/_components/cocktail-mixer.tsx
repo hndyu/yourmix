@@ -5,16 +5,17 @@ import MixSection from "./mix-section";
 import CocktailDisplay from "./cocktail-display";
 import CocktailSearchResults from "./cocktail-search-results";
 import DailyRecommendation from "./daily-recommendation";
-import { mockCocktails, type Cocktail } from "../types/cocktail";
+import type { Cocktail } from "../types/cocktail";
 import {
 	filterCocktailsByIngredients,
 	type GroupMapping,
 } from "../utils/cocktail-filter";
-import {
-	generateOriginalCocktail,
-} from "../utils/cocktail-generator";
+import { generateOriginalCocktail } from "../utils/cocktail-generator";
 
 export default function CocktailMixer() {
+	// DBから取得したすべてのカクテル
+	const [allCocktails, setAllCocktails] = React.useState<Cocktail[]>([]);
+
 	// カクテル表示の状態管理
 	const [selectedCocktail, setSelectedCocktail] =
 		React.useState<Cocktail | null>(null);
@@ -34,18 +35,31 @@ export default function CocktailMixer() {
 	// グループマッピングの状態管理
 	const [groupMapping, setGroupMapping] = React.useState<GroupMapping>({});
 
-	// グループマッピングを取得
+	// 初期化時にカクテルとグループマッピングをDBから取得
 	React.useEffect(() => {
-		const fetchGroupMapping = async () => {
+		const fetchData = async () => {
+			setIsLoading(true);
 			try {
-				const res = await fetch("/api/ingredients");
-				const data = (await res.json()) as { groupMapping: GroupMapping };
-				setGroupMapping(data.groupMapping);
+				const [cocktailsRes, ingredientsRes] = await Promise.all([
+					fetch("/api/cocktails"),
+					fetch("/api/ingredients"),
+				]);
+				const cocktailsData = (await cocktailsRes.json()) as {
+					cocktails: Cocktail[];
+				};
+				const ingredientsData = (await ingredientsRes.json()) as {
+					groupMapping: GroupMapping;
+				};
+
+				setAllCocktails(cocktailsData.cocktails);
+				setGroupMapping(ingredientsData.groupMapping);
 			} catch (error) {
-				console.error("グループマッピングの取得に失敗しました:", error);
+				console.error("初期データの取得に失敗しました:", error);
+			} finally {
+				setIsLoading(false);
 			}
 		};
-		fetchGroupMapping();
+		fetchData();
 	}, []);
 
 	// クリックハンドラー
@@ -62,7 +76,7 @@ export default function CocktailMixer() {
 
 			// 材料に基づいてカクテルをフィルタリング（検索結果表示用）
 			const filteredCocktails = await filterCocktailsByIngredients(
-				mockCocktails,
+				allCocktails,
 				selectedGroups,
 				groupMapping,
 			);

@@ -53,7 +53,11 @@ interface Ingredient {
 
 interface IngredientSelectorProps {
 	selectedIngredients: string[];
-	onIngredientsChange: (ingredients: string[], count: number, groups: string[]) => void;
+	onIngredientsChange: (
+		ingredients: string[],
+		count: number,
+		groups: string[],
+	) => void;
 	disabled?: boolean;
 }
 
@@ -98,14 +102,14 @@ export default function IngredientSelector({
 				const catA = categories.find((c) => c.name === categoryA);
 				const catB = categories.find((c) => c.name === categoryB);
 				// 定義されていないカテゴリは最後に表示
-				const sortOrderA = catA?.sortOrder ?? Infinity;
-				const sortOrderB = catB?.sortOrder ?? Infinity;
+				const sortOrderA = catA?.sortOrder ?? Number.POSITIVE_INFINITY;
+				const sortOrderB = catB?.sortOrder ?? Number.POSITIVE_INFINITY;
 				return sortOrderA - sortOrderB;
 			},
 		);
 	}, [ingredientCategories, categories]);
 
-// 選択されている材料の表示名リストを作成
+	// 選択されている材料の表示名リストを作成
 	const displayedIngredients = React.useMemo(() => {
 		const selected = [];
 		for (const ing of ingredients) {
@@ -118,13 +122,13 @@ export default function IngredientSelector({
 
 		// sortOrderに基づいてソート
 		selected.sort((a, b) => {
-			const sortA = a.sortOrder ?? Infinity;
-			const sortB = b.sortOrder ?? Infinity;
+			const sortA = a.sortOrder ?? Number.POSITIVE_INFINITY;
+			const sortB = b.sortOrder ?? Number.POSITIVE_INFINITY;
 			return sortA - sortB;
 		});
 
 		// 表示名だけの配列を返す
-		return selected.map(ing => ing.name);
+		return selected.map((ing) => ing.name);
 	}, [selectedIngredients, ingredients]);
 
 	// 選択されている材料の数を計算 (表示名の数)
@@ -142,7 +146,6 @@ export default function IngredientSelector({
 		const isCurrentlySelected = selectedIngredients.includes(displayName);
 
 		let newRawSelection: string[]; // onIngredientsChangeの第一引数（生の選択リスト）
-		let newDisplayedSelection: string[]; // onIngredientsChangeの第三引数（表示名リスト）
 
 		if (isCurrentlySelected) {
 			// 解除: 表示名と関連する全ての実際の材料名をnewRawSelectionから削除
@@ -158,14 +161,14 @@ export default function IngredientSelector({
 				return; // 5個以上選択できない場合は何もしない
 			}
 		}
-			// 新しい生の選択リストに基づいて、新しい表示名リストを計算
+		// 新しい生の選択リストに基づいて、新しい表示名リストを計算
 		const tempDisplayed = new Set<string>();
 		for (const ing of ingredients) {
 			if (newRawSelection.includes(ing.name)) {
 				tempDisplayed.add(ing.name);
 			}
 		}
-		newDisplayedSelection = Array.from(tempDisplayed);
+		const newDisplayedSelection = Array.from(tempDisplayed);
 
 		onIngredientsChange(
 			newRawSelection,
@@ -267,94 +270,101 @@ export default function IngredientSelector({
 				const iconName = categoryInfo?.icon || category;
 				const IconComponent =
 					categoryIcons[iconName] || categoryIcons[category];
-				
+
 				return (
-				<Accordion
-					key={category}
-					defaultExpanded
-					disabled={disabled}
-					sx={{
-						opacity: disabled ? 0.6 : 1,
-						pointerEvents: disabled ? "none" : "auto",
-					}}
-				>
-					<AccordionSummary expandIcon={<ExpandMoreIcon />}>
-						<Box
-							sx={{
-								display: "flex",
-								alignItems: "center",
-								gap: 1,
-								width: "100%",
-							}}
-						>
-							{IconComponent && React.createElement(IconComponent)}
-							<Typography variant="subtitle1" sx={{ fontWeight: "medium" }}>
-								{category}
-							</Typography>
-							{categoryInfo?.description && (
-								<Tooltip title={categoryInfo.description} arrow>
-									<HelpOutlineIcon
-										fontSize="small"
-										sx={{ color: "text.secondary", cursor: "pointer" }}
-									/>
-								</Tooltip>
-							)}
-						</Box>
-					</AccordionSummary>
-					<AccordionDetails>
-						<FormGroup>
+					<Accordion
+						key={category}
+						defaultExpanded
+						disabled={disabled}
+						sx={{
+							opacity: disabled ? 0.6 : 1,
+							pointerEvents: disabled ? "none" : "auto",
+						}}
+					>
+						<AccordionSummary expandIcon={<ExpandMoreIcon />}>
 							<Box
 								sx={{
-									display: "grid",
-									gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+									display: "flex",
+									alignItems: "center",
 									gap: 1,
+									width: "100%",
 								}}
 							>
-								{ingredients.map((ingredient) => {
-									// 選択状態を確認（表示名または実際の材料名のいずれかが選択されているか）
-									const isSelected =
-										selectedIngredients.includes(ingredient.name); // ingredient.nameはdisplayName
-									const isLimitReached = selectedCount >= 5;
-
-									return (
-										<FormControlLabel
-											key={ingredient.id}
-											control={
-												<Checkbox
-													checked={isSelected}
-													onChange={() =>
-														handleIngredientToggle(ingredient.name)
-													}
-													color="primary"
-													disabled={!isSelected && isLimitReached}
-												/>
-											}
-											label={
-												<Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
-													<Typography sx={{ fontSize: "0.9rem" }}>
-														{ingredient.name}
-													</Typography>
-													{ingredient.description && (
-														<Tooltip title={ingredient.description} arrow>
-															<HelpOutlineIcon
-																fontSize="small"
-																sx={{
-																	color: "text.secondary",
-																	cursor: "pointer",
-																	verticalAlign: "middle",
-																}}
-															/>
-														</Tooltip>
-													)}
-												</Box>
-											}
+								{IconComponent && React.createElement(IconComponent)}
+								<Typography variant="subtitle1" sx={{ fontWeight: "medium" }}>
+									{category}
+								</Typography>
+								{categoryInfo?.description && (
+									<Tooltip title={categoryInfo.description} arrow>
+										<HelpOutlineIcon
+											fontSize="small"
+											sx={{ color: "text.secondary", cursor: "pointer" }}
 										/>
-									);
-								})}
+									</Tooltip>
+								)}
 							</Box>
-						</FormGroup>
-					</AccordionDetails>
-				</Accordion>
+						</AccordionSummary>
+						<AccordionDetails>
+							<FormGroup>
+								<Box
+									sx={{
+										display: "grid",
+										gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+										gap: 1,
+									}}
+								>
+									{ingredients.map((ingredient) => {
+										// 選択状態を確認（表示名または実際の材料名のいずれかが選択されているか）
+										const isSelected = selectedIngredients.includes(
+											ingredient.name,
+										); // ingredient.nameはdisplayName
+										const isLimitReached = selectedCount >= 5;
+
+										return (
+											<FormControlLabel
+												key={ingredient.id}
+												control={
+													<Checkbox
+														checked={isSelected}
+														onChange={() =>
+															handleIngredientToggle(ingredient.name)
+														}
+														color="primary"
+														disabled={!isSelected && isLimitReached}
+													/>
+												}
+												label={
+													<Box
+														sx={{
+															display: "flex",
+															alignItems: "center",
+															gap: 0.5,
+														}}
+													>
+														<Typography sx={{ fontSize: "0.9rem" }}>
+															{ingredient.name}
+														</Typography>
+														{ingredient.description && (
+															<Tooltip title={ingredient.description} arrow>
+																<HelpOutlineIcon
+																	fontSize="small"
+																	sx={{
+																		color: "text.secondary",
+																		cursor: "pointer",
+																		verticalAlign: "middle",
+																	}}
+																/>
+															</Tooltip>
+														)}
+													</Box>
+												}
+											/>
+										);
+									})}
+								</Box>
+							</FormGroup>
+						</AccordionDetails>
+					</Accordion>
 				);
 			})}
 		</Box>

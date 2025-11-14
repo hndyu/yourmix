@@ -83,8 +83,8 @@ export async function GET() {
 		// sortOrderでソート
 		const groupedIngredients = Array.from(groupedIngredientsMap.values()).sort(
 			(a, b) => {
-				const orderA = a.sortOrder ?? Infinity;
-				const orderB = b.sortOrder ?? Infinity;
+				const orderA = a.sortOrder ?? Number.POSITIVE_INFINITY;
+				const orderB = b.sortOrder ?? Number.POSITIVE_INFINITY;
 				return orderA - orderB;
 			},
 		);
