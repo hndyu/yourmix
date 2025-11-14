@@ -11,15 +11,12 @@ import {
 } from "../../../schema";
 import { eq } from "drizzle-orm";
 import type { Cocktail } from "../../types/cocktail";
+import type { Env } from "../../../cloudflare-env";
 
 /**
  * カクテル一覧を取得するAPIエンドポイント
  * GET /api/cocktails
  */
-
-interface Env {
-	DB: D1Database;
-}
 
 export async function GET() {
 	try {

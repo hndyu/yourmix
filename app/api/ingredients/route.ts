@@ -3,15 +3,12 @@ import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { drizzle } from "drizzle-orm/d1";
 import { ingredients, categories, ingredientGroups } from "../../../schema";
 import { asc, eq } from "drizzle-orm";
+import type { Env } from "../../../cloudflare-env";
 
 /**
  * カクテルの材料一覧を取得するAPIエンドポイント
  * GET /api/ingredients
  */
-
-interface Env {
-	DB: D1Database;
-}
 
 interface GroupedIngredient {
 	id: number;

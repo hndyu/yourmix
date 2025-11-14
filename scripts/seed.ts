@@ -9,12 +9,8 @@ import {
 	categories,
 	ingredientGroups,
 } from "../schema"; // Drizzle ORM のスキーマ定義
+import type { Env } from "../cloudflare-env"; // Wranglerが生成した共通のEnv型定義をインポート
 import { v4 as uuidv4 } from "uuid";
-
-// D1 Client の型定義 (wrangler.jsonc の設定に合わせる)
-interface Env {
-	DB: D1Database;
-}
 
 // シードデータの型定義
 interface IngredientData {
