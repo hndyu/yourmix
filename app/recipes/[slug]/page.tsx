@@ -9,16 +9,14 @@ import {
 	CardContent,
 	Grid,
 	Button,
-	Chip,
-	Divider,
 	Paper,
 	Fade,
 	Container,
+	CircularProgress,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import { ArrowBack, Share, Timer, Restaurant } from "@mui/icons-material";
+import { ArrowBack, Share, Restaurant } from "@mui/icons-material";
 import type { Cocktail, Ingredient } from "../../types/cocktail";
-import { mockCocktails } from "../../types/cocktail";
 
 // カスタムスタイルのカード
 const StyledDetailCard = styled(Card)(({ theme }) => ({
@@ -29,14 +27,36 @@ const StyledDetailCard = styled(Card)(({ theme }) => ({
 	overflow: "hidden",
 }));
 
-
 export default function RecipeDetailPage() {
 	const params = useParams();
 	const router = useRouter();
 	const cocktailSlug = params.slug as string;
 
-	// カクテルデータを取得（実際の実装ではAPIから取得）
-	const cocktail = mockCocktails.find((c) => c.slug === cocktailSlug);
+	const [cocktail, setCocktail] = React.useState<Cocktail | null>(null);
+	const [loading, setLoading] = React.useState(true);
+	const [error, setError] = React.useState<string | null>(null);
+
+	React.useEffect(() => {
+		if (!cocktailSlug) return;
+
+		const fetchCocktail = async () => {
+			setLoading(true);
+			try {
+				const res = await fetch(`/api/cocktails/${cocktailSlug}`);
+				if (!res.ok) throw new Error("レシピの取得に失敗しました。");
+				const data = (await res.json()) as { cocktail: Cocktail };
+				setCocktail(data.cocktail);
+			} catch (err) {
+				setError(
+					err instanceof Error ? err.message : "不明なエラーが発生しました。",
+				);
+			} finally {
+				setLoading(false);
+			}
+		};
+
+		fetchCocktail();
+	}, [cocktailSlug]);
 
 	// 材料をグループ化する処理
 	const processedIngredients = React.useMemo(() => {
@@ -46,31 +66,60 @@ export default function RecipeDetailPage() {
 		const otherIngredients: Ingredient[] = [];
 
 		// option_group ごとに材料を分類
-		cocktail.ingredients.forEach((ingredient) => {
+		for (const ingredient of cocktail.ingredients) {
 			if (ingredient.option_group) {
-				if (!ingredientsMap.has(ingredient.option_group)) {
-					ingredientsMap.set(ingredient.option_group, []);
+				let group = ingredientsMap.get(ingredient.option_group);
+				if (!group) {
+					group = [];
+					ingredientsMap.set(ingredient.option_group, group);
 				}
-				ingredientsMap.get(ingredient.option_group)!.push(ingredient);
+				group.push(ingredient);
 			} else {
 				otherIngredients.push(ingredient);
 			}
-		});
+		}
 
 		// グループ化された材料を「または」で連結
 		const groupedIngredients: Ingredient[] = [];
-		ingredientsMap.forEach((group) => {
+		for (const group of ingredientsMap.values()) {
+			// グループ化された材料オブジェクトを作成する際に、Ingredient型の必須プロパティを追加します。
+			// idはユニークである必要があるため、グループ内の最初の材料IDとグループ名を組み合わせて生成します。
 			groupedIngredients.push({
+				// @ts-expect-error `id` is a number in the database, but we are creating a synthetic one here.
+				id: `${group[0].id}-group`,
 				name: group.map((ing) => ing.name).join(" または "),
 				amount: group[0].amount, //量は同じと仮定
+				description: group.map((ing) => ing.description).join("、"),
+				categoryName: group[0].categoryName,
+				sortOrder: group[0].sortOrder,
 			});
-		});
+		}
 
 		return [...groupedIngredients, ...otherIngredients];
 	}, [cocktail]);
 
-	// カクテルが見つからない場合
-	if (!cocktail) {
+	// 作り方を処理し、ユニークなIDを付与する
+	const processedInstructions = React.useMemo(() => {
+		if (!cocktail?.instructions) return [];
+		// cocktail.idとインデックスを組み合わせてユニークなIDを生成
+		return cocktail.instructions.map((instruction, index) => ({
+			id: `${cocktail.id}-instruction-${index}`,
+			text: instruction,
+		}));
+	}, [cocktail]);
+
+	// ローディング中の表示
+	if (loading) {
+		return (
+			<Container maxWidth="md" sx={{ py: 4, textAlign: "center" }}>
+				<CircularProgress />
+				<Typography sx={{ mt: 2 }}>レシピを読み込んでいます...</Typography>
+			</Container>
+		);
+	}
+
+	// エラーまたはカクテルが見つからない場合
+	if (error || !cocktail) {
 		return (
 			<Container maxWidth="md" sx={{ py: 4 }}>
 				<Fade in timeout={800}>
@@ -87,7 +136,8 @@ export default function RecipeDetailPage() {
 							❌ レシピが見つかりません
 						</Typography>
 						<Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
-							指定されたIDのレシピは存在しません。
+							{error ||
+								"指定されたURLのレシピは存在しないか、削除された可能性があります。"}
 						</Typography>
 						<Button
 							variant="contained"
@@ -177,8 +227,8 @@ export default function RecipeDetailPage() {
 										材料
 									</Typography>
 									<Grid container spacing={2}>
-										{processedIngredients.map((ingredient, index) => (
-											<Grid size={{ xs: 12, sm: 6 }} key={index}>
+										{processedIngredients.map((ingredient) => (
+											<Grid size={{ xs: 12, sm: 6 }} key={ingredient.id}>
 												<Paper
 													elevation={1}
 													sx={{
@@ -217,8 +267,8 @@ export default function RecipeDetailPage() {
 										📝 作り方
 									</Typography>
 									<Box>
-										{cocktail.instructions.map((instruction, index) => (
-											<Box key={index} sx={{ mb: 3 }}>
+										{processedInstructions.map((instructionObj, index) => (
+											<Box key={instructionObj.id} sx={{ mb: 3 }}>
 												<Paper
 													elevation={1}
 													sx={{
@@ -231,7 +281,7 @@ export default function RecipeDetailPage() {
 													<Typography
 														variant="h6"
 														sx={{
-															color: "#3498db",
+															color: "#3498db", // Consistent color for steps
 															fontWeight: "bold",
 															mb: 1,
 														}}
@@ -239,7 +289,7 @@ export default function RecipeDetailPage() {
 														Step {index + 1}
 													</Typography>
 													<Typography variant="body1" lineHeight={1.8}>
-														{instruction}
+														{instructionObj.text}
 													</Typography>
 												</Paper>
 											</Box>
