@@ -5,31 +5,44 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import MixButton from "./mix-button";
 import IngredientSelector from "./ingredient-selector";
+import type { Ingredient, Category } from "../types/cocktail";
 
 interface MixSectionProps {
-	onMixClick: (selectedIngredients: string[]) => void;
-	disabled?: boolean;
-	isLoading?: boolean;
+	onMixClick: (selectedGroups: string[]) => void;
+	ingredients: Ingredient[]; // 親から受け取る
+	categories: Category[]; // 親から受け取る
+	isMixing?: boolean;
+	isInitialLoading?: boolean;
 }
 
 export default function MixSection({
 	onMixClick,
-	disabled = false,
-	isLoading = false,
+	ingredients,
+	categories,
+	isMixing = false,
+	isInitialLoading = false,
 }: MixSectionProps) {
 	// 選択された材料の状態管理
 	const [selectedIngredients, setSelectedIngredients] = React.useState<
 		string[]
 	>([]);
+	const [selectedCount, setSelectedCount] = React.useState(0);
+	const [selectedGroups, setSelectedGroups] = React.useState<string[]>([]);
 
 	// 材料選択の変更ハンドラー
-	const handleIngredientsChange = (ingredients: string[]) => {
+	const handleIngredientsChange = (
+		ingredients: string[],
+		count: number,
+		groups: string[],
+	) => {
 		setSelectedIngredients(ingredients);
+		setSelectedCount(count);
+		setSelectedGroups(groups);
 	};
 
 	// Mixボタンクリックハンドラー
 	const handleMixClick = () => {
-		onMixClick(selectedIngredients);
+		onMixClick(selectedGroups);
 	};
 
 	return (
@@ -61,15 +74,18 @@ export default function MixSection({
 			{/* 材料選択UI */}
 			<IngredientSelector
 				selectedIngredients={selectedIngredients}
+				ingredients={ingredients}
+				categories={categories}
 				onIngredientsChange={handleIngredientsChange}
-				disabled={isLoading}
+				disabled={isMixing || isInitialLoading}
+				isInitialLoading={isInitialLoading}
 			/>
 
 			{/* Mixボタン */}
 			<MixButton
 				onClick={handleMixClick}
-				disabled={disabled || selectedIngredients.length === 0}
-				isLoading={isLoading}
+				disabled={isInitialLoading || selectedCount === 0}
+				isLoading={isMixing}
 			/>
 
 			{/* サブテキスト */}
@@ -81,11 +97,13 @@ export default function MixSection({
 					opacity: 0.8,
 				}}
 			>
-				{isLoading
-					? "カクテルを生成中です..."
-					: selectedIngredients.length > 0
-					? `選択された材料 (${selectedIngredients.length}個) からレシピを生成します`
-					: "材料を選択してからMixボタンを押してください"}
+				{isInitialLoading
+					? "材料を読み込んでいます..."
+					: isMixing
+						? "カクテルを生成中です..."
+						: selectedCount > 0
+							? `選択された材料 (${selectedCount}個) からレシピを生成します`
+							: "材料を選択してからMixボタンを押してください"}
 			</Typography>
 		</Box>
 	);

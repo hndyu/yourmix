@@ -56,7 +56,6 @@ const getMatchScoreText = (score: number) => {
 interface CocktailSearchResultsProps {
 	cocktails: Cocktail[];
 	selectedIngredients: string[];
-	onCocktailSelect: (cocktail: Cocktail) => void;
 	show?: boolean;
 	groupMapping?: GroupMapping;
 }
@@ -64,18 +63,50 @@ interface CocktailSearchResultsProps {
 export default function CocktailSearchResults({
 	cocktails,
 	selectedIngredients,
-	onCocktailSelect,
 	show = true,
 	groupMapping,
 }: CocktailSearchResultsProps) {
+	const [sortedCocktails, setSortedCocktails] = React.useState<Cocktail[]>([]);
+	const [matchScores, setMatchScores] = React.useState<Record<string, number>>({});
 	const router = useRouter();
 
-	// マッチ度順にソート（共通化された関数を使用）
-	const sortedCocktails = sortCocktailsByMatchScore(
-		cocktails,
-		selectedIngredients,
-		groupMapping,
-	);
+	React.useEffect(() => {
+		let isMounted = true;
+		const sortAndSetCocktails = async () => {
+			// マッチ度順にソート（共通化された関数を使用）
+			const sorted = await sortCocktailsByMatchScore(
+				cocktails,
+				selectedIngredients,
+				groupMapping,
+			);
+			if (isMounted) {
+				setSortedCocktails(sorted);
+			}
+		};
+
+		sortAndSetCocktails();
+		return () => { isMounted = false; };
+	}, [cocktails, selectedIngredients, groupMapping]);
+
+	React.useEffect(() => {
+		if (sortedCocktails.length === 0) return;
+
+		const calculateScores = async () => {
+			const scores: Record<string, number> = {};
+			await Promise.all(
+				sortedCocktails.map(async (cocktail) => {
+					const score = await calculateMatchScore(
+						cocktail,
+						selectedIngredients,
+						groupMapping,
+					);
+					scores[cocktail.id] = score;
+				}),
+			);
+			setMatchScores(scores);
+		};
+		calculateScores();
+	}, [sortedCocktails, selectedIngredients, groupMapping]);
 
 	if (cocktails.length === 0) {
 		return (
@@ -152,14 +183,9 @@ export default function CocktailSearchResults({
 				{/* 検索結果グリッド */}
 				<Grid container spacing={3}>
 					{sortedCocktails.map((cocktail) => {
-						// 共通化された関数を使用してマッチ度を計算
-						const matchScore = calculateMatchScore(
-							cocktail,
-							selectedIngredients,
-							groupMapping,
-						);
+						const score = matchScores[cocktail.id] ?? 0;
 						return (
-							<Grid key={cocktail.name} size={{ xs: 12, sm: 6, md: 4 }}>
+							<Grid key={cocktail.id} size={{ xs: 12, sm: 6, md: 4 }}>
 								<StyledResultCard
 									// onClick、onKeyDown、role、tabIndexを削除
 									sx={{
@@ -206,10 +232,10 @@ export default function CocktailSearchResults({
 											sx={{ display: "flex", gap: 1, flexWrap: "wrap", mb: 2 }}
 										>
 											<Chip
-												label={getMatchScoreText(matchScore)}
+												label={getMatchScoreText(score)}
 												size="small"
 												sx={{
-													backgroundColor: getMatchScoreColor(matchScore),
+													backgroundColor: getMatchScoreColor(score),
 													color: "white",
 													fontWeight: "bold",
 													fontSize: "0.75rem",

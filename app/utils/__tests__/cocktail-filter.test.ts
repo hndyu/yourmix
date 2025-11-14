@@ -4,36 +4,9 @@ import {
 	sortCocktailsByMatchScore,
 	filterCocktailsByIngredients,
 	findExactMatchCocktails,
-	generateOriginalCocktail,
 	getDailyRecommendation,
 } from "../cocktail-filter";
 import type { Cocktail } from "../../types/cocktail";
-
-vi.mock("../cocktail-filter", async () => {
-    const actual = await vi.importActual("../cocktail-filter");
-    return {
-        ...actual,
-        generateOriginalCocktail: vi.fn().mockImplementation(async (ingredients: string[]) => {
-            if (ingredients.length === 0) {
-                return {
-                    id: `generated-${Date.now()}`,
-                    name: " オリジナル",
-                    description: "空の材料から生成されたカクテル",
-                    ingredients: [],
-                    instructions: [],
-                };
-            }
-            return {
-                id: `generated-${Date.now()}`,
-                name: `${ingredients.join(" & ")} オリジナル`,
-                description: `${ingredients.join("と")}を使ったオリジナルカクテル`,
-                ingredients: ingredients.map(name => ({ name, amount: "適量" })),
-                instructions: ["材料を混ぜる"],
-                garnish: "なし",
-            };
-        }),
-    };
-});
 
 // テスト用のカクテルデータ
 const mockCocktails: Cocktail[] = [

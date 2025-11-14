@@ -1,5 +1,4 @@
 import { drizzle } from "drizzle-orm/d1";
-import { eq } from "drizzle-orm";
 import {
 	cocktails,
 	ingredients,
@@ -10,13 +9,8 @@ import {
 	categories,
 	ingredientGroups,
 } from "../schema"; // Drizzle ORM のスキーマ定義
+import type { Env } from "../cloudflare-env"; // Wranglerが生成した共通のEnv型定義をインポート
 import { v4 as uuidv4 } from "uuid";
-import { getGroupDisplayName } from "../app/utils/ingredient-groups";
-
-// D1 Client の型定義 (wrangler.jsonc の設定に合わせる)
-interface Env {
-	DB: D1Database;
-}
 
 // シードデータの型定義
 interface IngredientData {
@@ -57,10 +51,10 @@ const contemporaryClassics: CocktailData[] = [
 	{
 		name: "ブラック・ルシアン",
 		description:
-			"ウォッカとコーヒーリキュールを使った、濃厚でほろ苦い味わいの大人向けカクテル。",
+			"ウォッカとコーヒー・リキュールを使った、濃厚でほろ苦い味わいの大人向けカクテル。",
 		ingredients: [
 			{ name: "ウォッカ", amount: "50ml", category: "蒸留酒" },
-			{ name: "コーヒーリキュール", amount: "20ml", category: "混成酒" },
+			{ name: "コーヒー・リキュール", amount: "20ml", category: "混成酒" },
 		],
 		instructions: ["氷を入れたグラスに材料を注ぎます。", "軽くかき混ぜます。"],
 		garnish: "",
@@ -70,11 +64,11 @@ const contemporaryClassics: CocktailData[] = [
 	{
 		name: "ブラッディ・マリー",
 		description:
-			"トマトジュースとスパイスを合わせた、食事にも合うピリッとした風味のカクテル。",
+			"トマト・ジュースとスパイスを合わせた、食事にも合うピリッとした風味のカクテル。",
 		ingredients: [
 			{ name: "ウォッカ", amount: "45ml", category: "蒸留酒" },
-			{ name: "トマトジュース", amount: "90ml", category: "ノンアルコール" },
-			{ name: "レモンジュース", amount: "15ml", category: "ノンアルコール" },
+			{ name: "トマト・ジュース", amount: "90ml", category: "ノンアルコール" },
+			{ name: "レモン・ジュース", amount: "15ml", category: "ノンアルコール" },
 			{ name: "ウスターソース", amount: "2振", category: "その他" },
 			{ name: "タバスコ", amount: "お好みで", category: "その他" },
 			{ name: "セロリソルト", amount: "お好みで", category: "その他" },
@@ -131,7 +125,7 @@ const contemporaryClassics: CocktailData[] = [
 			{ name: "アンゴスチュラ・ビターズ", amount: "2振", category: "混成酒" },
 			{ name: "角砂糖", amount: "1個", category: "その他" },
 			{
-				name: "グランマルニエ",
+				name: "グラン・マルニエ",
 				amount: "お好みで数滴",
 				category: "混成酒",
 			},
@@ -152,8 +146,8 @@ const contemporaryClassics: CocktailData[] = [
 			{ name: "ジン", amount: "30ml", category: "蒸留酒" },
 			{ name: "コアントロー", amount: "30ml", category: "混成酒" },
 			{ name: "リレ・ブラン", amount: "30ml", category: "醸造酒" },
-			{ name: "レモンジュース", amount: "30ml", category: "ノンアルコール" },
-			{ name: "アブサン", amount: "1振", category: "蒸留酒" },
+			{ name: "レモン・ジュース", amount: "30ml", category: "ノンアルコール" },
+			{ name: "アブサン", amount: "1振", category: "混成酒" },
 		],
 		instructions: [
 			"すべての材料を氷を入れたシェイカーに注ぎます。",
@@ -170,8 +164,8 @@ const contemporaryClassics: CocktailData[] = [
 		ingredients: [
 			{ name: "ウォッカ", amount: "40ml", category: "蒸留酒" },
 			{ name: "コアントロー", amount: "15ml", category: "混成酒" },
-			{ name: "ライムジュース", amount: "15ml", category: "ノンアルコール" },
-			{ name: "クランベリージュース", amount: "30ml", category: "ノンアルコール" },
+			{ name: "ライム・ジュース", amount: "15ml", category: "ノンアルコール" },
+			{ name: "クランベリー・ジュース", amount: "30ml", category: "ノンアルコール" },
 		],
 		instructions: [
 			"氷を入れたシェイカーにすべての材料を加えます。",
@@ -188,7 +182,7 @@ const contemporaryClassics: CocktailData[] = [
 		ingredients: [
 			{ name: "ホワイト・ラム", amount: "50ml", category: "蒸留酒" },
 			{ name: "コーラ", amount: "120ml", category: "ノンアルコール" },
-			{ name: "ライムジュース", amount: "10ml", category: "ノンアルコール" },
+			{ name: "ライム・ジュース", amount: "10ml", category: "ノンアルコール" },
 		],
 		instructions: ["氷を入れたグラスにすべての材料を入れます。"],
 		garnish: "ライムのくし切りを添えます。",
@@ -201,8 +195,8 @@ const contemporaryClassics: CocktailData[] = [
 			"ジンとレモンをスパークリングワインで割った、華やかで飲みやすいシャンパン系カクテル。",
 		ingredients: [
 			{ name: "ジン", amount: "30ml", category: "蒸留酒" },
-			{ name: "レモンジュース", amount: "15ml", category: "ノンアルコール" },
-			{ name: "シュガー・シロップ", amount: "15ml", category: "シロップ" },
+			{ name: "レモン・ジュース", amount: "15ml", category: "ノンアルコール" },
+			{ name: "シュガー・シロップ", amount: "15ml", category: "その他" },
 			{ name: "シャンパン", amount: "60ml", category: "醸造酒" },
 		],
 		instructions: [
@@ -234,10 +228,10 @@ const contemporaryClassics: CocktailData[] = [
 	{
 		name: "ガリバルディ",
 		description:
-			"カンパリとオレンジジュースの鮮やかな色合いが美しい、軽やかな苦味のカクテル。",
+			"カンパリとオレンジ・ジュースの鮮やかな色合いが美しい、軽やかな苦味のカクテル。",
 		ingredients: [
 			{ name: "カンパリ", amount: "45ml", category: "混成酒" },
-			{ name: "オレンジジュース", amount: "120ml", category: "ノンアルコール" },
+			{ name: "オレンジ・ジュース", amount: "120ml", category: "ノンアルコール" },
 		],
 		instructions: ["氷を入れたグラスにすべての材料を入れます。"],
 		garnish: "オレンジのくし切りを添えます。",
@@ -268,7 +262,7 @@ const contemporaryClassics: CocktailData[] = [
 		ingredients: [
 			{ name: "ラム", amount: "60ml", category: "蒸留酒" },
 			{
-				name: "グレープフルーツジュース",
+				name: "グレープフルーツ・ジュース",
 				amount: "40ml",
 				category: "ノンアルコール",
 			},
@@ -277,7 +271,7 @@ const contemporaryClassics: CocktailData[] = [
 				amount: "15ml",
 				category: "混成酒",
 			},
-			{ name: "ライムジュース", amount: "15ml", category: "ノンアルコール" },
+			{ name: "ライム・ジュース", amount: "15ml", category: "ノンアルコール" },
 		],
 		instructions: [
 			"すべての材料を氷を入れたシェイカーに注ぎます。",
@@ -352,7 +346,7 @@ const contemporaryClassics: CocktailData[] = [
 		ingredients: [
 			{ name: "ウォッカ", amount: "30ml", category: "蒸留酒" },
 			{ name: "トリプルセック", amount: "20ml", category: "混成酒" },
-			{ name: "レモンジュース", amount: "15ml", category: "ノンアルコール" },
+			{ name: "レモン・ジュース", amount: "15ml", category: "ノンアルコール" },
 		],
 		instructions: [
 			"すべての材料を氷を入れたシェイカーに注ぎます。",
@@ -372,8 +366,8 @@ const contemporaryClassics: CocktailData[] = [
 			{ name: "ホワイト・ラム", amount: "15ml", category: "蒸留酒" },
 			{ name: "ジン", amount: "15ml", category: "蒸留酒" },
 			{ name: "コアントロー", amount: "15ml", category: "混成酒" },
-			{ name: "レモンジュース", amount: "25ml", category: "ノンアルコール" },
-			{ name: "シンプル・シロップ", amount: "30ml", category: "シロップ" },
+			{ name: "レモン・ジュース", amount: "25ml", category: "ノンアルコール" },
+			{ name: "シンプル・シロップ", amount: "30ml", category: "その他" },
 			{ name: "コーラ", amount: "適量", category: "ノンアルコール" },
 		],
 		instructions: [
@@ -392,9 +386,9 @@ const contemporaryClassics: CocktailData[] = [
 			{ name: "ゴールド・ラム", amount: "30ml", category: "蒸留酒" },
 			{ name: "ダーク・ラム", amount: "30ml", category: "蒸留酒" },
 			{ name: "キュラソー", amount: "15ml", category: "混成酒" },
-			{ name: "オルジェー・シロップ", amount: "15ml", category: "シロップ" },
-			{ name: "ライムジュース", amount: "30ml", category: "ノンアルコール" },
-			{ name: "シンプル・シロップ ", amount: "7.5ml", category: "シロップ" },
+			{ name: "オルジェー・シロップ", amount: "15ml", category: "その他" },
+			{ name: "ライム・ジュース", amount: "30ml", category: "ノンアルコール" },
+			{ name: "シンプル・シロップ", amount: "7.5ml", category: "その他" },
 		],
 		instructions: [
 			"すべての材料を氷を入れたシェイカーに加えます。",
@@ -411,7 +405,7 @@ const contemporaryClassics: CocktailData[] = [
 		ingredients: [
 			{ name: "テキーラ", amount: "50ml", category: "蒸留酒" },
 			{ name: "トリプルセック", amount: "20ml", category: "混成酒" },
-			{ name: "ライムジュース", amount: "15ml", category: "ノンアルコール" },
+			{ name: "ライム・ジュース", amount: "15ml", category: "ノンアルコール" },
 		],
 		instructions: [
 			"すべての材料を氷を入れたシェイカーに加えます。",
@@ -424,13 +418,13 @@ const contemporaryClassics: CocktailData[] = [
 	{
 		name: "ミモザ",
 		description:
-			"オレンジジュースとスパークリングワインを合わせた、朝にもぴったりの軽やかな一杯。",
+			"オレンジ・ジュースとスパークリングワインを合わせた、朝にもぴったりの軽やかな一杯。",
 		ingredients: [
-			{ name: "オレンジジュース", amount: "75ml", category: "ノンアルコール" },
+			{ name: "オレンジ・ジュース", amount: "75ml", category: "ノンアルコール" },
 			{ name: "プロセッコ", amount: "75ml", category: "醸造酒" },
 		],
 		instructions: [
-			"グラスにオレンジジュースを注ぎ、プロセッコを静かに注ぎます。",
+			"グラスにオレンジ・ジュースを注ぎ、プロセッコを静かに注ぎます。",
 			"軽くかき混ぜます。",
 		],
 		garnish: "お好みでオレンジの皮をねじったものを添えます。",
@@ -461,13 +455,13 @@ const contemporaryClassics: CocktailData[] = [
 			"ミントとライムの香りが広がる、夏に人気のすっきりとしたラムカクテル。",
 		ingredients: [
 			{ name: "ホワイト・ラム", amount: "45ml", category: "蒸留酒" },
-			{ name: "ライムジュース", amount: "20ml", category: "ノンアルコール" },
+			{ name: "ライム・ジュース", amount: "20ml", category: "ノンアルコール" },
 			{ name: "ミントの小枝", amount: "6本", category: "その他" },
 			{ name: "砂糖", amount: "小さじ2杯", category: "その他" },
 			{ name: "炭酸水", amount: "適量", category: "ノンアルコール" },
 		],
 		instructions: [
-			"ミントの小枝を砂糖とライムジュースと混ぜます。",
+			"ミントの小枝を砂糖とライム・ジュースと混ぜます。",
 			"少量の炭酸水を加え、グラスに氷を入れます。",
 			"ホワイト・ラムを注ぎ、炭酸水を注ぎます。軽く混ぜてすべての材料を混ぜ合わせます。",
 		],
@@ -482,11 +476,11 @@ const contemporaryClassics: CocktailData[] = [
 		ingredients: [
 			{ name: "ウォッカ", amount: "45ml", category: "蒸留酒" },
 			{ name: "ジンジャービール", amount: "120ml", category: "ノンアルコール" },
-			{ name: "ライムジュース", amount: "10ml", category: "ノンアルコール" },
+			{ name: "ライム・ジュース", amount: "10ml", category: "ノンアルコール" },
 		],
 		instructions: [
 			"グラスにウォッカとジンジャービールを混ぜます。",
-			"ライムジュースを加え、すべての材料が混ざるまで軽くかき混ぜます。",
+			"ライム・ジュースを加え、すべての材料が混ざるまで軽くかき混ぜます。",
 		],
 		garnish: "ライムのスライスを添えます。",
 		tags: ["国際バーテンダー協会公認カクテル - 現代のクラシック"],
@@ -499,7 +493,7 @@ const contemporaryClassics: CocktailData[] = [
 		ingredients: [
 			{ name: "ホワイト・ラム", amount: "50ml", category: "蒸留酒" },
 			{ name: "ココナッツクリーム", amount: "30ml", category: "その他" },
-			{ name: "パイナップルジュース", amount: "50ml", category: "ノンアルコール" },
+			{ name: "パイナップル・ジュース", amount: "50ml", category: "ノンアルコール" },
 		],
 		instructions: [
 			"すべての材料と氷を混ぜます。",
@@ -515,8 +509,8 @@ const contemporaryClassics: CocktailData[] = [
 			"ピスコとレモンを合わせた、軽い酸味とまろやかな口当たりが特徴の南米生まれのカクテル。",
 		ingredients: [
 			{ name: "ピスコ", amount: "60ml", category: "蒸留酒" },
-			{ name: "レモンジュース", amount: "30ml", category: "ノンアルコール" },
-			{ name: "シンプル・シロップ", amount: "20ml", category: "シロップ" },
+			{ name: "レモン・ジュース", amount: "30ml", category: "ノンアルコール" },
+			{ name: "シンプル・シロップ", amount: "20ml", category: "その他" },
 			{ name: "卵白", amount: "1個", category: "その他" },
 		],
 		instructions: [
@@ -548,9 +542,9 @@ const contemporaryClassics: CocktailData[] = [
 			"ウォッカにクランベリーとグレープフルーツを合わせた、軽くてさっぱりとしたフルーティーな一杯。",
 		ingredients: [
 			{ name: "ウォッカ", amount: "40ml", category: "蒸留酒" },
-			{ name: "クランベリージュース", amount: "120ml", category: "ノンアルコール" },
+			{ name: "クランベリー・ジュース", amount: "120ml", category: "ノンアルコール" },
 			{
-				name: "グレープフルーツジュース",
+				name: "グレープフルーツ・ジュース",
 				amount: "30ml",
 				category: "ノンアルコール",
 			},
@@ -566,9 +560,9 @@ const contemporaryClassics: CocktailData[] = [
 			"オレンジとクランベリーが調和した、甘酸っぱく飲みやすい人気のカクテル。",
 		ingredients: [
 			{ name: "ウォッカ", amount: "40ml", category: "蒸留酒" },
-			{ name: "シュナップス", amount: "20ml", category: "混成酒" },
-			{ name: "オレンジジュース", amount: "40ml", category: "ノンアルコール" },
-			{ name: "クランベリージュース", amount: "40ml", category: "ノンアルコール" },
+			{ name: "シュナップス", amount: "20ml", category: "蒸留酒" },
+			{ name: "オレンジ・ジュース", amount: "40ml", category: "ノンアルコール" },
+			{ name: "クランベリー・ジュース", amount: "40ml", category: "ノンアルコール" },
 		],
 		instructions: ["氷を入れたグラスにすべての材料を入れます。"],
 		garnish: "オレンジの半分のスライスを添えます。",
@@ -584,9 +578,9 @@ const contemporaryClassics: CocktailData[] = [
 			{ name: "モラッコ・チェリー", amount: "15ml", category: "混成酒" },
 			{ name: "コアントロー", amount: "7.5ml", category: "混成酒" },
 			{ name: "ベネディクティン", amount: "7.5ml", category: "混成酒" },
-			{ name: "パイナップルジュース", amount: "120ml", category: "ノンアルコール" },
-			{ name: "ライムジュース", amount: "15ml", category: "ノンアルコール" },
-			{ name: "グレナデン・シロップ", amount: "10ml", category: "シロップ" },
+			{ name: "パイナップル・ジュース", amount: "120ml", category: "ノンアルコール" },
+			{ name: "ライム・ジュース", amount: "15ml", category: "ノンアルコール" },
+			{ name: "グレナデン・シロップ", amount: "10ml", category: "その他" },
 			{ name: "アンゴスチュラ・ビターズ", amount: "1振", category: "混成酒" },
 		],
 		instructions: [
@@ -601,14 +595,14 @@ const contemporaryClassics: CocktailData[] = [
 	{
 		name: "テキーラ・サンライズ",
 		description:
-			"オレンジジュースとグレナデンで朝焼けのような色を表現した、甘く爽やかなテキーラカクテル。",
+			"オレンジ・ジュースとグレナデンで朝焼けのような色を表現した、甘く爽やかなテキーラカクテル。",
 		ingredients: [
 			{ name: "テキーラ", amount: "45ml", category: "蒸留酒" },
-			{ name: "オレンジジュース", amount: "90ml", category: "ノンアルコール" },
-			{ name: "グレナデン・シロップ", amount: "15ml", category: "シロップ" },
+			{ name: "オレンジ・ジュース", amount: "90ml", category: "ノンアルコール" },
+			{ name: "グレナデン・シロップ", amount: "15ml", category: "その他" },
 		],
 		instructions: [
-			"氷を入れたグラスにテキーラとオレンジジュースを直接注ぎます。",
+			"氷を入れたグラスにテキーラとオレンジ・ジュースを直接注ぎます。",
 			"グレナデン・シロップを加えて色彩効果を作りますが、かき混ぜないでください。",
 		],
 		garnish: "オレンジの半分のスライスまたはオレンジの皮を添えます。",
@@ -640,12 +634,12 @@ const contemporaryClassics: CocktailData[] = [
 			{ name: "ダーク・ラム", amount: "45ml", category: "蒸留酒" },
 			{ name: "ゴールド・ラム", amount: "45ml", category: "蒸留酒" },
 			{ name: "デメララ・ラム", amount: "30ml", category: "蒸留酒" },
-			{ name: "ライムジュース", amount: "20ml", category: "ノンアルコール" },
+			{ name: "ライム・ジュース", amount: "20ml", category: "ノンアルコール" },
 			{ name: "ファレナム", amount: "15ml", category: "混成酒" },
 			{ name: "ドンズ・ミックス", amount: "15ml", category: "その他" },
-			{ name: "グレナデン・シロップ", amount: "小さじ1杯", category: "シロップ" },
+			{ name: "グレナデン・シロップ", amount: "小さじ1杯", category: "その他" },
 			{ name: "アンゴスチュラ・ビターズ", amount: "1振", category: "混成酒" },
-			{ name: "ペルノ", amount: "6滴", category: "蒸留酒" },
+			{ name: "ペルノ", amount: "6滴", category: "混成酒" },
 		],
 		instructions: [
 			"すべての材料を砕いた氷と一緒にかき混ぜます。",
@@ -664,12 +658,12 @@ const newEra: CocktailData[] = [
 			"レモンとハチミツの優しい甘みとジンの爽やかさが調和した、軽やかな現代風カクテル。",
 		ingredients: [
 			{ name: "ジン", amount: "52.5ml", category: "蒸留酒" },
-			{ name: "ハチミツ・シロップ", amount: "小さじ2杯", category: "シロップ" },
-			{ name: "レモンジュース", amount: "22.5ml", category: "ノンアルコール" },
-			{ name: "オレンジジュース", amount: "22.5ml", category: "ノンアルコール" },
+			{ name: "ハチミツ・シロップ", amount: "小さじ2杯", category: "その他" },
+			{ name: "レモン・ジュース", amount: "22.5ml", category: "ノンアルコール" },
+			{ name: "オレンジ・ジュース", amount: "22.5ml", category: "ノンアルコール" },
 		],
 		instructions: [
-			"ハチミツ・シロップ、レモンジュース、オレンジジュースを溶けるまでかき混ぜ、ジンを加えて氷と一緒にシェイクします。冷やしたグラスに注ぎます。",
+			"ハチミツ・シロップ、レモン・ジュース、オレンジ・ジュースを溶けるまでかき混ぜ、ジンを加えて氷と一緒にシェイクします。冷やしたグラスに注ぎます。",
 		],
 		garnish: "お好みでレモンまたはオレンジの皮を添えます。",
 		tags: ["国際バーテンダー協会公認カクテル - 新時代の一杯"],
@@ -681,8 +675,8 @@ const newEra: CocktailData[] = [
 			"ジンにブラックベリーのリキュールを加えて、果実の風味が豊かで飲みやすいモダンな一杯。",
 		ingredients: [
 			{ name: "ジン", amount: "50ml", category: "蒸留酒" },
-			{ name: "レモンジュース", amount: "25ml", category: "ノンアルコール" },
-			{ name: "シュガー・シロップ", amount: "12.5ml", category: "シロップ" },
+			{ name: "レモン・ジュース", amount: "25ml", category: "ノンアルコール" },
+			{ name: "シュガー・シロップ", amount: "12.5ml", category: "その他" },
 			{
 				name: "クレーム・ド・ミュール",
 				amount: "15ml",
@@ -702,12 +696,12 @@ const newEra: CocktailData[] = [
 			"ライムとハチミツを使い、蒸留酒で仕上げた、シンプルで爽快な南国テイストのカクテル。",
 		ingredients: [
 			{ name: "アグアルディエンテ", amount: "60ml", category: "蒸留酒" },
-			{ name: "ライムジュース", amount: "15ml", category: "ノンアルコール" },
+			{ name: "ライム・ジュース", amount: "15ml", category: "ノンアルコール" },
 			{ name: "ハチミツ", amount: "15ml", category: "その他" },
 			{ name: "水", amount: "50ml", category: "ノンアルコール" },
 		],
 		instructions: [
-			"ハチミツを水とライムジュースと混ぜ、グラスの底と側面に塗ります。",
+			"ハチミツを水とライム・ジュースと混ぜ、グラスの底と側面に塗ります。",
 			"砕いた氷を加え、次にアグアルディエンテを加えます。",
 			"最後に下から上に向かって勢いよくかき混ぜます。",
 		],
@@ -721,8 +715,8 @@ const newEra: CocktailData[] = [
 			"ハーブ香るリキュールとパイナップル果汁を組み合わせた、南国感と個性的な香りが響く一杯。",
 		ingredients: [
 			{ name: "シャルトリューズ", amount: "45ml", category: "混成酒" },
-			{ name: "パイナップルジュース", amount: "30ml", category: "ノンアルコール" },
-			{ name: "ライムジュース", amount: "22.5ml", category: "ノンアルコール" },
+			{ name: "パイナップル・ジュース", amount: "30ml", category: "ノンアルコール" },
+			{ name: "ライム・ジュース", amount: "22.5ml", category: "ノンアルコール" },
 			{ name: "ファレナム", amount: "15ml", category: "混成酒" },
 		],
 		instructions: [
@@ -758,10 +752,10 @@ const newEra: CocktailData[] = [
 			{
 				name: "パッションフルーツ・シロップ",
 				amount: "15ml",
-				category: "シロップ",
+				category: "その他",
 			},
-			{ name: "ライムジュース", amount: "15ml", category: "ノンアルコール" },
-			{ name: "ハチミツ・シロップ", amount: "15ml", category: "シロップ" },
+			{ name: "ライム・ジュース", amount: "15ml", category: "ノンアルコール" },
+			{ name: "ハチミツ・シロップ", amount: "15ml", category: "その他" },
 		],
 		instructions: [
 			"砕いた氷と一緒にかき混ぜ、グラスに注ぎます。",
@@ -778,7 +772,7 @@ const newEra: CocktailData[] = [
 		ingredients: [
 			{ name: "ウォッカ", amount: "50ml", category: "蒸留酒" },
 			{ name: "カルーア", amount: "30ml", category: "混成酒" },
-			{ name: "シュガー・シロップ", amount: "10ml", category: "シロップ" },
+			{ name: "シュガー・シロップ", amount: "10ml", category: "その他" },
 			{ name: "エスプレッソ", amount: "1杯", category: "ノンアルコール" },
 		],
 		instructions: [
@@ -818,7 +812,7 @@ const newEra: CocktailData[] = [
 				amount: "15ml",
 				category: "混成酒",
 			},
-			{ name: "パイナップルジュース", amount: "15ml", category: "ノンアルコール" },
+			{ name: "パイナップル・ジュース", amount: "15ml", category: "ノンアルコール" },
 		],
 		instructions: [
 			"すべての材料をカクテルシェイカーに注ぎ、氷と一緒によくシェイクし、冷やしたグラスに注ぎます。",
@@ -833,8 +827,8 @@ const newEra: CocktailData[] = [
 			"バジルの爽やかな香りとジンの爽快感が重なった、今風で気軽に楽しめる一杯。",
 		ingredients: [
 			{ name: "ジン", amount: "60ml", category: "蒸留酒" },
-			{ name: "レモンジュース", amount: "22.5ml", category: "ノンアルコール" },
-			{ name: "シュガー・シロップ", amount: "22.5ml", category: "シロップ" },
+			{ name: "レモン・ジュース", amount: "22.5ml", category: "ノンアルコール" },
+			{ name: "シュガー・シロップ", amount: "22.5ml", category: "その他" },
 			{ name: "イタリアンバジルの葉", amount: "10枚", category: "その他" },
 		],
 		instructions: [
@@ -852,7 +846,7 @@ const newEra: CocktailData[] = [
 		ingredients: [
 			{ name: "テキーラ", amount: "45ml", category: "蒸留酒" },
 			{ name: "グラン・マルニエ", amount: "30ml", category: "混成酒" },
-			{ name: "ライムジュース", amount: "15ml", category: "ノンアルコール" },
+			{ name: "ライム・ジュース", amount: "15ml", category: "ノンアルコール" },
 		],
 		instructions: [
 			"グラスの縁に塩を敷き詰めます。材料をシェイカーに注ぎます。",
@@ -894,8 +888,8 @@ const newEra: CocktailData[] = [
 				category: "混成酒",
 			},
 			{ name: "パッションフルーツピュレ", amount: "30ml", category: "その他" },
-			{ name: "パイナップルジュース", amount: "90ml", category: "ノンアルコール" },
-			{ name: "ライムジュース", amount: "30ml", category: "ノンアルコール" },
+			{ name: "パイナップル・ジュース", amount: "90ml", category: "ノンアルコール" },
+			{ name: "ライム・ジュース", amount: "30ml", category: "ノンアルコール" },
 			{ name: "ショウガのスライス", amount: "1枚", category: "その他" },
 		],
 		instructions: [
@@ -912,7 +906,7 @@ const newEra: CocktailData[] = [
 		description:
 			"メスカルをベースにした、スモーキーでコクのある深い味わいのモダンカクテル。",
 		ingredients: [
-			{ name: "エスパディンメスカル", amount: "30ml", category: "蒸留酒" },
+			{ name: "メスカル", amount: "30ml", category: "蒸留酒" },
 			{ name: "ホワイト・ラム", amount: "15ml", category: "蒸留酒" },
 			{ name: "ファレナム", amount: "15ml", category: "混成酒" },
 			{
@@ -921,11 +915,11 @@ const newEra: CocktailData[] = [
 				category: "混成酒",
 			},
 			{
-				name: "ライムジュース",
+				name: "ライム・ジュース",
 				amount: "22.5ml",
 				category: "ノンアルコール",
 			},
-			{ name: "シンプル・シロップ", amount: "15ml", category: "シロップ" },
+			{ name: "シンプル・シロップ", amount: "15ml", category: "その他" },
 			{ name: "卵白", amount: "お好みで数滴", category: "その他" },
 		],
 		instructions: [
@@ -943,9 +937,9 @@ const newEra: CocktailData[] = [
 		ingredients: [
 			{ name: "ブラックストラップ・ラム", amount: "45ml", category: "蒸留酒" },
 			{ name: "カンパリ", amount: "22.5ml", category: "混成酒" },
-			{ name: "パイナップルジュース", amount: "45ml", category: "ノンアルコール" },
-			{ name: "ライムジュース", amount: "15ml", category: "ノンアルコール" },
-			{ name: "シュガー・シロップ", amount: "15ml", category: "シロップ" },
+			{ name: "パイナップル・ジュース", amount: "45ml", category: "ノンアルコール" },
+			{ name: "ライム・ジュース", amount: "15ml", category: "ノンアルコール" },
+			{ name: "シュガー・シロップ", amount: "15ml", category: "その他" },
 		],
 		instructions: [
 			"すべての材料を氷を入れたシェイカーに入れてシェイクします。",
@@ -961,9 +955,9 @@ const newEra: CocktailData[] = [
 			"ラムにミントとパイナップルを合わせた、すっきり甘くて香り豊かなフルーツカクテル。",
 		ingredients: [
 			{ name: "ホワイト・ラム", amount: "30ml", category: "蒸留酒" },
-			{ name: "ピーチブランデー", amount: "15ml", category: "蒸留酒" },
-			{ name: "ライムジュース", amount: "15ml", category: "ノンアルコール" },
-			{ name: "ハチミツ・シロップ", amount: "30ml", category: "シロップ" },
+			{ name: "ピーチ・ブランデー", amount: "15ml", category: "混成酒" },
+			{ name: "ライム・ジュース", amount: "15ml", category: "ノンアルコール" },
+			{ name: "ハチミツ・シロップ", amount: "30ml", category: "その他" },
 			{ name: "ミントの葉", amount: "10枚", category: "その他" },
 			{ name: "パイナップルの塊", amount: "3～4個", category: "その他" },
 		],
@@ -980,7 +974,7 @@ const newEra: CocktailData[] = [
 			{ name: "メスカル", amount: "22.5ml", category: "蒸留酒" },
 			{ name: "シャルトリューズ", amount: "22.5ml", category: "混成酒" },
 			{ name: "アペロール", amount: "22.5ml", category: "混成酒" },
-			{ name: "ライムジュース", amount: "22.5ml", category: "ノンアルコール" },
+			{ name: "ライム・ジュース", amount: "22.5ml", category: "ノンアルコール" },
 		],
 		instructions: [
 			"すべての材料をカクテルシェイカーに注ぎ、氷と一緒によくシェイクし、冷やしたグラスに注ぎます。",
@@ -1001,13 +995,13 @@ const newEra: CocktailData[] = [
 				option_group: 2,
 			},
 			{
-				name: "バーボン",
+				name: "バーボン・ウイスキー",
 				amount: "60ml",
 				category: "蒸留酒",
 				option_group: 2,
 			},
-			{ name: "シンプル・シロップ", amount: "22.5ml", category: "シロップ" },
-			{ name: "レモンジュース", amount: "30ml", category: "ノンアルコール" },
+			{ name: "シンプル・シロップ", amount: "22.5ml", category: "その他" },
+			{ name: "レモン・ジュース", amount: "30ml", category: "ノンアルコール" },
 			{ name: "卵白", amount: "数滴", category: "その他" },
 			{ name: "赤ワイン", amount: "15ml", category: "醸造酒" },
 		],
@@ -1026,8 +1020,8 @@ const newEra: CocktailData[] = [
 		ingredients: [
 			{ name: "ミントの葉", amount: "6～8枚", category: "その他" },
 			{ name: "熟成ラム", amount: "45ml", category: "蒸留酒" },
-			{ name: "ライムジュース", amount: "22.5ml", category: "ノンアルコール" },
-			{ name: "シンプル・シロップ", amount: "30ml", category: "シロップ" },
+			{ name: "ライム・ジュース", amount: "22.5ml", category: "ノンアルコール" },
+			{ name: "シンプル・シロップ", amount: "30ml", category: "その他" },
 			{ name: "アンゴスチュラ・ビターズ", amount: "2振", category: "混成酒" },
 			{
 				name: "シャンパン",
@@ -1065,7 +1059,7 @@ const newEra: CocktailData[] = [
 			},
 		],
 		instructions: [
-			"グラスにテキーラを注ぎ、ライムジュースを絞ります。",
+			"グラスにテキーラを注ぎ、ライム・ジュースを絞ります。",
 			"氷と塩を加え、ピンクグレープフルーツソーダを注ぎます。",
 			"軽くかき混ぜます。",
 		],
@@ -1081,7 +1075,7 @@ const newEra: CocktailData[] = [
 			{ name: "バーボン・ウイスキー", amount: "30ml", category: "蒸留酒" },
 			{ name: "アマーロ・ノニーノ", amount: "30ml", category: "混成酒" },
 			{ name: "アペロール", amount: "30ml", category: "混成酒" },
-			{ name: "レモンジュース", amount: "30ml", category: "ノンアルコール" },
+			{ name: "レモン・ジュース", amount: "30ml", category: "ノンアルコール" },
 		],
 		instructions: [
 			"すべての材料をカクテルシェイカーに注ぎ、氷と一緒によくシェイクし、冷やしたグラスに注ぎます。",
@@ -1097,8 +1091,8 @@ const newEra: CocktailData[] = [
 		ingredients: [
 			{ name: "スコッチ・ウイスキー", amount: "60ml", category: "蒸留酒" },
 			{ name: "ラガヴーリン", amount: "7.5ml", category: "蒸留酒" },
-			{ name: "レモンジュース", amount: "22.5ml", category: "ノンアルコール" },
-			{ name: "ハチミツ・シロップ", amount: "22.5ml", category: "シロップ" },
+			{ name: "レモン・ジュース", amount: "22.5ml", category: "ノンアルコール" },
+			{ name: "ハチミツ・シロップ", amount: "22.5ml", category: "その他" },
 			{
 				name: "ショウガのスライス",
 				amount: "2～3枚",
@@ -1121,9 +1115,9 @@ const newEra: CocktailData[] = [
 			"ピスコとパイナップルの甘酸っぱさが心地よく、まろやかで飲みやすい南米の一杯。",
 		ingredients: [
 			{ name: "ピスコ", amount: "60ml", category: "蒸留酒" },
-			{ name: "パイナップルジュース", amount: "22.5ml", category: "ノンアルコール" },
-			{ name: "シンプル・シロップ", amount: "15ml", category: "シロップ" },
-			{ name: "レモンジュース", amount: "15ml", category: "ノンアルコール" },
+			{ name: "パイナップル・ジュース", amount: "22.5ml", category: "ノンアルコール" },
+			{ name: "シンプル・シロップ", amount: "15ml", category: "その他" },
+			{ name: "レモン・ジュース", amount: "15ml", category: "ノンアルコール" },
 			{ name: "白ワイン", amount: "30ml", category: "醸造酒" },
 			{ name: "チョウジ", amount: "3個", category: "その他" },
 		],
@@ -1143,7 +1137,7 @@ const newEra: CocktailData[] = [
 		ingredients: [
 			{ name: "ウォッカ", amount: "50ml", category: "蒸留酒" },
 			{
-				name: "パッションフルーツリキュール",
+				name: "パッションフルーツ・リキュール",
 				amount: "20ml",
 				category: "混成酒",
 			},
@@ -1165,9 +1159,9 @@ const newEra: CocktailData[] = [
 			"ウォッカにレモンとカシスを合わせた、フルーティーで軽快なスパークリングカクテル。",
 		ingredients: [
 			{ name: "ウォッカ", amount: "25ml", category: "蒸留酒" },
-			{ name: "レモンジュース", amount: "25ml", category: "ノンアルコール" },
+			{ name: "レモン・ジュース", amount: "25ml", category: "ノンアルコール" },
 			{ name: "クレーム・ド・カシス", amount: "15ml", category: "混成酒" },
-			{ name: "シュガー・シロップ", amount: "10ml", category: "シロップ" },
+			{ name: "シュガー・シロップ", amount: "10ml", category: "その他" },
 			{ name: "スパークリングワイン", amount: "適量", category: "醸造酒" },
 		],
 		instructions: [
@@ -1202,8 +1196,8 @@ const newEra: CocktailData[] = [
 			"ミントとレモンが爽やかに香るジンベースのカクテルで、気分をリフレッシュしたい時にぴったり。",
 		ingredients: [
 			{ name: "ジン", amount: "60ml", category: "蒸留酒" },
-			{ name: "レモンジュース", amount: "30ml", category: "ノンアルコール" },
-			{ name: "シンプル・シロップ", amount: "15ml", category: "シロップ" },
+			{ name: "レモン・ジュース", amount: "30ml", category: "ノンアルコール" },
+			{ name: "シンプル・シロップ", amount: "15ml", category: "その他" },
 			{ name: "ミントの葉", amount: "5～6枚", category: "その他" },
 			{ name: "卵白", amount: "お好みで数滴", category: "その他" },
 		],
@@ -1224,10 +1218,10 @@ const newEra: CocktailData[] = [
 			{
 				name: "エルダーフラワー・コーディアル",
 				amount: "15ml",
-				category: "シロップ",
+				category: "その他",
 			},
-			{ name: "ライムジュース", amount: "15ml", category: "ノンアルコール" },
-			{ name: "ハチミツ・シロップ", amount: "10ml", category: "シロップ" },
+			{ name: "ライム・ジュース", amount: "15ml", category: "ノンアルコール" },
+			{ name: "ハチミツ・シロップ", amount: "10ml", category: "その他" },
 			{ name: "赤唐辛子薄切り", amount: "2枚", category: "その他" },
 		],
 		instructions: [
@@ -1272,7 +1266,7 @@ const newEra: CocktailData[] = [
 				option_group: 4,
 			},
 			{ name: "ジン", amount: "30ml", category: "蒸留酒" },
-			{ name: "ライムジュース", amount: "15ml", category: "ノンアルコール" },
+			{ name: "ライム・ジュース", amount: "15ml", category: "ノンアルコール" },
 			{ name: "アンゴスチュラ・ビターズ", amount: "2振", category: "混成酒" },
 			{ name: "ジンジャービール", amount: "適量", category: "ノンアルコール" },
 		],
@@ -1294,13 +1288,13 @@ const newEra: CocktailData[] = [
 			{ name: "ブレンド熟成ラム", amount: "15ml", category: "蒸留酒" },
 			{ name: "ファレナム", amount: "7.5ml", category: "混成酒" },
 			{
-				name: "セントエリザベス・オールスパイス・ダム",
+				name: "セントエリザベス・オールスパイス・ドラム",
 				amount: "7.5ml",
 				category: "混成酒",
 			},
-			{ name: "ライムジュース", amount: "15ml", category: "ノンアルコール" },
-			{ name: "オレンジジュース", amount: "15ml", category: "ノンアルコール" },
-			{ name: "ハチミツ・シロップ", amount: "15ml", category: "シロップ" },
+			{ name: "ライム・ジュース", amount: "15ml", category: "ノンアルコール" },
+			{ name: "オレンジ・ジュース", amount: "15ml", category: "ノンアルコール" },
+			{ name: "ハチミツ・シロップ", amount: "15ml", category: "その他" },
 			{ name: "アンゴスチュラ・ビターズ", amount: "2振", category: "混成酒" },
 		],
 		instructions: [
@@ -1339,8 +1333,8 @@ const newEra: CocktailData[] = [
 			"テキーラにライムとアガベ・シロップを加えた、自然な甘みと爽やかさが特徴の新定番カクテル。",
 		ingredients: [
 			{ name: "テキーラ", amount: "60ml", category: "蒸留酒" },
-			{ name: "ライムジュース", amount: "30ml", category: "ノンアルコール" },
-			{ name: "アガベ・シロップ", amount: "30ml", category: "シロップ" },
+			{ name: "ライム・ジュース", amount: "30ml", category: "ノンアルコール" },
+			{ name: "アガベ・シロップ", amount: "30ml", category: "その他" },
 		],
 		instructions: [
 			"すべての材料をカクテルシェイカーに注ぎ、氷と一緒によくシェイクし、氷を入れた冷やしたグラスに注ぎます。",
@@ -1355,8 +1349,8 @@ const newEra: CocktailData[] = [
 			"ビターズを多く使った独特な苦味と、ナッツの甘みが印象的な個性派カクテル。",
 		ingredients: [
 			{ name: "アンゴスチュラ・ビターズ", amount: "45ml", category: "混成酒" },
-			{ name: "オルジェー・シロップ", amount: "30ml", category: "シロップ" },
-			{ name: "レモンジュース", amount: "22.5ml", category: "ノンアルコール" },
+			{ name: "オルジェー・シロップ", amount: "30ml", category: "その他" },
+			{ name: "レモン・ジュース", amount: "22.5ml", category: "ノンアルコール" },
 			{ name: "ライ・ウイスキー", amount: "15ml", category: "蒸留酒" },
 		],
 		instructions: [
@@ -1373,12 +1367,12 @@ const newEra: CocktailData[] = [
 			"グラッパとハチミツ、レモンを合わせた、やさしい甘みと爽やかさが広がるイタリアの一杯。",
 		ingredients: [
 			{ name: "グラッパ", amount: "45ml", category: "蒸留酒" },
-			{ name: "レモンジュース", amount: "22.5ml", category: "ノンアルコール" },
-			{ name: "ハチミツ・シロップ", amount: "15ml", category: "シロップ" },
+			{ name: "レモン・ジュース", amount: "22.5ml", category: "ノンアルコール" },
+			{ name: "ハチミツ・シロップ", amount: "15ml", category: "その他" },
 			{
 				name: "カモミール・コーディアル",
 				amount: "15ml",
-				category: "シロップ",
+				category: "その他",
 			},
 			{ name: "卵白", amount: "お好みで数滴", category: "その他" },
 		],
@@ -1438,7 +1432,7 @@ const unforgettables: CocktailData[] = [
 				amount: "15ml",
 				category: "混成酒",
 			},
-			{ name: "レモンジュース", amount: "15ml", category: "ノンアルコール" },
+			{ name: "レモン・ジュース", amount: "15ml", category: "ノンアルコール" },
 			{
 				name: "クレーム・ド・バイオレット",
 				amount: "5ml",
@@ -1468,7 +1462,7 @@ const unforgettables: CocktailData[] = [
 		],
 		instructions: [
 			"氷が入ったカクテルシェイカーにすべての材料を注ぎます。",
-			"シェイクして冷やしたグラスに注ぎます。 ",
+			"シェイクして冷やしたグラスに注ぎます。",
 		],
 		garnish: "",
 		tags: ["国際バーテンダー協会公認カクテル - 忘れられないカクテル"],
@@ -1482,7 +1476,7 @@ const unforgettables: CocktailData[] = [
 			{ name: "ホワイト・ラム", amount: "30ml", category: "蒸留酒" },
 			{ name: "コニャック", amount: "30ml", category: "蒸留酒" },
 			{ name: "トリプルセック", amount: "30ml", category: "混成酒" },
-			{ name: "レモンジュース", amount: "20ml", category: "ノンアルコール" },
+			{ name: "レモン・ジュース", amount: "20ml", category: "ノンアルコール" },
 		],
 		instructions: [
 			"すべての材料をカクテルシェイカーに加えます。",
@@ -1498,7 +1492,7 @@ const unforgettables: CocktailData[] = [
 			"バーボンとカンパリ、ベルモットという濃厚で大人の味わいが香る、イタリア風の古典カクテル。",
 		ingredients: [
 			{
-				name: "バーボン",
+				name: "バーボン・ウイスキー",
 				amount: "45ml",
 				category: "蒸留酒",
 				option_group: 1,
@@ -1532,8 +1526,8 @@ const unforgettables: CocktailData[] = [
 				category: "混成酒",
 			},
 			{ name: "キュラソー", amount: "茶匙1杯", category: "混成酒" },
-			{ name: "レモンジュース", amount: "15ml", category: "ノンアルコール" },
-			{ name: "シンプル・シロップ", amount: "茶匙1杯", category: "シロップ" },
+			{ name: "レモン・ジュース", amount: "15ml", category: "ノンアルコール" },
+			{ name: "シンプル・シロップ", amount: "茶匙1杯", category: "その他" },
 			{ name: "アロマティック・ビターズ", amount: "2振", category: "混成酒" },
 		],
 		instructions: [
@@ -1556,7 +1550,7 @@ const unforgettables: CocktailData[] = [
 				amount: "10ml",
 				category: "混成酒",
 			},
-			{ name: "レモンジュース", amount: "10ml", category: "ノンアルコール" },
+			{ name: "レモン・ジュース", amount: "10ml", category: "ノンアルコール" },
 			{ name: "オレンジ・ビターズ", amount: "2振", category: "混成酒" },
 		],
 		instructions: [
@@ -1573,8 +1567,8 @@ const unforgettables: CocktailData[] = [
 			"ジンにラズベリー・シロップとレモンを合わせ、卵白でなめらかに仕上げた、ゆったり楽しむクラシックカクテル。",
 		ingredients: [
 			{ name: "ジン", amount: "45ml", category: "蒸留酒" },
-			{ name: "ラズベリー・シロップ", amount: "15ml", category: "シロップ" },
-			{ name: "レモンジュース", amount: "15ml", category: "ノンアルコール" },
+			{ name: "ラズベリー・シロップ", amount: "15ml", category: "その他" },
+			{ name: "レモン・ジュース", amount: "15ml", category: "ノンアルコール" },
 			{ name: "卵白", amount: "数滴", category: "その他" },
 		],
 		instructions: [
@@ -1590,7 +1584,7 @@ const unforgettables: CocktailData[] = [
 			"キューバ生まれのラムとライム、砂糖を合わせた、誰にも親しみやすいシンプル＆爽やかな定番カクテル。",
 		ingredients: [
 			{ name: "ホワイト・ラム", amount: "60ml", category: "蒸留酒" },
-			{ name: "ライムジュース", amount: "20ml", category: "ノンアルコール" },
+			{ name: "ライム・ジュース", amount: "20ml", category: "ノンアルコール" },
 			{ name: "砂糖", amount: "茶匙2杯", category: "その他" },
 		],
 		instructions: [
@@ -1624,8 +1618,8 @@ const unforgettables: CocktailData[] = [
 			"ジンとレモン、砂糖に炭酸を加えた、軽やかで泡立つ爽快な古典ドリンク。",
 		ingredients: [
 			{ name: "ジン", amount: "45ml", category: "蒸留酒" },
-			{ name: "レモンジュース", amount: "30ml", category: "ノンアルコール" },
-			{ name: "シンプル・シロップ", amount: "10ml", category: "シロップ" },
+			{ name: "レモン・ジュース", amount: "30ml", category: "ノンアルコール" },
+			{ name: "シンプル・シロップ", amount: "10ml", category: "その他" },
 			{ name: "炭酸水", amount: "適量", category: "ノンアルコール" },
 		],
 		instructions: [
@@ -1660,8 +1654,8 @@ const unforgettables: CocktailData[] = [
 			"ジン、レモン、砂糖、炭酸を合わせた、爽やかで軽快なクラシックカクテル。",
 		ingredients: [
 			{ name: "ジン", amount: "45ml", category: "蒸留酒" },
-			{ name: "レモンジュース", amount: "30ml", category: "ノンアルコール" },
-			{ name: "シンプル・シロップ", amount: "15ml", category: "シロップ" },
+			{ name: "レモン・ジュース", amount: "30ml", category: "ノンアルコール" },
+			{ name: "シンプル・シロップ", amount: "15ml", category: "その他" },
 			{ name: "炭酸水", amount: "60ml", category: "ノンアルコール" },
 		],
 		instructions: ["氷を入れたグラスに材料をすべて注ぎ、軽く混ぜます。"],
@@ -1672,16 +1666,16 @@ const unforgettables: CocktailData[] = [
 	{
 		name: "ラスト・ワード",
 		description:
-			"ジンとシャルトルーズ、チェリーリキュール、ライムを等量で合わせた、特徴的でバランスの良い名作。",
+			"ジンとシャルトリューズ、チェリーリキュール、ライムを等量で合わせた、特徴的でバランスの良い名作。",
 		ingredients: [
 			{ name: "ジン", amount: "22.5ml", category: "蒸留酒" },
-			{ name: "シャルトルーズ", amount: "22.5ml", category: "混成酒" },
+			{ name: "シャルトリューズ", amount: "22.5ml", category: "混成酒" },
 			{
 				name: "マラスキーノ・リキュール",
 				amount: "22.5ml",
 				category: "混成酒",
 			},
-			{ name: "ライムジュース", amount: "22.5ml", category: "ノンアルコール" },
+			{ name: "ライム・ジュース", amount: "22.5ml", category: "ノンアルコール" },
 		],
 		instructions: [
 			"すべての材料をカクテルシェイカーに加えます。",
@@ -1733,16 +1727,16 @@ const unforgettables: CocktailData[] = [
 	{
 		name: "メアリー・ピックフォード",
 		description:
-			"ホワイト・ラムにパイナップルジュースとグレナデンを加えた、同名の女優にちなんで名付けられた軽やかなカクテル。",
+			"ホワイト・ラムにパイナップル・ジュースとグレナデンを加えた、同名の女優にちなんで名付けられた軽やかなカクテル。",
 		ingredients: [
 			{ name: "ホワイト・ラム", amount: "45ml", category: "蒸留酒" },
-			{ name: "パイナップルジュース", amount: "45ml", category: "ノンアルコール" },
+			{ name: "パイナップル・ジュース", amount: "45ml", category: "ノンアルコール" },
 			{
 				name: "マラスキーノ・リキュール",
 				amount: "7.5ml",
 				category: "混成酒",
 			},
-			{ name: "グレナデン・シロップ", amount: "5ml", category: "シロップ" },
+			{ name: "グレナデン・シロップ", amount: "5ml", category: "その他" },
 		],
 		instructions: [
 			"すべての材料をカクテルシェイカーに注ぎ、氷と一緒によくシェイクし、冷やしたグラスに注ぎます。",
@@ -1757,9 +1751,9 @@ const unforgettables: CocktailData[] = [
 			"ジンにオレンジとグレナデンを加えた、1920年代のパリ発祥とされる遊び心あるクラシックカクテル。",
 		ingredients: [
 			{ name: "ジン", amount: "45ml", category: "蒸留酒" },
-			{ name: "オレンジジュース", amount: "45ml", category: "ノンアルコール" },
-			{ name: "アブサン", amount: "茶匙1杯", category: "蒸留酒" },
-			{ name: "グレナデン・シロップ", amount: "茶匙1杯", category: "シロップ" },
+			{ name: "オレンジ・ジュース", amount: "45ml", category: "ノンアルコール" },
+			{ name: "アブサン", amount: "茶匙1杯", category: "混成酒" },
+			{ name: "グレナデン・シロップ", amount: "茶匙1杯", category: "その他" },
 		],
 		instructions: [
 			"すべての材料をカクテルシェイカーに注ぎ、氷と一緒によくシェイクし、冷やしたグラスに注ぎます。",
@@ -1791,7 +1785,7 @@ const unforgettables: CocktailData[] = [
 			"ウイスキーに砂糖とビターズを加えた、シンプルで力強い味わいの王道カクテル。",
 		ingredients: [
 			{
-				name: "バーボン",
+				name: "バーボン・ウイスキー",
 				amount: "45ml",
 				category: "蒸留酒",
 				option_group: 1,
@@ -1825,7 +1819,7 @@ const unforgettables: CocktailData[] = [
 				amount: "20ml",
 				category: "混成酒",
 			},
-			{ name: "オレンジジュース", amount: "15ml", category: "ノンアルコール" },
+			{ name: "オレンジ・ジュース", amount: "15ml", category: "ノンアルコール" },
 		],
 		instructions: [
 			"すべての材料をカクテルシェイカーに注ぎ、氷と一緒によくシェイクし、冷やしたグラスに注ぎます。",
@@ -1837,15 +1831,15 @@ const unforgettables: CocktailData[] = [
 	{
 		name: "プランターズ・パンチ",
 		description:
-			"ラムとトロピカルジュースを使った、南国らしい甘酸っぱく陽気なカクテル。",
+			"ラムとトロピカル・ジュースを使った、南国らしい甘酸っぱく陽気なカクテル。",
 		ingredients: [
 			{ name: "ジャマイカ産ラム", amount: "45ml", category: "蒸留酒" },
-			{ name: "ライムジュース", amount: "15ml", category: "ノンアルコール" },
-			{ name: "サトウキビジュース", amount: "30ml", category: "ノンアルコール" },
+			{ name: "ライム・ジュース", amount: "15ml", category: "ノンアルコール" },
+			{ name: "サトウキビ・ジュース", amount: "30ml", category: "ノンアルコール" },
 		],
 		instructions: [
 			"すべての材料をグラスに直接注ぎます。",
-			"注記：お好みに応じて水や氷、フレッシュジュースなどで割ってお召し上がりください。",
+			"注記：お好みに応じて水や氷、フレッシュ・ジュースなどで割ってお召し上がりください。",
 		],
 		garnish: "オレンジの皮を添えます。",
 		tags: ["国際バーテンダー協会公認カクテル - 忘れられないカクテル"],
@@ -1873,9 +1867,9 @@ const unforgettables: CocktailData[] = [
 			"ジンとレモン、クリームを泡立てた、なめらかで軽やかな口当たりの老舗カクテル。",
 		ingredients: [
 			{ name: "ジン", amount: "45ml", category: "蒸留酒" },
-			{ name: "ライムジュース", amount: "15ml", category: "ノンアルコール" },
-			{ name: "レモンジュース", amount: "15ml", category: "ノンアルコール" },
-			{ name: "シュガー・シロップ", amount: "30ml", category: "シロップ" },
+			{ name: "ライム・ジュース", amount: "15ml", category: "ノンアルコール" },
+			{ name: "レモン・ジュース", amount: "15ml", category: "ノンアルコール" },
+			{ name: "シュガー・シロップ", amount: "30ml", category: "その他" },
 			{ name: "生クリーム", amount: "60ml", category: "その他" },
 			{ name: "卵白", amount: "30ml", category: "その他" },
 			{ name: "オレンジフラワーウォーター", amount: "3振", category: "その他" },
@@ -1899,7 +1893,7 @@ const unforgettables: CocktailData[] = [
 			{ name: "ライ・ウイスキー", amount: "60ml", category: "蒸留酒" },
 			{ name: "ベルモット", amount: "22.5ml", category: "醸造酒" },
 			{ name: "チェリー・ブランデー", amount: "15ml", category: "混成酒" },
-			{ name: "アブサン", amount: "7.5ml", category: "蒸留酒" },
+			{ name: "アブサン", amount: "7.5ml", category: "混成酒" },
 		],
 		instructions: [
 			"アブサンをグラスに注ぎ、内側が完全に覆われるまで回します。",
@@ -1931,7 +1925,7 @@ const unforgettables: CocktailData[] = [
 			"コニャックとアブサン、ビターズを使った、香り高くスパイシーなニューオーリンズの名作。",
 		ingredients: [
 			{ name: "コニャック", amount: "50ml", category: "蒸留酒" },
-			{ name: "アブサン", amount: "10ml", category: "蒸留酒" },
+			{ name: "アブサン", amount: "10ml", category: "混成酒" },
 			{ name: "角砂糖", amount: "1個", category: "その他" },
 			{ name: "ペイショーズ・ビターズ", amount: "2振", category: "混成酒" },
 		],
@@ -1950,7 +1944,7 @@ const unforgettables: CocktailData[] = [
 		ingredients: [
 			{ name: "コニャック", amount: "50ml", category: "蒸留酒" },
 			{ name: "トリプルセック", amount: "20ml", category: "混成酒" },
-			{ name: "レモンジュース", amount: "20ml", category: "ノンアルコール" },
+			{ name: "レモン・ジュース", amount: "20ml", category: "ノンアルコール" },
 		],
 		instructions: [
 			"すべての材料をカクテルシェイカーに注ぎ、氷と一緒によくシェイクし、冷やしたグラスに注ぎます。",
@@ -1965,7 +1959,7 @@ const unforgettables: CocktailData[] = [
 			"ブランデーにクレーム・ド・ミントを合わせた、清涼感のある食後にぴったりのカクテル。",
 		ingredients: [
 			{ name: "コニャック", amount: "50ml", category: "蒸留酒" },
-			{ name: "クレーム・ド・ミント ", amount: "20ml", category: "混成酒" },
+			{ name: "クレーム・ド・ミント", amount: "20ml", category: "混成酒" },
 		],
 		instructions: [
 			"すべての材料を氷を入れたミキシンググラスに注ぎ、よくかき混ぜます。",
@@ -1987,7 +1981,7 @@ const unforgettables: CocktailData[] = [
 				amount: "茶匙1/2杯",
 				category: "混成酒",
 			},
-			{ name: "アブサン", amount: "茶匙1/4杯", category: "蒸留酒" },
+			{ name: "アブサン", amount: "茶匙1/4杯", category: "混成酒" },
 			{ name: "オレンジ・ビターズ", amount: "3振", category: "混成酒" },
 		],
 		instructions: [
@@ -2022,9 +2016,9 @@ const unforgettables: CocktailData[] = [
 		description:
 			"ウイスキーとレモン、砂糖を合わせた、爽やかな酸味と甘みが調和した定番カクテル。",
 		ingredients: [
-			{ name: "バーボン", amount: "45ml", category: "蒸留酒" },
-			{ name: "レモンジュース", amount: "25ml", category: "ノンアルコール" },
-			{ name: "シンプル・シロップ", amount: "20ml", category: "シロップ" },
+			{ name: "バーボン・ウイスキー", amount: "45ml", category: "蒸留酒" },
+			{ name: "レモン・ジュース", amount: "25ml", category: "ノンアルコール" },
+			{ name: "シンプル・シロップ", amount: "20ml", category: "その他" },
 			{ name: "卵白", amount: "お好みで数滴", category: "その他" },
 		],
 		instructions: [
@@ -2045,7 +2039,7 @@ const unforgettables: CocktailData[] = [
 		ingredients: [
 			{ name: "ジン", amount: "40ml", category: "蒸留酒" },
 			{ name: "トリプルセック", amount: "30ml", category: "混成酒" },
-			{ name: "レモンジュース", amount: "20ml", category: "ノンアルコール" },
+			{ name: "レモン・ジュース", amount: "20ml", category: "ノンアルコール" },
 		],
 		instructions: [
 			"すべての材料をカクテルシェイカーに注ぎ、氷と一緒によくシェイクし、冷やしたグラスに注ぎます。",
@@ -2054,6 +2048,174 @@ const unforgettables: CocktailData[] = [
 		tags: ["国際バーテンダー協会公認カクテル - 忘れられないカクテル"],
 		imageUrl: "white-lady.jpg",
 	},
+];
+
+const ingredientDetails: Record<string, { group: string; description: string }> = {
+	// 醸造酒
+	"白ワイン": { group: "ワイン", description: "白ブドウを主原料として造られるワイン。すっきりとした酸味が特徴です。" },
+	"赤ワイン": { group: "ワイン", description: "黒ブドウを主原料として造られるワイン。豊かな渋みとコクが特徴です。" },
+	"スパークリングワイン": { group: "ワイン", description: "炭酸ガスを含む発泡性のワインの総称です。" },
+	"シェリー": { group: "ワイン", description: "スペインのアンダルシア地方で造られる、アルコールを添加されたワインです。" },
+	"シャンパン": { group: "ワイン", description: "フランスのシャンパーニュ地方で造られる高品質なスパークリングワインです。" },
+	"ポートワイン": { group: "ワイン", description: "ポルトガルのドウロ地方で造られる、甘口のアルコールを添加されたワインです。" },
+	"ベルモット": { group: "ワイン", description: "白ワインをベースにニガヨモギなどの香草やスパイスを加えて風味を付けたフレーバードワインです。" },
+	"プロセッコ": { group: "ワイン", description: "イタリアのヴェネト州などで造られる、フルーティーで爽やかなスパークリングワインです。" },
+	"リレ・ブラン": { group: "ワイン", description: "フランス・ボルドー地方で造られる、白ワインをベースにしたアペリティフ（食前酒）です。" },
+	"パロ・コルタド": { group: "ワイン", description: "スペイン・アンダルシア地方のシェリーの一種で、非常に珍しいタイプのワインです。" },
+	// 蒸留酒
+	"ラム": { group: "ラム", description: "サトウキビを原料とする蒸留酒。甘く豊かな風味が特徴です。" },
+	"ホワイト・ラム": { group: "ラム", description: "活性炭でろ過した無色透明のラム。カクテルのベースとして広く使われます。" },
+	"ダーク・ラム": { group: "ラム", description: "内側を焦がした樽で長期間熟成させたラム。濃厚な風味とコクが特徴です。" },
+	"ゴールド・ラム": { group: "ラム", description: "樽で短期間熟成させた琥珀色のラム。ホワイトラムより風味が豊かです。" },
+	"デメララ・ラム": { group: "ラム", description: "ガイアナのデメララ川沿いで造られる、リッチで重厚な風味のラムです。" },
+	"マルティニーク・ラム": { group: "ラム", description: "フランス海外県のマルティニーク島で造られる、サトウキビジュースを直接発酵・蒸留したラムです。" },
+	"ブレンド熟成ラム": { group: "ラム", description: "異なる熟成年数や産地のラムをブレンドした、複雑な味わいのラムです。" },
+	"熟成ラム": { group: "ラム", description: "樽で熟成させたラムの総称。豊かな香りとまろやかな口当たりが特徴です。" },
+	"キューバ産ラム": { group: "ラム", description: "キューバで生産されるラム。軽やかで洗練された味わいが特徴です。" },
+	"ジャマイカ産ラム": { group: "ラム", description: "ジャマイカで生産されるラム。力強くファンキーな香りが特徴です。" },
+	"ゴスリングス・ラム": { group: "ラム", description: "バミューダ諸島原産のダーク・ラム。ダーク＆ストーミーというカクテルの公式ラムとして知られています。" },
+	"ハバナ・クラブ プロフンド": { group: "ラム", description: "キューバのラムブランド「ハバナ・クラブ」の特定のラインナップです。" },
+	"ハバナ・クラブ スモーキー": { group: "ラム", description: "キューバのラムブランド「ハバナ・クラブ」のスモーキーな風味を持つラインナップです。" },
+	"ブラックストラップ・ラム": { group: "ラム", description: "糖蜜を3回煮詰めた後の「ブラックストラップ・モラセス」から造られる、非常に濃厚で風味豊かなラムです。" },
+	"ジン": { group: "ジン", description: "ジュニパーベリーを主原料とする蒸留酒。爽やかな香りが特徴です。" },
+	"ウォッカ": { group: "ウォッカ", description: "穀物やジャガイモを原料とする蒸留酒。クリアでニュートラルな味わいです。" },
+	"テキーラ": { group: "テキーラ", description: "リュウゼツランを原料とするメキシコ産蒸留酒。独特の風味が魅力です。" },
+	"カルヴァドス": { group: "ブランデー", description: "フランスのノルマンディー地方で造られる、リンゴを原料としたブランデーです。" },
+	"ブランデー": { group: "ブランデー", description: "果実を原料とする蒸留酒。特にブドウから作られるものが有名です。" },
+	"コニャック": { group: "ブランデー", description: "フランスのコニャック地方で造られる高品質なブランデーです。" },
+	"ピスコ": { group: "ブランデー", description: "ペルーやチリで造られるブドウの蒸留酒。フルーティーな香りが特徴です。" },
+	"グラッパ": { group: "ブランデー", description: "イタリアで造られる、ワインの醸造で残ったブドウの搾りかすを蒸留して造るお酒です。" },
+	"ライ・ウイスキー": { group: "ウイスキー", description: "ライ麦を主原料とするウイスキー。スパイシーでドライな味わいが特徴です。" },
+	"スコッチ・ウイスキー": { group: "ウイスキー", description: "スコットランドで造られるウイスキー。スモーキーな風味を持つものもあります。" },
+	"アイリッシュ・ウイスキー": { group: "ウイスキー", description: "アイルランドで造られるウイスキー。滑らかでまろやかな味わいが特徴です。" },
+	"バーボン・ウイスキー": { group: "ウイスキー", description: "アメリカで造られる、トウモロコシを主原料とするウイスキー。甘く香ばしい風味が特徴です。" },
+	"ラガヴーリン": { group: "ウイスキー", description: "スコットランドのアイラ島で造られる、非常にスモーキーでピーティーなシングルモルトスコッチウイスキーです。" },
+	"カシャッサ": { group: "その他の蒸留酒", description: "ブラジルで造られる、サトウキビのジュースを直接発酵・蒸留したスピリッツです。" },
+	"アグアルディエンテ": { group: "その他の蒸留酒", description: "ラテンアメリカ諸国で造られるサトウキビなどを原料とした蒸留酒の総称です。" },
+	"メスカル": { group: "その他の蒸留酒", description: "メキシコで造られるリュウゼツランを原料とした蒸留酒。スモーキーな風味が特徴です。" },
+	"シュナップス": { group: "その他の蒸留酒", description: "ドイツや北欧で造られる蒸留酒の総称。フルーツやハーブなど様々な風味があります。" },
+	// 混成酒
+	"マラスキーノ・リキュール": { group: "リキュール", description: "マラスカ種のチェリーを原料とした、甘くほろ苦い風味のリキュールです。" },
+	"ラズベリー・リキュール": { group: "リキュール", description: "ラズベリーを漬け込んで造られる、甘酸っぱい風味のリキュールです。" },
+	"アマレット・リキュール": { group: "リキュール", description: "杏の核（杏仁）を原料とした、アーモンドのような甘く香ばしい風味のリキュールです。" },
+	"フランジェリコ・リキュール": { group: "リキュール", description: "ヘーゼルナッツを主原料とした、香ばしく甘いイタリア産リキュールです。" },
+	"パッションフルーツ・リキュール": { group: "リキュール", description: "パッションフルーツの果汁から造られる、トロピカルで甘酸っぱいリキュールです。" },
+	"チェリー・ブランデー": { group: "リキュール", description: "チェリーを蒸留または漬け込んで造られる、芳醇な果実香を持つリキュール。ブランデーをベースにしたタイプもあります。" },
+	"アプリコット・ブランデー": { group: "リキュール", description: "杏の果実を原料にした、果実味豊かでコクのあるリキュール。ブランデーをベースにしたタイプもあります。" },
+	"ピーチ・ブランデー": { group: "リキュール", description: "桃の果実を用いて造られる、華やかな香りとまろやかな甘みを持つリキュール。ブランデーをベースにしたタイプもあります。" },
+	"クレーム・ド・バイオレット": { group: "リキュール", description: "スミレの花を漬け込んで造られる、華やかな香りのリキュールです。" },
+	"クレーム・ド・カカオ": { group: "リキュール", description: "カカオ豆を原料とした、チョコレート風味の甘いリキュールです。" },
+	"クレーム・ド・ミント": { group: "リキュール", description: "ミント（ハッカ）を原料とした、爽やかな清涼感のあるリキュールです。" },
+	"クレーム・ド・カシス": { group: "リキュール", description: "カシス（クロスグリ）を原料とした、甘酸っぱく濃厚なリキュールです。" },
+	"クレーム・ド・ミュール": { group: "リキュール", description: "ブラックベリーを原料とした、甘酸っぱい風味のリキュールです。" },
+	"グラン・マルニエ": { group: "リキュール", description: "コニャックにビターオレンジの蒸留エキスを加えた、フランス産の高級オレンジリキュールです。" },
+	"ペルノ": { group: "リキュール", description: "アニスやハーブを主原料とした、フランス産のリキュール。水を加えると白濁します。" },
+	"アブサン": { group: "リキュール", description: "ニガヨモギやアニスなどを主原料とした、ハーブ系のリキュール。独特の風味が特徴です。" },
+	"カンパリ": { group: "リキュール", description: "ビターオレンジや様々なハーブ、スパイスを配合して造られる、鮮やかな赤色と苦味が特徴のイタリア産リキュールです。" },
+	"トリプルセック": { group: "リキュール", description: "オレンジの果皮を原料とした、無色透明でドライな風味のオレンジリキュールです。" },
+	"キュラソー": { group: "リキュール", description: "オレンジの果皮を原料としたリキュール。青やオレンジなど様々な色があります。" },
+	"フェルネット": { group: "リキュール", description: "薬草やスパイスをベースにしたイタリアの苦味酒（アマーロ）の一種です。" },
+	"ドランブイ": { group: "リキュール", description: "スコッチウイスキーをベースに、ヒースの花の蜂蜜やハーブを加えたスコットランド産リキュールです。" },
+	"ベネディクティン": { group: "リキュール", description: "27種類のハーブとスパイスから造られる、フランス産のハーブ系リキュールです。" },
+	"コアントロー": { group: "リキュール", description: "ビターオレンジとスイートオレンジの果皮から造られる、フランス産の高品質なトリプルセックです。" },
+	"アマレット": { group: "リキュール", description: "杏の核（杏仁）を原料とした、アーモンドのような甘く香ばしい風味のリキュールです。" },
+	"チナール": { group: "リキュール", description: "アーティチョーク（チョウセンアザミ）を含む13種類のハーブから造られるイタリアの苦味酒（アマーロ）です。" },
+	"モラッコ・チェリー": { group: "リキュール", description: "チェリーを原料としたリキュールの一種です。" },
+	"ファレナム": { group: "リキュール", description: "アーモンド、ジンジャー、クローブ、ライムなどから作られる、カリブ海発祥のシロップまたはリキュールです。" },
+	"シャルトリューズ": { group: "リキュール", description: "130種類ものハーブやスパイスから造られる、フランスの修道院発祥の秘伝のリキュールです。" },
+	"カルーア": { group: "リキュール", description: "アラビカ種のコーヒー豆を主原料とした、メキシコ産のコーヒーリキュールです。" },
+	"フェルネット・ブランカ": { group: "リキュール", description: "イタリア・ミラノのブランカ社が製造するフェルネットの代表的な銘柄です。" },
+	"コーヒー・リキュール": { group: "リキュール", description: "コーヒー豆を原料としたリキュールの総称です。" },
+	"アペロール": { group: "リキュール", description: "ビターオレンジやスイートオレンジ、ハーブなどから造られる、オレンジ色が特徴のイタリア産リキュール。カンパリより苦味が少ないです。" },
+	"アマーロ・ノニーノ": { group: "リキュール", description: "グラッパをベースにハーブを浸漬して造られる、イタリアの高級アマーロ（苦味酒）です。" },
+	"セントエリザベス・オールスパイス・ドラム": { group: "リキュール", description: "オールスパイス（ピメント）のベリーをラムに浸漬して造られる、スパイシーなリキュールです。" },
+	"オレンジ・ビターズ": { group: "ビターズ", description: "オレンジの果皮やハーブをアルコールに浸漬して造られるビターズ（苦味酒）です。" },
+	"アンゴスチュラ・ビターズ": { group: "ビターズ", description: "リンドウの根やハーブ、スパイスから造られる、カクテルに欠かせない代表的なビターズです。" },
+	"ペイショーズ・ビターズ": { group: "ビターズ", description: "サゼラックなどのカクテルに使われる、アニスやチェリーの風味が特徴的なビターズです。" },
+	"アロマティック・ビターズ": { group: "ビターズ", description: "様々なハーブやスパイスの香りを持つビターズの総称です。" },
+	// ノンアルコール
+	"炭酸水": { group: "炭酸水", description: "炭酸ガスを含む水。ソーダやクラブソーダとも呼ばれます。" },
+	"水": { group: "水", description: "カクテルの希釈、味の調整、冷却など多目的に使われる、最もシンプルな飲料。" },
+	"レモン・ジュース": { group: "ジュース", description: "レモンを搾った果汁。フレッシュな酸味を加えます。" },
+	"ライム・ジュース": { group: "ジュース", description: "ライムを搾った果汁。爽やかな酸味と香りを加えます。" },
+	"パイナップル・ジュース": { group: "ジュース", description: "パイナップルを搾った果汁。トロピカルな甘酸っぱさを加えます。" },
+	"オレンジ・ジュース": { group: "ジュース", description: "オレンジを搾った果汁。フルーティーな甘さと酸味を加えます。" },
+	"サトウキビ・ジュース": { group: "ジュース", description: "サトウキビを搾ったジュース。自然な甘さが特徴です。" },
+	"トマト・ジュース": { group: "ジュース", description: "トマトを搾ったジュース。ブラッディ・マリーなどに使われます。" },
+	"クランベリー・ジュース": { group: "ジュース", description: "クランベリーを搾った果汁。鮮やかな色と酸味が特徴です。" },
+	"グレープフルーツ・ジュース": { group: "ジュース", description: "グレープフルーツを搾った果汁。爽やかな苦味と酸味が特徴です。" },
+	"ピンクグレープフルーツソーダ": { group: "ジュース", description: "ピンクグレープフルーツ風味の炭酸飲料です。" },
+	"コーラ": { group: "ジュース", description: "甘味と刺激のある炭酸飲料。幅広い世代に親しまれ、カクテルの材料としても人気です。" },
+	"ジンジャーエール": { group: "ジュース", description: "ショウガの風味を付けた甘口の炭酸飲料です。" },
+	"ジンジャービール": { group: "ジュース", description: "ショウガを発酵させて造る、ジンジャーエールより辛口で本格的な炭酸飲料です。" },
+	"ホットコーヒー": { group: "コーヒー", description: "焙煎豆の香りとコクを楽しめる温かい飲料。カクテルに深みを加える素材としても活躍します。" },
+	"エスプレッソ": { group: "コーヒー", description: "高圧で抽出した濃厚なコーヒー。" },
+	// その他
+	"シンプル・シロップ": { group: "シロップ", description: "砂糖と水を1:1の割合で煮溶かして作る基本的なシロップです。" },
+	"ラズベリー・シロップ": { group: "シロップ", description: "ラズベリーの風味を付けた甘いシロップです。" },
+	"グレナデン・シロップ": { group: "シロップ", description: "ザクロの果汁から作られる、鮮やかな赤色と甘酸っぱい風味が特徴のシロップです。" },
+	"シュガー・シロップ": { group: "シロップ", description: "砂糖を水に溶かして作る甘味料。シンプルシロップと同義で使われることが多いです。" },
+	"オルジェー・シロップ": { group: "シロップ", description: "アーモンドと砂糖、オレンジフラワーウォーターなどから作られる、甘く香ばしいシロップです。" },
+	"ハチミツ・シロップ": { group: "シロップ", description: "ハチミツと湯を混ぜて作るシロップ。自然な甘さと香りを加えます。" },
+	"パッションフルーツ・シロップ": { group: "シロップ", description: "パッションフルーツの風味を付けたトロピカルなシロップです。" },
+	"エルダーフラワー・コーディアル": { group: "シロップ", description: "エルダーフラワー（ニワトコの花）から作られる、マスカットのような爽やかな香りのシロップです。" },
+	"アガベ・シロップ": { group: "シロップ", description: "リュウゼツランから作られる天然の甘味料。砂糖より甘みが強いです。" },
+	"カモミール・コーディアル": { group: "シロップ", description: "カモミールの花から作られる、リンゴのような優しい香りのシロップです。" },
+	"塩": { group: "塩", description: "味わいを引き締めたり、グラスの縁に飾ったりするのに使われます。" },
+	"セロリソルト": { group: "塩", description: "塩とセロリの種を挽いたものを混ぜたブレンド調味料です。" },
+	"砂糖": { group: "砂糖", description: "カクテルの甘みを調整するために使われる基本的な材料です。" },
+	"角砂糖": { group: "砂糖", description: "立方体に固めた砂糖。" },
+	"卵白": { group: "卵", description: "カクテルにまろやかな口当たりと美しい泡の層を作るために使われます。" },
+	"卵黄": { group: "卵", description: "カクテルにコクと栄養価を加えるために使われます。" },
+	"パイナップルの塊": { group: "果物", description: "カットしたパイナップル。材料や飾りとして使われます。" },
+	"ライム": { group: "果物", description: "フレッシュなライム。果汁を搾ったり、飾りとして使われます。" },
+	"ライムのくし切り": { group: "果物", description: "くし形にカットしたライム。グラスに添えたり、搾ったりして使います。" },
+	"オレンジの輪切り": { group: "果物", description: "輪切りにしたオレンジ。飾りとして使われます。" },
+	"レモンの輪切り": { group: "果物", description: "輪切りにしたレモン。飾りとして使われます。" },
+	"白桃ピュレ": { group: "ピュレ", description: "白桃をすり潰して裏ごししたもの。ベリーニなどに使われます。" },
+	"パッションフルーツピュレ": { group: "ピュレ", description: "パッションフルーツをすり潰して裏ごししたもの。濃厚なトロピカル風味を加えます。" },
+	"生クリーム": { group: "クリーム", description: "牛乳から脂肪分を分離したもの。カクテルにまろやかさとコクを加えます。" },
+	"ココナッツクリーム": { group: "クリーム", description: "ココナッツの果肉から作られる濃厚なクリーム。ピニャ・コラーダなどに使われます。" },
+	"オレンジフラワーウォーター": { group: "その他", description: "ビターオレンジの花を蒸留して作られる香りの良い液体です。" },
+	"バニラエッセンス": { group: "その他", description: "バニラビーンズから抽出した香料。甘い香りを加えます。" },
+	"バニラシュガー": { group: "その他", description: "砂糖にバニラの香りを付けたものです。" },
+	"ドンズ・ミックス": { group: "その他", description: "ドン・ビーチコンバーが考案したとされる、グレープフルーツジュースとシナモンシロップを混ぜたミックスです。" },
+	"ハチミツ": { group: "その他", description: "ミツバチが集めた花の蜜。自然な甘味料として使われます。" },
+	"ショウガのスライス": { group: "その他", description: "スライスしたショウガ。スパイシーな風味を加えます。" },
+	"ミントの小枝": { group: "その他", description: "ミントの枝。飾りや香りづけに使われます。" },
+	"ミントの葉": { group: "その他", description: "ミントの葉。モヒートなどで潰して香りを引き出します。" },
+	"イタリアンバジルの葉": { group: "その他", description: "バジルの葉。爽やかなハーブの香りを加えます。" },
+	"チョウジ": { group: "その他", description: "クローブとも呼ばれるスパイス。甘く刺激的な香りが特徴です。" },
+	"コショウ": { group: "その他", description: "料理にも使われる基本的なスパイス。風味を引き締めます。" },
+	"赤唐辛子薄切り": { group: "その他", description: "スライスした赤唐辛子。ピリッとした辛味を加えます。" },
+	"ウスターソース": { group: "その他", description: "野菜や果実、スパイスから作られるソース。" },
+	"タバスコ": { group: "その他", description: "唐辛子と酢、塩を原料とする辛いソース。" },
+};
+
+
+const ingredientGroupsData = [
+	{ displayName: "ワイン", order: 1, description: "ブドウを発酵させて造られる醸造酒。ワインカクテルや風味付けに使われます。" },
+	{ displayName: "ジン", order: 20, description: "ジュニパーベリーを主原料とする蒸留酒。爽やかな香りが特徴です。" },
+	{ displayName: "ウォッカ", order: 21, description: "穀物やジャガイモを原料とする蒸留酒。クリアでニュートラルな味わいです。" },
+	{ displayName: "ラム", order: 22, description: "サトウキビを原料とする蒸留酒。甘く豊かな風味が特徴です。" },
+	{ displayName: "テキーラ", order: 23, description: "リュウゼツランを原料とするメキシコ産蒸留酒。独特の風味が魅力です。" },
+	{ displayName: "ウイスキー", order: 24, description: "大麦やトウモロコシなどの穀物を原料とする蒸留酒。豊かな香りと深いコクが楽しめます。" },
+	{ displayName: "ブランデー", order: 25, description: "果実を原料とする蒸留酒。特にブドウから作られるものが有名です。" },
+	{ displayName: "その他の蒸留酒", order: 26, description: "上記以外の様々な原料や製法で造られる蒸留酒です。" },
+	{ displayName: "リキュール", order: 40, description: "蒸留酒に果実やハーブ、スパイスなどを加えて風味を付けた混成酒。" },
+	{ displayName: "ビターズ", order: 41, description: "薬草や香辛料をアルコールに浸漬して造られる苦味酒。カクテルの風味を引き締めます。" },
+	{ displayName: "ジュース", order: 60, description: "" },
+	{ displayName: "炭酸水", order: 61, description: "" },
+	{ displayName: "コーヒー", order: 62, description: "" },
+	{ displayName: "水", order: 63, description: "" },
+	{ displayName: "クリーム", order: 80, description: "" },
+	{ displayName: "シロップ", order: 81, description: "" },
+	{ displayName: "果物", order: 82, description: "" },
+	{ displayName: "ピュレ", order: 83, description: "果物や野菜をすり潰して裏ごししたもの。濃厚な果実感を加えます。" },
+	{ displayName: "卵", order: 84, description: "" },
+	{ displayName: "砂糖", order: 85, description: "" },
+	{ displayName: "塩", order: 86, description: "" },
+	{ displayName: "その他", order: 99, description: "ハーブ、スパイスなど、カクテルに使われるその他の材料です。" },
 ];
 
 export async function seed(env: Env) {
@@ -2075,12 +2237,37 @@ export async function seed(env: Env) {
 
 	// カテゴリの登録（並び順を管理）
 	const categoryData = [
-		{ name: "醸造酒", sortOrder: 1, icon: "WineBar" },
-		{ name: "蒸留酒", sortOrder: 2, icon: "Liquor" },
-		{ name: "混成酒", sortOrder: 3, icon: "LocalBar" },
-		{ name: "ノンアルコール", sortOrder: 4, icon: "LocalDrink" },
-		{ name: "シロップ", sortOrder: 5, icon: "BubbleChart" },
-		{ name: "その他", sortOrder: 6, icon: "Restaurant" },
+		{
+			name: "醸造酒",
+			sortOrder: 1,
+			icon: "WineBar",
+			description: "穀物や果物などを発酵させて造られたお酒。",
+		},
+		{
+			name: "蒸留酒",
+			sortOrder: 2,
+			icon: "Liquor",
+			description: "醸造酒を蒸留してアルコール度数を高めたお酒。",
+		},
+		{
+			name: "混成酒",
+			sortOrder: 3,
+			icon: "LocalBar",
+			description: "醸造酒や蒸留酒に糖類、香料、果実などを加えたお酒。",
+		},
+		{
+			name: "ノンアルコール",
+			sortOrder: 4,
+			icon: "LocalDrink",
+			description: "アルコールを含まない飲料。",
+		},
+		{
+			name: "その他",
+			sortOrder: 5,
+			icon: "Restaurant",
+			description: "上記以外の材料（シロップ、果物、香辛料など）。"
+		},
+
 	];
 
 	for (const category of categoryData) {
@@ -2105,36 +2292,12 @@ export async function seed(env: Env) {
 
 	// 材料グループの登録
 	const groupMap = new Map<string, number>();
-	// 全ての材料からグループ名を抽出
-	const allGroupNames = new Set<string>();
-	for (const cocktailData of allCocktails) {
-		for (const ing of cocktailData.ingredients) {
-			const groupDisplayName = getGroupDisplayName(ing.name);
-			if (groupDisplayName) {
-				allGroupNames.add(groupDisplayName);
-			}
-		}
-	}
-
-	// グループを登録
-	let sortOrder = 1;
-	for (const groupName of Array.from(allGroupNames).sort()) {
-	const existingGroup = await db
-		.select()
-		.from(ingredientGroups)
-		.where(eq(ingredientGroups.displayName, groupName));
-
-	if (existingGroup.length > 0) {
-		groupMap.set(groupName, existingGroup[0].id);
-		continue;
-	}
-
-	const [newGroup] = await db
-		.insert(ingredientGroups)
-		.values({ displayName: groupName, sortOrder: sortOrder++ })
-		.returning({ id: ingredientGroups.id });
-
-	groupMap.set(groupName, newGroup.id);
+	for (const group of ingredientGroupsData) {
+		const [newGroup] = await db
+			.insert(ingredientGroups)
+			.values({ displayName: group.displayName, sortOrder: group.order, description: group.description })
+			.returning({ id: ingredientGroups.id });
+		groupMap.set(group.displayName, newGroup.id);
 	}
 	console.log("📦 Seeded ingredient groups.");
 
@@ -2143,15 +2306,23 @@ export async function seed(env: Env) {
 	for (const cocktailData of allCocktails) {
 		for (const ing of cocktailData.ingredients) {
 			if (!ingredientMap.has(ing.name)) {
-				const groupDisplayName = getGroupDisplayName(ing.name);
-				const groupId = groupDisplayName ? groupMap.get(groupDisplayName) : null;
+				const groupDisplayName = ingredientDetails[ing.name]?.group;
+				if (!groupDisplayName) {
+					throw new Error(`Ingredient group not found for ingredient: ${ing.name}`);
+				}
+				const groupId = groupMap.get(groupDisplayName);
+				if (groupId === undefined) {
+					throw new Error(`Group ID not found for group display name: ${groupDisplayName}`);
+				}
+				const description = ingredientDetails[ing.name]?.description;
 
 				const [newIngredient] = await db
 					.insert(ingredients)
 					.values({
 						name: ing.name,
-						groupId: groupId || null,
+						groupId: groupId,
 						category: ing.category,
+						description: description ?? null,
 					})
 					.returning({ id: ingredients.id });
 				ingredientMap.set(ing.name, newIngredient.id);
