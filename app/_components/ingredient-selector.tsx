@@ -34,7 +34,7 @@ const categoryIcons: Record<string, React.ComponentType> = {
 	その他: Restaurant,
 };
 
-interface Category {
+export interface Category {
 	id: number;
 	name: string;
 	sortOrder: number;
@@ -42,7 +42,7 @@ interface Category {
 	description: string | null;
 }
 
-interface Ingredient {
+export interface Ingredient {
 	id: number;
 	name: string;
 	categoryName: string | null;
@@ -53,6 +53,8 @@ interface Ingredient {
 
 interface IngredientSelectorProps {
 	selectedIngredients: string[];
+	ingredients: Ingredient[]; // 親から受け取る
+	categories: Category[]; // 親から受け取る
 	onIngredientsChange: (
 		ingredients: string[],
 		count: number,
@@ -63,25 +65,11 @@ interface IngredientSelectorProps {
 
 export default function IngredientSelector({
 	selectedIngredients,
+	ingredients,
+	categories,
 	onIngredientsChange,
 	disabled = false,
 }: IngredientSelectorProps) {
-	const [ingredients, setIngredients] = React.useState<Ingredient[]>([]);
-	const [categories, setCategories] = React.useState<Category[]>([]);
-
-	React.useEffect(() => {
-		const fetchData = async () => {
-			const res = await fetch("/api/ingredients");
-			const data = (await res.json()) as {
-				categories: Category[];
-				ingredients: Ingredient[];
-			};
-			setCategories(data.categories);
-			setIngredients(data.ingredients);
-		};
-		fetchData();
-	}, []);
-
 	// 材料のカテゴリ分け
 	const ingredientCategories = React.useMemo(() => {
 		const categorized: Record<string, Ingredient[]> = {};

@@ -4,16 +4,23 @@ import * as React from "react";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import MixButton from "./mix-button";
-import IngredientSelector from "./ingredient-selector";
+import IngredientSelector, {
+	type Ingredient,
+	type Category,
+} from "./ingredient-selector";
 
 interface MixSectionProps {
 	onMixClick: (selectedGroups: string[]) => void;
+	ingredients: Ingredient[]; // 親から受け取る
+	categories: Category[]; // 親から受け取る
 	isMixing?: boolean;
 	isInitialLoading?: boolean;
 }
 
 export default function MixSection({
 	onMixClick,
+	ingredients,
+	categories,
 	isMixing = false,
 	isInitialLoading = false,
 }: MixSectionProps) {
@@ -69,6 +76,8 @@ export default function MixSection({
 			{/* 材料選択UI */}
 			<IngredientSelector
 				selectedIngredients={selectedIngredients}
+				ingredients={ingredients}
+				categories={categories}
 				onIngredientsChange={handleIngredientsChange}
 				disabled={isMixing || isInitialLoading}
 			/>

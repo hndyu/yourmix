@@ -7,14 +7,18 @@ import CocktailSearchResults from "./cocktail-search-results";
 import DailyRecommendation from "./daily-recommendation";
 import type { Cocktail } from "../types/cocktail";
 import {
+	// filterCocktailsByIngredientsのインポートを修正
 	filterCocktailsByIngredients,
 	type GroupMapping,
 } from "../utils/cocktail-filter";
 import { generateOriginalCocktail } from "../utils/cocktail-generator";
+import type { Ingredient, Category } from "./ingredient-selector";
 
 export default function CocktailMixer() {
 	// DBから取得したすべてのカクテル
 	const [allCocktails, setAllCocktails] = React.useState<Cocktail[]>([]);
+	const [ingredients, setIngredients] = React.useState<Ingredient[]>([]);
+	const [categories, setCategories] = React.useState<Category[]>([]);
 
 	// カクテル表示の状態管理
 	const [selectedCocktail, setSelectedCocktail] =
@@ -48,11 +52,16 @@ export default function CocktailMixer() {
 				const cocktailsData = (await cocktailsRes.json()) as {
 					cocktails: Cocktail[];
 				};
+				// ingredients APIから全てのデータを取得
 				const ingredientsData = (await ingredientsRes.json()) as {
+					ingredients: Ingredient[];
+					categories: Category[];
 					groupMapping: GroupMapping;
 				};
 
-				setAllCocktails(cocktailsData.cocktails);
+				setAllCocktails(cocktailsData.cocktails); // 既存のロジック
+				setIngredients(ingredientsData.ingredients);
+				setCategories(ingredientsData.categories);
 				setGroupMapping(ingredientsData.groupMapping);
 			} catch (error) {
 				console.error("初期データの取得に失敗しました:", error);
@@ -121,6 +130,8 @@ export default function CocktailMixer() {
 			{/* Mixセクション */}
 			<MixSection
 				onMixClick={handleMixClick}
+				ingredients={ingredients}
+				categories={categories}
 				isMixing={isMixing}
 				isInitialLoading={isInitialLoading}
 			/>
