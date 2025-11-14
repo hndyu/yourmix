@@ -27,7 +27,8 @@ export default function CocktailMixer() {
 	>([]);
 
 	// ローディング状態の管理
-	const [isLoading, setIsLoading] = React.useState(false);
+	const [isInitialLoading, setIsInitialLoading] = React.useState(true);
+	const [isMixing, setIsMixing] = React.useState(false);
 
 	// 表示アニメーションの状態管理
 	const [showResults, setShowResults] = React.useState(false);
@@ -38,7 +39,7 @@ export default function CocktailMixer() {
 	// 初期化時にカクテルとグループマッピングをDBから取得
 	React.useEffect(() => {
 		const fetchData = async () => {
-			setIsLoading(true);
+			setIsInitialLoading(true);
 			try {
 				const [cocktailsRes, ingredientsRes] = await Promise.all([
 					fetch("/api/cocktails"),
@@ -56,7 +57,7 @@ export default function CocktailMixer() {
 			} catch (error) {
 				console.error("初期データの取得に失敗しました:", error);
 			} finally {
-				setIsLoading(false);
+				setIsInitialLoading(false);
 			}
 		};
 		fetchData();
@@ -67,7 +68,7 @@ export default function CocktailMixer() {
 		console.log("Mixボタンがクリックされました！");
 
 		// ローディング状態を開始
-		setIsLoading(true);
+		setIsMixing(true);
 		setShowResults(false);
 
 		try {
@@ -102,7 +103,7 @@ export default function CocktailMixer() {
 			// TODO: ユーザーにエラーを通知するUIを追加
 		} finally {
 			// ローディング状態を終了
-			setIsLoading(false);
+			setIsMixing(false);
 		}
 	};
 
@@ -118,7 +119,11 @@ export default function CocktailMixer() {
 			{/* <DailyRecommendation cocktails={mockCocktails} /> */}
 
 			{/* Mixセクション */}
-			<MixSection onMixClick={handleMixClick} isLoading={isLoading} />
+			<MixSection
+				onMixClick={handleMixClick}
+				isMixing={isMixing}
+				isInitialLoading={isInitialLoading}
+			/>
 
 			{/* カクテルが選択されている場合のみ表示 */}
 			{selectedCocktail && (
