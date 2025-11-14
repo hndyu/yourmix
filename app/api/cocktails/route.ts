@@ -83,6 +83,7 @@ export async function GET() {
 				!entry.ingredients.some((i) => i.name === ingredient.name)
 			) {
 				entry.ingredients.push({
+					id: ingredient.id,
 					name: ingredient.name,
 					amount: cocktailIngredient.amount ?? "",
 				});
