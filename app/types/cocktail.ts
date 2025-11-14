@@ -2,6 +2,7 @@
 export interface Ingredient {
 	id: number;
 	name: string; // グループ化された材料の表示名
+	category: string;
 	amount?: string;
 	categoryName?: string | null;
 	actualNames?: string[]; // グループ化された材料の実際の名称リスト
@@ -28,4 +29,5 @@ export interface Cocktail {
 	instructions: string[];
 	garnish?: string;
 	tags?: string[];
+	imageUrl?: string;
 }
