@@ -33,8 +33,9 @@ export default function CocktailMixer() {
 	const [isInitialLoading, setIsInitialLoading] = React.useState(true);
 	const [isMixing, setIsMixing] = React.useState(false);
 
-	// 表示アニメーションの状態管理
-	const [showResults, setShowResults] = React.useState(false);
+	// 表示アニメーションの状態管理を個別に変更
+	const [showOriginalCocktail, setShowOriginalCocktail] = React.useState(false);
+	const [showSearchResults, setShowSearchResults] = React.useState(false);
 
 	// グループマッピングの状態管理
 	const [groupMapping, setGroupMapping] = React.useState<GroupMapping>({});
@@ -77,40 +78,46 @@ export default function CocktailMixer() {
 
 		// ローディング状態を開始
 		setIsMixing(true);
-		setShowResults(false);
+		// 表示をリセット
+		setShowOriginalCocktail(false);
+		setShowSearchResults(false);
+		setSelectedCocktail(null);
+		setSearchResults([]);
 
 		try {
 			// 選択された材料を保存
 			setLastSelectedIngredients(selectedGroups);
 
-			// 材料に基づいてカクテルをフィルタリング（検索結果表示用）
-			const filteredCocktails = await filterCocktailsByIngredients(
+			// 既存レシピの検索を非同期で実行
+			const searchPromise = filterCocktailsByIngredients(
 				allCocktails,
 				selectedGroups,
 				groupMapping,
+			).then((filteredCocktails) => {
+				console.log("レシピ検索が完了しました。");
+				setSearchResults(filteredCocktails);
+				if (filteredCocktails.length > 0) {
+					setShowSearchResults(true);
+				}
+			});
+
+			// オリジナルカクテルの生成を非同期で実行
+			const generatePromise = generateOriginalCocktail(selectedGroups).then(
+				(generatedCocktail) => {
+					console.log("オリジナルカクテルの生成が完了しました。");
+					setSelectedCocktail(generatedCocktail);
+					if (generatedCocktail) {
+						setShowOriginalCocktail(true);
+					}
+				},
 			);
 
-			// 検索結果を保存
-			setSearchResults(filteredCocktails);
-
-			// オリジナルカクテルを生成
-			console.log("オリジナルカクテルを生成します。");
-			const generatedCocktail = await generateOriginalCocktail(selectedGroups);
-
-			// 少し遅延を入れてローディング感を演出
-			// await new Promise((resolve) => setTimeout(resolve, 800));
-
-			setSelectedCocktail(generatedCocktail);
-
-			// 結果表示のアニメーションを開始
-			setTimeout(() => {
-				setShowResults(true);
-			}, 100);
+			// 両方の処理が完了したらローディングを終了
+			await Promise.all([searchPromise, generatePromise]);
 		} catch (error) {
 			console.error("カクテル生成エラー:", error);
 			// TODO: ユーザーにエラーを通知するUIを追加
 		} finally {
-			// ローディング状態を終了
 			setIsMixing(false);
 		}
 	};
@@ -118,7 +125,7 @@ export default function CocktailMixer() {
 	// カクテル表示を閉じる関数
 	const handleCloseCocktail = () => {
 		setSelectedCocktail(null);
-		setShowResults(false);
+		setShowOriginalCocktail(false);
 	};
 
 	return (
@@ -140,7 +147,7 @@ export default function CocktailMixer() {
 				<CocktailDisplay
 					cocktail={selectedCocktail}
 					onRemove={handleCloseCocktail}
-					show={showResults}
+					show={showOriginalCocktail}
 				/>
 			)}
 
@@ -149,7 +156,7 @@ export default function CocktailMixer() {
 				<CocktailSearchResults
 					cocktails={searchResults}
 					selectedIngredients={lastSelectedIngredients}
-					show={showResults}
+					show={showSearchResults}
 					groupMapping={groupMapping}
 				/>
 			)}
