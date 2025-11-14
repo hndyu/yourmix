@@ -19,6 +19,16 @@ export interface Category {
 	description: string | null;
 }
 
+// 材料一覧APIで返されるグループ化された材料の型定義
+export interface GroupedIngredient {
+	id: number;
+	name: string;
+	categoryName: string | null;
+	actualNames: string[];
+	sortOrder: number | null;
+	description: string | null;
+}
+
 // カクテルの型定義
 export interface Cocktail {
 	id: string;
