@@ -1,4 +1,4 @@
-import type { Cocktail, Ingredient } from "../types/cocktail";
+import type { Cocktail } from "../types/cocktail";
 import { getIngredientNamesByGroup } from "./ingredient-groups";
 import type { DrizzleD1Database } from "drizzle-orm/d1";
 import type * as schema from "@/schema";
@@ -8,72 +8,6 @@ import type * as schema from "@/schema";
  * キー: 表示グループ名、値: 実際の材料名の配列
  */
 export type GroupMapping = Record<string, string[]>;
-
-/**
- * 選択された材料に完全一致するカクテルを検索する関数
- * @param cocktails 検索対象のカクテル配列
- * @param selectedIngredients 選択された材料の配列（表示名と実際の材料名が混在）
- * @param groupMapping データベースから取得したグループマッピング（オプショナル）
- * @param db Drizzleデータベースインスタンス
- * @returns 完全一致するカクテル配列
- */
-export async function findExactMatchCocktails(
-	cocktails: Cocktail[],
-	selectedIngredients: string[],
-	groupMapping?: GroupMapping,
-	db?: DrizzleD1Database<typeof schema>,
-): Promise<Cocktail[]> {
-	// 材料が選択されていない場合は空配列を返す
-	if (selectedIngredients.length === 0) {
-		return Promise.resolve([]);
-	}
-
-	// 表示名を実際の材料名に展開
-	const expandedIngredients = await expandSelectedIngredients(
-		selectedIngredients,
-		groupMapping,
-		db,
-	);
-
-	// 各カクテルが条件に一致するかどうかを非同期で判定
-	const filterResults = await Promise.all(
-		cocktails.map(async (cocktail) => {
-			const cocktailIngredientNames = cocktail.ingredients.map(
-				(ingredient) => ingredient.name,
-			);
-
-			// 材料数が一致しない場合は除外
-			if (expandedIngredients.length !== cocktailIngredientNames.length) {
-				return false;
-			}
-
-			// 順序を無視して配列の要素が一致するかをチェック
-			const sortedExpanded = [...expandedIngredients].sort();
-			const sortedCocktail = [...cocktailIngredientNames].sort();
-
-			const allSelectedIncluded = sortedExpanded.every((selectedIngredient) =>
-				sortedCocktail.some((cocktailIngredient) =>
-					cocktailIngredient
-						.toLowerCase()
-						.includes(selectedIngredient.toLowerCase()),
-				),
-			);
-
-			const allCocktailIncluded = sortedCocktail.every((cocktailIngredient) =>
-				sortedExpanded.some((selectedIngredient) =>
-					cocktailIngredient
-						.toLowerCase()
-						.includes(selectedIngredient.toLowerCase()),
-				),
-			);
-
-			return allSelectedIncluded && allCocktailIncluded;
-		}),
-	);
-
-	// 判定結果に基づいてカクテルをフィルタリング
-	return cocktails.filter((_, index) => filterResults[index]);
-}
 
 /**
  * 選択された材料名を展開する関数（表示名 → 実際の材料名）
@@ -216,7 +150,12 @@ export async function sortCocktailsByMatchScore(
 	const scores = await Promise.all(
 		cocktails.map(async (cocktail) => ({
 			cocktail,
-			score: await calculateMatchScore(cocktail, selectedIngredients, groupMapping, db),
+			score: await calculateMatchScore(
+				cocktail,
+				selectedIngredients,
+				groupMapping,
+				db,
+			),
 		})),
 	);
 	return scores.sort((a, b) => b.score - a.score).map((item) => item.cocktail);
@@ -243,31 +182,4 @@ export function getDailyRecommendation(cocktails: Cocktail[]): Cocktail {
 	// シードを使用してカクテルを選択
 	const index = seed % cocktails.length;
 	return cocktails[index];
-}
-
-/**
- * カクテルIDからカクテルデータを取得する関数
- * @param cocktails カクテル配列
- * @param id 検索するカクテルID
- * @returns カクテルデータ（見つからない場合はundefined）
- */
-export function getCocktailById(
-	cocktails: Cocktail[],
-	id: string,
-): Cocktail | undefined {
-	return cocktails.find((cocktail) => cocktail.id === id);
-}
-
-/**
- * カクテルIDからカクテルデータを取得する関数（非同期版）
- * @param id 検索するカクテルID
- * @returns Promise<Cocktail | undefined>
- */
-export async function getCocktailByIdAsync(
-	id: string,
-): Promise<Cocktail | undefined> {
-	// 実際の実装では、ここでAPIからデータを取得
-	// 現在はモックデータを使用
-	const { mockCocktails } = await import("../types/cocktail");
-	return mockCocktails.find((cocktail) => cocktail.id === id);
 }
