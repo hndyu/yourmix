@@ -1,4 +1,3 @@
-// 材料の型定義
 export interface Ingredient {
 	id: number;
 	name: string; // グループ化された材料の表示名
@@ -18,11 +17,10 @@ export interface Category {
 	description: string | null;
 }
 
-// カクテルの型定義
 export interface Cocktail {
 	id: string;
-	name: string;
 	slug: string;
+	name: string;
 	description: string;
 	ingredients: Ingredient[];
 	instructions: string[];

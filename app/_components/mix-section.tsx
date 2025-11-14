@@ -4,10 +4,8 @@ import * as React from "react";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import MixButton from "./mix-button";
-import IngredientSelector, {
-	type Ingredient,
-	type Category,
-} from "./ingredient-selector";
+import IngredientSelector from "./ingredient-selector";
+import type { Ingredient, Category } from "../types/cocktail";
 
 interface MixSectionProps {
 	onMixClick: (selectedGroups: string[]) => void;

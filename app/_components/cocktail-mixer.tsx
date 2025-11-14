@@ -5,14 +5,13 @@ import MixSection from "./mix-section";
 import CocktailDisplay from "./cocktail-display";
 import CocktailSearchResults from "./cocktail-search-results";
 import DailyRecommendation from "./daily-recommendation";
-import type { Cocktail } from "../types/cocktail";
+import type { Cocktail, Ingredient, Category } from "../types/cocktail";
 import {
 	// filterCocktailsByIngredientsのインポートを修正
 	filterCocktailsByIngredients,
 	type GroupMapping,
 } from "../utils/cocktail-filter";
 import { generateOriginalCocktail } from "../utils/cocktail-generator";
-import type { Ingredient, Category } from "./ingredient-selector";
 
 export default function CocktailMixer() {
 	// DBから取得したすべてのカクテル

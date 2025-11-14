@@ -16,24 +16,8 @@ import {
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
+import type { Ingredient, Category } from "../types/cocktail";
 import { iconMap, DefaultIcon } from "../utils/icon-map";
-
-export interface Category {
-	id: number;
-	name: string;
-	sortOrder: number;
-	icon: string | null;
-	description: string | null;
-}
-
-export interface Ingredient {
-	id: number;
-	name: string;
-	categoryName: string | null;
-	actualNames: string[]; // グループ化された材料の実際の名称リスト
-	sortOrder: number | null;
-	description: string | null;
-}
 
 interface IngredientSelectorProps {
 	selectedIngredients: string[];
