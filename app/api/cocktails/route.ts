@@ -7,6 +7,7 @@ import {
 	ingredients,
 	cocktailTags,
 	tags,
+	instructions,
 } from "../../../schema";
 import { eq } from "drizzle-orm";
 import type { Cocktail } from "../../types/cocktail";
@@ -48,7 +49,9 @@ export async function GET() {
 				eq(cocktailIngredients.ingredientId, ingredients.id),
 			)
 			.leftJoin(cocktailTags, eq(cocktails.id, cocktailTags.cocktailId)) // cocktailTagsを結合
-			.leftJoin(tags, eq(cocktailTags.tagId, tags.id)); // tagsをcocktailTags.tagIdで結合
+			.leftJoin(tags, eq(cocktailTags.tagId, tags.id)) // tagsをcocktailTags.tagIdで結合
+			.leftJoin(instructions, eq(cocktails.id, instructions.cocktailId))
+			.orderBy(instructions.step);
 
 		// カクテルごとに材料とタグをグループ化
 		const cocktailsMap = results.reduce((acc, row) => {
@@ -57,6 +60,7 @@ export async function GET() {
 				ingredients: ingredient,
 				cocktail_ingredients: cocktailIngredient,
 				tags: tag,
+				instructions: instruction,
 			} = row;
 			if (!cocktail) return acc;
 
@@ -88,6 +92,12 @@ export async function GET() {
 				entry.tags.push(tag.name);
 			}
 
+			if (
+				instruction?.text &&
+				!entry.instructions.includes(instruction.text)
+			) {
+				entry.instructions.push(instruction.text);
+			}
 			return acc;
 		}, new Map<string, Cocktail>());
 
