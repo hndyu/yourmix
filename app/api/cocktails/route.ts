@@ -65,6 +65,7 @@ export async function GET() {
 			if (!entry) {
 				entry = {
 					...cocktail,
+					imageUrl: cocktail.imageUrl ?? undefined,
 					description: cocktail.description ?? "",
 					garnish: cocktail.garnish ?? undefined,
 					ingredients: [],
@@ -83,6 +84,7 @@ export async function GET() {
 					id: ingredient.id,
 					name: ingredient.name,
 					amount: cocktailIngredient.amount ?? "",
+					category: ingredient.category ?? "",
 				});
 			}
 

@@ -83,6 +83,7 @@ export async function GET(
 				) {
 					acc.ingredients.push({
 						...row.ingredients,
+						category: row.ingredients.category ?? "", // categoryがnullの場合に空文字を設定
 						amount: row.cocktail_ingredients?.amount,
 						option_group: row.cocktail_ingredients?.option_group ?? undefined,
 					});
