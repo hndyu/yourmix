@@ -11,13 +11,13 @@ const isLocal = environment === "local";
 
 // async関数でラップしてtop-level awaitを回避
 async function runSeed() {
-	console.log(`🌱 Starting seed process via API endpoint...`);
+	console.log("🌱 Starting seed process via API endpoint...");
 	console.log("");
 
 	try {
 		const baseUrl = isLocal
 			? "http://localhost:3000"
-			: process.env.NEXT_PUBLIC_APP_URL || "https://your-app.workers.dev";
+			: process.env.NEXT_PUBLIC_APP_URL || "https://yourmix.hndyu.workers.dev/";
 
 		console.log(`📡 API Endpoint: ${baseUrl}/api/admin/seed`);
 		console.log(`🌍 Environment: ${isLocal ? "Local" : "Remote"}`);
