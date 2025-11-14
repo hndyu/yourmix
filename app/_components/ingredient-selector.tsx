@@ -16,23 +16,7 @@ import {
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
-// カテゴリ用のアイコンをインポート
-import {
-	WineBar,
-	Liquor,
-	LocalBar,
-	LocalDrink,
-	Restaurant,
-} from "@mui/icons-material";
-
-// カテゴリとアイコンのマッピング（フォールバック用）
-const categoryIcons: Record<string, React.ComponentType> = {
-	醸造酒: WineBar,
-	蒸留酒: Liquor,
-	混成酒: LocalBar,
-	ノンアルコール: LocalDrink,
-	その他: Restaurant,
-};
+import { iconMap, DefaultIcon } from "../utils/icon-map";
 
 export interface Category {
 	id: number;
@@ -255,9 +239,8 @@ export default function IngredientSelector({
 			{sortedCategoryEntries.map(([category, ingredients]) => {
 				// カテゴリ情報からアイコン名を取得（フォールバック用に既存のマッピングも使用）
 				const categoryInfo = categories.find((c) => c.name === category);
-				const iconName = categoryInfo?.icon || category;
-				const IconComponent =
-					categoryIcons[iconName] || categoryIcons[category];
+				const iconName = categoryInfo?.icon;
+				const IconComponent = (iconName && iconMap[iconName]) || DefaultIcon;
 
 				return (
 					<Accordion
