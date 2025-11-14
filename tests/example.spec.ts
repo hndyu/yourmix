@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { expect, test } from "@playwright/test";
 
 test.describe("ホーム画面", () => {
 	test("タイトル/ヘッダー/案内が表示され、初期はMixが無効", async ({

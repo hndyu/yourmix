@@ -1,21 +1,21 @@
 "use client";
 
-import * as React from "react";
-import { useParams, useRouter } from "next/navigation";
+import { ArrowBack, Restaurant, Share } from "@mui/icons-material";
 import {
 	Box,
-	Typography,
+	Button,
 	Card,
 	CardContent,
-	Grid,
-	Button,
-	Paper,
-	Fade,
-	Container,
 	CircularProgress,
+	Container,
+	Fade,
+	Grid,
+	Paper,
+	Typography,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import { ArrowBack, Share, Restaurant } from "@mui/icons-material";
+import { useParams, useRouter } from "next/navigation";
+import * as React from "react";
 import type { Cocktail, Ingredient } from "../../types/cocktail";
 
 // カスタムスタイルのカード

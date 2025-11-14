@@ -1,8 +1,7 @@
-
+import { ingredientGroups, ingredients } from "@/schema";
+import type * as schema from "@/schema";
+import { eq } from "drizzle-orm";
 import type { DrizzleD1Database } from "drizzle-orm/d1";
-import { ingredients, ingredientGroups } from '@/schema';
-import type * as schema from '@/schema';
-import { eq } from 'drizzle-orm';
 
 /**
  * 材料名から表示グループ名を取得する関数

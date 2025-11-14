@@ -1,17 +1,17 @@
 "use client";
 
 import * as React from "react";
-import MixSection from "./mix-section";
+import type { Category, Cocktail, Ingredient } from "../types/cocktail";
+import {
+	type GroupMapping,
+	// filterCocktailsByIngredientsのインポートを修正
+	filterCocktailsByIngredients,
+} from "../utils/cocktail-filter";
+import { generateOriginalCocktail } from "../utils/cocktail-generator";
 import CocktailDisplay from "./cocktail-display";
 import CocktailSearchResults from "./cocktail-search-results";
 import DailyRecommendation from "./daily-recommendation";
-import type { Cocktail, Ingredient, Category } from "../types/cocktail";
-import {
-	// filterCocktailsByIngredientsのインポートを修正
-	filterCocktailsByIngredients,
-	type GroupMapping,
-} from "../utils/cocktail-filter";
-import { generateOriginalCocktail } from "../utils/cocktail-generator";
+import MixSection from "./mix-section";
 
 export default function CocktailMixer() {
 	// DBから取得したすべてのカクテル

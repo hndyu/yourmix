@@ -1,24 +1,24 @@
 "use client";
 
-import * as React from "react";
-import {
-	Box,
-	Typography,
-	FormGroup,
-	FormControlLabel,
-	Checkbox,
-	Chip,
-	Paper,
-	Accordion,
-	AccordionSummary,
-	AccordionDetails,
-	Tooltip,
-	Skeleton,
-} from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
-import type { Ingredient, Category } from "../types/cocktail";
-import { iconMap, DefaultIcon } from "../utils/icon-map";
+import {
+	Accordion,
+	AccordionDetails,
+	AccordionSummary,
+	Box,
+	Checkbox,
+	Chip,
+	FormControlLabel,
+	FormGroup,
+	Paper,
+	Skeleton,
+	Tooltip,
+	Typography,
+} from "@mui/material";
+import * as React from "react";
+import type { Category, Ingredient } from "../types/cocktail";
+import { DefaultIcon, iconMap } from "../utils/icon-map";
 
 interface IngredientSelectorProps {
 	selectedIngredients: string[];
@@ -172,7 +172,11 @@ export default function IngredientSelector({
 
 				{/* 材料カテゴリのスケルトン */}
 				{Array.from(new Array(3)).map((_, index) => (
-					<Accordion key={`skeleton-accordion-${index}`} disabled defaultExpanded>
+					<Accordion
+						key={`skeleton-accordion-${index}`}
+						disabled
+						defaultExpanded
+					>
 						<AccordionSummary expandIcon={<ExpandMoreIcon />}>
 							<Box
 								sx={{
@@ -198,7 +202,8 @@ export default function IngredientSelector({
 									<Skeleton
 										key={`skeleton-item-${index}-${itemIndex}`}
 										variant="text"
-										height={24} />
+										height={24}
+									/>
 								))}
 							</Box>
 						</AccordionDetails>

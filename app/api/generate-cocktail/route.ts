@@ -78,11 +78,7 @@ export async function POST(request: Request) {
 								type: Type.STRING,
 							},
 						},
-						required: [
-							"name",
-							"ingredients",
-							"instructions",
-						],
+						required: ["name", "ingredients", "instructions"],
 						propertyOrdering: ["name", "ingredients"],
 					},
 				},

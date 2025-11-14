@@ -1,11 +1,11 @@
 "use client";
 
-import * as React from "react";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import MixButton from "./mix-button";
+import * as React from "react";
+import type { Category, Ingredient } from "../types/cocktail";
 import IngredientSelector from "./ingredient-selector";
-import type { Ingredient, Category } from "../types/cocktail";
+import MixButton from "./mix-button";
 
 interface MixSectionProps {
 	onMixClick: (selectedGroups: string[]) => void;

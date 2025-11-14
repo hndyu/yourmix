@@ -1,27 +1,27 @@
 "use client";
 
-import * as React from "react";
 import {
 	Box,
-	Typography,
+	Button,
 	Card,
 	CardContent,
 	Chip,
-	Grid,
-	Button,
-	Fade,
-	Paper,
 	Divider,
+	Fade,
+	Grid,
+	Paper,
+	Typography,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
+import { useRouter } from "next/navigation";
+import * as React from "react";
 import type { Cocktail } from "../types/cocktail";
 // 共通化された関数をインポート
 import {
+	type GroupMapping,
 	calculateMatchScore,
 	sortCocktailsByMatchScore,
-	type GroupMapping,
 } from "../utils/cocktail-filter";
-import { useRouter } from "next/navigation";
 
 // カスタムスタイルのカード
 const StyledResultCard = styled(Card)(({ theme }) => ({
@@ -67,7 +67,9 @@ export default function CocktailSearchResults({
 	groupMapping,
 }: CocktailSearchResultsProps) {
 	const [sortedCocktails, setSortedCocktails] = React.useState<Cocktail[]>([]);
-	const [matchScores, setMatchScores] = React.useState<Record<string, number>>({});
+	const [matchScores, setMatchScores] = React.useState<Record<string, number>>(
+		{},
+	);
 	const router = useRouter();
 
 	React.useEffect(() => {
@@ -85,7 +87,9 @@ export default function CocktailSearchResults({
 		};
 
 		sortAndSetCocktails();
-		return () => { isMounted = false; };
+		return () => {
+			isMounted = false;
+		};
 	}, [cocktails, selectedIngredients, groupMapping]);
 
 	React.useEffect(() => {
@@ -241,7 +245,6 @@ export default function CocktailSearchResults({
 													fontSize: "0.75rem",
 												}}
 											/>
-
 										</Box>
 
 										{/* 材料（一部表示） */}

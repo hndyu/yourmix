@@ -1,18 +1,18 @@
 import {
-	describe,
-	it,
-	expect,
-	vi,
-	beforeEach,
-	afterEach,
 	type MockedFunction,
+	afterEach,
+	beforeEach,
+	describe,
+	expect,
+	it,
+	vi,
 } from "vitest";
-import {
-	shareViaWebShare,
-	shareViaTwitter,
-	copyToClipboard,
-} from "../share-utils";
 import type { Cocktail } from "../../types/cocktail";
+import {
+	copyToClipboard,
+	shareViaTwitter,
+	shareViaWebShare,
+} from "../share-utils";
 
 // モックカクテルデータ
 const mockCocktail: Cocktail = {

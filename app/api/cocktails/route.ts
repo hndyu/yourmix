@@ -1,17 +1,17 @@
-import { NextResponse } from "next/server";
 import { getCloudflareContext } from "@opennextjs/cloudflare";
-import { drizzle } from "drizzle-orm/d1";
-import {
-	cocktails,
-	cocktailIngredients,
-	ingredients,
-	cocktailTags,
-	tags,
-	instructions,
-} from "../../../schema";
 import { eq } from "drizzle-orm";
-import type { Cocktail } from "../../types/cocktail";
+import { drizzle } from "drizzle-orm/d1";
+import { NextResponse } from "next/server";
 import type { Env } from "../../../cloudflare-env";
+import {
+	cocktailIngredients,
+	cocktailTags,
+	cocktails,
+	ingredients,
+	instructions,
+	tags,
+} from "../../../schema";
+import type { Cocktail } from "../../types/cocktail";
 
 /**
  * カクテル一覧を取得するAPIエンドポイント
@@ -92,10 +92,7 @@ export async function GET() {
 				entry.tags.push(tag.name);
 			}
 
-			if (
-				instruction?.text &&
-				!entry.instructions.includes(instruction.text)
-			) {
+			if (instruction?.text && !entry.instructions.includes(instruction.text)) {
 				entry.instructions.push(instruction.text);
 			}
 			return acc;

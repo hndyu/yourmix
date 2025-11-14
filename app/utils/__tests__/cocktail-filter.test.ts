@@ -1,12 +1,12 @@
-import { describe, it, expect, vi } from "vitest";
+import { describe, expect, it, vi } from "vitest";
+import type { Cocktail } from "../../types/cocktail";
 import {
 	calculateMatchScore,
-	sortCocktailsByMatchScore,
 	filterCocktailsByIngredients,
 	findExactMatchCocktails,
 	getDailyRecommendation,
+	sortCocktailsByMatchScore,
 } from "../cocktail-filter";
-import type { Cocktail } from "../../types/cocktail";
 
 // テスト用のカクテルデータ
 const mockCocktails: Cocktail[] = [
@@ -43,9 +43,9 @@ const mockCocktails: Cocktail[] = [
 		name: "ジントニック",
 		description: "ジンとトニックウォーターの組み合わせ",
 		ingredients: [
-            { name: "ジン", amount: "45ml" },
-            { name: "トニックウォーター", amount: "適量" },
-        ],
+			{ name: "ジン", amount: "45ml" },
+			{ name: "トニックウォーター", amount: "適量" },
+		],
 		instructions: ["グラスにジンを注ぐ", "トニックウォーターを加える"],
 		garnish: "ライムのくし切り",
 	},
@@ -202,9 +202,9 @@ describe("cocktail-filter", () => {
 
 			expect(cocktail.name).toBe("ラム & ライム オリジナル");
 			expect(cocktail.ingredients).toEqual([
-                { name: "ラム", amount: "適量" },
-                { name: "ライム", amount: "適量" },
-            ]);
+				{ name: "ラム", amount: "適量" },
+				{ name: "ライム", amount: "適量" },
+			]);
 		});
 
 		it("空の材料配列でもカクテルを生成する", async () => {

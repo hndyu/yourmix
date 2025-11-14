@@ -1,10 +1,10 @@
 "use client";
 
-import * as React from "react";
-import Button from "@mui/material/Button";
-import { styled } from "@mui/material/styles";
-import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import CircularProgress from "@mui/material/CircularProgress";
+import { styled } from "@mui/material/styles";
+import * as React from "react";
 
 // カスタムスタイルのボタン
 const StyledMixButton = styled(Button)(({ theme }) => ({
@@ -49,7 +49,8 @@ const StyledMixButton = styled(Button)(({ theme }) => ({
 		left: "-100%",
 		width: "100%",
 		height: "100%",
-		background: "linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent)",
+		background:
+			"linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent)",
 		transition: "left 0.5s",
 	},
 

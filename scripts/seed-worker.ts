@@ -1,6 +1,6 @@
 /**
  * APIエンドポイント経由でシードデータを投入するスクリプト
- * 
+ *
  * 使用方法:
  *   npm run seed:local  - ローカル開発サーバー経由で投入
  *   npm run seed:remote - リモート環境経由で投入（デプロイ後）
@@ -15,8 +15,8 @@ async function runSeed() {
 	console.log("");
 
 	try {
-		const baseUrl = isLocal 
-			? "http://localhost:3000" 
+		const baseUrl = isLocal
+			? "http://localhost:3000"
 			: process.env.NEXT_PUBLIC_APP_URL || "https://your-app.workers.dev";
 
 		console.log(`📡 API Endpoint: ${baseUrl}/api/admin/seed`);
@@ -52,7 +52,7 @@ async function runSeed() {
 		if (error instanceof Error) {
 			console.error("Error details:", error.message);
 		}
-		
+
 		if (isLocal) {
 			console.log("");
 			console.log("💡 Make sure the development server is running:");
@@ -61,11 +61,10 @@ async function runSeed() {
 			console.log("   Then run this script again:");
 			console.log("   npm run seed:local");
 		}
-		
+
 		process.exit(1);
 	}
 }
 
 // 実行
 runSeed();
-

@@ -1,6 +1,6 @@
-import { describe, it, expect } from "vitest";
-import { getAffiliateLink, extractIngredientKeyword } from "../affiliate-links";
+import { describe, expect, it } from "vitest";
 import type { Cocktail } from "../../types/cocktail";
+import { extractIngredientKeyword, getAffiliateLink } from "../affiliate-links";
 
 // モックカクテルデータ
 const mockCocktail: Cocktail = {

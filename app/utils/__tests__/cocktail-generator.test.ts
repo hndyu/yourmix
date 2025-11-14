@@ -1,6 +1,6 @@
-import { describe, it, expect, vi, afterEach, beforeEach } from "vitest";
-import { generateOriginalCocktail } from "../cocktail-generator";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { Cocktail } from "../../types/cocktail";
+import { generateOriginalCocktail } from "../cocktail-generator";
 
 // fetchのモック
 const mockFetch = vi.fn();

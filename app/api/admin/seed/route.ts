@@ -1,12 +1,12 @@
-import { NextResponse } from "next/server";
 import { getCloudflareContext } from "@opennextjs/cloudflare";
+import { NextResponse } from "next/server";
 import { runSeed } from "../../../../scripts/seed";
 
 /**
  * データベースにシードデータを投入する管理用APIエンドポイント
- * 
+ *
  * 注意: 本番環境では認証を追加してください
- * 
+ *
  * 使用方法:
  *   POST /api/admin/seed
  */
@@ -14,7 +14,7 @@ export async function POST() {
 	try {
 		// Cloudflare環境からコンテキストを取得
 		const context = getCloudflareContext();
-		
+
 		if (!context || !context.env) {
 			console.error("Cloudflare context or env is not available");
 			return NextResponse.json(
@@ -43,7 +43,7 @@ export async function POST() {
 	} catch (error) {
 		console.error("Error seeding database:", error);
 		return NextResponse.json(
-			{ 
+			{
 				error: "シードデータの投入中にエラーが発生しました。",
 				details: error instanceof Error ? error.message : String(error),
 			},
@@ -51,4 +51,3 @@ export async function POST() {
 		);
 	}
 }
-

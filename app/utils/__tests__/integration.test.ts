@@ -1,12 +1,12 @@
-import { describe, it, expect } from "vitest";
+import { describe, expect, it } from "vitest";
+import { mockCocktails } from "../../types/cocktail";
+import { getAffiliateLink } from "../affiliate-links";
 import {
+	calculateMatchScore,
 	filterCocktailsByIngredients,
 	sortCocktailsByMatchScore,
-	calculateMatchScore,
 } from "../cocktail-filter";
-import { shareViaWebShare, shareViaTwitter } from "../share-utils";
-import { getAffiliateLink } from "../affiliate-links";
-import { mockCocktails } from "../../types/cocktail";
+import { shareViaTwitter, shareViaWebShare } from "../share-utils";
 
 describe("統合テスト", () => {
 	describe("カクテル検索と共有の統合", () => {
@@ -48,7 +48,10 @@ describe("統合テスト", () => {
 				for (const ingredient of cocktail.ingredients) {
 					const affiliateLink = getAffiliateLink(ingredient.name);
 					// 一部の材料にはアフィリエイトリンクが存在することを確認
-					if (ingredient.name.includes("ラム") || ingredient.name.includes("ライム")) {
+					if (
+						ingredient.name.includes("ラム") ||
+						ingredient.name.includes("ライム")
+					) {
 						expect(affiliateLink).toBeTruthy();
 					}
 				}

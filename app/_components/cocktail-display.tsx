@@ -1,42 +1,42 @@
 "use client";
 
-import * as React from "react";
 import {
+	ContentCopy as CopyIcon,
+	LocalOffer as LocalOfferIcon,
+	Share as ShareIcon,
+	ShoppingCart as ShoppingCartIcon,
+	Twitter as TwitterIcon,
+} from "@mui/icons-material";
+import {
+	Alert,
+	Box,
+	Button,
 	Card,
 	CardContent,
-	Typography,
-	Box,
 	Chip,
+	Divider,
+	Fade,
+	IconButton,
 	List,
 	ListItem,
 	ListItemText,
-	Divider,
-	Button,
-	Fade,
 	Paper,
-	IconButton,
-	Tooltip,
 	Snackbar,
-	Alert,
+	Tooltip,
+	Typography,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import {
-	Share as ShareIcon,
-	Twitter as TwitterIcon,
-	ContentCopy as CopyIcon,
-	ShoppingCart as ShoppingCartIcon,
-	LocalOffer as LocalOfferIcon,
-} from "@mui/icons-material";
+import * as React from "react";
 import type { Cocktail } from "../types/cocktail";
 import {
-	shareViaWebShare,
-	shareViaTwitter,
-	copyToClipboard,
-} from "../utils/share-utils";
-import {
-	getAffiliateLink,
 	extractIngredientKeyword,
+	getAffiliateLink,
 } from "../utils/affiliate-links";
+import {
+	copyToClipboard,
+	shareViaTwitter,
+	shareViaWebShare,
+} from "../utils/share-utils";
 
 // カスタムスタイルのカード
 const StyledCocktailCard = styled(Card)(({ theme }) => ({

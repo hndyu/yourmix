@@ -56,7 +56,7 @@ export const copyToClipboard = async (cocktail: Cocktail): Promise<boolean> => {
 	}
 
 	try {
-		const shareText = `${cocktail.name} - カクテルレシピ\n\n${cocktail.description}\n\n材料:\n${cocktail.ingredients.map(i => `${i.name} ${i.amount}`).join("\n")}\n\n作り方:\n${cocktail.instructions.map((instruction, index) => `${index + 1}. ${instruction}`).join("\n")}\n\n${window.location.href}`;
+		const shareText = `${cocktail.name} - カクテルレシピ\n\n${cocktail.description}\n\n材料:\n${cocktail.ingredients.map((i) => `${i.name} ${i.amount}`).join("\n")}\n\n作り方:\n${cocktail.instructions.map((instruction, index) => `${index + 1}. ${instruction}`).join("\n")}\n\n${window.location.href}`;
 
 		await navigator.clipboard.writeText(shareText);
 		return true;
@@ -66,7 +66,7 @@ export const copyToClipboard = async (cocktail: Cocktail): Promise<boolean> => {
 		// フォールバック: 古いブラウザ対応
 		try {
 			const textArea = document.createElement("textarea");
-			textArea.value = `${cocktail.name} - カクテルレシピ\n\n${cocktail.description}\n\n材料:\n${cocktail.ingredients.map(i => `${i.name} ${i.amount}`).join("\n")}\n\n作り方:\n${cocktail.instructions.map((instruction, index) => `${index + 1}. ${instruction}`).join("\n")}\n\n${window.location.href}`;
+			textArea.value = `${cocktail.name} - カクテルレシピ\n\n${cocktail.description}\n\n材料:\n${cocktail.ingredients.map((i) => `${i.name} ${i.amount}`).join("\n")}\n\n作り方:\n${cocktail.instructions.map((instruction, index) => `${index + 1}. ${instruction}`).join("\n")}\n\n${window.location.href}`;
 			textArea.style.position = "fixed";
 			textArea.style.left = "-999999px";
 			textArea.style.top = "-999999px";

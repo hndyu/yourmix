@@ -1,17 +1,17 @@
 "use client";
 
-import * as React from "react";
-import { useRouter } from "next/navigation";
+import { AccessTime, LocalBar, TrendingUp } from "@mui/icons-material";
 import {
 	Box,
-	Typography,
+	Button,
 	Card,
 	CardContent,
 	CardMedia,
 	Chip,
-	Button,
+	Typography,
 } from "@mui/material";
-import { LocalBar, AccessTime, TrendingUp } from "@mui/icons-material";
+import { useRouter } from "next/navigation";
+import * as React from "react";
 import type { Cocktail } from "../types/cocktail";
 import { getDailyRecommendation } from "../utils/cocktail-filter";
 
@@ -118,14 +118,15 @@ export default function DailyRecommendation({
 					{/* 材料のプレビュー */}
 					<Typography variant="body2" sx={{ mb: 2 }}>
 						<strong>材料:</strong>{" "}
-						{dailyCocktail.ingredients.slice(0, 3).map(i => i.name).join(", ")}
+						{dailyCocktail.ingredients
+							.slice(0, 3)
+							.map((i) => i.name)
+							.join(", ")}
 						{dailyCocktail.ingredients.length > 3 && "..."}
 					</Typography>
 
 					{/* メタ情報 */}
-					<Box sx={{ display: "flex", gap: 1, mb: 2, flexWrap: "wrap" }}>
-
-					</Box>
+					<Box sx={{ display: "flex", gap: 1, mb: 2, flexWrap: "wrap" }}></Box>
 
 					{/* 詳細を見るボタン */}
 					<Button
