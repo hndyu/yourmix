@@ -13,6 +13,7 @@ import {
 	AccordionSummary,
 	AccordionDetails,
 	Tooltip,
+	Skeleton,
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
@@ -29,6 +30,7 @@ interface IngredientSelectorProps {
 		groups: string[],
 	) => void;
 	disabled?: boolean;
+	isInitialLoading?: boolean;
 }
 
 export default function IngredientSelector({
@@ -37,6 +39,7 @@ export default function IngredientSelector({
 	categories,
 	onIngredientsChange,
 	disabled = false,
+	isInitialLoading = false,
 }: IngredientSelectorProps) {
 	// 材料のカテゴリ分け
 	const ingredientCategories = React.useMemo(() => {
@@ -137,6 +140,73 @@ export default function IngredientSelector({
 		if (disabled) return; // ローディング中は無効化
 		onIngredientsChange([], 0, []);
 	};
+
+	// 初期ロード中にスケルトンUIを表示
+	if (isInitialLoading) {
+		return (
+			<Box sx={{ width: "100%", maxWidth: 600, mx: "auto" }}>
+				{/* タイトル */}
+				<Typography
+					variant="h6"
+					component="h3"
+					gutterBottom
+					sx={{
+						textAlign: "center",
+						color: "text.primary",
+						mb: 2,
+						fontWeight: "medium",
+					}}
+				>
+					材料を選択してください
+				</Typography>
+
+				{/* 全解除ボタンのスケルトン */}
+				<Box sx={{ display: "flex", gap: 1, mb: 2, justifyContent: "center" }}>
+					<Skeleton
+						variant="rectangular"
+						width={80}
+						height={32}
+						sx={{ borderRadius: "16px" }}
+					/>
+				</Box>
+
+				{/* 材料カテゴリのスケルトン */}
+				{Array.from(new Array(3)).map((_, index) => (
+					<Accordion key={`skeleton-accordion-${index}`} disabled defaultExpanded>
+						<AccordionSummary expandIcon={<ExpandMoreIcon />}>
+							<Box
+								sx={{
+									display: "flex",
+									alignItems: "center",
+									gap: 1,
+									width: "100%",
+								}}
+							>
+								<Skeleton variant="circular" width={24} height={24} />
+								<Skeleton variant="text" width="30%" />
+							</Box>
+						</AccordionSummary>
+						<AccordionDetails>
+							<Box
+								sx={{
+									display: "grid",
+									gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+									gap: 2,
+								}}
+							>
+								{Array.from(new Array(4)).map((_, itemIndex) => (
+									<Skeleton
+										key={`skeleton-item-${index}-${itemIndex}`}
+										variant="text"
+										height={24} />
+								))}
+							</Box>
+						</AccordionDetails>
+					</Accordion>
+				))}
+			</Box>
+		);
+	}
 
 	return (
 		<Box sx={{ width: "100%", maxWidth: 600, mx: "auto" }}>

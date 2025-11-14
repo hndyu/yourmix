@@ -78,6 +78,7 @@ export default function MixSection({
 				categories={categories}
 				onIngredientsChange={handleIngredientsChange}
 				disabled={isMixing || isInitialLoading}
+				isInitialLoading={isInitialLoading}
 			/>
 
 			{/* Mixボタン */}
