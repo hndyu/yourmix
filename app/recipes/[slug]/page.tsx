@@ -1,15 +1,16 @@
 "use client";
 
-import { ArrowBack } from "@mui/icons-material";
 import {
 	Box,
-	Button,
+	Breadcrumbs,
 	CircularProgress,
 	Container,
 	Fade,
+	Link,
 	Paper,
 	Typography,
 } from "@mui/material";
+import NextLink from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import * as React from "react";
 import type { Cocktail } from "../../types/cocktail";
@@ -98,15 +99,18 @@ export default function RecipeDetailPage() {
 			<Container maxWidth="lg" sx={{ py: 4 }}>
 				<Fade in timeout={1000}>
 					<Box>
-						{/* ヘッダー */}
-						<Button
-							variant="outlined"
-							onClick={() => router.back()}
-							startIcon={<ArrowBack />}
-							sx={{ mb: 3 }}
-						>
-							戻る
-						</Button>
+						{/* パンくずリスト */}
+						<Breadcrumbs aria-label="breadcrumb" sx={{ mb: 3 }}>
+							<Link
+								component={NextLink}
+								underline="hover"
+								color="inherit"
+								href="/"
+							>
+								ホーム
+							</Link>
+							<Typography color="text.primary">{cocktail.name}</Typography>
+						</Breadcrumbs>
 
 						{/* カクテル表示コンポーネントを再利用 */}
 						<CocktailDisplay cocktail={cocktail} show />
