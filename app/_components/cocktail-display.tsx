@@ -14,7 +14,6 @@ import {
 	Card,
 	CardContent,
 	Chip,
-	Divider,
 	Fade,
 	IconButton,
 	List,
@@ -88,12 +87,6 @@ export default function CocktailDisplay({
 	// 通知を閉じる
 	const handleCloseNotification = () => {
 		setShareSuccess(false);
-	};
-
-	// 材料にアフィリエイトリンクがあるかチェックする関数
-	const hasAffiliateLink = (ingredient: string): boolean => {
-		const keyword = extractIngredientKeyword(ingredient);
-		return getAffiliateLink(keyword) !== null;
 	};
 
 	// アフィリエイトリンクを開く関数
@@ -212,7 +205,7 @@ export default function CocktailDisplay({
 										}}
 									/>
 								))}
-							</Box>{" "}
+							</Box>
 						</Box>
 
 						{/* 材料と作り方を横並びで表示 */}
@@ -231,49 +224,56 @@ export default function CocktailDisplay({
 								</Typography>
 								<Paper elevation={1} sx={{ p: 2, backgroundColor: "#fafafa" }}>
 									<List dense>
-										{cocktail.ingredients.map((ingredient) => (
-											<ListItem key={ingredient.name} sx={{ py: 0.5 }}>
-												<Box
-													sx={{
-														display: "flex",
-														justifyContent: "space-between",
-														alignItems: "center",
-														width: "100%",
-													}}
-												>
-													<ListItemText
-														primary={ingredient.name}
-														secondary={ingredient.amount}
-														sx={{
-															"& .MuiListItemText-primary": {
-																fontSize: "0.95rem",
-															},
-														}}
-													/>
-													{/* アフィリエイトリンクがある場合のみ「材料を買う」チップを表示 */}
-													{hasAffiliateLink(ingredient.name) && (
-														<Chip
-															icon={<ShoppingCartIcon />}
-															label="材料を買う"
-															onClick={() =>
-																handleAffiliateClick(ingredient.name)
-															}
+										{cocktail.ingredients.map((ingredient) =>
+											(() => {
+												const keyword = extractIngredientKeyword(
+													ingredient.name,
+												);
+												const link = getAffiliateLink(keyword);
+												return (
+													<ListItem key={ingredient.name} sx={{ py: 0.5 }}>
+														<Box
 															sx={{
-																backgroundColor: "#ff6b35",
-																color: "white",
-																fontSize: "0.75rem",
-																height: "24px",
-																"&:hover": {
-																	backgroundColor: "#e55a2b",
-																},
-																cursor: "pointer",
+																display: "flex",
+																justifyContent: "space-between",
+																alignItems: "center",
+																width: "100%",
 															}}
-															size="small"
-														/>
-													)}
-												</Box>
-											</ListItem>
-										))}{" "}
+														>
+															<ListItemText
+																primary={ingredient.name}
+																secondary={ingredient.amount}
+																sx={{
+																	"& .MuiListItemText-primary": {
+																		fontSize: "0.95rem",
+																	},
+																}}
+															/>
+															{link && (
+																<Chip
+																	icon={<ShoppingCartIcon />}
+																	label="材料を買う"
+																	onClick={() =>
+																		handleAffiliateClick(ingredient.name)
+																	}
+																	sx={{
+																		backgroundColor: "#ff6b35",
+																		color: "white",
+																		fontSize: "0.75rem",
+																		height: "24px",
+																		"&:hover": {
+																			backgroundColor: "#e55a2b",
+																		},
+																		cursor: "pointer",
+																	}}
+																	size="small"
+																/>
+															)}
+														</Box>
+													</ListItem>
+												);
+											})(),
+										)}
 									</List>
 								</Paper>
 
