@@ -6,6 +6,14 @@ import type { Cocktail } from "../types/cocktail";
 const isBrowser = typeof window !== "undefined";
 
 /**
+ * Web Share APIが利用可能かどうかを判定する関数
+ * @returns 利用可能な場合はtrue、そうでない場合はfalse
+ */
+export const canUseWebShare = (): boolean => {
+	return isBrowser && !!navigator.share;
+};
+
+/**
  * 共有用のテキストを生成する関数
  * @param cocktail カクテルオブジェクト
  * @returns 共有用のテキスト

@@ -50,8 +50,6 @@ export default function CocktailDisplaySkeleton() {
 					</Typography>
 					<Box sx={{ display: "flex", gap: 1, flexWrap: "wrap", mt: 2 }}>
 						<Skeleton variant="rounded" width={90} height={24} />
-						<Skeleton variant="rounded" width={110} height={24} />
-						<Skeleton variant="rounded" width={80} height={24} />
 					</Box>
 				</Box>
 

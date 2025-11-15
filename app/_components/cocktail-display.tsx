@@ -31,7 +31,7 @@ import {
 	extractIngredientKeyword,
 	getAffiliateLink,
 } from "../utils/affiliate-links";
-import { shareCocktail } from "../utils/share-utils";
+import { canUseWebShare, shareCocktail } from "../utils/share-utils";
 
 // カスタムスタイルのカード
 const StyledCocktailCard = styled(Card)(({ theme }) => ({
@@ -56,9 +56,24 @@ export default function CocktailDisplay({
 	show = true,
 	isDetailPage = false,
 }: CocktailDisplayProps) {
+	const [isWebShareSupported, setIsWebShareSupported] = React.useState(false);
+	const [snackbarOpen, setSnackbarOpen] = React.useState(false);
+
+	React.useEffect(() => {
+		// クライアントサイドでnavigator.shareの存在を確認
+		setIsWebShareSupported(canUseWebShare());
+	}, []);
+
 	// 共有ボタンのクリックハンドラー
 	const handleShare = async () => {
-		await shareCocktail(cocktail);
+		const success = await shareCocktail(cocktail);
+		// Web Share APIがサポートされておらず、コピーが成功した場合にスナックバーを表示
+		if (success && !isWebShareSupported) {
+			setSnackbarOpen(true);
+		}
+	};
+	const handleSnackbarClose = () => {
+		setSnackbarOpen(false);
 	};
 
 	return (
@@ -97,18 +112,24 @@ export default function CocktailDisplay({
 
 								{/* 共有ボタン群 */}
 								<Box sx={{ display: "flex", gap: 1, ml: 2 }}>
-									<Tooltip title="共有">
+									<Tooltip
+										title={isWebShareSupported ? "共有" : "レシピをコピー"}
+									>
 										<IconButton
 											onClick={handleShare}
 											sx={{
-												backgroundColor: "#1976d2",
+												backgroundColor: isWebShareSupported
+													? "#1976d2"
+													: "#4caf50",
 												color: "white",
 												"&:hover": {
-													backgroundColor: "#1565c0",
+													backgroundColor: isWebShareSupported
+														? "#1565c0"
+														: "#388e3c",
 												},
 											}}
 										>
-											<ShareIcon />
+											{isWebShareSupported ? <ShareIcon /> : <CopyIcon />}
 										</IconButton>
 									</Tooltip>
 								</Box>
@@ -287,6 +308,20 @@ export default function CocktailDisplay({
 					</CardContent>
 				</StyledCocktailCard>
 			</Fade>
+			<Snackbar
+				open={snackbarOpen}
+				autoHideDuration={3000}
+				onClose={handleSnackbarClose}
+				anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+			>
+				<Alert
+					onClose={handleSnackbarClose}
+					severity="success"
+					sx={{ width: "100%" }}
+				>
+					レシピをクリップボードにコピーしました！
+				</Alert>
+			</Snackbar>
 		</>
 	);
 }
