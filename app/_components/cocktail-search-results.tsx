@@ -127,7 +127,12 @@ export default function CocktailSearchResults({
 						transition: "all 0.8s cubic-bezier(0.4, 0, 0.2, 1)",
 					}}
 				>
-					<Typography variant="h6" color="text.secondary" gutterBottom>
+					<Typography
+						component="h2"
+						variant="h6"
+						color="text.secondary"
+						gutterBottom
+					>
 						🔍 検索結果
 					</Typography>
 					<Typography variant="body1" color="text.secondary">
