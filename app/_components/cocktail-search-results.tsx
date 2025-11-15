@@ -169,7 +169,7 @@ export default function CocktailSearchResults({
 				<Box sx={{ mb: 3, textAlign: "center" }}>
 					<Typography
 						variant="h5"
-						component="h3"
+						component="h2"
 						sx={{
 							fontWeight: "bold",
 							color: "#2c3e50",
@@ -204,7 +204,7 @@ export default function CocktailSearchResults({
 										{/* カクテル名 */}
 										<Typography
 											variant="h6"
-											component="h4"
+											component="h3"
 											sx={{
 												fontWeight: "bold",
 												color: "#2c3e50",

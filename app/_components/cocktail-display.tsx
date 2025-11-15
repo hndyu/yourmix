@@ -213,6 +213,7 @@ export default function CocktailDisplay({
 							{/* 材料 */}
 							<Box sx={{ flex: 1, minWidth: 300 }}>
 								<Typography
+									component="h3"
 									variant="h6"
 									sx={{
 										fontWeight: "bold",
@@ -281,6 +282,7 @@ export default function CocktailDisplay({
 							{/* 作り方 */}
 							<Box sx={{ flex: 1, minWidth: 300 }}>
 								<Typography
+									component="h3"
 									variant="h6"
 									sx={{
 										fontWeight: "bold",
@@ -314,6 +316,7 @@ export default function CocktailDisplay({
 						{cocktail.garnish && (
 							<Box sx={{ mt: 3 }}>
 								<Typography
+									component="h4"
 									variant="h6"
 									sx={{
 										fontWeight: "bold",

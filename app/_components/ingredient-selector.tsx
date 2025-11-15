@@ -144,7 +144,9 @@ export default function IngredientSelector({
 	// 初期ロード中にスケルトンUIを表示
 	if (isInitialLoading) {
 		return (
-			<Box sx={{ width: "100%", maxWidth: 600, mx: "auto" }}>
+			<Box
+				component="section"
+				sx={{ width: "100%", maxWidth: 600, mx: "auto" }}>
 				{/* タイトル */}
 				<Typography
 					variant="h6"
@@ -221,7 +223,9 @@ export default function IngredientSelector({
 	}
 
 	return (
-		<Box sx={{ width: "100%", maxWidth: 600, mx: "auto" }}>
+		<Box
+			component="section"
+			sx={{ width: "100%", maxWidth: 600, mx: "auto" }}>
 			{/* タイトル */}
 			<Typography
 				variant="h6"
@@ -328,7 +332,7 @@ export default function IngredientSelector({
 								}}
 							>
 								{IconComponent && React.createElement(IconComponent)}
-								<Typography variant="subtitle1" sx={{ fontWeight: "medium" }}>
+								<Typography component="h4" variant="subtitle1" sx={{ fontWeight: "medium" }}>
 									{category}
 								</Typography>
 								{categoryInfo?.description && (
