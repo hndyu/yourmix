@@ -146,7 +146,8 @@ export default function IngredientSelector({
 		return (
 			<Box
 				component="section"
-				sx={{ width: "100%", maxWidth: 600, mx: "auto" }}>
+				sx={{ width: "100%", maxWidth: 600, mx: "auto" }}
+			>
 				{/* タイトル */}
 				<Typography
 					variant="h6"
@@ -223,9 +224,7 @@ export default function IngredientSelector({
 	}
 
 	return (
-		<Box
-			component="section"
-			sx={{ width: "100%", maxWidth: 600, mx: "auto" }}>
+		<Box component="section" sx={{ width: "100%", maxWidth: 600, mx: "auto" }}>
 			{/* タイトル */}
 			<Typography
 				variant="h6"
@@ -290,20 +289,22 @@ export default function IngredientSelector({
 			)}
 
 			{/* 全解除ボタン */}
-			<Box sx={{ display: "flex", gap: 1, mb: 2, justifyContent: "center" }}>
-				<Chip
-					label="全解除"
-					onClick={handleClearAll}
-					variant="outlined"
-					color="secondary"
-					clickable
-					disabled={disabled}
-					sx={{
-						opacity: disabled ? 0.6 : 1,
-						cursor: disabled ? "not-allowed" : "pointer",
-					}}
-				/>
-			</Box>
+			{selectedCount > 0 && (
+				<Box sx={{ display: "flex", gap: 1, mb: 2, justifyContent: "center" }}>
+					<Chip
+						label="全解除"
+						onClick={handleClearAll}
+						variant="outlined"
+						color="secondary"
+						clickable
+						disabled={disabled}
+						sx={{
+							opacity: disabled ? 0.6 : 1,
+							cursor: disabled ? "not-allowed" : "pointer",
+						}}
+					/>
+				</Box>
+			)}
 
 			{/* 材料カテゴリ別の選択UI */}
 			{sortedCategoryEntries.map(([category, ingredients]) => {
@@ -332,7 +333,11 @@ export default function IngredientSelector({
 								}}
 							>
 								{IconComponent && React.createElement(IconComponent)}
-								<Typography component="h4" variant="subtitle1" sx={{ fontWeight: "medium" }}>
+								<Typography
+									component="h4"
+									variant="subtitle1"
+									sx={{ fontWeight: "medium" }}
+								>
 									{category}
 								</Typography>
 								{categoryInfo?.description && (
