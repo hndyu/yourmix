@@ -9,6 +9,7 @@ import {
 } from "../utils/cocktail-filter";
 import { generateOriginalCocktail } from "../utils/cocktail-generator";
 import CocktailDisplay from "./cocktail-display";
+import CocktailDisplaySkeleton from "./cocktail-display-skeleton";
 import CocktailSearchResults from "./cocktail-search-results";
 import DailyRecommendation from "./daily-recommendation";
 import MixSection from "./mix-section";
@@ -142,8 +143,11 @@ export default function CocktailMixer() {
 				isInitialLoading={isInitialLoading}
 			/>
 
+			{/* オリジナルカクテル生成中のスケルトン表示 */}
+			{isMixing && <CocktailDisplaySkeleton />}
+
 			{/* カクテルが選択されている場合のみ表示 */}
-			{selectedCocktail && (
+			{!isMixing && selectedCocktail && (
 				<CocktailDisplay
 					cocktail={selectedCocktail}
 					onRemove={handleCloseCocktail}
