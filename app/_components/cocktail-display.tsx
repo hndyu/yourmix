@@ -316,7 +316,7 @@ export default function CocktailDisplay({
 						{cocktail.garnish && (
 							<Box sx={{ mt: 3 }}>
 								<Typography
-									component="h4"
+									component="h3"
 									variant="h6"
 									sx={{
 										fontWeight: "bold",
