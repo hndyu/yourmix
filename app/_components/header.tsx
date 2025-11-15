@@ -1,15 +1,17 @@
 "use client";
 
-import MenuIcon from "@mui/icons-material/Menu";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
-import IconButton from "@mui/material/IconButton";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
+import { usePathname } from "next/navigation";
 import * as React from "react";
 
 // ヘッダーコンポーネント
 export default function Header() {
+	const pathname = usePathname();
+	const isHomePage = pathname === "/";
+
 	return (
 		<AppBar position="static" color="transparent" elevation={0}>
 			<Toolbar>
@@ -27,7 +29,7 @@ export default function Header() {
 				{/* 中央：アプリ名やロゴ */}
 				<Typography
 					variant="h6"
-					component="div"
+					component={isHomePage ? "h1" : "div"}
 					sx={{ flexGrow: 1, fontWeight: "bold", color: "#333" }}
 				>
 					YourMix
