@@ -126,7 +126,7 @@ export default function DailyRecommendation({
 					</Typography>
 
 					{/* メタ情報 */}
-					<Box sx={{ display: "flex", gap: 1, mb: 2, flexWrap: "wrap" }}></Box>
+					<Box sx={{ display: "flex", gap: 1, mb: 2, flexWrap: "wrap" }} />
 
 					{/* 詳細を見るボタン */}
 					<Button
