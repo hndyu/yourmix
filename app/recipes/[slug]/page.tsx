@@ -1,34 +1,21 @@
 "use client";
 
-import { ArrowBack, Restaurant } from "@mui/icons-material";
+import { ArrowBack } from "@mui/icons-material";
 import {
 	Box,
 	Button,
-	Card,
-	CardContent,
 	CircularProgress,
 	Container,
 	Fade,
 	Paper,
-	Stack,
 	Typography,
 } from "@mui/material";
-import { styled } from "@mui/material/styles";
 import { useParams, useRouter } from "next/navigation";
 import * as React from "react";
-import type { Cocktail, Ingredient } from "../../types/cocktail";
-import Footer from "../../_components/footer";
+import type { Cocktail } from "../../types/cocktail";
 import CocktailDisplay from "../../_components/cocktail-display";
+import Footer from "../../_components/footer";
 import Header from "../../_components/header";
-
-// カスタムスタイルのカード
-const StyledDetailCard = styled(Card)(({ theme }) => ({
-	borderRadius: "20px",
-	boxShadow: "0 8px 40px rgba(0, 0, 0, 0.12)",
-	background: "linear-gradient(135deg, #fff 0%, #f8f9fa 100%)",
-	border: "1px solid rgba(255, 255, 255, 0.2)",
-	overflow: "hidden",
-}));
 
 export default function RecipeDetailPage() {
 	const params = useParams();
@@ -60,56 +47,6 @@ export default function RecipeDetailPage() {
 
 		fetchCocktail();
 	}, [cocktailSlug]);
-
-	// 材料をグループ化する処理
-	const processedIngredients = React.useMemo(() => {
-		if (!cocktail?.ingredients) return [];
-
-		const ingredientsMap = new Map<number, Ingredient[]>();
-		const otherIngredients: Ingredient[] = [];
-
-		// option_group ごとに材料を分類
-		for (const ingredient of cocktail.ingredients) {
-			if (ingredient.option_group) {
-				let group = ingredientsMap.get(ingredient.option_group);
-				if (!group) {
-					group = [];
-					ingredientsMap.set(ingredient.option_group, group);
-				}
-				group.push(ingredient);
-			} else {
-				otherIngredients.push(ingredient);
-			}
-		}
-
-		// グループ化された材料を「または」で連結
-		const groupedIngredients: Ingredient[] = [];
-		for (const group of ingredientsMap.values()) {
-			// グループ化された材料オブジェクトを作成する際に、Ingredient型の必須プロパティを追加します。
-			// idはユニークである必要があるため、グループ内の最初の材料IDとグループ名を組み合わせて生成します。
-			groupedIngredients.push({
-				// @ts-expect-error `id` is a number in the database, but we are creating a synthetic one here.
-				id: `${group[0].id}-group`,
-				name: group.map((ing) => ing.name).join(" または "),
-				amount: group[0].amount, //量は同じと仮定
-				description: group.map((ing) => ing.description).join("、"),
-				categoryName: group[0].categoryName,
-				sortOrder: group[0].sortOrder,
-			});
-		}
-
-		return [...groupedIngredients, ...otherIngredients];
-	}, [cocktail]);
-
-	// 作り方を処理し、ユニークなIDを付与する
-	const processedInstructions = React.useMemo(() => {
-		if (!cocktail?.instructions) return [];
-		// cocktail.idとインデックスを組み合わせてユニークなIDを生成
-		return cocktail.instructions.map((instruction, index) => ({
-			id: `${cocktail.id}-instruction-${index}`,
-			text: instruction,
-		}));
-	}, [cocktail]);
 
 	// ローディング中の表示
 	if (loading) {
