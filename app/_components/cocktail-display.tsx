@@ -31,11 +31,7 @@ import {
 	extractIngredientKeyword,
 	getAffiliateLink,
 } from "../utils/affiliate-links";
-import {
-	copyToClipboard,
-	shareViaTwitter,
-	shareViaWebShare,
-} from "../utils/share-utils";
+import { shareCocktail } from "../utils/share-utils";
 
 // カスタムスタイルのカード
 const StyledCocktailCard = styled(Card)(({ theme }) => ({
@@ -62,7 +58,7 @@ export default function CocktailDisplay({
 }: CocktailDisplayProps) {
 	// 共有ボタンのクリックハンドラー
 	const handleShare = async () => {
-		await shareViaWebShare(cocktail);
+		await shareCocktail(cocktail);
 	};
 
 	return (
