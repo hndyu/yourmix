@@ -1,5 +1,6 @@
 "use client";
 
+import { Box } from "@mui/material";
 import * as React from "react";
 import type { Category, Cocktail, Ingredient } from "../types/cocktail";
 import {
@@ -41,6 +42,12 @@ export default function CocktailMixer() {
 	// グループマッピングの状態管理
 	const [groupMapping, setGroupMapping] = React.useState<GroupMapping>({});
 
+	// Mix後の初回スクロールを管理する状態
+	const [hasScrolledAfterMix, setHasScrolledAfterMix] = React.useState(false);
+
+	// スクロール用の参照
+	const resultsRef = React.useRef<HTMLDivElement>(null);
+
 	// 初期化時にカクテルとグループマッピングをDBから取得
 	React.useEffect(() => {
 		const fetchData = async () => {
@@ -73,10 +80,7 @@ export default function CocktailMixer() {
 		fetchData();
 	}, []);
 
-	// クリックハンドラー
 	const handleMixClick = async (selectedGroups: string[]) => {
-		console.log("Mixボタンがクリックされました！");
-
 		// ローディング状態を開始
 		setIsMixing(true);
 		// 表示をリセット
@@ -84,6 +88,7 @@ export default function CocktailMixer() {
 		setShowSearchResults(false);
 		setSelectedCocktail(null);
 		setSearchResults([]);
+		setHasScrolledAfterMix(false); // スクロール状態をリセット
 
 		try {
 			// 選択された材料を保存
@@ -129,6 +134,17 @@ export default function CocktailMixer() {
 		setShowOriginalCocktail(false);
 	};
 
+	// 結果が表示されたときにスクロールを実行する
+	React.useEffect(() => {
+		// 何かしらの結果が表示され、まだスクロールしていない場合に一度だけ実行
+		if ((showOriginalCocktail || showSearchResults) && !hasScrolledAfterMix) {
+			resultsRef.current?.scrollIntoView({
+				behavior: "smooth",
+			});
+			setHasScrolledAfterMix(true); // スクロール済みフラグを立てる
+		}
+	}, [showOriginalCocktail, showSearchResults, hasScrolledAfterMix]);
+
 	return (
 		<>
 			{/* 日替わりおすすめセクション */}
@@ -143,27 +159,30 @@ export default function CocktailMixer() {
 				isInitialLoading={isInitialLoading}
 			/>
 
-			{/* オリジナルカクテル生成中のスケルトン表示 */}
-			{isMixing && <CocktailDisplaySkeleton />}
+			{/* 結果表示エリア */}
+			<Box ref={resultsRef} sx={{ width: "100%" }}>
+				{/* オリジナルカクテル生成中のスケルトン表示 */}
+				{isMixing && <CocktailDisplaySkeleton />}
 
-			{/* カクテルが選択されている場合のみ表示 */}
-			{!isMixing && selectedCocktail && (
-				<CocktailDisplay
-					cocktail={selectedCocktail}
-					onRemove={handleCloseCocktail}
-					show={showOriginalCocktail}
-				/>
-			)}
+				{/* カクテルが選択されている場合のみ表示 */}
+				{!isMixing && selectedCocktail && (
+					<CocktailDisplay
+						cocktail={selectedCocktail}
+						onRemove={handleCloseCocktail}
+						show={showOriginalCocktail}
+					/>
+				)}
 
-			{/* 検索結果の一覧表示（1件以上ある場合のみ表示） */}
-			{searchResults.length > 0 && (
-				<CocktailSearchResults
-					cocktails={searchResults}
-					selectedIngredients={lastSelectedIngredients}
-					show={showSearchResults}
-					groupMapping={groupMapping}
-				/>
-			)}
+				{/* 検索結果の一覧表示（1件以上ある場合のみ表示） */}
+				{searchResults.length > 0 && (
+					<CocktailSearchResults
+						cocktails={searchResults}
+						selectedIngredients={lastSelectedIngredients}
+						show={showSearchResults}
+						groupMapping={groupMapping}
+					/>
+				)}
+			</Box>
 		</>
 	);
 }
