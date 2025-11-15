@@ -38,7 +38,7 @@ export async function POST(request: Request) {
 			model: "gemini-2.5-flash",
 			contents: `${ingredients.join(
 				"、",
-			)}をすべて材料として使い、独創的で美味しいオリジナルカクテルのレシピを1つ提案してください。回答は必ず日本語で行ってください。各材料について、名前と量を分けてJSON形式で回答してください。`,
+			)}をすべて材料として使い、独創的で美味しいオリジナルカクテルのレシピを1つ提案してください。回答は必ず日本語で行ってください。`,
 			config: {
 				responseMimeType: "application/json",
 				responseSchema: {
@@ -91,11 +91,8 @@ export async function POST(request: Request) {
 				throw new Error("AIからの応答が空です。");
 			}
 			const cocktailData = JSON.parse(responseText)[0];
-			// AIが生成したデータにidを付与（クライアント側で必要になるため）
-			return NextResponse.json({
-				...cocktailData,
-				id: `generated-${Date.now()}`,
-			});
+			// AIが生成したデータはそのままクライアントに返す
+			return NextResponse.json(cocktailData);
 		} catch (e) {
 			console.error("Failed to parse Gemini response:", response.text);
 			return NextResponse.json(
