@@ -276,21 +276,6 @@ export default function CocktailDisplay({
 										)}
 									</List>
 								</Paper>
-
-								{/* アフィリエイトリンクの説明 */}
-								<Box
-									sx={{
-										mt: 2,
-										p: 2,
-										backgroundColor: "#fff3e0",
-										borderRadius: 1,
-									}}
-								>
-									<Typography variant="caption" color="text.secondary">
-										💡
-										オレンジ色の「材料を買う」チップをクリックすると、該当する材料の購入ページが新しいタブで開きます。
-									</Typography>
-								</Box>
 							</Box>
 
 							{/* 作り方 */}
