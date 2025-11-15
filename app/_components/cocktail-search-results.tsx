@@ -216,10 +216,6 @@ export default function CocktailSearchResults({
 											sx={{
 												mb: 2,
 												lineHeight: 1.5,
-												display: "-webkit-box",
-												WebkitLineClamp: 2,
-												WebkitBoxOrient: "vertical",
-												overflow: "hidden",
 											}}
 										>
 											{cocktail.description}
@@ -241,7 +237,7 @@ export default function CocktailSearchResults({
 											/>
 										</Box>
 
-										{/* 材料（一部表示） */}
+										{/* 材料 */}
 										<Typography
 											variant="caption"
 											color="text.secondary"
