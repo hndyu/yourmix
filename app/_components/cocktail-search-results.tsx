@@ -250,7 +250,7 @@ export default function CocktailSearchResults({
 											材料:
 										</Typography>
 										<Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
-											{cocktail.ingredients.slice(0, 3).map((ingredient) => (
+											{cocktail.ingredients.map((ingredient) => (
 												<Chip
 													key={ingredient.name}
 													label={ingredient.name}
@@ -259,14 +259,6 @@ export default function CocktailSearchResults({
 													sx={{ fontSize: "0.7rem" }}
 												/>
 											))}
-											{cocktail.ingredients.length > 3 && (
-												<Chip
-													label={`+${cocktail.ingredients.length - 3}`}
-													size="small"
-													variant="outlined"
-													sx={{ fontSize: "0.7rem" }}
-												/>
-											)}
 										</Box>
 
 										{/* 詳細表示ボタン */}
