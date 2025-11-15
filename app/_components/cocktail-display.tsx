@@ -60,35 +60,9 @@ export default function CocktailDisplay({
 	show = true,
 	isDetailPage = false,
 }: CocktailDisplayProps) {
-	// 共有成功時の通知状態
-	const [shareSuccess, setShareSuccess] = React.useState(false);
-	const [shareMessage, setShareMessage] = React.useState("");
-
 	// 共有ボタンのクリックハンドラー
 	const handleShare = async () => {
 		await shareViaWebShare(cocktail);
-	};
-
-	// X共有ボタンのクリックハンドラー
-	const handleTwitterShare = () => {
-		shareViaTwitter(cocktail);
-	};
-
-	// クリップボードコピーのクリックハンドラー
-	const handleCopyToClipboard = async () => {
-		const success = await copyToClipboard(cocktail);
-		if (success) {
-			setShareMessage("レシピをクリップボードにコピーしました！");
-			setShareSuccess(true);
-		} else {
-			setShareMessage("コピーに失敗しました。手動でコピーしてください。");
-			setShareSuccess(true);
-		}
-	};
-
-	// 通知を閉じる
-	const handleCloseNotification = () => {
-		setShareSuccess(false);
 	};
 
 	// アフィリエイトリンクを開く関数
@@ -148,36 +122,6 @@ export default function CocktailDisplay({
 											}}
 										>
 											<ShareIcon />
-										</IconButton>
-									</Tooltip>
-
-									<Tooltip title="Xで共有">
-										<IconButton
-											onClick={handleTwitterShare}
-											sx={{
-												backgroundColor: "#1da1f2",
-												color: "white",
-												"&:hover": {
-													backgroundColor: "#0d8bd9",
-												},
-											}}
-										>
-											<TwitterIcon />
-										</IconButton>
-									</Tooltip>
-
-									<Tooltip title="クリップボードにコピー">
-										<IconButton
-											onClick={handleCopyToClipboard}
-											sx={{
-												backgroundColor: "#4caf50",
-												color: "white",
-												"&:hover": {
-													backgroundColor: "#45a049",
-												},
-											}}
-										>
-											<CopyIcon />
 										</IconButton>
 									</Tooltip>
 								</Box>
@@ -354,22 +298,6 @@ export default function CocktailDisplay({
 					</CardContent>
 				</StyledCocktailCard>
 			</Fade>
-
-			{/* 共有成功時の通知 */}
-			<Snackbar
-				open={shareSuccess}
-				autoHideDuration={3000}
-				onClose={handleCloseNotification}
-				anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-			>
-				<Alert
-					onClose={handleCloseNotification}
-					severity="success"
-					sx={{ width: "100%" }}
-				>
-					{shareMessage}
-				</Alert>
-			</Snackbar>
 		</>
 	);
 }
