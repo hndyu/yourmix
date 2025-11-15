@@ -65,15 +65,6 @@ export default function CocktailDisplay({
 		await shareViaWebShare(cocktail);
 	};
 
-	// アフィリエイトリンクを開く関数
-	const handleAffiliateClick = (ingredient: string) => {
-		const keyword = extractIngredientKeyword(ingredient);
-		const link = getAffiliateLink(keyword);
-		if (link) {
-			window.open(link, "_blank", "noopener,noreferrer");
-		}
-	};
-
 	return (
 		<>
 			{/* カクテルカードをFadeでアニメーション */}
@@ -198,20 +189,22 @@ export default function CocktailDisplay({
 															/>
 															{link && (
 																<Chip
+																	component="a"
+																	href={link}
+																	target="_blank"
+																	rel="noopener noreferrer"
 																	icon={<ShoppingCartIcon />}
 																	label="材料を買う"
-																	onClick={() =>
-																		handleAffiliateClick(ingredient.name)
-																	}
+																	clickable
 																	sx={{
 																		backgroundColor: "#ff6b35",
 																		color: "white",
 																		fontSize: "0.75rem",
 																		height: "24px",
+																		textDecoration: "none",
 																		"&:hover": {
 																			backgroundColor: "#e55a2b",
 																		},
-																		cursor: "pointer",
 																	}}
 																	size="small"
 																/>
