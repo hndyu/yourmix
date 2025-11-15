@@ -171,7 +171,7 @@ export default function IngredientSelector({
 				</Box>
 
 				{/* 材料カテゴリのスケルトン */}
-				{Array.from(new Array(3)).map((_, index) => (
+				{Array.from(new Array(5)).map((_, index) => (
 					<Accordion
 						key={`skeleton-accordion-${index}`}
 						disabled
@@ -187,7 +187,7 @@ export default function IngredientSelector({
 								}}
 							>
 								<Skeleton variant="circular" width={24} height={24} />
-								<Skeleton variant="text" width="30%" />
+								<Skeleton variant="text" width="10%" />
 							</Box>
 						</AccordionSummary>
 						<AccordionDetails>
@@ -199,11 +199,18 @@ export default function IngredientSelector({
 								}}
 							>
 								{Array.from(new Array(4)).map((_, itemIndex) => (
-									<Skeleton
+									<Box
 										key={`skeleton-item-${index}-${itemIndex}`}
-										variant="text"
-										height={24}
-									/>
+										sx={{
+											display: "flex",
+											alignItems: "center",
+											gap: 1,
+											width: "100%",
+										}}
+									>
+										<Skeleton variant="rectangular" width={24} height={24} />
+										<Skeleton variant="text" width="30%" height={24} />
+									</Box>
 								))}
 							</Box>
 						</AccordionDetails>
