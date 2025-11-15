@@ -5,6 +5,7 @@ import {
 	Box,
 	Card,
 	CardContent,
+	Chip,
 	Grid,
 	Skeleton,
 	Typography,
@@ -36,7 +37,7 @@ export default function CocktailDisplaySkeleton() {
 						}}
 					>
 						<Typography variant="h4" component="h2" sx={{ flex: 1 }}>
-							<Skeleton width="60%" />
+							<Skeleton width="70%" />
 						</Typography>
 						<Box sx={{ display: "flex", gap: 1, ml: 2 }}>
 							<Skeleton variant="circular" width={40} height={40} />
@@ -44,41 +45,55 @@ export default function CocktailDisplaySkeleton() {
 							<Skeleton variant="circular" width={40} height={40} />
 						</Box>
 					</Box>
-					<Typography variant="body1">
+					<Typography variant="body1" sx={{ fontStyle: "italic" }}>
 						<Skeleton />
 					</Typography>
 					<Box sx={{ display: "flex", gap: 1, flexWrap: "wrap", mt: 2 }}>
-						<Skeleton variant="rounded" width={80} height={24} />
+						<Skeleton variant="rounded" width={90} height={24} />
+						<Skeleton variant="rounded" width={110} height={24} />
 						<Skeleton variant="rounded" width={80} height={24} />
 					</Box>
 				</Box>
 
 				{/* 材料と作り方のスケルトン */}
-				<Grid container spacing={3}>
+				<Box sx={{ display: "flex", gap: 3, flexWrap: "wrap" }}>
 					{/* 材料のスケルトン */}
-					<Grid item xs={12} md={6}>
-						<Typography variant="h6">
+					<Box sx={{ flex: 1, minWidth: 300 }}>
+						<Typography variant="h6" sx={{ mb: 2 }}>
 							<Skeleton width="40%" />
 						</Typography>
-						<Box sx={{ p: 2 }}>
-							<Skeleton variant="text" sx={{ fontSize: "1rem" }} />
-							<Skeleton variant="text" sx={{ fontSize: "1rem" }} />
-							<Skeleton variant="text" sx={{ fontSize: "1rem" }} />
+						<Box sx={{ p: 2, backgroundColor: "#fafafa", borderRadius: 1 }}>
+							{[...Array(3)].map((_, index) => (
+								<Box
+									key={index}
+									sx={{
+										display: "flex",
+										justifyContent: "space-between",
+										alignItems: "center",
+										py: 1,
+									}}
+								>
+									<Skeleton variant="text" width="60%" />
+									<Skeleton variant="text" width="20%" />
+								</Box>
+							))}
 						</Box>
-					</Grid>
+					</Box>
 
 					{/* 作り方のスケルトン */}
-					<Grid item xs={12} md={6}>
-						<Typography variant="h6">
+					<Box sx={{ flex: 1, minWidth: 300 }}>
+						<Typography variant="h6" sx={{ mb: 2 }}>
 							<Skeleton width="40%" />
 						</Typography>
-						<Box sx={{ p: 2 }}>
-							<Skeleton variant="text" sx={{ fontSize: "1rem" }} />
-							<Skeleton variant="text" sx={{ fontSize: "1rem" }} />
-							<Skeleton variant="text" sx={{ fontSize: "1rem" }} />
+						<Box sx={{ p: 2, backgroundColor: "#fafafa", borderRadius: 1 }}>
+							{[...Array(4)].map((_, index) => (
+								<Box key={index} sx={{ display: "flex", alignItems: "flex-start", py: 0.5 }}>
+									<Skeleton variant="text" width="100%" />
+								</Box>
+							))}
 						</Box>
-					</Grid>
-				</Grid>
+					</Box>
+				</Box>
 
 				{/* ガーニッシュのスケルトン */}
 				<Box sx={{ mt: 3 }}>
