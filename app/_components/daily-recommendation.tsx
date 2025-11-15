@@ -10,7 +10,7 @@ import {
 	Chip,
 	Typography,
 } from "@mui/material";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 import * as React from "react";
 import type { Cocktail } from "../types/cocktail";
 import { getDailyRecommendation } from "../utils/cocktail-filter";
@@ -22,17 +22,10 @@ interface DailyRecommendationProps {
 export default function DailyRecommendation({
 	cocktails,
 }: DailyRecommendationProps) {
-	const router = useRouter();
-
 	// 日替わりおすすめカクテルを取得
 	const dailyCocktail = React.useMemo(() => {
 		return getDailyRecommendation(cocktails);
 	}, [cocktails]);
-
-	// 詳細ページに遷移する関数
-	const handleViewRecipe = () => {
-		router.push(`/recipes/${dailyCocktail.slug}`);
-	};
 
 	return (
 		<Box sx={{ mb: 4, textAlign: "center" }}>
@@ -129,22 +122,27 @@ export default function DailyRecommendation({
 					<Box sx={{ display: "flex", gap: 1, mb: 2, flexWrap: "wrap" }} />
 
 					{/* 詳細を見るボタン */}
-					<Button
-						variant="contained"
-						fullWidth
-						onClick={handleViewRecipe}
-						sx={{
-							background: "linear-gradient(45deg, #667eea 0%, #764ba2 100%)",
-							color: "white",
-							fontWeight: "bold",
-							py: 1,
-							"&:hover": {
-								background: "linear-gradient(45deg, #5a6fd8 0%, #6a4190 100%)",
-							},
-						}}
+					<Link
+						href={`/recipes/${dailyCocktail.slug}`}
+						style={{ textDecoration: "none" }}
 					>
-						レシピを見る
-					</Button>
+						<Button
+							variant="contained"
+							fullWidth
+							sx={{
+								background: "linear-gradient(45deg, #667eea 0%, #764ba2 100%)",
+								color: "white",
+								fontWeight: "bold",
+								py: 1,
+								"&:hover": {
+									background:
+										"linear-gradient(45deg, #5a6fd8 0%, #6a4190 100%)",
+								},
+							}}
+						>
+							レシピを見る
+						</Button>
+					</Link>
 				</CardContent>
 			</Card>
 		</Box>

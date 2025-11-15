@@ -13,7 +13,7 @@ import {
 	Typography,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 import * as React from "react";
 import type { Cocktail } from "../types/cocktail";
 // 共通化された関数をインポート
@@ -70,7 +70,6 @@ export default function CocktailSearchResults({
 	const [matchScores, setMatchScores] = React.useState<Record<string, number>>(
 		{},
 	);
-	const router = useRouter();
 
 	React.useEffect(() => {
 		let isMounted = true;
@@ -145,20 +144,6 @@ export default function CocktailSearchResults({
 			</Fade>
 		);
 	}
-
-	// カクテル詳細ページに遷移する関数
-	const handleCocktailClick = React.useCallback(
-		(cocktail: Cocktail) => {
-			console.log(
-				"カクテルをクリックしました:",
-				cocktail.name,
-				"ID:",
-				cocktail.id,
-			); // デバッグ用
-			router.push(`/recipes/${cocktail.slug}`);
-		},
-		[router],
-	);
 
 	return (
 		<Fade in={show} timeout={1000} easing="ease-out">
@@ -285,20 +270,24 @@ export default function CocktailSearchResults({
 										</Box>
 
 										{/* 詳細表示ボタン */}
-										<Button
-											variant="outlined"
-											size="small"
-											fullWidth
-											onClick={() => handleCocktailClick(cocktail)}
-											sx={{
-												mt: 2,
-												borderRadius: "20px",
-												textTransform: "none",
-												fontWeight: "medium",
-											}}
+										<Link
+											href={`/recipes/${cocktail.slug}`}
+											style={{ textDecoration: "none", width: "100%" }}
 										>
-											詳細を見る
-										</Button>
+											<Button
+												variant="outlined"
+												size="small"
+												fullWidth
+												sx={{
+													mt: 2,
+													borderRadius: "20px",
+													textTransform: "none",
+													fontWeight: "medium",
+												}}
+											>
+												詳細を見る
+											</Button>
+										</Link>
 									</CardContent>
 								</StyledResultCard>
 							</Grid>
