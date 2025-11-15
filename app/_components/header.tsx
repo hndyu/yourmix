@@ -14,7 +14,7 @@ export default function Header() {
 		<AppBar position="static" color="transparent" elevation={0}>
 			<Toolbar>
 				{/* 左側：メニューアイコン（必要に応じて） */}
-				<IconButton
+				{/* <IconButton
 					size="large"
 					edge="start"
 					color="inherit"
@@ -22,7 +22,7 @@ export default function Header() {
 					sx={{ mr: 2 }}
 				>
 					<MenuIcon />
-				</IconButton>
+				</IconButton> */}
 
 				{/* 中央：アプリ名やロゴ */}
 				<Typography
