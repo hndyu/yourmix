@@ -51,12 +51,14 @@ interface CocktailDisplayProps {
 	cocktail: Cocktail;
 	onRemove?: () => void;
 	show?: boolean;
+	isDetailPage?: boolean;
 }
 
 export default function CocktailDisplay({
 	cocktail,
 	onRemove,
 	show = true,
+	isDetailPage = false,
 }: CocktailDisplayProps) {
 	// 共有成功時の通知状態
 	const [shareSuccess, setShareSuccess] = React.useState(false);
@@ -121,8 +123,8 @@ export default function CocktailDisplay({
 								}}
 							>
 								<Typography
-									variant="h4"
-									component="h2"
+									variant={isDetailPage ? "h3" : "h4"}
+									component={isDetailPage ? "h1" : "h2"}
 									sx={{
 										fontWeight: "bold",
 										color: "#2c3e50",
@@ -213,7 +215,7 @@ export default function CocktailDisplay({
 							{/* 材料 */}
 							<Box sx={{ flex: 1, minWidth: 300 }}>
 								<Typography
-									component="h3"
+									component={isDetailPage ? "h2" : "h3"}
 									variant="h6"
 									sx={{
 										fontWeight: "bold",
@@ -282,7 +284,7 @@ export default function CocktailDisplay({
 							{/* 作り方 */}
 							<Box sx={{ flex: 1, minWidth: 300 }}>
 								<Typography
-									component="h3"
+									component={isDetailPage ? "h2" : "h3"}
 									variant="h6"
 									sx={{
 										fontWeight: "bold",
@@ -316,7 +318,7 @@ export default function CocktailDisplay({
 						{cocktail.garnish && (
 							<Box sx={{ mt: 3 }}>
 								<Typography
-									component="h3"
+									component={isDetailPage ? "h2" : "h3"}
 									variant="h6"
 									sx={{
 										fontWeight: "bold",

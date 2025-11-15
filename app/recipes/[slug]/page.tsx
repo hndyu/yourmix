@@ -115,7 +115,7 @@ export default function RecipeDetailPage() {
 						</Breadcrumbs>
 
 						{/* カクテル表示コンポーネントを再利用 */}
-						<CocktailDisplay cocktail={cocktail} show />
+						<CocktailDisplay cocktail={cocktail} show isDetailPage />
 					</Box>
 				</Fade>
 			</Container>
