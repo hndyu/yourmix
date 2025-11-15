@@ -91,8 +91,19 @@ export default function CocktailMixer() {
 		setHasScrolledAfterMix(false); // スクロール状態をリセット
 
 		try {
-			// 選択された材料を保存
-			setLastSelectedIngredients(selectedGroups);
+			// 選択された表示名（selectedGroups）から、関連する全ての材料名（actualNames）を含むリストを作成
+			const allSelectedNames: string[] = [];
+			for (const groupName of selectedGroups) {
+				const ingredient = ingredients.find((ing) => ing.name === groupName);
+				// 表示名を追加
+				allSelectedNames.push(groupName);
+				// 関連する実際の材料名も追加
+				if (ingredient?.actualNames) {
+					allSelectedNames.push(...ingredient.actualNames);
+				}
+			}
+			// 重複を除去して保存
+			setLastSelectedIngredients(Array.from(new Set(allSelectedNames)));
 
 			// 既存レシピの検索を非同期で実行
 			const searchPromise = filterCocktailsByIngredients(
@@ -180,6 +191,8 @@ export default function CocktailMixer() {
 						selectedIngredients={lastSelectedIngredients}
 						show={showSearchResults}
 						groupMapping={groupMapping}
+						categories={categories}
+						allIngredients={ingredients}
 					/>
 				)}
 			</Box>

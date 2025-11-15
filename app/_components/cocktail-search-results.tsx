@@ -57,13 +57,17 @@ interface CocktailSearchResultsProps {
 	cocktails: Cocktail[];
 	selectedIngredients: string[];
 	show?: boolean;
-	groupMapping?: GroupMapping;
+	groupMapping: GroupMapping;
+	categories: import("../types/cocktail").Category[];
+	allIngredients: import("../types/cocktail").Ingredient[];
 }
 
 export default function CocktailSearchResults({
 	cocktails,
 	selectedIngredients,
+	categories,
 	show = true,
+	allIngredients,
 	groupMapping,
 }: CocktailSearchResultsProps) {
 	const [sortedCocktails, setSortedCocktails] = React.useState<Cocktail[]>([]);
@@ -250,15 +254,57 @@ export default function CocktailSearchResults({
 											材料:
 										</Typography>
 										<Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
-											{cocktail.ingredients.map((ingredient) => (
-												<Chip
-													key={ingredient.name}
-													label={ingredient.name}
-													size="small"
-													variant="outlined"
-													sx={{ fontSize: "0.7rem" }}
-												/>
-											))}
+											{[...cocktail.ingredients]
+												.sort((a, b) => {
+													const catA = categories.find(
+														(c) => c.name === a.categoryName,
+													);
+													const catB = categories.find(
+														(c) => c.name === b.categoryName,
+													);
+													// カテゴリのsortOrderを取得（未定義の場合は最後に配置）
+													const categorySortA =
+														catA?.sortOrder ?? Number.POSITIVE_INFINITY;
+													const categorySortB =
+														catB?.sortOrder ?? Number.POSITIVE_INFINITY;
+
+													// カテゴリのsortOrderが異なる場合は、それでソート
+													if (categorySortA !== categorySortB) {
+														return categorySortA - categorySortB;
+													}
+
+													// 同じカテゴリの場合は、材料のグループsortOrderでソート
+													const fullIngredientA = allIngredients.find(
+														(i) => i.id === a.id,
+													);
+													const fullIngredientB = allIngredients.find(
+														(i) => i.id === b.id,
+													);
+													const ingredientSortA =
+														fullIngredientA?.sortOrder ??
+														Number.POSITIVE_INFINITY;
+													const ingredientSortB =
+														fullIngredientB?.sortOrder ??
+														Number.POSITIVE_INFINITY;
+													return ingredientSortA - ingredientSortB;
+												})
+												.map((ingredient) => {
+													const isSelected = selectedIngredients.includes(
+														ingredient.name,
+													);
+													return (
+														<Chip
+															key={ingredient.name}
+															label={ingredient.name}
+															size="small"
+															variant={isSelected ? "filled" : "outlined"}
+															color={isSelected ? "primary" : "default"}
+															sx={{
+																fontSize: "0.7rem",
+															}}
+														/>
+													);
+												})}
 										</Box>
 
 										{/* 詳細表示ボタン */}
