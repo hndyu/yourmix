@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowBack, Restaurant, Share } from "@mui/icons-material";
+import { ArrowBack, Restaurant } from "@mui/icons-material";
 import {
 	Box,
 	Button,
@@ -9,8 +9,8 @@ import {
 	CircularProgress,
 	Container,
 	Fade,
-	Grid,
 	Paper,
+	Stack,
 	Typography,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
@@ -18,6 +18,7 @@ import { useParams, useRouter } from "next/navigation";
 import * as React from "react";
 import type { Cocktail, Ingredient } from "../../types/cocktail";
 import Footer from "../../_components/footer";
+import CocktailDisplay from "../../_components/cocktail-display";
 import Header from "../../_components/header";
 
 // カスタムスタイルのカード
@@ -154,25 +155,6 @@ export default function RecipeDetailPage() {
 		);
 	}
 
-	// シェア機能
-	const handleShare = async () => {
-		if (navigator.share) {
-			try {
-				await navigator.share({
-					title: `${cocktail.name} - レシピ`,
-					text: cocktail.description,
-					url: window.location.href,
-				});
-			} catch (error) {
-				console.log("シェアがキャンセルされました");
-			}
-		} else {
-			// フォールバック：URLをコピー
-			navigator.clipboard.writeText(window.location.href);
-			alert("URLをコピーしました！");
-		}
-	};
-
 	return (
 		<>
 			<Header />
@@ -180,170 +162,17 @@ export default function RecipeDetailPage() {
 				<Fade in timeout={1000}>
 					<Box>
 						{/* ヘッダー */}
-						<Box sx={{ mb: 4 }}>
-							<Typography
-								variant="h3"
-								component="h1"
-								sx={{
-									fontWeight: "bold",
-									color: "#2c3e50",
-									mb: 1,
-								}}
-							>
-								🍹 {cocktail.name}
-							</Typography>
-							<Typography
-								variant="h6"
-								color="text.secondary"
-								sx={{ mb: 3, lineHeight: 1.6 }}
-							>
-								{cocktail.description}
-							</Typography>
-							<Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-								<Button
-									variant="contained"
-									fullWidth
-									onClick={handleShare}
-									startIcon={<Share />}
-									sx={{
-										borderRadius: "25px",
-										textTransform: "none",
-										fontWeight: "bold",
-										py: 1.5,
-									}}
-								>
-									シェアする
-								</Button>
-							</Box>
-						</Box>
+						<Button
+							variant="outlined"
+							onClick={() => router.back()}
+							startIcon={<ArrowBack />}
+							sx={{ mb: 3 }}
+						>
+							戻る
+						</Button>
 
-						{/* メインコンテンツ */}
-						<Grid>
-							{/* 材料セクション */}
-							<StyledDetailCard sx={{ mb: 4 }}>
-								<CardContent sx={{ p: 4 }}>
-									<Typography
-										variant="h5"
-										component="h2"
-										sx={{
-											fontWeight: "bold",
-											color: "#2c3e50",
-											mb: 3,
-											display: "flex",
-											alignItems: "center",
-											gap: 1,
-										}}
-									>
-										<Restaurant sx={{ color: "#e74c3c" }} />
-										材料
-									</Typography>
-									<Grid container spacing={2}>
-										{processedIngredients.map((ingredient) => (
-											<Grid size={{ xs: 12, sm: 6 }} key={ingredient.id}>
-												<Paper
-													elevation={1}
-													sx={{
-														p: 2,
-														backgroundColor: "#f8f9fa",
-														borderRadius: "10px",
-														display: "flex",
-														justifyContent: "space-between",
-													}}
-												>
-													<Typography variant="body1" fontWeight="medium">
-														{ingredient.name}
-													</Typography>
-													<Typography variant="body1" color="text.secondary">
-														{ingredient.amount}
-													</Typography>
-												</Paper>
-											</Grid>
-										))}
-									</Grid>
-									<Box component="section" sx={{ p: 3 }}>
-										<Typography
-											variant="h6"
-											component="h3"
-											sx={{
-												fontWeight: "bold",
-												color: "#2c3e50",
-												mb: 2,
-											}}
-										>
-											飾り
-										</Typography>
-										<Box
-											sx={{
-												display: "flex",
-												flexDirection: "column",
-												gap: 2,
-											}}
-										>
-											{cocktail.garnish && (
-												<Box
-													sx={{
-														display: "flex",
-														alignItems: "center",
-														gap: 1,
-													}}
-												>
-													<Restaurant sx={{ color: "#f39c12" }} />
-													<Typography variant="body2" color="text.secondary">
-														{cocktail.garnish}
-													</Typography>
-												</Box>
-											)}
-										</Box>
-									</Box>
-								</CardContent>
-							</StyledDetailCard>
-
-							{/* 作り方セクション */}
-							<StyledDetailCard>
-								<CardContent sx={{ p: 4 }}>
-									<Typography
-										variant="h5"
-										component="h2"
-										sx={{
-											fontWeight: "bold",
-											color: "#2c3e50",
-											mb: 3,
-										}}
-									>
-										📝 作り方
-									</Typography>
-									<Box>
-										{processedInstructions.map((instructionObj, index) => (
-											<Box key={instructionObj.id} sx={{ mb: 3 }}>
-												<Paper
-													elevation={1}
-													sx={{
-														p: 3,
-														backgroundColor: "#f8f9fa",
-														borderRadius: "10px",
-														borderLeft: "4px solid #3498db",
-													}}
-												>
-													<Typography
-														variant="h6"
-														sx={{
-															color: "#3498db", // Consistent color for steps
-															fontWeight: "bold",
-															mb: 1,
-														}}
-													>
-														Step {index + 1}
-													</Typography>
-													<Typography variant="body1" lineHeight={1.8}>
-														{instructionObj.text}
-													</Typography>
-												</Paper>
-											</Box>
-										))}
-									</Box>
-								</CardContent>
-							</StyledDetailCard>
-						</Grid>
+						{/* カクテル表示コンポーネントを再利用 */}
+						<CocktailDisplay cocktail={cocktail} show />
 					</Box>
 				</Fade>
 			</Container>

@@ -335,7 +335,7 @@ export default function CocktailDisplay({
 						{/* 削除ボタン（オプション） */}
 						{onRemove && (
 							<Box sx={{ textAlign: "center", mt: 3 }}>
-								<Button
+								<Button // このボタンはオリジナルカクテルでのみ表示される想定
 									variant="outlined"
 									color="error"
 									onClick={onRemove}
