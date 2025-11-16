@@ -48,7 +48,9 @@ export async function GET() {
 					ingredientGroups,
 					eq(ingredients.groupId, ingredientGroups.id),
 				)
-				.leftJoin(categories, eq(ingredients.category, categories.name)),
+				.leftJoin(categories, eq(ingredients.category, categories.name))
+				// グループの表示順でソート
+				.orderBy(asc(ingredientGroups.sortOrder)),
 		]);
 
 		// 表示用に材料をグループ化
@@ -75,15 +77,8 @@ export async function GET() {
 			new Map<string, GroupedIngredient>(),
 		);
 
-		// sortOrderでソート
-		const groupedIngredients = Array.from(groupedIngredientsMap.values()).sort(
-			(a, b) => {
-				const orderA = a.sortOrder ?? Number.POSITIVE_INFINITY;
-				const orderB = b.sortOrder ?? Number.POSITIVE_INFINITY;
-				return orderA - orderB;
-			},
-		);
-
+		// Mapの値を配列に変換 (挿入順が保持される)
+		const groupedIngredients = Array.from(groupedIngredientsMap.values());
 		// グループ情報のマッピングを作成（検索時の展開に使用）
 		const groupMapping = allIngredientsWithGroups.reduce<
 			Record<string, string[]>
