@@ -1,12 +1,14 @@
 import { getCloudflareContext } from "@opennextjs/cloudflare";
-import { eq } from "drizzle-orm";
+import { asc, eq } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/d1";
 import { NextResponse } from "next/server";
 import type { Env } from "../../../../cloudflare-env";
 import {
+	categories,
 	cocktailIngredients,
 	cocktailTags,
 	cocktails,
+	ingredientGroups,
 	ingredients,
 	instructions,
 	tags,
@@ -60,7 +62,13 @@ export async function GET(
 			.leftJoin(cocktailTags, eq(cocktails.id, cocktailTags.cocktailId))
 			.leftJoin(tags, eq(cocktailTags.tagId, tags.id))
 			.leftJoin(instructions, eq(cocktails.id, instructions.cocktailId))
-			.orderBy(instructions.step);
+			.leftJoin(categories, eq(ingredients.category, categories.name))
+			.leftJoin(ingredientGroups, eq(ingredients.groupId, ingredientGroups.id))
+			.orderBy(
+				asc(categories.sortOrder),
+				asc(ingredientGroups.sortOrder),
+				asc(instructions.step),
+			);
 
 		if (results.length === 0) {
 			return NextResponse.json(
