@@ -70,54 +70,59 @@ export default function CocktailSearchResults({
 	allIngredients,
 	groupMapping,
 }: CocktailSearchResultsProps) {
+	// 材料名からカテゴリとグループのsortOrderを取得するためのマップを作成
+	const ingredientSortOrderMap = React.useMemo(() => {
+		const map = new Map<
+			string,
+			{ categoryOrder: number; groupOrder: number }
+		>();
+		const categoryOrderMap = new Map(
+			categories.map((c) => [c.name, c.sortOrder ?? Number.POSITIVE_INFINITY]),
+		);
+
+		for (const group of allIngredients) {
+			const groupOrder = group.sortOrder ?? Number.POSITIVE_INFINITY;
+			const categoryOrder =
+				categoryOrderMap.get(group.categoryName ?? "") ??
+				Number.POSITIVE_INFINITY; // categoryNameがnullishの場合も考慮
+
+			const orderInfo = { categoryOrder, groupOrder };
+
+			// グループの表示名自体もマップに追加
+			map.set(group.name, orderInfo);
+			// グループに含まれる実際の材料名もマップに追加
+			if (group.actualNames) {
+				for (const actualName of group.actualNames) {
+					map.set(actualName, orderInfo);
+				}
+			}
+		}
+		return map;
+	}, [allIngredients, categories]);
+
 	const [sortedCocktails, setSortedCocktails] = React.useState<Cocktail[]>([]);
 	const [matchScores, setMatchScores] = React.useState<Record<string, number>>(
 		{},
 	);
 
-	// // 材料のソート順を事前に計算しておくためのメモ化されたマップ
-	// const ingredientSortOrders = React.useMemo(() => {
-	// 	const categoryOrderMap = new Map(
-	// 		categories.map((c) => [c.name, c.sortOrder ?? Number.POSITIVE_INFINITY]),
-	// 	);
-	// 	const ingredientOrderMap = new Map(
-	// 		allIngredients
-	// 			.filter((i): i is typeof i & { id: number } => i.id != null) // idが存在し、number型であることを保証
-	// 			.map((i) => {
-	// 				const categoryOrder = i.categoryName
-	// 					? categoryOrderMap.get(i.categoryName)
-	// 					: undefined;
-	// 				return [
-	// 					i.id,
-	// 					{
-	// 						category: categoryOrder ?? Number.POSITIVE_INFINITY,
-	// 						ingredient: i.sortOrder ?? Number.POSITIVE_INFINITY,
-	// 					},
-	// 				];
-	// 			}),
-	// 	);
-	// 	return ingredientOrderMap;
-	// }, [categories, allIngredients]);
-
 	React.useEffect(() => {
 		let isMounted = true;
-		// const sortAndSetCocktails = async () => {
-		// 	// マッチ度順にソート（共通化された関数を使用）
-		// 	const sorted = await sortCocktailsByMatchScore(
-		// 		cocktails,
-		// 		selectedIngredients,
-		// 		groupMapping,
-		// 	);
-		// 	if (isMounted) {
-		// 		setSortedCocktails(sorted);
-		// 	}
-		// };
-		// sortAndSetCocktails();
-		setSortedCocktails(cocktails);
+		const sortAndSetCocktails = async () => {
+			// マッチ度順にソート（共通化された関数を使用）
+			const sorted = await sortCocktailsByMatchScore(
+				cocktails,
+				selectedIngredients,
+				groupMapping,
+			);
+			if (isMounted) {
+				setSortedCocktails(sorted);
+			}
+		};
+		sortAndSetCocktails();
 		return () => {
 			isMounted = false;
 		};
-	}, [cocktails]);
+	}, [cocktails, selectedIngredients, groupMapping]);
 
 	React.useEffect(() => {
 		if (sortedCocktails.length === 0) return;
@@ -276,18 +281,41 @@ export default function CocktailSearchResults({
 										<Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
 											{[...cocktail.ingredients]
 												.filter((i) => i.id) // idが存在する材料のみを対象にする
-												// .sort((a: { id: number }, b: { id: number }) => {
-												// 	const orderA = ingredientSortOrders.get(a.id);
-												// 	const orderB = ingredientSortOrders.get(b.id);
-												// 	if (!orderA || !orderB) return 0;
+												.sort((a, b) => {
+													const orderInfoA = ingredientSortOrderMap.get(
+														a.name,
+													) ?? {
+														categoryOrder: Number.POSITIVE_INFINITY,
+														groupOrder: Number.POSITIVE_INFINITY,
+													};
+													const orderInfoB = ingredientSortOrderMap.get(
+														b.name,
+													) ?? {
+														categoryOrder: Number.POSITIVE_INFINITY,
+														groupOrder: Number.POSITIVE_INFINITY,
+													};
 
-												// 	// カテゴリ順で比較
-												// 	if (orderA.category !== orderB.category) {
-												// 		return orderA.category - orderB.category;
-												// 	}
-												// 	// 材料順で比較
-												// 	return orderA.ingredient - orderB.ingredient;
-												// })
+													// 1. カテゴリのsortOrderで比較
+													if (
+														orderInfoA.categoryOrder !==
+														orderInfoB.categoryOrder
+													) {
+														return (
+															orderInfoA.categoryOrder -
+															orderInfoB.categoryOrder
+														);
+													}
+
+													// 2. カテゴリのsortOrderが同じ場合は、グループのsortOrderで比較
+													if (orderInfoA.groupOrder !== orderInfoB.groupOrder) {
+														return (
+															orderInfoA.groupOrder - orderInfoB.groupOrder
+														);
+													}
+
+													// 3. グループのsortOrderも同じ場合は、材料のIDで比較
+													return (a.id ?? 0) - (b.id ?? 0);
+												})
 												.map((ingredient) => {
 													const isSelected = selectedIngredients.includes(
 														ingredient.name,
