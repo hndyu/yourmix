@@ -71,6 +71,14 @@ export default function CocktailSearchResults({
 		return map;
 	}, [allIngredients, categories]);
 
+	const allIngredientsMap = React.useMemo(() => {
+		const map = new Map<string, Ingredient>();
+		for (const ingredient of allIngredients) {
+			map.set(ingredient.name, ingredient);
+		}
+		return map;
+	}, [allIngredients]);
+
 	if (cocktails.length === 0) {
 		return (
 			<Fade in={show} timeout={800} easing="ease-out">
@@ -191,27 +199,32 @@ export default function CocktailSearchResults({
 												};
 
 												if (
-													orderInfoA.categoryOrder !==
-													orderInfoB.categoryOrder
+													orderInfoA.categoryOrder !== orderInfoB.categoryOrder
 												) {
 													return (
-														orderInfoA.categoryOrder -
-														orderInfoB.categoryOrder
+														orderInfoA.categoryOrder - orderInfoB.categoryOrder
 													);
 												}
 
 												if (orderInfoA.groupOrder !== orderInfoB.groupOrder) {
-													return (
-														orderInfoA.groupOrder - orderInfoB.groupOrder
-													);
+													return orderInfoA.groupOrder - orderInfoB.groupOrder;
 												}
 
 												return (a.id ?? 0) - (b.id ?? 0);
 											})
 											.map((ingredient) => {
-												const isSelected = selectedIngredients.includes(
+												const isDirectlySelected = selectedIngredients.includes(
 													ingredient.name,
 												);
+												const parentIngredient = allIngredients.find((ing) =>
+													ing.actualNames?.includes(ingredient.name),
+												);
+												const isGroupSelected = parentIngredient
+													? selectedIngredients.includes(parentIngredient.name)
+													: false;
+												const isSelected =
+													isDirectlySelected || isGroupSelected;
+
 												return (
 													<Chip
 														key={ingredient.name}
