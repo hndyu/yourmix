@@ -5,7 +5,6 @@ import {
 	LocalOffer as LocalOfferIcon,
 	Share as ShareIcon,
 	ShoppingCart as ShoppingCartIcon,
-	Twitter as TwitterIcon,
 } from "@mui/icons-material";
 import {
 	Alert,
