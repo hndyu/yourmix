@@ -71,14 +71,6 @@ export default function CocktailSearchResults({
 		return map;
 	}, [allIngredients, categories]);
 
-	const allIngredientsMap = React.useMemo(() => {
-		const map = new Map<string, Ingredient>();
-		for (const ingredient of allIngredients) {
-			map.set(ingredient.name, ingredient);
-		}
-		return map;
-	}, [allIngredients]);
-
 	if (cocktails.length === 0) {
 		return (
 			<Fade in={show} timeout={800} easing="ease-out">
