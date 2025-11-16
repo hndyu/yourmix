@@ -57,7 +57,6 @@ export async function filterCocktailsByIngredients(
 	cocktails: Cocktail[],
 	selectedIngredients: string[],
 	groupMapping?: GroupMapping,
-	db?: DrizzleD1Database<typeof schema>,
 ): Promise<Cocktail[]> {
 	// 材料が選択されていない場合は全てのカクテルを返す
 	if (selectedIngredients.length === 0) {

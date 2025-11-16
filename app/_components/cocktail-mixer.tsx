@@ -111,7 +111,7 @@ export default function CocktailMixer() {
 				selectedGroups,
 				groupMapping,
 			).then((filteredCocktails) => {
-				console.log("レシピ検索が完了しました。");
+				console.log("レシピ検索が完了しました。");			
 				setSearchResults(filteredCocktails);
 				if (filteredCocktails.length > 0) {
 					setShowSearchResults(true);
