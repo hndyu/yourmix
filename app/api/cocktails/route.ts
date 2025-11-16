@@ -81,7 +81,7 @@ export async function GET(request: Request) {
 				id: ci.ingredient.id,
 				name: ci.ingredient.name,
 				amount: ci.amount,
-				category: ci.ingredient.category ?? "",
+				category: ci.ingredient.categoryId ?? "",
 			})),
 			tags: cocktail.cocktailTags.map((ct) => ct.tag.name),
 			instructions: cocktail.instructions.map((inst) => inst.text),
