@@ -1,26 +1,24 @@
 import { getCloudflareContext } from "@opennextjs/cloudflare";
-import { eq } from "drizzle-orm";
+import { and, eq, inArray } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/d1";
 import { NextResponse } from "next/server";
 import type { Env } from "../../../cloudflare-env";
-import {
-	cocktailIngredients,
-	cocktailTags,
-	cocktails,
-	ingredients,
-	instructions,
-	tags,
-} from "../../../schema";
-import type { Cocktail } from "../../types/cocktail";
+import * as schema from "../../../schema";
 
 /**
  * カクテル一覧を取得するAPIエンドポイント
  * GET /api/cocktails
+ * @param request - NextRequestオブジェクト
+ * @returns カクテルデータのJSONレスポンス
  */
-
-export async function GET() {
+export async function GET(request: Request) {
 	try {
-		// Cloudflare環境からコンテキストを取得
+		const { searchParams } = new URL(request.url);
+		const ingredientsParam = searchParams.get("ingredients");
+		const selectedIngredientIds = ingredientsParam
+			? ingredientsParam.split(",").map(Number)
+			: [];
+
 		const context = getCloudflareContext();
 		const env = context.env as Env;
 
@@ -31,76 +29,65 @@ export async function GET() {
 				{ status: 500 },
 			);
 		}
-		const db = drizzle(env.DB);
+		const db = drizzle(env.DB, { schema });
 
-		// 関連するすべての情報をJOINして取得
-		const results = await db
-			.select()
-			.from(cocktails)
-			.leftJoin(
-				cocktailIngredients,
-				eq(cocktails.id, cocktailIngredients.cocktailId),
-			)
-			.leftJoin(
-				ingredients,
-				eq(cocktailIngredients.ingredientId, ingredients.id),
-			)
-			.leftJoin(cocktailTags, eq(cocktails.id, cocktailTags.cocktailId)) // cocktailTagsを結合
-			.leftJoin(tags, eq(cocktailTags.tagId, tags.id)) // tagsをcocktailTags.tagIdで結合
-			.leftJoin(instructions, eq(cocktails.id, instructions.cocktailId))
-			.orderBy(instructions.step);
+		// DrizzleのRelational Queriesを使用してデータを取得
+		const allCocktails = await db.query.cocktails.findMany({
+			where:
+				selectedIngredientIds.length > 0
+					? (cocktails, { exists }) =>
+							exists(
+								db
+									.select()
+									.from(schema.cocktailIngredients)
+									.where(
+										and(
+											eq(
+												schema.cocktailIngredients.cocktailId,
+												cocktails.id,
+											),
+											inArray(
+												schema.cocktailIngredients.ingredientId,
+												selectedIngredientIds,
+											),
+										),
+									),
+							)
+					: undefined,
+			with: {
+				cocktailIngredients: {
+					with: {
+						ingredient: true,
+					},
+				},
+				instructions: {
+					orderBy: (instructions, { asc }) => [asc(instructions.step)],
+				},
+				cocktailTags: {
+					with: {
+						tag: true,
+					},
+				},
+			},
+		});
 
-		// カクテルごとに材料とタグをグループ化
-		const cocktailsMap = results.reduce((acc, row) => {
-			const {
-				cocktails: cocktail,
-				ingredients: ingredient,
-				cocktail_ingredients: cocktailIngredient,
-				tags: tag,
-				instructions: instruction,
-			} = row;
-			if (!cocktail) return acc;
+		// APIレスポンスの型に変換
+		const formattedCocktails = allCocktails.map((cocktail) => ({
+			...cocktail,
+			imageUrl: cocktail.imageUrl ?? undefined,
+			description: cocktail.description ?? "",
+			garnish: cocktail.garnish ?? undefined,
+			ingredients: cocktail.cocktailIngredients.map((ci) => ({
+				id: ci.ingredient.id,
+				name: ci.ingredient.name,
+				amount: ci.amount,
+				category: ci.ingredient.category ?? "",
+			})),
+			tags: cocktail.cocktailTags.map((ct) => ct.tag.name),
+			instructions: cocktail.instructions.map((inst) => inst.text),
+		}));
 
-			let entry = acc.get(cocktail.id);
-			if (!entry) {
-				entry = {
-					...cocktail,
-					imageUrl: cocktail.imageUrl ?? undefined,
-					description: cocktail.description ?? "",
-					garnish: cocktail.garnish ?? undefined,
-					ingredients: [],
-					tags: [],
-					instructions: [],
-				};
-				acc.set(cocktail.id, entry);
-			}
-
-			if (
-				ingredient && // 材料が存在し
-				cocktailIngredient && // 中間テーブルのレコードが存在し
-				!entry.ingredients.some((i) => i.name === ingredient.name)
-			) {
-				entry.ingredients.push({
-					id: ingredient.id,
-					name: ingredient.name,
-					amount: cocktailIngredient.amount ?? "",
-					category: ingredient.category ?? "",
-				});
-			}
-
-			if (tag && entry.tags && !entry.tags.includes(tag.name)) {
-				entry.tags.push(tag.name);
-			}
-
-			if (instruction?.text && !entry.instructions.includes(instruction.text)) {
-				entry.instructions.push(instruction.text);
-			}
-			return acc;
-		}, new Map<string, Cocktail>());
-
-		const allCocktails = Array.from(cocktailsMap.values());
-
-		return NextResponse.json({ cocktails: allCocktails }, { status: 200 });
+		return NextResponse.json({ cocktails: formattedCocktails }, { status: 200 });
 	} catch (error) {
 		console.error("Error fetching cocktails:", error);
 		return NextResponse.json(

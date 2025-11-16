@@ -15,15 +15,8 @@ import {
 import { styled } from "@mui/material/styles";
 import Link from "next/link";
 import * as React from "react";
-import type { Cocktail } from "../types/cocktail";
-// 共通化された関数をインポート
-import {
-	type GroupMapping,
-	calculateMatchScore,
-	sortCocktailsByMatchScore,
-} from "../utils/cocktail-filter";
+import type { Category, Cocktail, Ingredient } from "../types/cocktail";
 
-// カスタムスタイルのカード
 const StyledResultCard = styled(Card)(({ theme }) => ({
 	borderRadius: "15px",
 	boxShadow: "0 4px 20px rgba(0, 0, 0, 0.08)",
@@ -31,35 +24,18 @@ const StyledResultCard = styled(Card)(({ theme }) => ({
 	border: "1px solid rgba(255, 255, 255, 0.2)",
 	overflow: "hidden",
 	transition: "all 0.3s ease-in-out",
-	// cursor: "pointer" を削除
-
 	"&:hover": {
 		transform: "translateY(-4px)",
 		boxShadow: "0 8px 30px rgba(0, 0, 0, 0.15)",
 	},
 }));
 
-// マッチ度に応じた色を取得
-const getMatchScoreColor = (score: number) => {
-	if (score >= 0.8) return "#4caf50"; // 高マッチ度：緑
-	if (score >= 0.5) return "#ff9800"; // 中マッチ度：オレンジ
-	return "#f44336"; // 低マッチ度：赤
-};
-
-// マッチ度を日本語で表示
-const getMatchScoreText = (score: number) => {
-	if (score >= 0.8) return "高マッチ";
-	if (score >= 0.5) return "中マッチ";
-	return "低マッチ";
-};
-
 interface CocktailSearchResultsProps {
 	cocktails: Cocktail[];
 	selectedIngredients: string[];
 	show?: boolean;
-	groupMapping: GroupMapping;
-	categories: import("../types/cocktail").Category[];
-	allIngredients: import("../types/cocktail").Ingredient[];
+	categories: Category[];
+	allIngredients: Ingredient[];
 }
 
 export default function CocktailSearchResults({
@@ -68,9 +44,7 @@ export default function CocktailSearchResults({
 	categories,
 	show = true,
 	allIngredients,
-	groupMapping,
 }: CocktailSearchResultsProps) {
-	// 材料名からカテゴリとグループのsortOrderを取得するためのマップを作成
 	const ingredientSortOrderMap = React.useMemo(() => {
 		const map = new Map<
 			string,
@@ -84,13 +58,10 @@ export default function CocktailSearchResults({
 			const groupOrder = group.sortOrder ?? Number.POSITIVE_INFINITY;
 			const categoryOrder =
 				categoryOrderMap.get(group.categoryName ?? "") ??
-				Number.POSITIVE_INFINITY; // categoryNameがnullishの場合も考慮
+				Number.POSITIVE_INFINITY;
 
 			const orderInfo = { categoryOrder, groupOrder };
-
-			// グループの表示名自体もマップに追加
 			map.set(group.name, orderInfo);
-			// グループに含まれる実際の材料名もマップに追加
 			if (group.actualNames) {
 				for (const actualName of group.actualNames) {
 					map.set(actualName, orderInfo);
@@ -99,50 +70,6 @@ export default function CocktailSearchResults({
 		}
 		return map;
 	}, [allIngredients, categories]);
-
-	const [sortedCocktails, setSortedCocktails] = React.useState<Cocktail[]>([]);
-	const [matchScores, setMatchScores] = React.useState<Record<string, number>>(
-		{},
-	);
-
-	React.useEffect(() => {
-		let isMounted = true;
-		const sortAndSetCocktails = async () => {
-			// マッチ度順にソート（共通化された関数を使用）
-			const sorted = await sortCocktailsByMatchScore(
-				cocktails,
-				selectedIngredients,
-				groupMapping,
-			);
-			if (isMounted) {
-				setSortedCocktails(sorted);
-			}
-		};
-		sortAndSetCocktails();
-		return () => {
-			isMounted = false;
-		};
-	}, [cocktails, selectedIngredients, groupMapping]);
-
-	React.useEffect(() => {
-		if (sortedCocktails.length === 0) return;
-
-		const calculateScores = async () => {
-			const scores: Record<string, number> = {};
-			await Promise.all(
-				sortedCocktails.map(async (cocktail) => {
-					const score = await calculateMatchScore(
-						cocktail,
-						selectedIngredients,
-						groupMapping,
-					);
-					scores[cocktail.id] = score;
-				}),
-			);
-			setMatchScores(scores);
-		};
-		calculateScores();
-	}, [sortedCocktails, selectedIngredients, groupMapping]);
 
 	if (cocktails.length === 0) {
 		return (
@@ -188,7 +115,6 @@ export default function CocktailSearchResults({
 					transition: "all 0.8s cubic-bezier(0.4, 0, 0.2, 1)",
 				}}
 			>
-				{/* ヘッダー */}
 				<Box sx={{ mb: 3, textAlign: "center" }}>
 					<Typography
 						variant="h5"
@@ -207,158 +133,122 @@ export default function CocktailSearchResults({
 					<Divider sx={{ my: 2 }} />
 				</Box>
 
-				{/* 検索結果グリッド */}
 				<Grid container spacing={3}>
-					{sortedCocktails.map((cocktail) => {
-						const score = matchScores[cocktail.id] ?? 0;
-						return (
-							<Grid key={cocktail.id} size={{ xs: 12, sm: 6, md: 4 }}>
-								<StyledResultCard
-									// onClick、onKeyDown、role、tabIndexを削除
-									sx={{
-										// cursor: "pointer" を削除
-										"&:focus": {
-											outline: "2px solid #1976d2",
-											outlineOffset: "2px",
-										},
-									}}
-								>
-									<CardContent sx={{ p: 3 }}>
-										{/* カクテル名 */}
-										<Typography
-											variant="h6"
-											component="h3"
-											sx={{
-												fontWeight: "bold",
-												color: "#2c3e50",
-												mb: 1,
-												lineHeight: 1.3,
-											}}
-										>
-											🍹 {cocktail.name}
-										</Typography>
+					{cocktails.map((cocktail) => (
+						<Grid key={cocktail.id} size={{ xs: 12, sm: 6, md: 4 }}>
+							<StyledResultCard>
+								<CardContent sx={{ p: 3 }}>
+									<Typography
+										variant="h6"
+										component="h3"
+										sx={{
+											fontWeight: "bold",
+											color: "#2c3e50",
+											mb: 1,
+											lineHeight: 1.3,
+										}}
+									>
+										🍹 {cocktail.name}
+									</Typography>
 
-										{/* 説明 */}
-										<Typography
-											variant="body2"
-											color="text.secondary"
-											sx={{
-												mb: 2,
-												lineHeight: 1.5,
-											}}
-										>
-											{cocktail.description}
-										</Typography>
+									<Typography
+										variant="body2"
+										color="text.secondary"
+										sx={{
+											mb: 2,
+											lineHeight: 1.5,
+										}}
+									>
+										{cocktail.description}
+									</Typography>
 
-										{/* メタ情報 */}
-										<Box
-											sx={{ display: "flex", gap: 1, flexWrap: "wrap", mb: 2 }}
-										>
-											<Chip
-												label={getMatchScoreText(score)}
-												size="small"
-												sx={{
-													backgroundColor: getMatchScoreColor(score),
-													color: "white",
-													fontWeight: "bold",
-													fontSize: "0.75rem",
-												}}
-											/>
-										</Box>
+									<Typography
+										variant="caption"
+										color="text.secondary"
+										sx={{
+											display: "block",
+											mb: 1,
+											fontWeight: "medium",
+										}}
+									>
+										材料:
+									</Typography>
+									<Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
+										{[...cocktail.ingredients]
+											.filter((i) => i.id)
+											.sort((a, b) => {
+												const orderInfoA = ingredientSortOrderMap.get(
+													a.name,
+												) ?? {
+													categoryOrder: Number.POSITIVE_INFINITY,
+													groupOrder: Number.POSITIVE_INFINITY,
+												};
+												const orderInfoB = ingredientSortOrderMap.get(
+													b.name,
+												) ?? {
+													categoryOrder: Number.POSITIVE_INFINITY,
+													groupOrder: Number.POSITIVE_INFINITY,
+												};
 
-										{/* 材料 */}
-										<Typography
-											variant="caption"
-											color="text.secondary"
+												if (
+													orderInfoA.categoryOrder !==
+													orderInfoB.categoryOrder
+												) {
+													return (
+														orderInfoA.categoryOrder -
+														orderInfoB.categoryOrder
+													);
+												}
+
+												if (orderInfoA.groupOrder !== orderInfoB.groupOrder) {
+													return (
+														orderInfoA.groupOrder - orderInfoB.groupOrder
+													);
+												}
+
+												return (a.id ?? 0) - (b.id ?? 0);
+											})
+											.map((ingredient) => {
+												const isSelected = selectedIngredients.includes(
+													ingredient.name,
+												);
+												return (
+													<Chip
+														key={ingredient.name}
+														label={ingredient.name}
+														size="small"
+														variant={isSelected ? "filled" : "outlined"}
+														color={isSelected ? "primary" : "default"}
+														sx={{
+															fontSize: "0.7rem",
+														}}
+													/>
+												);
+											})}
+									</Box>
+
+									<Link
+										href={`/recipes/${cocktail.slug}`}
+										style={{ textDecoration: "none", width: "100%" }}
+									>
+										<Button
+											variant="outlined"
+											size="small"
+											fullWidth
 											sx={{
-												display: "block",
-												mb: 1,
+												mt: 2,
+												borderRadius: "20px",
+												textTransform: "none",
 												fontWeight: "medium",
 											}}
 										>
-											材料:
-										</Typography>
-										<Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
-											{[...cocktail.ingredients]
-												.filter((i) => i.id) // idが存在する材料のみを対象にする
-												.sort((a, b) => {
-													const orderInfoA = ingredientSortOrderMap.get(
-														a.name,
-													) ?? {
-														categoryOrder: Number.POSITIVE_INFINITY,
-														groupOrder: Number.POSITIVE_INFINITY,
-													};
-													const orderInfoB = ingredientSortOrderMap.get(
-														b.name,
-													) ?? {
-														categoryOrder: Number.POSITIVE_INFINITY,
-														groupOrder: Number.POSITIVE_INFINITY,
-													};
-
-													// 1. カテゴリのsortOrderで比較
-													if (
-														orderInfoA.categoryOrder !==
-														orderInfoB.categoryOrder
-													) {
-														return (
-															orderInfoA.categoryOrder -
-															orderInfoB.categoryOrder
-														);
-													}
-
-													// 2. カテゴリのsortOrderが同じ場合は、グループのsortOrderで比較
-													if (orderInfoA.groupOrder !== orderInfoB.groupOrder) {
-														return (
-															orderInfoA.groupOrder - orderInfoB.groupOrder
-														);
-													}
-
-													// 3. グループのsortOrderも同じ場合は、材料のIDで比較
-													return (a.id ?? 0) - (b.id ?? 0);
-												})
-												.map((ingredient) => {
-													const isSelected = selectedIngredients.includes(
-														ingredient.name,
-													);
-													return (
-														<Chip
-															key={ingredient.name}
-															label={ingredient.name}
-															size="small"
-															variant={isSelected ? "filled" : "outlined"}
-															color={isSelected ? "primary" : "default"}
-															sx={{
-																fontSize: "0.7rem",
-															}}
-														/>
-													);
-												})}
-										</Box>
-
-										{/* 詳細表示ボタン */}
-										<Link
-											href={`/recipes/${cocktail.slug}`}
-											style={{ textDecoration: "none", width: "100%" }}
-										>
-											<Button
-												variant="outlined"
-												size="small"
-												fullWidth
-												sx={{
-													mt: 2,
-													borderRadius: "20px",
-													textTransform: "none",
-													fontWeight: "medium",
-												}}
-											>
-												詳細を見る
-											</Button>
-										</Link>
-									</CardContent>
-								</StyledResultCard>
-							</Grid>
-						);
-					})}
+											詳細を見る
+										</Button>
+									</Link>
+								</CardContent>
+							</StyledResultCard>
+						</Grid>
+					))}
 				</Grid>
 			</Box>
 		</Fade>

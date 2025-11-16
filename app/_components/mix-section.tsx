@@ -8,9 +8,11 @@ import IngredientSelector from "./ingredient-selector";
 import MixButton from "./mix-button";
 
 interface MixSectionProps {
-	onMixClick: (selectedGroups: string[]) => void;
-	ingredients: Ingredient[]; // 親から受け取る
-	categories: Category[]; // 親から受け取る
+	onMixClick: () => void;
+	ingredients: Ingredient[];
+	categories: Category[];
+	selectedIngredientIds: number[];
+	onIngredientsChange: (ids: number[], names: string[]) => void;
 	isMixing?: boolean;
 	isInitialLoading?: boolean;
 }
@@ -19,31 +21,12 @@ export default function MixSection({
 	onMixClick,
 	ingredients,
 	categories,
+	selectedIngredientIds,
+	onIngredientsChange,
 	isMixing = false,
 	isInitialLoading = false,
 }: MixSectionProps) {
-	// 選択された材料の状態管理
-	const [selectedIngredients, setSelectedIngredients] = React.useState<
-		string[]
-	>([]);
-	const [selectedCount, setSelectedCount] = React.useState(0);
-	const [selectedGroups, setSelectedGroups] = React.useState<string[]>([]);
-
-	// 材料選択の変更ハンドラー
-	const handleIngredientsChange = (
-		ingredients: string[],
-		count: number,
-		groups: string[],
-	) => {
-		setSelectedIngredients(ingredients);
-		setSelectedCount(count);
-		setSelectedGroups(groups);
-	};
-
-	// Mixボタンクリックハンドラー
-	const handleMixClick = () => {
-		onMixClick(selectedGroups);
-	};
+	const selectedCount = selectedIngredientIds.length;
 
 	return (
 		<Box
@@ -57,7 +40,6 @@ export default function MixSection({
 				gap: 3,
 			}}
 		>
-			{/* 説明テキスト */}
 			<Typography
 				variant="h5"
 				component="h2"
@@ -72,24 +54,21 @@ export default function MixSection({
 				あなただけのカクテルを作ってみよう
 			</Typography>
 
-			{/* 材料選択UI */}
 			<IngredientSelector
-				selectedIngredients={selectedIngredients}
+				selectedIngredientIds={selectedIngredientIds}
 				ingredients={ingredients}
 				categories={categories}
-				onIngredientsChange={handleIngredientsChange}
+				onIngredientsChange={onIngredientsChange}
 				disabled={isMixing || isInitialLoading}
 				isInitialLoading={isInitialLoading}
 			/>
 
-			{/* Mixボタン */}
 			<MixButton
-				onClick={handleMixClick}
+				onClick={onMixClick}
 				disabled={isInitialLoading || selectedCount === 0}
 				isLoading={isMixing}
 			/>
 
-			{/* サブテキスト */}
 			<Typography
 				variant="body2"
 				sx={{

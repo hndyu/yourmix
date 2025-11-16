@@ -48,7 +48,7 @@ export async function GET() {
 					ingredientGroups,
 					eq(ingredients.groupId, ingredientGroups.id),
 				)
-				.leftJoin(categories, eq(ingredients.category, categories.name))
+				.leftJoin(categories, eq(ingredients.categoryId, categories.id))
 				// グループの表示順でソート
 				.orderBy(asc(ingredientGroups.sortOrder)),
 		]);
@@ -65,7 +65,7 @@ export async function GET() {
 					group = {
 						id: ing.id,
 						name: displayName,
-						categoryName: ing.categoryName,
+						categoryName: ing.categoryName ?? "",
 						actualNames: [ing.name],
 						sortOrder: ing.groupSortOrder,
 						description: ing.groupDescription,

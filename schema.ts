@@ -26,7 +26,10 @@ export const ingredients = sqliteTable("ingredients", {
 		.notNull()
 		.references(() => ingredientGroups.id, { onDelete: "cascade" }),
 	description: text("description"),
-	category: text("category"),
+	// 'category' を 'categoryId' に変更し、categories.id を参照する
+	categoryId: integer("category_id")
+		.notNull()
+		.references(() => categories.id),
 });
 
 // cocktail_ingredients 中間テーブル
@@ -117,9 +120,9 @@ export const ingredientGroupsRelations = relations(
 );
 
 export const ingredientsRelations = relations(ingredients, ({ one, many }) => ({
-	categoryRelation: one(categories, {
-		fields: [ingredients.category],
-		references: [categories.name],
+	category: one(categories, {
+		fields: [ingredients.categoryId],
+		references: [categories.id],
 	}),
 	group: one(ingredientGroups, {
 		fields: [ingredients.groupId],

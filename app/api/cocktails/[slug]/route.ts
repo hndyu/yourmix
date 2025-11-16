@@ -22,7 +22,7 @@ import type { Cocktail } from "../../../types/cocktail";
 
 export async function GET(
 	request: Request,
-	{ params }: { params: Promise<{ slug: string }> },
+	{ params }: { params: { slug: string } },
 ) {
 	try {
 		const { slug } = await params;
@@ -62,7 +62,7 @@ export async function GET(
 			.leftJoin(cocktailTags, eq(cocktails.id, cocktailTags.cocktailId))
 			.leftJoin(tags, eq(cocktailTags.tagId, tags.id))
 			.leftJoin(instructions, eq(cocktails.id, instructions.cocktailId))
-			.leftJoin(categories, eq(ingredients.category, categories.name))
+			.leftJoin(categories, eq(ingredients.categoryId, categories.id))
 			.leftJoin(ingredientGroups, eq(ingredients.groupId, ingredientGroups.id))
 			.orderBy(
 				asc(categories.sortOrder),
@@ -91,7 +91,7 @@ export async function GET(
 				) {
 					acc.ingredients.push({
 						...row.ingredients,
-						category: row.ingredients.category ?? "", // categoryがnullの場合に空文字を設定
+						category: row.categories?.name ?? "", // categoryがnullの場合に空文字を設定
 						amount: row.cocktail_ingredients?.amount,
 						option_group: row.cocktail_ingredients?.option_group ?? undefined,
 					});

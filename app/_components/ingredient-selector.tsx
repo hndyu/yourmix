@@ -21,27 +21,26 @@ import { DefaultIcon, iconMap } from "../utils/icon-map";
 import IngredientSelectorSkeleton from "./ingredient-selector-skeleton";
 
 interface IngredientSelectorProps {
-	selectedIngredients: string[];
-	ingredients: Ingredient[]; // 親から受け取る
-	categories: Category[]; // 親から受け取る
-	onIngredientsChange: (
-		ingredients: string[],
-		count: number,
-		groups: string[],
-	) => void;
+	selectedIngredientIds: number[];
+	ingredients: Ingredient[];
+	categories: Category[];
+	onIngredientsChange: (ids: number[], names: string[]) => void;
 	disabled?: boolean;
 	isInitialLoading?: boolean;
 }
 
 export default function IngredientSelector({
-	selectedIngredients,
+	selectedIngredientIds,
 	ingredients,
 	categories,
 	onIngredientsChange,
 	disabled = false,
 	isInitialLoading = false,
 }: IngredientSelectorProps) {
-	// 材料のカテゴリ分け
+	const ingredientsById = React.useMemo(() => {
+		return new Map(ingredients.map((ing) => [ing.id, ing]));
+	}, [ingredients]);
+
 	const ingredientCategories = React.useMemo(() => {
 		const categorized: Record<string, Ingredient[]> = {};
 		for (const ingredient of ingredients) {
@@ -54,13 +53,11 @@ export default function IngredientSelector({
 		return categorized;
 	}, [ingredients]);
 
-	// カテゴリをデータベースの並び順でソートする関数
 	const sortedCategoryEntries = React.useMemo(() => {
 		return Object.entries(ingredientCategories).sort(
 			([categoryA], [categoryB]) => {
 				const catA = categories.find((c) => c.name === categoryA);
 				const catB = categories.find((c) => c.name === categoryB);
-				// 定義されていないカテゴリは最後に表示
 				const sortOrderA = catA?.sortOrder ?? Number.POSITIVE_INFINITY;
 				const sortOrderB = catB?.sortOrder ?? Number.POSITIVE_INFINITY;
 				return sortOrderA - sortOrderB;
@@ -68,87 +65,53 @@ export default function IngredientSelector({
 		);
 	}, [ingredientCategories, categories]);
 
-	// 選択されている材料の表示名リストを作成
-	const displayedIngredients = React.useMemo(() => {
-		const selected = [];
-		for (const ing of ingredients) {
-			// selectedIngredientsには表示名とその実際の材料名が含まれるため、
-			// ing.name（表示名）がselectedIngredientsに含まれていれば選択されていると判断
-			if (selectedIngredients.includes(ing.name)) {
-				selected.push(ing);
-			}
-		}
+	const selectedIngredients = React.useMemo(() => {
+		return selectedIngredientIds
+			.map((id) => ingredientsById.get(id))
+			.filter((ing): ing is Ingredient => !!ing)
+			.sort((a, b) => {
+				const sortA = a.sortOrder ?? Number.POSITIVE_INFINITY;
+				const sortB = b.sortOrder ?? Number.POSITIVE_INFINITY;
+				return sortA - sortB;
+			});
+	}, [selectedIngredientIds, ingredientsById]);
 
-		// sortOrderに基づいてソート
-		selected.sort((a, b) => {
-			const sortA = a.sortOrder ?? Number.POSITIVE_INFINITY;
-			const sortB = b.sortOrder ?? Number.POSITIVE_INFINITY;
-			return sortA - sortB;
-		});
+	const selectedCount = selectedIngredients.length;
 
-		// 表示名だけの配列を返す
-		return selected.map((ing) => ing.name);
-	}, [selectedIngredients, ingredients]);
+	const handleIngredientToggle = (ingredientId: number) => {
+		if (disabled) return;
 
-	// 選択されている材料の数を計算 (表示名の数)
-	const selectedCount = React.useMemo(() => {
-		return displayedIngredients.length;
-	}, [displayedIngredients]);
-
-	// 材料の選択状態を変更する関数
-	const handleIngredientToggle = (displayName: string) => {
-		if (disabled) return; // ローディング中は無効化
-
-		const ingredient = ingredients.find((ing) => ing.name === displayName);
-		// ingredientが見つからない場合は、そのdisplayName自体が実際の材料名とみなす
-		const actualNames = ingredient?.actualNames || [displayName];
-		const isCurrentlySelected = selectedIngredients.includes(displayName);
-
-		let newRawSelection: string[]; // onIngredientsChangeの第一引数（生の選択リスト）
+		const isCurrentlySelected = selectedIngredientIds.includes(ingredientId);
+		let newSelectedIds: number[];
 
 		if (isCurrentlySelected) {
-			// 解除: 表示名と関連する全ての実際の材料名をnewRawSelectionから削除
-			newRawSelection = selectedIngredients.filter(
-				(item) => item !== displayName && !actualNames.includes(item),
-			);
+			newSelectedIds = selectedIngredientIds.filter((id) => id !== ingredientId);
 		} else {
-			// 選択: 選択上限に達していないか確認
 			if (selectedCount < 5) {
-				// 表示名と関連する全ての実際の材料名をnewRawSelectionに追加
-				newRawSelection = [...selectedIngredients, displayName, ...actualNames];
+				newSelectedIds = [...selectedIngredientIds, ingredientId];
 			} else {
-				return; // 5個以上選択できない場合は何もしない
+				return;
 			}
 		}
-		// 新しい生の選択リストに基づいて、新しい表示名リストを計算
-		const tempDisplayed = new Set<string>();
-		for (const ing of ingredients) {
-			if (newRawSelection.includes(ing.name)) {
-				tempDisplayed.add(ing.name);
-			}
-		}
-		const newDisplayedSelection = Array.from(tempDisplayed);
 
-		onIngredientsChange(
-			newRawSelection,
-			newDisplayedSelection.length, // countは表示名の数
-			newDisplayedSelection,
-		);
+		const newSelectedNames = newSelectedIds
+			.map((id) => ingredientsById.get(id)?.name)
+			.filter((name): name is string => !!name);
+
+		onIngredientsChange(newSelectedIds, newSelectedNames);
 	};
 
 	const handleClearAll = () => {
-		if (disabled) return; // ローディング中は無効化
-		onIngredientsChange([], 0, []);
+		if (disabled) return;
+		onIngredientsChange([], []);
 	};
 
-	// 初期ロード中にスケルトンUIを表示
 	if (isInitialLoading) {
 		return <IngredientSelectorSkeleton />;
 	}
 
 	return (
 		<Box component="section" sx={{ width: "100%", maxWidth: 600, mx: "auto" }}>
-			{/* タイトル */}
 			<Typography
 				variant="h6"
 				component="h3"
@@ -163,7 +126,6 @@ export default function IngredientSelector({
 				材料を選択してください
 			</Typography>
 
-			{/* 上限メッセージ */}
 			{selectedCount >= 5 && (
 				<Typography
 					variant="body2"
@@ -175,7 +137,6 @@ export default function IngredientSelector({
 				</Typography>
 			)}
 
-			{/* 選択された材料の表示 */}
 			{selectedCount > 0 && (
 				<Paper
 					elevation={1}
@@ -192,12 +153,12 @@ export default function IngredientSelector({
 						選択された材料 ({selectedCount}個):
 					</Typography>
 					<Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
-						{displayedIngredients.map((ingredient) => (
+						{selectedIngredients.map((ingredient) => (
 							<Chip
-								key={ingredient}
-								label={ingredient}
+								key={ingredient.id}
+								label={ingredient.name}
 								size="small"
-								onDelete={() => handleIngredientToggle(ingredient)}
+								onDelete={() => handleIngredientToggle(ingredient.id)}
 								sx={{
 									backgroundColor: "primary.main",
 									color: "primary.contrastText",
@@ -211,7 +172,6 @@ export default function IngredientSelector({
 				</Paper>
 			)}
 
-			{/* 全解除ボタン */}
 			{selectedCount > 0 && (
 				<Box sx={{ display: "flex", gap: 1, mb: 2, justifyContent: "center" }}>
 					<Chip
@@ -229,9 +189,7 @@ export default function IngredientSelector({
 				</Box>
 			)}
 
-			{/* 材料カテゴリ別の選択UI */}
 			{sortedCategoryEntries.map(([category, ingredients]) => {
-				// カテゴリ情報からアイコン名を取得（フォールバック用に既存のマッピングも使用）
 				const categoryInfo = categories.find((c) => c.name === category);
 				const iconName = categoryInfo?.icon;
 				const IconComponent = (iconName && iconMap[iconName]) || DefaultIcon;
@@ -283,10 +241,9 @@ export default function IngredientSelector({
 									}}
 								>
 									{ingredients.map((ingredient) => {
-										// 選択状態を確認（表示名または実際の材料名のいずれかが選択されているか）
-										const isSelected = selectedIngredients.includes(
-											ingredient.name,
-										); // ingredient.nameはdisplayName
+										const isSelected = selectedIngredientIds.includes(
+											ingredient.id,
+										);
 										const isLimitReached = selectedCount >= 5;
 
 										return (
@@ -295,9 +252,7 @@ export default function IngredientSelector({
 												control={
 													<Checkbox
 														checked={isSelected}
-														onChange={() =>
-															handleIngredientToggle(ingredient.name)
-														}
+														onChange={() => handleIngredientToggle(ingredient.id)}
 														color="primary"
 														disabled={!isSelected && isLimitReached}
 													/>
@@ -339,3 +294,4 @@ export default function IngredientSelector({
 		</Box>
 	);
 }
+
