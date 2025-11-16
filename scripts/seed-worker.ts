@@ -17,7 +17,7 @@ async function runSeed() {
 	try {
 		const baseUrl = isLocal
 			? "http://localhost:3000"
-			: process.env.NEXT_PUBLIC_APP_URL || "https://yourmix.hndyu.workers.dev/";
+			: process.env.NEXT_PUBLIC_APP_URL || "https://yourmix.hndyu.workers.dev";
 
 		console.log(`📡 API Endpoint: ${baseUrl}/api/admin/seed`);
 		console.log(`🌍 Environment: ${isLocal ? "Local" : "Remote"}`);
