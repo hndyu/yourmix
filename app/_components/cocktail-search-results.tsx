@@ -71,6 +71,38 @@ export default function CocktailSearchResults({
 		return map;
 	}, [allIngredients, categories]);
 
+	// カクテルを「ユーザーが選択しマッチした材料数 / カクテルを作るのに必要なすべての材料数」の割合が高い順に並び替える
+	const sortedCocktails = React.useMemo(() => {
+		return [...cocktails].sort((a, b) => {
+			const calculateMatchRatio = (cocktail: Cocktail) => {
+				if (cocktail.ingredients.length === 0) {
+					return 0; // 材料がないカクテルは比率0とする
+				}
+				const matchedCount = cocktail.ingredients.filter((ingredient) => {
+					const isDirectlySelected = selectedIngredients.includes(
+						ingredient.name,
+					);
+					const parentIngredient = allIngredients.find((ing) =>
+						ing.actualNames?.includes(ingredient.name),
+					);
+					const isGroupSelected = parentIngredient
+						? selectedIngredients.includes(parentIngredient.name)
+						: false;
+					return isDirectlySelected || isGroupSelected;
+				}).length;
+
+				return matchedCount / cocktail.ingredients.length;
+			};
+
+			const ratioA = calculateMatchRatio(a);
+			const ratioB = calculateMatchRatio(b);
+
+			// 比率が高い順にソート (降順)
+			// 比率が同じ場合は、元の順序を維持
+			return ratioB - ratioA;
+		});
+	}, [cocktails, selectedIngredients, allIngredients]);
+
 	if (cocktails.length === 0) {
 		return (
 			<Fade in={show} timeout={800} easing="ease-out">
@@ -134,7 +166,7 @@ export default function CocktailSearchResults({
 				</Box>
 
 				<Grid container spacing={3}>
-					{cocktails.map((cocktail) => (
+					{sortedCocktails.map((cocktail) => (
 						<Grid key={cocktail.id} size={{ xs: 12, sm: 6, md: 4 }}>
 							<StyledResultCard>
 								<CardContent sx={{ p: 3 }}>
