@@ -5,7 +5,9 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 
 export const metadata: Metadata = {
-	title: "ページが見つかりません",
+	title: {
+		absolute: "ページが見つかりません | YourMix",
+	},
 	description:
 		"お探しのページは見つかりませんでした。URLが正しいかご確認ください。",
 };
