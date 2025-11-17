@@ -2851,7 +2851,7 @@ const ingredientGroupsData = [
 	{
 		displayName: "その他の蒸留酒",
 		order: 26,
-		description: "上記以外の様々な原料や製法で造られる蒸留酒です。",
+		description: "",
 	},
 	{
 		displayName: "リキュール",
