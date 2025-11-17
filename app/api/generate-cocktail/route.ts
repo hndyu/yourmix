@@ -34,9 +34,20 @@ export async function POST(request: Request) {
 			);
 		}
 
+		// 材料リストを処理して、特定の材料名をより具体的な指示に置き換える
+		const processedIngredients = ingredients.map((ingredient) => {
+			if (ingredient === "その他の蒸留酒") {
+				return "ジン・ウォッカ・ラム・テキーラ・ウイスキー・ブランデー以外の蒸留酒";
+			}
+			if (ingredient === "その他") {
+				return "醸造酒・蒸留酒・混成酒・ノンアルコール・クリーム・シロップ・果物・ピュレ・卵・砂糖・塩以外のもの";
+			}
+			return ingredient;
+		});
+
 		const response = await ai.models.generateContent({
 			model: "gemini-2.5-flash",
-			contents: `${ingredients.join(
+			contents: `${processedIngredients.join(
 				"、",
 			)}をすべて材料として使い、独創的で美味しいオリジナルカクテルのレシピを1つ提案してください。回答は必ず日本語で行ってください。`,
 			config: {
