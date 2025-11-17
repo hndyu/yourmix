@@ -1,6 +1,7 @@
 "use client";
 
 import {
+	HelpOutline as HelpOutlineIcon,
 	ContentCopy as CopyIcon,
 	LocalOffer as LocalOfferIcon,
 	Share as ShareIcon,
@@ -195,13 +196,38 @@ export default function CocktailDisplay({
 															}}
 														>
 															<ListItemText
-																primary={ingredient.name}
+																primary={
+																	<Box
+																		sx={{
+																			display: "flex",
+																			alignItems: "center",
+																			gap: 0.5,
+																		}}
+																	>
+																		<Typography
+																			component="span"
+																			sx={{ fontSize: "0.95rem" }}
+																		>
+																			{ingredient.name}
+																		</Typography>
+																		{ingredient.description && (
+																			<Tooltip
+																				title={ingredient.description}
+																				arrow
+																			>
+																				<HelpOutlineIcon
+																					fontSize="small"
+																					sx={{
+																						color: "text.secondary",
+																						cursor: "pointer",
+																						verticalAlign: "middle", // アイコンを中央揃えに
+																					}}
+																				/>
+																			</Tooltip>
+																		)}
+																	</Box>
+																}
 																secondary={ingredient.amount}
-																sx={{
-																	"& .MuiListItemText-primary": {
-																		fontSize: "0.95rem",
-																	},
-																}}
 															/>
 															{link && (
 																<Chip
