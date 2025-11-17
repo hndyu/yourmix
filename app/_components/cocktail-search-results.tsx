@@ -71,6 +71,21 @@ export default function CocktailSearchResults({
 		return map;
 	}, [allIngredients, categories]);
 
+	const isIngredientSelected = React.useCallback(
+		(ingredientName: string) => {
+			const isDirectlySelected = selectedIngredients.includes(ingredientName);
+			if (isDirectlySelected) return true;
+
+			const parentIngredient = allIngredients.find((ing) =>
+				ing.actualNames?.includes(ingredientName),
+			);
+			return parentIngredient
+				? selectedIngredients.includes(parentIngredient.name)
+				: false;
+		},
+		[selectedIngredients, allIngredients],
+	);
+
 	// カクテルを「ユーザーが選択しマッチした材料数 / カクテルを作るのに必要なすべての材料数」の割合が高い順に並び替える
 	const sortedCocktails = React.useMemo(() => {
 		return [...cocktails].sort((a, b) => {
@@ -78,18 +93,9 @@ export default function CocktailSearchResults({
 				if (cocktail.ingredients.length === 0) {
 					return 0; // 材料がないカクテルは比率0とする
 				}
-				const matchedCount = cocktail.ingredients.filter((ingredient) => {
-					const isDirectlySelected = selectedIngredients.includes(
-						ingredient.name,
-					);
-					const parentIngredient = allIngredients.find((ing) =>
-						ing.actualNames?.includes(ingredient.name),
-					);
-					const isGroupSelected = parentIngredient
-						? selectedIngredients.includes(parentIngredient.name)
-						: false;
-					return isDirectlySelected || isGroupSelected;
-				}).length;
+				const matchedCount = cocktail.ingredients.filter((ingredient) =>
+					isIngredientSelected(ingredient.name),
+				).length;
 
 				return matchedCount / cocktail.ingredients.length;
 			};
@@ -101,7 +107,7 @@ export default function CocktailSearchResults({
 			// 比率が同じ場合は、元の順序を維持
 			return ratioB - ratioA;
 		});
-	}, [cocktails, selectedIngredients, allIngredients]);
+	}, [cocktails, isIngredientSelected]);
 
 	if (cocktails.length === 0) {
 		return (
@@ -237,17 +243,9 @@ export default function CocktailSearchResults({
 												return (a.id ?? 0) - (b.id ?? 0);
 											})
 											.map((ingredient) => {
-												const isDirectlySelected = selectedIngredients.includes(
+												const isSelected = isIngredientSelected(
 													ingredient.name,
 												);
-												const parentIngredient = allIngredients.find((ing) =>
-													ing.actualNames?.includes(ingredient.name),
-												);
-												const isGroupSelected = parentIngredient
-													? selectedIngredients.includes(parentIngredient.name)
-													: false;
-												const isSelected =
-													isDirectlySelected || isGroupSelected;
 
 												return (
 													<Chip
