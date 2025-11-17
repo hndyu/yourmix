@@ -5,7 +5,10 @@ import Footer from "./_components/footer";
 import Header from "./_components/header";
 
 export const metadata: Metadata = {
-	title: "YourMix",
+	title: {
+		default: "YourMix",
+		template: "%s | YourMix",
+	},
 	description: "あなただけのカクテルを作ってみよう。",
 };
 

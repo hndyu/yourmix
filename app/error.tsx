@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import type { Metadata } from "next";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
@@ -13,6 +14,10 @@ export default function CustomError({
 	reset: () => void;
 }) {
 	useEffect(() => {
+		// エラーページのタイトルを設定
+		// layout.tsx の template が適用されるため、ページ固有の部分のみ設定
+		document.title = "エラーが発生しました";
+
 		// エラーをロギングサービスに記録します
 		console.error(error);
 	}, [error]);

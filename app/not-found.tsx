@@ -1,7 +1,14 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
+
+export const metadata: Metadata = {
+	title: "ページが見つかりません",
+	description:
+		"お探しのページは見つかりませんでした。URLが正しいかご確認ください。",
+};
 
 export default function NotFound() {
 	return (

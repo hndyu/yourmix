@@ -8,6 +8,7 @@ import {
 } from "@mui/material";
 import NextLink from "next/link";
 import { notFound } from "next/navigation";
+import type { Metadata } from "next";
 import type { Cocktail } from "../../types/cocktail";
 import CocktailDisplay from "../../_components/cocktail-display";
 
@@ -23,7 +24,6 @@ async function getCocktail(slug: string): Promise<Cocktail> {
 	});
 
 	if (res.status === 404) {
-		// notFound() を呼び出すと not-found.tsx がレンダリングされます
 		notFound();
 	}
 
@@ -34,6 +34,19 @@ async function getCocktail(slug: string): Promise<Cocktail> {
 
 	const data = (await res.json()) as { cocktail: Cocktail };
 	return data.cocktail;
+}
+
+export async function generateMetadata({
+	params,
+}: {
+	params: { slug: string };
+}): Promise<Metadata | undefined> {
+	const cocktail = await getCocktail(params.slug);
+
+	const title = `${cocktail.name}のレシピ`;
+	const description = `${cocktail.name}の作り方と材料を紹介します。${cocktail.description}`;
+
+	return { title, description };
 }
 
 export default async function RecipeDetailPage({
