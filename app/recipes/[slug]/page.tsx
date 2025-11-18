@@ -8,6 +8,7 @@ import {
 } from "@mui/material";
 import NextLink from "next/link";
 import { notFound } from "next/navigation";
+import type { BreadcrumbList, Recipe, WithContext } from "schema-dts";
 import type { Metadata } from "next";
 import type { Cocktail } from "../../types/cocktail";
 import CocktailDisplay from "../../_components/cocktail-display";
@@ -56,6 +57,40 @@ export default async function RecipeDetailPage({
 }) {
 	const cocktail = await getCocktail(params.slug);
 
+	// Recipeスキーマ
+	const recipeJsonLd: WithContext<Recipe> = {
+		"@context": "https://schema.org",
+		"@type": "Recipe",
+		name: cocktail.name,
+		description: cocktail.description,
+		recipeIngredient: cocktail.ingredients.map((i) => `${i.name} ${i.amount}`),
+		recipeInstructions: cocktail.instructions.map((step, index) => ({
+			"@type": "HowToStep",
+			text: step,
+			position: index + 1,
+		})),
+	};
+
+	// BreadcrumbListスキーマ
+	const breadcrumbJsonLd: WithContext<BreadcrumbList> = {
+		"@context": "https://schema.org",
+		"@type": "BreadcrumbList",
+		itemListElement: [
+			{
+				"@type": "ListItem",
+				position: 1,
+				name: "ホーム",
+				item: API_BASE_URL,
+			},
+			{
+				"@type": "ListItem",
+				position: 2,
+				name: cocktail.name,
+				item: `${API_BASE_URL}/recipes/${cocktail.slug}`,
+			},
+		],
+	};
+
 	return (
 		<Container maxWidth="lg" sx={{ py: 4 }}>
 			<Fade in timeout={1000}>
@@ -74,6 +109,13 @@ export default async function RecipeDetailPage({
 					</Breadcrumbs>
 
 					{/* カクテル表示コンポーネントを再利用 */}
+					<script
+						type="application/ld+json"
+						// biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
+						dangerouslySetInnerHTML={{
+							__html: JSON.stringify([recipeJsonLd, breadcrumbJsonLd]),
+						}}
+					/>
 					<CocktailDisplay cocktail={cocktail} show isDetailPage />
 				</Box>
 			</Fade>

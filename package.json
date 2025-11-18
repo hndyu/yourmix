@@ -45,6 +45,7 @@
 		"@types/react-dom": "^19",
 		"@types/uuid": "^10.0.0",
 		"jsdom": "^26.1.0",
+		"schema-dts": "^1.1.5",
 		"tailwindcss": "^4",
 		"tsx": "^4.20.6",
 		"typescript": "^5",
