@@ -39,10 +39,11 @@ async function getCocktail(slug: string): Promise<Cocktail> {
 
 export async function generateMetadata({
 	params,
-}: {
-	params: { slug: string };
-}): Promise<Metadata | undefined> {
-	const cocktail = await getCocktail(params.slug);
+}: { // paramsがPromiseの可能性があるため、型を調整
+	params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+	const { slug } = await params; // paramsをawaitしてslugを取り出す
+	const cocktail = await getCocktail(slug);
 
 	const title = `${cocktail.name}のレシピ`;
 	const description = `${cocktail.name}の作り方と材料を紹介します。${cocktail.description}`;
@@ -52,10 +53,11 @@ export async function generateMetadata({
 
 export default async function RecipeDetailPage({
 	params,
-}: {
-	params: { slug: string };
+}: { // paramsがPromiseの可能性があるため、型を調整
+	params: Promise<{ slug: string }>;
 }) {
-	const cocktail = await getCocktail(params.slug);
+	const { slug } = await params; // paramsをawaitしてslugを取り出す
+	const cocktail = await getCocktail(slug);
 
 	// Recipeスキーマ
 	const recipeJsonLd: WithContext<Recipe> = {
