@@ -4,6 +4,7 @@ import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
+import Link from "next/link";
 import { usePathname } from "next/navigation";
 import * as React from "react";
 
@@ -27,13 +28,22 @@ export default function Header() {
 				</IconButton> */}
 
 				{/* 中央：アプリ名やロゴ */}
-				<Typography
-					variant="h6"
-					component={isHomePage ? "h1" : "div"}
-					sx={{ flexGrow: 1, fontWeight: "bold", color: "#333" }}
+				<Link
+					href="/"
+					style={{
+						textDecoration: "none",
+						color: "inherit",
+						flexGrow: 1,
+					}}
 				>
-					YourMix
-				</Typography>
+					<Typography
+						variant="h6"
+						component={isHomePage ? "h1" : "div"}
+						sx={{ fontWeight: "bold", color: "#333" }}
+					>
+						YourMix
+					</Typography>
+				</Link>
 
 				{/* 右側：将来的にナビゲーションやユーザーアイコンなど */}
 				<Box>{/* ここにボタンやアイコンを追加可能 */}</Box>
