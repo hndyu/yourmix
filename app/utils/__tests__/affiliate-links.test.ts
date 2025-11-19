@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { getAffiliateLink, extractIngredientKeyword } from "../utils/affiliate-links";
+import { getAffiliateLink, extractIngredientKeyword } from "../affiliate-links";
 
 describe("affiliate-links", () => {
 	describe("extractIngredientKeyword", () => {
