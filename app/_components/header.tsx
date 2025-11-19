@@ -6,7 +6,6 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import * as React from "react";
 
 // ヘッダーコンポーネント
 export default function Header() {
