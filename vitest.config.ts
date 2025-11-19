@@ -21,5 +21,6 @@ export default defineConfig({
 				"**/coverage/**",
 			],
 		},
+		setupFiles: ["./vitest-setup.js"],
 	},
 });
