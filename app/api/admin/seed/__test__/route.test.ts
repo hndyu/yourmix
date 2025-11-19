@@ -1,15 +1,15 @@
 import { describe, it, expect, vi, beforeEach, type Mock } from "vitest";
 import { POST } from "../route"; // Assuming POST is the function to test
 import { NextResponse } from "next/server";
+import * as cloudflare from "@opennextjs/cloudflare";
+import * as seedScript from "../../../../../scripts/seed";
+
+const { getCloudflareContext } = cloudflare;
+const { runSeed } = seedScript;
 
 // Mock the external dependencies
-vi.mock("@opennextjs/cloudflare", () => ({
-	getCloudflareContext: vi.fn(),
-}));
-
-vi.mock("../../../../scripts/seed", () => ({
-	runSeed: vi.fn(),
-}));
+vi.mock("@opennextjs/cloudflare");
+vi.mock("../../../../../scripts/seed");
 
 // Define a type for our mock response
 type MockResponse = {
@@ -22,10 +22,6 @@ vi.mock("next/server", () => ({
 		json: vi.fn((data, options) => ({ data, options }) as MockResponse),
 	},
 }));
-
-// Import the mocked functions
-import { getCloudflareContext } from "@opennextjs/cloudflare";
-import { runSeed } from "../../../../../scripts/seed";
 
 describe("POST /api/admin/seed", () => {
 	const mockD1Database = {}; // A simple mock for D1Database
