@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, type Mock } from "vitest";
-import { POST } from "./route"; // Assuming POST is the function to test
+import { POST } from "../route"; // Assuming POST is the function to test
 import { NextResponse } from "next/server";
 
 // Mock the external dependencies
@@ -25,7 +25,7 @@ vi.mock("next/server", () => ({
 
 // Import the mocked functions
 import { getCloudflareContext } from "@opennextjs/cloudflare";
-import { runSeed } from "../../../../scripts/seed";
+import { runSeed } from "../../../../../scripts/seed";
 
 describe("POST /api/admin/seed", () => {
 	const mockD1Database = {}; // A simple mock for D1Database
