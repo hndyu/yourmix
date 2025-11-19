@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect } from "react";
-import type { Metadata } from "next";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
