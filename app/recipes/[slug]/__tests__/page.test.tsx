@@ -7,6 +7,7 @@ import {
 	vi,
 	type Mock,
 } from "vitest";
+import * as React from "react";
 import { render, screen } from "@testing-library/react";
 import RecipeDetailPage, { generateMetadata } from "../page";
 import type { Cocktail } from "../../../types/cocktail";

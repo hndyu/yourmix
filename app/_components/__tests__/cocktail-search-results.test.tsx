@@ -1,4 +1,6 @@
 import { cleanup, render, screen, within } from "@testing-library/react";
+// biome-ignore lint/style/useImportType: <explanation>
+import * as React from "react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { Category, Cocktail, Ingredient } from "../../types/cocktail";
 import CocktailSearchResults from "../cocktail-search-results";
