@@ -311,8 +311,9 @@ describe("CocktailSearchResults", () => {
 
 	it("詳細ページへの正しいリンクを持つ", () => {
 		renderComponent({});
-		const link = screen.getAllByText("詳細を見る")[0] as HTMLAnchorElement;
-		expect(link.href).toContain("/recipes/gimlet");
+		const linkElement = screen.getAllByText("詳細を見る")[0].closest("a");
+		expect(linkElement).toBeInTheDocument();
+		expect(linkElement).toHaveAttribute("href", "/recipes/gimlet");
 	});
 
 	it("show=falseの場合、コンポーネントは表示されない", () => {
