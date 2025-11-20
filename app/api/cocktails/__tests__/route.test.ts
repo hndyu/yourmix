@@ -9,6 +9,7 @@ import {
 	type Mock,
 } from "vitest";
 import { GET } from "../route";
+import type { Cocktail } from "../../../types/cocktail";
 
 // 外部モジュールのモック
 vi.mock("@opennextjs/cloudflare", () => ({
@@ -93,25 +94,7 @@ describe("GET /api/cocktails", () => {
 	it("正常なリクエストでカクテルリストを整形して返す", async () => {
 		const request = new Request("http://localhost/api/cocktails");
 		const response = await GET(request);
-		// レスポンスの型を定義
-		type FormattedCocktail = {
-			id: number;
-			name: string;
-			description: string;
-			imageUrl?: string;
-			garnish?: string;
-			ingredients: {
-				id: number;
-				name: string;
-				amount: string;
-				category: unknown;
-			}[];
-			tags: string[];
-			instructions: string[];
-		};
-		const data = (await response.json()) as {
-			cocktails: FormattedCocktail[];
-		};
+		const data = (await response.json()) as { cocktails: Cocktail[] };
 
 		expect(response.status).toBe(200);
 		expect(data.cocktails).toHaveLength(2);
@@ -124,7 +107,12 @@ describe("GET /api/cocktails", () => {
 		expect(firstCocktail.garnish).toBe("ライム");
 		expect(firstCocktail.ingredients).toEqual([
 			{ id: 101, name: "ジン", amount: "45ml", category: 1 },
-			{ id: 201, name: "トニックウォーター", amount: "120ml", category: 5 },
+			{
+				id: 201,
+				name: "トニックウォーター",
+				amount: "120ml",
+				category: 5,
+			},
 		]);
 		expect(firstCocktail.instructions).toEqual([
 			"氷を入れたグラスにジンを注ぐ",

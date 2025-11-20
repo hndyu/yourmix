@@ -9,6 +9,7 @@ import {
 	type Mock,
 } from "vitest";
 import { GET } from "../route";
+import type { Category, GroupedIngredient } from "../../../types/cocktail";
 
 // モジュールのモック
 vi.mock("@opennextjs/cloudflare", () => ({
@@ -105,11 +106,8 @@ describe("GET /api/ingredients", () => {
 
 		const response = await GET();
 		const data = (await response.json()) as {
-			categories: typeof mockCategories;
-			ingredients: {
-				name: string;
-				actualNames: string[];
-			}[];
+			categories: Category[];
+			ingredients: GroupedIngredient[];
 			groupMapping: Record<string, string[]>;
 		};
 
@@ -119,7 +117,7 @@ describe("GET /api/ingredients", () => {
 
 		// ウイスキーが正しくグループ化されているか確認
 		const whiskeyGroup = data.ingredients.find(
-			(ing: { name: string }) => ing.name === "ウイスキー",
+			(ing) => ing.name === "ウイスキー",
 		);
 		if (whiskeyGroup) {
 			expect(whiskeyGroup.actualNames).toEqual([
@@ -133,7 +131,7 @@ describe("GET /api/ingredients", () => {
 
 		// groupMappingが正しく生成されているか確認
 		// biome-ignore lint/complexity/useLiteralKeys: <explanation>
-				expect(data.groupMapping["ウイスキー"]).toEqual([
+		expect(data.groupMapping["ウイスキー"]).toEqual([
 			"ライ・ウイスキー",
 			"バーボン・ウイスキー",
 		]);
