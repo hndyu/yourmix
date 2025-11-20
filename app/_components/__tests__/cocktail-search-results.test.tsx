@@ -278,13 +278,19 @@ describe("CocktailSearchResults", () => {
 		if (!(gimletCard instanceof HTMLElement)) {
 			throw new Error("Gimlet card not found or is not an HTMLElement");
 		}
-		const ginChip = within(gimletCard).getByText("ジン");
-		const limeChip = within(gimletCard).getByText("ライムジュース");
+		// .getByTextで取得した要素から、closest()でChipのルート要素を取得する
+		const ginChip = within(gimletCard)
+			.getByText("ジン")
+			.closest(".MuiChip-root");
+		const limeChip = within(gimletCard)
+			.getByText("ライムジュース")
+			.closest(".MuiChip-root");
 
 		// MUIのクラスで判定 (variant="filled" -> MuiChip-filled, variant="outlined" -> MuiChip-outlined)
-		expect(ginChip.className).toContain("MuiChip-filled");
-		expect(ginChip.className).not.toContain("MuiChip-outlined");
-		expect(limeChip.className).toContain("MuiChip-outlined");
+		// filled の場合、MuiChip-filledPrimary などのクラスが付与される
+		expect(ginChip?.className).toContain("MuiChip-filled");
+		expect(ginChip?.className).not.toContain("MuiChip-outlined");
+		expect(limeChip?.className).toContain("MuiChip-outlined");
 	});
 
 	it("グループ化された材料が選択された場合、その子の材料も選択済みとして表示する", () => {
@@ -297,10 +303,10 @@ describe("CocktailSearchResults", () => {
 		if (!(whiskeySourCard instanceof HTMLElement)) {
 			throw new Error("Whiskey Sour card not found or is not an HTMLElement");
 		}
-		const bourbonChip = within(whiskeySourCard).getByText(
-			"バーボン・ウイスキー",
-		);
-		expect(bourbonChip.className).toContain("MuiChip-filled");
+		const bourbonChip = within(whiskeySourCard)
+			.getByText("バーボン・ウイスキー")
+			.closest(".MuiChip-root");
+		expect(bourbonChip?.className).toContain("MuiChip-filled");
 	});
 
 	it("詳細ページへの正しいリンクを持つ", () => {
@@ -327,9 +333,11 @@ describe("CocktailSearchResults", () => {
 			throw new Error("Card not found");
 		}
 		// "砂糖" は id を持たない
-		const sugarChip = within(card as HTMLElement).getByText("砂糖");
-		expect(sugarChip).toBeInTheDocument();
+		const sugarChipLabel = within(card as HTMLElement).getByText("砂糖");
+		expect(sugarChipLabel).toBeInTheDocument();
+
+		const sugarChipRoot = sugarChipLabel.closest(".MuiChip-root");
 		// 選択されていないので outlined
-		expect(sugarChip.className).toContain("MuiChip-outlined"); // 砂糖は選択されていないのでoutlined
+		expect(sugarChipRoot?.className).toContain("MuiChip-outlined"); // 砂糖は選択されていないのでoutlined
 	});
 });
