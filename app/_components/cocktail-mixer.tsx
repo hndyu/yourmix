@@ -2,7 +2,7 @@
 
 import { Box } from "@mui/material";
 import * as React from "react";
-import type { Category, Cocktail, Ingredient } from "../types/cocktail";
+import type { Category, Ingredient } from "../types/cocktail";
 import { useAICocktailGenerator } from "../utils/useAICocktailGenerator";
 import { useCocktails } from "../utils/useCocktails";
 import CocktailDisplay from "./cocktail-display";
