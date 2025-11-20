@@ -256,12 +256,15 @@ describe("CocktailSearchResults", () => {
 		if (!card) {
 			throw new Error("Card not found");
 		}
-		const ingredients = within(card as HTMLElement).getAllByRole("button"); // Chipコンポーネント
+		// Chipコンポーネントのラベル部分をクラス名で取得する
+		const ingredientLabels = (card as HTMLElement).querySelectorAll(
+			".MuiChip-label",
+		);
 
 		// 期待される順序: バーボン・ウイスキー(蒸留酒, sort 3) -> ライムジュース(ジュース, sort 21) -> 砂糖(idなし)
-		expect(ingredients[0]).toHaveTextContent("バーボン・ウイスキー");
-		expect(ingredients[1]).toHaveTextContent("ライムジュース");
-		expect(ingredients[2]).toHaveTextContent("砂糖");
+		expect(ingredientLabels[0]).toHaveTextContent("バーボン・ウイスキー");
+		expect(ingredientLabels[1]).toHaveTextContent("ライムジュース");
+		expect(ingredientLabels[2]).toHaveTextContent("砂糖");
 	});
 
 	it("選択された材料を 'filled' スタイルで表示する", () => {
