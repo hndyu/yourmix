@@ -254,7 +254,7 @@ export default function IngredientSelector({
 														checked={isSelected}
 														onChange={() => handleIngredientToggle(ingredient.id)}
 														color="primary"
-														disabled={!isSelected && isLimitReached}
+														disabled={disabled || (!isSelected && isLimitReached)}
 													/>
 												}
 												label={
@@ -294,4 +294,3 @@ export default function IngredientSelector({
 		</Box>
 	);
 }
-
