@@ -1,16 +1,7 @@
-import { drizzle } from "drizzle-orm/d1";
 import { v4 as uuidv4 } from "uuid";
-import type { Env } from "../cloudflare-env"; // Wranglerが生成した共通のEnv型定義をインポート
-import {
-	categories,
-	cocktailIngredients,
-	cocktailTags,
-	cocktails,
-	ingredientGroups,
-	ingredients,
-	instructions,
-	tags,
-} from "../schema"; // Drizzle ORM のスキーマ定義
+import * as schema from "../app/db/schema";
+import { createDb } from "../app/db/db";
+import type { D1Database } from "@cloudflare/workers-types";
 
 // シードデータの型定義
 interface IngredientData {
@@ -2897,19 +2888,19 @@ export interface SeedDataOverrides {
 	ingredientDetails?: Record<string, { group: string; description: string }>;
 }
 
-export async function seed(env: Env, overrides?: SeedDataOverrides) {
-	const db = drizzle(env.DB);
+export async function seed(d1: D1Database) {
+	const db = createDb(d1);
 
 	console.log("🌱 Seeding database...");
 
 	// 既存のデータをクリア
-	await db.delete(cocktailTags);
-	await db.delete(tags);
-	await db.delete(instructions);
-	await db.delete(cocktailIngredients);
-	await db.delete(ingredients);
-	await db.delete(cocktails);
-	await db.delete(categories);
+	await db.delete(schema.cocktailTags);
+	await db.delete(schema.tags);
+	await db.delete(schema.instructions);
+	await db.delete(schema.cocktailIngredients);
+	await db.delete(schema.ingredients);
+	await db.delete(schema.cocktails);
+	await db.delete(schema.categories);
 	console.log("🗑️ Cleared existing data.");
 
 	const usedUnforgettables = overrides?.unforgettables ?? unforgettables;
@@ -2959,9 +2950,9 @@ export async function seed(env: Env, overrides?: SeedDataOverrides) {
 	const categoryMapByName = new Map<string, number>();
 	for (const category of categoryData) {
 		const [newCategory] = await db
-			.insert(categories)
+			.insert(schema.categories)
 			.values(category)
-			.returning({ id: categories.id });
+			.returning({ id: schema.categories.id });
 		categoryMapByName.set(category.name, newCategory.id);
 	}
 	console.log("📁 Seeded categories.");
@@ -2972,9 +2963,9 @@ export async function seed(env: Env, overrides?: SeedDataOverrides) {
 		for (const tagName of cocktailData.tags) {
 			if (!tagMap.has(tagName)) {
 				const [newTag] = await db
-					.insert(tags)
+					.insert(schema.tags)
 					.values({ name: tagName })
-					.returning({ id: tags.id });
+					.returning({ id: schema.tags.id });
 				tagMap.set(tagName, newTag.id);
 			}
 		}
@@ -2986,13 +2977,13 @@ export async function seed(env: Env, overrides?: SeedDataOverrides) {
 	const groupMap = new Map<string, number>();
 	for (const group of groupsSource) {
 		const [newGroup] = await db
-			.insert(ingredientGroups)
+			.insert(schema.ingredientGroups)
 			.values({
 				displayName: group.displayName,
 				sortOrder: group.order,
 				description: group.description,
 			})
-			.returning({ id: ingredientGroups.id });
+			.returning({ id: schema.ingredientGroups.id });
 		groupMap.set(group.displayName, newGroup.id);
 	}
 	console.log("📦 Seeded ingredient groups.");
@@ -3025,14 +3016,14 @@ export async function seed(env: Env, overrides?: SeedDataOverrides) {
 				}
 
 				const [newIngredient] = await db
-					.insert(ingredients)
+					.insert(schema.ingredients)
 					.values({
 						name: ing.name,
 						groupId: groupId,
 						categoryId: categoryId,
 						description: description ?? null,
 					})
-					.returning({ id: ingredients.id });
+					.returning({ id: schema.ingredients.id });
 				ingredientMap.set(ing.name, newIngredient.id);
 			}
 		}
@@ -3045,7 +3036,7 @@ export async function seed(env: Env, overrides?: SeedDataOverrides) {
 		const slug = cocktailData.imageUrl.replace(/\.[^/.]+$/, "");
 
 		// cocktails テーブル
-		await db.insert(cocktails).values({
+		await db.insert(schema.cocktails).values({
 			id: cocktailId,
 			name: cocktailData.name,
 			slug,
@@ -3055,7 +3046,7 @@ export async function seed(env: Env, overrides?: SeedDataOverrides) {
 		});
 
 		// instructions テーブル
-		await db.insert(instructions).values(
+		await db.insert(schema.instructions).values(
 			cocktailData.instructions.map((text, index) => ({
 				cocktailId,
 				step: index + 1,
@@ -3064,7 +3055,7 @@ export async function seed(env: Env, overrides?: SeedDataOverrides) {
 		);
 
 		// cocktail_ingredients テーブル
-		await db.insert(cocktailIngredients).values(
+		await db.insert(schema.cocktailIngredients).values(
 			cocktailData.ingredients.map((ing: IngredientData) => {
 				const ingredientId = ingredientMap.get(ing.name);
 				if (ingredientId === undefined) {
@@ -3080,7 +3071,7 @@ export async function seed(env: Env, overrides?: SeedDataOverrides) {
 		);
 
 		// cocktail_tags テーブル
-		await db.insert(cocktailTags).values(
+		await db.insert(schema.cocktailTags).values(
 			cocktailData.tags.map((tagName) => {
 				const tagId = tagMap.get(tagName);
 				if (tagId === undefined) {
@@ -3099,9 +3090,9 @@ export async function seed(env: Env, overrides?: SeedDataOverrides) {
 }
 
 // エラーハンドリングを改善したseed関数のラッパー
-export async function runSeed(env: Env) {
+export async function runSeed(d1: D1Database) {
 	try {
-		await seed(env);
+		await seed(d1);
 		console.log("✅ Seed script completed successfully.");
 		return true;
 	} catch (error) {

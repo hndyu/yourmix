@@ -1,10 +1,9 @@
 import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { GoogleGenAI, Type } from "@google/genai";
 import { and, eq, ne } from "drizzle-orm";
-import { drizzle } from "drizzle-orm/d1";
 import { NextResponse } from "next/server";
-import type { Env } from "../../../cloudflare-env";
-import { categories, ingredientGroups, ingredients } from "../../../schema";
+import * as schema from "../../db/schema";
+import { createDb } from "../../db/db";
 
 // APIキーを環境変数から取得
 const apiKey = process.env.GEMINI_API_KEY;
@@ -37,7 +36,7 @@ export async function POST(request: Request) {
 				{ status: 500 },
 			);
 		}
-		const db = drizzle(env.DB);
+		const db = createDb(env.DB);
 
 		const { ingredients: selectedIngredients } = (await request.json()) as {
 			ingredients: string[];
@@ -60,9 +59,9 @@ export async function POST(request: Request) {
 				if (ingredient === "その他の蒸留酒") {
 					// "蒸留酒"カテゴリのIDを取得
 					const spiritsCategory = await db
-						.select({ id: categories.id })
-						.from(categories)
-						.where(eq(categories.name, "蒸留酒"))
+						.select({ id: schema.categories.id })
+						.from(schema.categories)
+						.where(eq(schema.categories.name, "蒸留酒"))
 						.limit(1);
 
 					if (spiritsCategory.length > 0) {
@@ -70,17 +69,24 @@ export async function POST(request: Request) {
 
 						// "蒸留酒"カテゴリに属し、"その他の蒸留酒"グループ以外のグループ名を取得
 						const spiritGroups = await db
-							.selectDistinct({ displayName: ingredientGroups.displayName })
-							.from(ingredientGroups)
-							.innerJoin(ingredients, eq(ingredientGroups.id, ingredients.groupId))
+							.selectDistinct({
+								displayName: schema.ingredientGroups.displayName,
+							})
+							.from(schema.ingredientGroups)
+							.innerJoin(
+								schema.ingredients,
+								eq(schema.ingredientGroups.id, schema.ingredients.groupId),
+							)
 							.where(
 								and(
-									eq(ingredients.categoryId, spiritsCategoryId),
-									ne(ingredientGroups.displayName, "その他の蒸留酒"),
+									eq(schema.ingredients.categoryId, spiritsCategoryId),
+									ne(schema.ingredientGroups.displayName, "その他の蒸留酒"),
 								),
 							);
 
-						const exclusionList = spiritGroups.map((g) => g.displayName).join("・");
+						const exclusionList = spiritGroups
+							.map((g) => g.displayName)
+							.join("・");
 						return `${exclusionList}以外の蒸留酒`;
 					}
 				}
@@ -88,9 +94,9 @@ export async function POST(request: Request) {
 				if (ingredient === "その他") {
 					// "その他"カテゴリ以外のカテゴリ名を取得
 					const otherCategories = await db
-						.select({ name: categories.name })
-						.from(categories)
-						.where(ne(categories.name, "その他"));
+						.select({ name: schema.categories.name })
+						.from(schema.categories)
+						.where(ne(schema.categories.name, "その他"));
 
 					const exclusionList = otherCategories.map((c) => c.name).join("・");
 					return `${exclusionList}など以外のもの`;

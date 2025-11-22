@@ -13,7 +13,7 @@ if (!CLOUDFLARE_ACCOUNT_ID || !CLOUDFLARE_DATABASE_ID || !CLOUDFLARE_D1_TOKEN) {
 }
 
 export default defineConfig({
-	schema: "./schema.ts",
+	schema: "./app/db/schema.ts",
 	out: "./drizzle",
 	dialect: "sqlite",
 	driver: "d1-http",
