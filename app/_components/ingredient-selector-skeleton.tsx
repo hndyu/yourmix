@@ -1,6 +1,7 @@
 // app/_components/ingredient-selector-skeleton.tsx
 "use client";
 
+import * as React from "react";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import {
 	Accordion,

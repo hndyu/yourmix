@@ -1,8 +1,8 @@
 "use client";
 
+import * as React from "react";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import * as React from "react";
 import type { Category, Ingredient } from "../types/cocktail";
 import IngredientSelector from "./ingredient-selector";
 import MixButton from "./mix-button";

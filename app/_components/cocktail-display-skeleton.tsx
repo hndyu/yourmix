@@ -1,15 +1,7 @@
 // app/_components/cocktail-display-skeleton.tsx
 "use client";
-
-import {
-	Box,
-	Card,
-	CardContent,
-	Chip,
-	Grid,
-	Skeleton,
-	Typography,
-} from "@mui/material";
+import * as React from "react";
+import { Box, Card, CardContent, Skeleton, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
 // CocktailDisplayからスタイル付きカードをインポートするか、同様のスタイルを定義
@@ -83,7 +75,10 @@ export default function CocktailDisplaySkeleton() {
 						</Typography>
 						<Box sx={{ p: 2, backgroundColor: "#fafafa", borderRadius: 1 }}>
 							{[...Array(4)].map((_, index) => (
-								<Box key={index} sx={{ display: "flex", alignItems: "flex-start", py: 0.5 }}>
+								<Box
+									key={index}
+									sx={{ display: "flex", alignItems: "flex-start", py: 0.5 }}
+								>
 									<Skeleton variant="text" width="100%" />
 								</Box>
 							))}

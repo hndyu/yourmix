@@ -212,8 +212,7 @@ export default function CocktailSearchResults({
 										材料:
 									</Typography>
 									<Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
-										{[...cocktail.ingredients]
-											.filter((i) => i.id)
+										{[...cocktail.ingredients] // idが0の材料も表示するため、フィルタリングを削除
 											.sort((a, b) => {
 												const orderInfoA = ingredientSortOrderMap.get(
 													a.name,

@@ -6,11 +6,14 @@
  *   npm run seed:remote - リモート環境経由で投入（デプロイ後）
  */
 
-const environment = process.argv[2] || "local";
-const isLocal = environment === "local";
-
 // async関数でラップしてtop-level awaitを回避
-async function runSeed() {
+export async function runSeed({
+	exitOnFinish = true,
+}: { exitOnFinish?: boolean } = {}) {
+	// Determine environment at invocation time to avoid module cache issues
+	const environment = process.argv[2] || "local";
+	const isLocal = environment === "local";
+
 	console.log("🌱 Starting seed process via API endpoint...");
 	console.log("");
 
@@ -39,14 +42,16 @@ async function runSeed() {
 
 		if (response.ok) {
 			console.log("✅", result.message || "シードデータの投入が完了しました。");
-			process.exit(0);
-		} else {
-			console.error("❌", result.error || "シードデータの投入に失敗しました。");
-			if (result.details) {
-				console.error("Details:", result.details);
-			}
-			process.exit(1);
+			if (exitOnFinish) process.exit(0);
+			return 0;
 		}
+		console.error("❌", result.error || "シードデータの投入に失敗しました。");
+		if (result.details) {
+			console.error("Details:", result.details);
+		}
+		// Respect `exitOnFinish`: only exit the process when requested.
+		if (exitOnFinish) process.exit(1);
+		return 1;
 	} catch (error) {
 		console.error("❌ Error:", error);
 		if (error instanceof Error) {
@@ -62,9 +67,12 @@ async function runSeed() {
 			console.log("   npm run seed:local");
 		}
 
-		process.exit(1);
+		// Respect `exitOnFinish`: only exit the process when requested.
+		if (exitOnFinish) process.exit(1);
+		return 1;
 	}
 }
 
-// 実行
-runSeed();
+// Note: do not auto-run here so tests can import and call `runSeed()` safely.
+// To run from CLI, call `node ./scripts/seed-worker.ts` with a runner that
+// invokes the exported `runSeed()` function, or add a small wrapper script.
