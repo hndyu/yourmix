@@ -1,9 +1,8 @@
 import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { asc, eq } from "drizzle-orm";
-import { drizzle } from "drizzle-orm/d1";
 import { NextResponse } from "next/server";
-import type { Env } from "../../../cloudflare-env";
-import { categories, ingredientGroups, ingredients } from "../../../schema";
+import * as schema from "../../db/schema";
+import { createDb } from "../../db/db";
 import type { GroupedIngredient } from "../../types/cocktail";
 
 /**
@@ -24,33 +23,36 @@ export async function GET() {
 				{ status: 500 },
 			);
 		}
-		const db = drizzle(env.DB);
+		const db = createDb(env.DB);
 
 		const [allCategories, allIngredientsWithGroups] = await Promise.all([
 			// カテゴリを並び順で取得
 			db
 				.select()
-				.from(categories)
-				.orderBy(asc(categories.sortOrder)),
+				.from(schema.categories)
+				.orderBy(asc(schema.categories.sortOrder)),
 			// 材料テーブルとグループテーブル、カテゴリテーブルをJOINして取得
 			db
 				.select({
-					id: ingredients.id,
-					name: ingredients.name,
-					categoryName: categories.name,
-					groupId: ingredients.groupId,
-					groupDisplayName: ingredientGroups.displayName,
-					groupSortOrder: ingredientGroups.sortOrder,
-					groupDescription: ingredientGroups.description,
+					id: schema.ingredients.id,
+					name: schema.ingredients.name,
+					categoryName: schema.categories.name,
+					groupId: schema.ingredients.groupId,
+					groupDisplayName: schema.ingredientGroups.displayName,
+					groupSortOrder: schema.ingredientGroups.sortOrder,
+					groupDescription: schema.ingredientGroups.description,
 				})
-				.from(ingredients)
+				.from(schema.ingredients)
 				.leftJoin(
-					ingredientGroups,
-					eq(ingredients.groupId, ingredientGroups.id),
+					schema.ingredientGroups,
+					eq(schema.ingredients.groupId, schema.ingredientGroups.id),
 				)
-				.leftJoin(categories, eq(ingredients.categoryId, categories.id))
+				.leftJoin(
+					schema.categories,
+					eq(schema.ingredients.categoryId, schema.categories.id),
+				)
 				// グループの表示順でソート
-				.orderBy(asc(ingredientGroups.sortOrder)),
+				.orderBy(asc(schema.ingredientGroups.sortOrder)),
 		]);
 
 		// 表示用に材料をグループ化

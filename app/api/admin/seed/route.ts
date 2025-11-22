@@ -1,6 +1,7 @@
 import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { NextResponse } from "next/server";
 import { runSeed } from "../../../../scripts/seed";
+import type { D1Database } from "@cloudflare/workers-types";
 
 /**
  * データベースにシードデータを投入する管理用APIエンドポイント
@@ -34,7 +35,7 @@ export async function POST() {
 		}
 
 		// シードデータを投入
-		await runSeed({ DB: env.DB });
+		await runSeed(env.DB);
 
 		return NextResponse.json(
 			{ message: "シードデータの投入が完了しました。" },

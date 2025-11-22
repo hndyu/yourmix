@@ -1,5 +1,5 @@
-import { ingredientGroups, ingredients } from "@/schema";
-import type * as schema from "@/schema";
+import { ingredientGroups, ingredients } from "@/app/db/schema";
+import type * as schema from "@/app/db/schema";
 import { eq } from "drizzle-orm";
 import type { DrizzleD1Database } from "drizzle-orm/d1";
 

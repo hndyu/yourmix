@@ -1,9 +1,8 @@
 import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { and, eq, inArray } from "drizzle-orm";
-import { drizzle } from "drizzle-orm/d1";
 import { NextResponse } from "next/server";
-import type { Env } from "../../../cloudflare-env";
-import * as schema from "../../../schema";
+import * as schema from "../../db/schema";
+import { createDb } from "../../db/db";
 
 /**
  * カクテル一覧を取得するAPIエンドポイント
@@ -29,7 +28,7 @@ export async function GET(request: Request) {
 				{ status: 500 },
 			);
 		}
-		const db = drizzle(env.DB, { schema });
+		const db = createDb(env.DB);
 
 		// DrizzleのRelational Queriesを使用してデータを取得
 		const allCocktails = await db.query.cocktails.findMany({
@@ -42,10 +41,7 @@ export async function GET(request: Request) {
 									.from(schema.cocktailIngredients)
 									.where(
 										and(
-											eq(
-												schema.cocktailIngredients.cocktailId,
-												cocktails.id,
-											),
+											eq(schema.cocktailIngredients.cocktailId, cocktails.id),
 											inArray(
 												schema.cocktailIngredients.ingredientId,
 												selectedIngredientIds,
@@ -87,7 +83,10 @@ export async function GET(request: Request) {
 			instructions: cocktail.instructions.map((inst) => inst.text),
 		}));
 
-		return NextResponse.json({ cocktails: formattedCocktails }, { status: 200 });
+		return NextResponse.json(
+			{ cocktails: formattedCocktails },
+			{ status: 200 },
+		);
 	} catch (error) {
 		console.error("Error fetching cocktails:", error);
 		return NextResponse.json(
