@@ -7,17 +7,65 @@ import IngredientSelector from "../ingredient-selector";
 
 // モックデータ
 const mockCategories: Category[] = [
-	{ id: 1, name: "スピリッツ", sortOrder: 1, description: "蒸留酒", icon: null },
-	{ id: 2, name: "リキュール", sortOrder: 2, description: "混成酒", icon: null },
+	{
+		id: 1,
+		name: "スピリッツ",
+		sortOrder: 1,
+		description: "蒸留酒",
+		icon: null,
+	},
+	{
+		id: 2,
+		name: "リキュール",
+		sortOrder: 2,
+		description: "混成酒",
+		icon: null,
+	},
 ];
 
 const mockIngredients: Ingredient[] = [
-	{ id: 1, name: "ジン", category: "スピリッツ", categoryName: "スピリッツ", sortOrder: 1 },
-	{ id: 2, name: "ウォッカ", category: "スピリッツ", categoryName: "スピリッツ", sortOrder: 2 },
-	{ id: 3, name: "カシスリキュール", category: "リキュール", categoryName: "リキュール", sortOrder: 3 },
-	{ id: 4, name: "ピーチリキュール", category: "リキュール", categoryName: "リキュール", sortOrder: 4 },
-	{ id: 5, name: "オレンジジュース", category: "その他", categoryName: "その他", sortOrder: 5 },
-	{ id: 6, name: "トニックウォーター", category: "その他", categoryName: "その他", sortOrder: 6 },
+	{
+		id: 1,
+		name: "ジン",
+		category: "スピリッツ",
+		categoryName: "スピリッツ",
+		sortOrder: 1,
+	},
+	{
+		id: 2,
+		name: "ウォッカ",
+		category: "スピリッツ",
+		categoryName: "スピリッツ",
+		sortOrder: 2,
+	},
+	{
+		id: 3,
+		name: "カシスリキュール",
+		category: "リキュール",
+		categoryName: "リキュール",
+		sortOrder: 3,
+	},
+	{
+		id: 4,
+		name: "ピーチリキュール",
+		category: "リキュール",
+		categoryName: "リキュール",
+		sortOrder: 4,
+	},
+	{
+		id: 5,
+		name: "オレンジジュース",
+		category: "その他",
+		categoryName: "その他",
+		sortOrder: 5,
+	},
+	{
+		id: 6,
+		name: "トニックウォーター",
+		category: "その他",
+		categoryName: "その他",
+		sortOrder: 6,
+	},
 ];
 
 const defaultProps = {
@@ -32,13 +80,13 @@ const defaultProps = {
 describe("IngredientSelector", () => {
 	test("isInitialLoadingがtrueの場合、スケルトンコンポーネントが表示される", () => {
 		render(<IngredientSelector {...defaultProps} isInitialLoading={true} />);
-		expect(
-			screen.getByText("材料を選択してください"),
-		).toBeInTheDocument();
+		expect(screen.getByText("材料を選択してください")).toBeInTheDocument();
 		// スケルトンコンポーネント内の要素をチェック
 		const skeletonButtons = screen.getAllByRole("button");
 		expect(skeletonButtons.length).toBeGreaterThan(0);
-		skeletonButtons.forEach((button) => expect(button).toBeDisabled());
+		for (const button of skeletonButtons) {
+			expect(button).toBeDisabled();
+		}
 	});
 
 	test("カテゴリと材料が正しく表示される", () => {
@@ -53,7 +101,10 @@ describe("IngredientSelector", () => {
 		const user = userEvent.setup();
 		const onIngredientsChange = vi.fn();
 		render(
-			<IngredientSelector {...defaultProps} onIngredientsChange={onIngredientsChange} />,
+			<IngredientSelector
+				{...defaultProps}
+				onIngredientsChange={onIngredientsChange}
+			/>,
 		);
 
 		const ginCheckbox = screen.getByLabelText("ジン");
@@ -93,7 +144,7 @@ describe("IngredientSelector", () => {
 		);
 
 		expect(screen.getByText("選択された材料 (2個):")).toBeInTheDocument();
-		const chip = screen.getByRole('button', { name: /ジン/i });
+		const chip = screen.getByRole("button", { name: /ジン/i });
 		expect(chip).toBeInTheDocument();
 
 		// チップの削除アイコンをクリック
@@ -126,7 +177,10 @@ describe("IngredientSelector", () => {
 		const user = userEvent.setup();
 		const selectedIds = [1, 2, 3, 4, 5];
 		render(
-			<IngredientSelector {...defaultProps} selectedIngredientIds={selectedIds} />,
+			<IngredientSelector
+				{...defaultProps}
+				selectedIngredientIds={selectedIds}
+			/>,
 		);
 
 		expect(screen.getByText("材料は5つまで選択できます。")).toBeInTheDocument();
@@ -157,7 +211,7 @@ describe("IngredientSelector", () => {
 		expect(ginCheckbox).toBeDisabled();
 
 		// チップの削除ボタンが無効（クリックイベントが発火しない）
-		const chip = screen.getByRole('button', { name: /ジン/i });
+		const chip = screen.getByRole("button", { name: /ジン/i });
 		const deleteIcon = chip.querySelector(".MuiChip-deleteIcon");
 		// disabled={true} の場合、Chipコンポーネント自体にpointer-events: noneが適用されるため、
 		// ユーザーは削除アイコンをクリックできません。このテストはクリックできないことを前提としています。
@@ -168,7 +222,9 @@ describe("IngredientSelector", () => {
 		expect(clearAllButton).toHaveClass("Mui-disabled");
 
 		// アコーディオンが無効
-		const accordionSummary = screen.getByRole("button", { name: /スピリッツ/i });
+		const accordionSummary = screen.getByRole("button", {
+			name: /スピリッツ/i,
+		});
 		expect(accordionSummary).toHaveClass("Mui-disabled");
 	});
 });

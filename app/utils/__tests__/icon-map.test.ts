@@ -1,13 +1,11 @@
 import { describe, it, expect } from "vitest";
 import { iconMap, DefaultIcon } from "../icon-map";
-import {
-	HelpOutline,
-	Liquor,
-	LocalBar,
-	LocalDrink,
-	Restaurant,
-	WineBar,
-} from "@mui/icons-material";
+import HelpOutline from "@mui/icons-material/HelpOutline";
+import Liquor from "@mui/icons-material/Liquor";
+import LocalBar from "@mui/icons-material/LocalBar";
+import LocalDrink from "@mui/icons-material/LocalDrink";
+import Restaurant from "@mui/icons-material/Restaurant";
+import WineBar from "@mui/icons-material/WineBar";
 
 describe("icon-map", () => {
 	describe("iconMap", () => {

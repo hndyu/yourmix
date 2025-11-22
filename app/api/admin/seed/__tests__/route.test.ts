@@ -46,7 +46,7 @@ describe("POST /api/admin/seed", () => {
 		// Assertions
 		expect(getCloudflareContext).toHaveBeenCalledTimes(1);
 		expect(runSeed).toHaveBeenCalledTimes(1);
-		expect(runSeed).toHaveBeenCalledWith({ DB: mockD1Database });
+		expect(runSeed).toHaveBeenCalledWith(mockD1Database);
 		expect(NextResponse.json).toHaveBeenCalledTimes(1);
 		expect(NextResponse.json).toHaveBeenCalledWith(
 			{ message: "シードデータの投入が完了しました。" },
@@ -96,7 +96,7 @@ describe("POST /api/admin/seed", () => {
 
 		expect(getCloudflareContext).toHaveBeenCalledTimes(1);
 		expect(runSeed).toHaveBeenCalledTimes(1);
-		expect(runSeed).toHaveBeenCalledWith({ DB: mockD1Database });
+		expect(runSeed).toHaveBeenCalledWith(mockD1Database);
 		expect(NextResponse.json).toHaveBeenCalledTimes(1);
 		expect(NextResponse.json).toHaveBeenCalledWith(
 			{

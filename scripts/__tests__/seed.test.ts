@@ -1,7 +1,5 @@
 import { vi, describe, it, expect, beforeEach } from "vitest";
-import type { Env } from "../../cloudflare-env";
-import type * as SeedModule from "../../scripts/seed";
-import * as schema from "../../schema";
+import * as schema from "../../app/db/schema";
 
 // Drizzle ORMとUUIDをモック化
 const mockDbClient = {
@@ -26,6 +24,8 @@ describe("scripts/seed.ts", () => {
 		// モックのEnvオブジェクトを作成
 		mockEnv = {
 			DB: {} as D1Database, // D1Database自体はモック不要
+			NEXTJS_ENV: "test",
+			ASSETS: { fetch: vi.fn(), connect: vi.fn() } as unknown as Fetcher,
 		};
 
 		// 各テストの前にモックの呼び出し履歴をリセット
@@ -43,7 +43,7 @@ describe("scripts/seed.ts", () => {
 	describe("seed()", () => {
 		it("正常にシード処理が実行され、各テーブルのデータが作成されること", async () => {
 			const { seed } = await import("../../scripts/seed");
-			await seed(mockEnv);
+			await seed(mockEnv.DB);
 
 			// 1. 既存データの削除が呼ばれるか
 			expect(mockDbClient.delete).toHaveBeenCalledWith(schema.cocktailTags);
@@ -81,7 +81,7 @@ describe("scripts/seed.ts", () => {
 		it("材料に紐づく材料グループが存在しない場合にエラーをスローすること", async () => {
 			const { seed } = await import("../../scripts/seed");
 			await expect(
-				seed(mockEnv, {
+				seed(mockEnv.DB, {
 					unforgettables: [],
 					newEra: [],
 					contemporaryClassics: [
@@ -110,7 +110,7 @@ describe("scripts/seed.ts", () => {
 				.spyOn(console, "log")
 				.mockImplementation(() => {});
 			const { runSeed } = await import("../../scripts/seed");
-			const result = await runSeed(mockEnv);
+			const result = await runSeed(mockEnv.DB);
 
 			expect(result).toBe(true);
 			expect(consoleLogSpy).toHaveBeenCalledWith(
@@ -132,7 +132,7 @@ describe("scripts/seed.ts", () => {
 			});
 
 			const { runSeed } = await import("../../scripts/seed");
-			await expect(runSeed(mockEnv)).rejects.toThrow(errorMessage);
+			await expect(runSeed(mockEnv.DB)).rejects.toThrow(errorMessage);
 
 			expect(consoleErrorSpy).toHaveBeenCalledWith(
 				"❌ Seed script failed:",

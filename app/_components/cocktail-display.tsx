@@ -1,12 +1,10 @@
 "use client";
 
-import {
-	HelpOutline as HelpOutlineIcon,
-	ContentCopy as CopyIcon,
-	LocalOffer as LocalOfferIcon,
-	Share as ShareIcon,
-	ShoppingCart as ShoppingCartIcon,
-} from "@mui/icons-material";
+import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
+import CopyIcon from "@mui/icons-material/ContentCopy";
+import LocalOfferIcon from "@mui/icons-material/LocalOffer";
+import ShareIcon from "@mui/icons-material/Share";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import {
 	Alert,
 	Box,

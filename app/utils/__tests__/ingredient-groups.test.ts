@@ -4,7 +4,7 @@ import {
 	getIngredientNamesByGroup,
 } from "../ingredient-groups";
 import type { DrizzleD1Database } from "drizzle-orm/d1";
-import type * as schema from "@/schema";
+import type * as schema from "@/app/db/schema";
 
 // DrizzleD1Database<typeof schema> の型をモックします。
 // 関数の型シグネチャに合わせるため as unknown as を使用しています。
