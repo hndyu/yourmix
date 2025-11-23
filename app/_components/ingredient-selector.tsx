@@ -82,17 +82,15 @@ export default function IngredientSelector({
 		if (disabled) return;
 
 		const isCurrentlySelected = selectedIngredientIds.includes(ingredientId);
-		let newSelectedIds: number[];
 
-		if (isCurrentlySelected) {
-			newSelectedIds = selectedIngredientIds.filter((id) => id !== ingredientId);
-		} else {
-			if (selectedCount < 5) {
-				newSelectedIds = [...selectedIngredientIds, ingredientId];
-			} else {
-				return;
-			}
+		// Prevent adding more ingredients if the limit is reached
+		if (!isCurrentlySelected && selectedIngredientIds.length >= 5) {
+			return;
 		}
+
+		const newSelectedIds = isCurrentlySelected
+			? selectedIngredientIds.filter((id) => id !== ingredientId)
+			: [...selectedIngredientIds, ingredientId];
 
 		const newSelectedNames = newSelectedIds
 			.map((id) => ingredientsById.get(id)?.name)
