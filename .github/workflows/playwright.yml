@@ -16,7 +16,7 @@ jobs:
     - name: Install dependencies
       run: npm ci
     - name: Apply D1 migrations
-      if: ${{ secrets.CF_API_TOKEN && secrets.CF_ACCOUNT_ID }}
+      if: ${{ env.CF_API_TOKEN && env.CF_ACCOUNT_ID }}
       env:
         CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
         CF_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
