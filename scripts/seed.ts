@@ -37,7 +37,7 @@ const contemporaryClassics: CocktailData[] = [
 		],
 		garnish: "",
 		tags: ["国際バーテンダー協会公認カクテル - 現代のクラシック"],
-		imageUrl: "bellini.jpg",
+		imageUrl: "bellini.avif",
 	},
 	{
 		name: "ブラック・ルシアン",
@@ -50,7 +50,7 @@ const contemporaryClassics: CocktailData[] = [
 		instructions: ["氷を入れたグラスに材料を注ぎます。", "軽くかき混ぜます。"],
 		garnish: "",
 		tags: ["国際バーテンダー協会公認カクテル - 現代のクラシック"],
-		imageUrl: "black-russian.jpg",
+		imageUrl: "black-russian.avif",
 	},
 	{
 		name: "ブラッディ・マリー",
@@ -70,7 +70,7 @@ const contemporaryClassics: CocktailData[] = [
 		],
 		garnish: "お好みでセロリ、レモンのくし切りを添えます。",
 		tags: ["国際バーテンダー協会公認カクテル - 現代のクラシック"],
-		imageUrl: "bloody-mary.jpg",
+		imageUrl: "bloody-mary.avif",
 	},
 	{
 		name: "カイピリーニャ",
@@ -87,7 +87,7 @@ const contemporaryClassics: CocktailData[] = [
 		],
 		garnish: "",
 		tags: ["国際バーテンダー協会公認カクテル - 現代のクラシック"],
-		imageUrl: "caipirinha.jpg",
+		imageUrl: "caipirinha.avif",
 	},
 	{
 		name: "カーディナル",
@@ -104,7 +104,7 @@ const contemporaryClassics: CocktailData[] = [
 		],
 		garnish: "レモンの皮を添えます。",
 		tags: ["国際バーテンダー協会公認カクテル - 現代のクラシック"],
-		imageUrl: "cardinal.jpg",
+		imageUrl: "cardinal.avif",
 	},
 	{
 		name: "シャンパン・カクテル",
@@ -127,7 +127,7 @@ const contemporaryClassics: CocktailData[] = [
 		],
 		garnish: "オレンジの皮とマラスキーノチェリーを添えます。",
 		tags: ["国際バーテンダー協会公認カクテル - 現代のクラシック"],
-		imageUrl: "champagne-cocktail.jpg",
+		imageUrl: "champagne-cocktail.avif",
 	},
 	{
 		name: "コープス・リバイバー #2",
@@ -146,7 +146,7 @@ const contemporaryClassics: CocktailData[] = [
 		],
 		garnish: "オレンジの皮を添えます。",
 		tags: ["国際バーテンダー協会公認カクテル - 現代のクラシック"],
-		imageUrl: "corpse-reviver-2.jpg",
+		imageUrl: "corpse-reviver-2.avif",
 	},
 	{
 		name: "コスモポリタン",
@@ -168,7 +168,7 @@ const contemporaryClassics: CocktailData[] = [
 		],
 		garnish: "レモンツイストを添えます。",
 		tags: ["国際バーテンダー協会公認カクテル - 現代のクラシック"],
-		imageUrl: "cosmopolitan.jpg",
+		imageUrl: "cosmopolitan.avif",
 	},
 	{
 		name: "キューバ・リブレ",
@@ -182,7 +182,7 @@ const contemporaryClassics: CocktailData[] = [
 		instructions: ["氷を入れたグラスにすべての材料を入れます。"],
 		garnish: "ライムのくし切りを添えます。",
 		tags: ["国際バーテンダー協会公認カクテル - 現代のクラシック"],
-		imageUrl: "cuba-libre.jpg",
+		imageUrl: "cuba-libre.avif",
 	},
 	{
 		name: "フレンチ75",
@@ -202,7 +202,7 @@ const contemporaryClassics: CocktailData[] = [
 		],
 		garnish: "",
 		tags: ["国際バーテンダー協会公認カクテル - 現代のクラシック"],
-		imageUrl: "french-75.jpg",
+		imageUrl: "french-75.avif",
 	},
 	{
 		name: "フレンチ・コネクション",
@@ -218,7 +218,7 @@ const contemporaryClassics: CocktailData[] = [
 		],
 		garnish: "",
 		tags: ["国際バーテンダー協会公認カクテル - 現代のクラシック"],
-		imageUrl: "french-connection.jpg",
+		imageUrl: "french-connection.avif",
 	},
 	{
 		name: "ガリバルディ",
@@ -235,7 +235,7 @@ const contemporaryClassics: CocktailData[] = [
 		instructions: ["氷を入れたグラスにすべての材料を入れます。"],
 		garnish: "オレンジのくし切りを添えます。",
 		tags: ["国際バーテンダー協会公認カクテル - 現代のクラシック"],
-		imageUrl: "garibaldi.jpg",
+		imageUrl: "garibaldi.avif",
 	},
 	{
 		name: "グラスホッパー",
@@ -252,7 +252,7 @@ const contemporaryClassics: CocktailData[] = [
 		],
 		garnish: "お好みでミントの葉を添えます。",
 		tags: ["国際バーテンダー協会公認カクテル - 現代のクラシック"],
-		imageUrl: "grasshopper.jpg",
+		imageUrl: "grasshopper.avif",
 	},
 	{
 		name: "ヘミングウェイ・スペシャル",
@@ -278,7 +278,7 @@ const contemporaryClassics: CocktailData[] = [
 		],
 		garnish: "",
 		tags: ["国際バーテンダー協会公認カクテル - 現代のクラシック"],
-		imageUrl: "hemingway-special.jpg",
+		imageUrl: "hemingway-special.avif",
 	},
 	{
 		name: "ホーセズ・ネック",
@@ -300,7 +300,7 @@ const contemporaryClassics: CocktailData[] = [
 		],
 		garnish: "レモン1個分の皮をスパイラル状にして添えます。",
 		tags: ["国際バーテンダー協会公認カクテル - 現代のクラシック"],
-		imageUrl: "horses-neck.jpg",
+		imageUrl: "horses-neck.avif",
 	},
 	{
 		name: "アイリッシュ・コーヒー",
@@ -325,7 +325,7 @@ const contemporaryClassics: CocktailData[] = [
 		],
 		garnish: "",
 		tags: ["国際バーテンダー協会公認カクテル - 現代のクラシック"],
-		imageUrl: "irish-coffee.jpg",
+		imageUrl: "irish-coffee.avif",
 	},
 	{
 		name: "キール",
@@ -340,7 +340,7 @@ const contemporaryClassics: CocktailData[] = [
 		],
 		garnish: "",
 		tags: ["国際バーテンダー協会公認カクテル - 現代のクラシック"],
-		imageUrl: "kir.jpg",
+		imageUrl: "kir.avif",
 	},
 	{
 		name: "レモン・ドロップ・マティーニ",
@@ -357,7 +357,7 @@ const contemporaryClassics: CocktailData[] = [
 		],
 		garnish: "",
 		tags: ["国際バーテンダー協会公認カクテル - 現代のクラシック"],
-		imageUrl: "lemon-drop-martini.jpg",
+		imageUrl: "lemon-drop-martini.avif",
 	},
 	{
 		name: "ロングアイランド・アイスティー",
@@ -379,7 +379,7 @@ const contemporaryClassics: CocktailData[] = [
 		],
 		garnish: "お好みでレモンスライスを添えます。",
 		tags: ["国際バーテンダー協会公認カクテル - 現代のクラシック"],
-		imageUrl: "long-island-iced-tea.jpg",
+		imageUrl: "long-island-iced-tea.avif",
 	},
 	{
 		name: "マイタイ",
@@ -399,7 +399,7 @@ const contemporaryClassics: CocktailData[] = [
 		],
 		garnish: "パイナップルの茎、ミントの葉、ライムの皮を添えます。",
 		tags: ["国際バーテンダー協会公認カクテル - 現代のクラシック"],
-		imageUrl: "mai-tai.jpg",
+		imageUrl: "mai-tai.avif",
 	},
 	{
 		name: "マルガリータ",
@@ -416,7 +416,7 @@ const contemporaryClassics: CocktailData[] = [
 		],
 		garnish: "お好みで、グラスの縁の半分に塩をつけます。",
 		tags: ["国際バーテンダー協会公認カクテル - 現代のクラシック"],
-		imageUrl: "margarita.jpg",
+		imageUrl: "margarita.avif",
 	},
 	{
 		name: "ミモザ",
@@ -436,7 +436,7 @@ const contemporaryClassics: CocktailData[] = [
 		],
 		garnish: "お好みでオレンジの皮をねじったものを添えます。",
 		tags: ["国際バーテンダー協会公認カクテル - 現代のクラシック"],
-		imageUrl: "mimosa.jpg",
+		imageUrl: "mimosa.avif",
 	},
 	{
 		name: "ミント・ジュレップ",
@@ -454,7 +454,7 @@ const contemporaryClassics: CocktailData[] = [
 		],
 		garnish: "ミントの小枝を添えます。",
 		tags: ["国際バーテンダー協会公認カクテル - 現代のクラシック"],
-		imageUrl: "mint-julep.jpg",
+		imageUrl: "mint-julep.avif",
 	},
 	{
 		name: "モヒート",
@@ -474,7 +474,7 @@ const contemporaryClassics: CocktailData[] = [
 		],
 		garnish: "ミントの小枝とライムのスライスを添えます。",
 		tags: ["国際バーテンダー協会公認カクテル - 現代のクラシック"],
-		imageUrl: "mojito.jpg",
+		imageUrl: "mojito.avif",
 	},
 	{
 		name: "モスコミュール",
@@ -491,7 +491,7 @@ const contemporaryClassics: CocktailData[] = [
 		],
 		garnish: "ライムのスライスを添えます。",
 		tags: ["国際バーテンダー協会公認カクテル - 現代のクラシック"],
-		imageUrl: "moscow-mule.jpg",
+		imageUrl: "moscow-mule.avif",
 	},
 	{
 		name: "ピニャ・コラーダ",
@@ -512,7 +512,7 @@ const contemporaryClassics: CocktailData[] = [
 		],
 		garnish: "パイナップルのスライスとカクテルチェリーを添えます。",
 		tags: ["国際バーテンダー協会公認カクテル - 現代のクラシック"],
-		imageUrl: "pina-colada.jpg",
+		imageUrl: "pina-colada.avif",
 	},
 	{
 		name: "ピスコ・サワー",
@@ -530,7 +530,7 @@ const contemporaryClassics: CocktailData[] = [
 		],
 		garnish: "香り豊かな飾りとして、ビターズを数滴上に振りかけます。",
 		tags: ["国際バーテンダー協会公認カクテル - 現代のクラシック"],
-		imageUrl: "pisco-sour.jpg",
+		imageUrl: "pisco-sour.avif",
 	},
 	{
 		name: "ラボ・デ・ガロ",
@@ -549,7 +549,7 @@ const contemporaryClassics: CocktailData[] = [
 		instructions: ["グラスにすべての材料を入れ、氷を加えて軽くかき混ぜます。"],
 		garnish: "オレンジの皮をねじったものを添えます。",
 		tags: ["国際バーテンダー協会公認カクテル - 現代のクラシック"],
-		imageUrl: "rabo-de-galo.jpg",
+		imageUrl: "rabo-de-galo.avif",
 	},
 	{
 		name: "シー・ブリーズ",
@@ -571,7 +571,7 @@ const contemporaryClassics: CocktailData[] = [
 		instructions: ["氷を入れたグラスにすべての材料を入れます。"],
 		garnish: "オレンジの皮とチェリーを添えます。",
 		tags: ["国際バーテンダー協会公認カクテル - 現代のクラシック"],
-		imageUrl: "sea-breeze.jpg",
+		imageUrl: "sea-breeze.avif",
 	},
 	{
 		name: "セックス・オン・ザ・ビーチ",
@@ -594,7 +594,7 @@ const contemporaryClassics: CocktailData[] = [
 		instructions: ["氷を入れたグラスにすべての材料を入れます。"],
 		garnish: "オレンジの半分のスライスを添えます。",
 		tags: ["国際バーテンダー協会公認カクテル - 現代のクラシック"],
-		imageUrl: "sex-on-the-beach.jpg",
+		imageUrl: "sex-on-the-beach.avif",
 	},
 	{
 		name: "シンガポール・スリング",
@@ -621,7 +621,7 @@ const contemporaryClassics: CocktailData[] = [
 		],
 		garnish: "パイナップルとマラスキーノチェリーを添えます。",
 		tags: ["国際バーテンダー協会公認カクテル - 現代のクラシック"],
-		imageUrl: "singapore-sling.jpg",
+		imageUrl: "singapore-sling.avif",
 	},
 	{
 		name: "テキーラ・サンライズ",
@@ -642,7 +642,7 @@ const contemporaryClassics: CocktailData[] = [
 		],
 		garnish: "オレンジの半分のスライスまたはオレンジの皮を添えます。",
 		tags: ["国際バーテンダー協会公認カクテル - 現代のクラシック"],
-		imageUrl: "tequila-sunrise.jpg",
+		imageUrl: "tequila-sunrise.avif",
 	},
 	{
 		name: "ヴェスパー",
@@ -659,7 +659,7 @@ const contemporaryClassics: CocktailData[] = [
 		],
 		garnish: "レモンの皮を添えます。",
 		tags: ["国際バーテンダー協会公認カクテル - 現代のクラシック"],
-		imageUrl: "vesper.jpg",
+		imageUrl: "vesper.avif",
 	},
 	{
 		name: "ゾンビ",
@@ -682,7 +682,7 @@ const contemporaryClassics: CocktailData[] = [
 		],
 		garnish: "ミントの葉を添えます。",
 		tags: ["国際バーテンダー協会公認カクテル - 現代のクラシック"],
-		imageUrl: "zombie.jpg",
+		imageUrl: "zombie.avif",
 	},
 ];
 
@@ -710,7 +710,7 @@ const newEra: CocktailData[] = [
 		],
 		garnish: "お好みでレモンまたはオレンジの皮を添えます。",
 		tags: ["国際バーテンダー協会公認カクテル - 新時代の一杯"],
-		imageUrl: "bees-knees.jpg",
+		imageUrl: "bees-knees.avif",
 	},
 	{
 		name: "ブランブル",
@@ -731,7 +731,7 @@ const newEra: CocktailData[] = [
 		],
 		garnish: "お好みでレモンスライスとブラックベリーを添えます。",
 		tags: ["国際バーテンダー協会公認カクテル - 新時代の一杯"],
-		imageUrl: "bramble.jpg",
+		imageUrl: "bramble.avif",
 	},
 	{
 		name: "カンチャンチャラ",
@@ -750,7 +750,7 @@ const newEra: CocktailData[] = [
 		],
 		garnish: "ライムのくし切りを添えます。",
 		tags: ["国際バーテンダー協会公認カクテル - 新時代の一杯"],
-		imageUrl: "canchanchara.jpg",
+		imageUrl: "canchanchara.avif",
 	},
 	{
 		name: "シャルトリューズ・スウィズル",
@@ -776,7 +776,7 @@ const newEra: CocktailData[] = [
 		],
 		garnish: "ミントの葉とすりおろしたナツメグを添えます。",
 		tags: ["国際バーテンダー協会公認カクテル - 新時代の一杯"],
-		imageUrl: "chartreuse-swizzle.jpg",
+		imageUrl: "chartreuse-swizzle.avif",
 	},
 	{
 		name: "ダーク・アンド・ストーミー",
@@ -791,7 +791,7 @@ const newEra: CocktailData[] = [
 		],
 		garnish: "ライムのくし切りまたはスライスを添えます。",
 		tags: ["国際バーテンダー協会公認カクテル - 新時代の一杯"],
-		imageUrl: "dark-n-stormy.jpg",
+		imageUrl: "dark-n-stormy.avif",
 	},
 	{
 		name: "ドンズ・スペシャル・ダイキリ",
@@ -814,7 +814,7 @@ const newEra: CocktailData[] = [
 		],
 		garnish: "パッションフルーツ1/2個を添えます。",
 		tags: ["国際バーテンダー協会公認カクテル - 新時代の一杯"],
-		imageUrl: "dons-special-daiquiri.jpg",
+		imageUrl: "dons-special-daiquiri.avif",
 	},
 	{
 		name: "エスプレッソ・マティーニ",
@@ -831,7 +831,7 @@ const newEra: CocktailData[] = [
 		],
 		garnish: "コーヒー豆3粒。",
 		tags: ["国際バーテンダー協会公認カクテル - 新時代の一杯"],
-		imageUrl: "espresso-martini.jpg",
+		imageUrl: "espresso-martini.avif",
 	},
 	{
 		name: "フェルナンディート",
@@ -850,7 +850,7 @@ const newEra: CocktailData[] = [
 		],
 		garnish: "",
 		tags: ["国際バーテンダー協会公認カクテル - 新時代の一杯"],
-		imageUrl: "fernandito.jpg",
+		imageUrl: "fernandito.avif",
 	},
 	{
 		name: "フレンチ・マティーニ",
@@ -874,7 +874,7 @@ const newEra: CocktailData[] = [
 		],
 		garnish: "レモンの皮からオイルを絞り出し、飲み物に注ぎます。",
 		tags: ["国際バーテンダー協会公認カクテル - 新時代の一杯"],
-		imageUrl: "french-martini.jpg",
+		imageUrl: "french-martini.avif",
 	},
 	{
 		name: "ジン・バジル・スマッシュ",
@@ -896,7 +896,7 @@ const newEra: CocktailData[] = [
 		],
 		garnish: "",
 		tags: ["国際バーテンダー協会公認カクテル - 新時代の一杯"],
-		imageUrl: "gin-basil-smash.jpg",
+		imageUrl: "gin-basil-smash.avif",
 	},
 	{
 		name: "グラン・マルガリータ",
@@ -914,7 +914,7 @@ const newEra: CocktailData[] = [
 		],
 		garnish: "ライムのスライスを添えます。",
 		tags: ["国際バーテンダー協会公認カクテル - 新時代の一杯"],
-		imageUrl: "grand-margarita.jpg",
+		imageUrl: "grand-margarita.avif",
 	},
 	{
 		name: "IBA Tiki",
@@ -962,7 +962,7 @@ const newEra: CocktailData[] = [
 		],
 		garnish: "柑橘類と乾燥パイナップルのスライスを添えます。",
 		tags: ["国際バーテンダー協会公認カクテル - 新時代の一杯"],
-		imageUrl: "iba-tiki.jpg",
+		imageUrl: "iba-tiki.avif",
 	},
 	{
 		name: "イリーガル",
@@ -991,7 +991,7 @@ const newEra: CocktailData[] = [
 		],
 		garnish: "",
 		tags: ["国際バーテンダー協会公認カクテル - 新時代の一杯"],
-		imageUrl: "illegal.jpg",
+		imageUrl: "illegal.avif",
 	},
 	{
 		name: "ジャングル・バード",
@@ -1014,7 +1014,7 @@ const newEra: CocktailData[] = [
 		],
 		garnish: "パイナップルのくし切りを添えます。",
 		tags: ["国際バーテンダー協会公認カクテル - 新時代の一杯"],
-		imageUrl: "jungle-bird.jpg",
+		imageUrl: "jungle-bird.avif",
 	},
 	{
 		name: "ミッショナリー・ダウンフォール",
@@ -1031,7 +1031,7 @@ const newEra: CocktailData[] = [
 		instructions: ["すべての材料を砕いた氷と一緒に混ぜます。"],
 		garnish: "ミントの小枝とパイナップルのスライスを添えます。",
 		tags: ["国際バーテンダー協会公認カクテル - 新時代の一杯"],
-		imageUrl: "missionarys-downfall.jpg",
+		imageUrl: "missionarys-downfall.avif",
 	},
 	{
 		name: "ネイキッド・アンド・フェイマス",
@@ -1052,7 +1052,7 @@ const newEra: CocktailData[] = [
 		],
 		garnish: "",
 		tags: ["国際バーテンダー協会公認カクテル - 新時代の一杯"],
-		imageUrl: "naked-and-famous.jpg",
+		imageUrl: "naked-and-famous.avif",
 	},
 	{
 		name: "ニューヨーク・サワー",
@@ -1082,7 +1082,7 @@ const newEra: CocktailData[] = [
 		],
 		garnish: "レモンまたはオレンジの皮とチェリーを添えます。",
 		tags: ["国際バーテンダー協会公認カクテル - 新時代の一杯"],
-		imageUrl: "new-york-sour.jpg",
+		imageUrl: "new-york-sour.avif",
 	},
 	{
 		name: "オールド・キューバン",
@@ -1117,7 +1117,7 @@ const newEra: CocktailData[] = [
 		],
 		garnish: "ミントの葉を添えます。",
 		tags: ["国際バーテンダー協会公認カクテル - 新時代の一杯"],
-		imageUrl: "old-cuban.jpg",
+		imageUrl: "old-cuban.avif",
 	},
 	{
 		name: "パロマ",
@@ -1140,7 +1140,7 @@ const newEra: CocktailData[] = [
 		],
 		garnish: "ライムのスライスを添えます。",
 		tags: ["国際バーテンダー協会公認カクテル - 新時代の一杯"],
-		imageUrl: "paloma.jpg",
+		imageUrl: "paloma.avif",
 	},
 	{
 		name: "ペーパー・プレーン",
@@ -1157,7 +1157,7 @@ const newEra: CocktailData[] = [
 		],
 		garnish: "",
 		tags: ["国際バーテンダー協会公認カクテル - 新時代の一杯"],
-		imageUrl: "paper-plane.jpg",
+		imageUrl: "paper-plane.avif",
 	},
 	{
 		name: "ペニシリン",
@@ -1186,7 +1186,7 @@ const newEra: CocktailData[] = [
 		],
 		garnish: "砂糖漬けのショウガのスライスを添えます。",
 		tags: ["国際バーテンダー協会公認カクテル - 新時代の一杯"],
-		imageUrl: "penicillin.jpg",
+		imageUrl: "penicillin.avif",
 	},
 	{
 		name: "ピスコパンチ",
@@ -1211,7 +1211,7 @@ const newEra: CocktailData[] = [
 		],
 		garnish: "",
 		tags: ["国際バーテンダー協会公認カクテル - 新時代の一杯"],
-		imageUrl: "pisco-punch.jpg",
+		imageUrl: "pisco-punch.avif",
 	},
 	{
 		name: "ポルノスター・マティーニ",
@@ -1234,7 +1234,7 @@ const newEra: CocktailData[] = [
 		],
 		garnish: "パッションフルーツカップと砂糖を添えます。",
 		tags: ["国際バーテンダー協会公認カクテル - 新時代の一杯"],
-		imageUrl: "porn-star-martini.jpg",
+		imageUrl: "porn-star-martini.avif",
 	},
 	{
 		name: "ロシアン・スプリング・パンチ",
@@ -1253,7 +1253,7 @@ const newEra: CocktailData[] = [
 		],
 		garnish: "ブラックベリーと、お好みでレモンスライスを添えます。",
 		tags: ["国際バーテンダー協会公認カクテル - 新時代の一杯"],
-		imageUrl: "russian-spring-punch.jpg",
+		imageUrl: "russian-spring-punch.avif",
 	},
 	{
 		name: "シェリー・コブラー",
@@ -1271,7 +1271,7 @@ const newEra: CocktailData[] = [
 		],
 		garnish: "新鮮なベリー、オレンジとレモンを飾り、ストローを添えます。",
 		tags: ["国際バーテンダー協会公認カクテル - 新時代の一杯"],
-		imageUrl: "sherry-cobbler.jpg",
+		imageUrl: "sherry-cobbler.avif",
 	},
 	{
 		name: "サウスサイド",
@@ -1290,7 +1290,7 @@ const newEra: CocktailData[] = [
 		],
 		garnish: "ミントの葉を添えます。",
 		tags: ["国際バーテンダー協会公認カクテル - 新時代の一杯"],
-		imageUrl: "south-side.jpg",
+		imageUrl: "south-side.avif",
 	},
 	{
 		name: "スパイシー・フィフティ",
@@ -1312,7 +1312,7 @@ const newEra: CocktailData[] = [
 		],
 		garnish: "赤唐辛子を添えます。",
 		tags: ["国際バーテンダー協会公認カクテル - 新時代の一杯"],
-		imageUrl: "spicy-fifty.jpg",
+		imageUrl: "spicy-fifty.avif",
 	},
 	{
 		name: "スプリッツ",
@@ -1329,7 +1329,7 @@ const newEra: CocktailData[] = [
 		],
 		garnish: "オレンジのスライスを添えます。",
 		tags: ["国際バーテンダー協会公認カクテル - 新時代の一杯"],
-		imageUrl: "spritz.jpg",
+		imageUrl: "spritz.avif",
 	},
 	{
 		name: "サファリング・バスタード",
@@ -1360,7 +1360,7 @@ const newEra: CocktailData[] = [
 		],
 		garnish: "ミントの葉と、お好みでオレンジのスライスを添えます。",
 		tags: ["国際バーテンダー協会公認カクテル - 新時代の一杯"],
-		imageUrl: "suffering-bastard.jpg",
+		imageUrl: "suffering-bastard.avif",
 	},
 	{
 		name: "スリー・ドッツ・アンド・ダッシュ",
@@ -1390,7 +1390,7 @@ const newEra: CocktailData[] = [
 		],
 		garnish: "チェリーとパイナップルを添えます。",
 		tags: ["国際バーテンダー協会公認カクテル - 新時代の一杯"],
-		imageUrl: "three-dots-and-a-dash.jpg",
+		imageUrl: "three-dots-and-a-dash.avif",
 	},
 	{
 		name: "ティペラリー",
@@ -1412,7 +1412,7 @@ const newEra: CocktailData[] = [
 		],
 		garnish: "オレンジのスライスを添えます。",
 		tags: ["国際バーテンダー協会公認カクテル - 新時代の一杯"],
-		imageUrl: "tipperary.jpg",
+		imageUrl: "tipperary.avif",
 	},
 	{
 		name: "トミーズ・マルガリータ",
@@ -1428,7 +1428,7 @@ const newEra: CocktailData[] = [
 		],
 		garnish: "ライムのスライスを添えます。",
 		tags: ["国際バーテンダー協会公認カクテル - 新時代の一杯"],
-		imageUrl: "tommys-margarita.jpg",
+		imageUrl: "tommys-margarita.avif",
 	},
 	{
 		name: "トリニダード・サワー",
@@ -1450,7 +1450,7 @@ const newEra: CocktailData[] = [
 		],
 		garnish: "",
 		tags: ["国際バーテンダー協会公認カクテル - 新時代の一杯"],
-		imageUrl: "trinidad-sour.jpg",
+		imageUrl: "trinidad-sour.avif",
 	},
 	{
 		name: "VE.N.TO",
@@ -1477,7 +1477,7 @@ const newEra: CocktailData[] = [
 		],
 		garnish: "レモンの皮と白ブドウを添えます。",
 		tags: ["国際バーテンダー協会公認カクテル - 新時代の一杯"],
-		imageUrl: "ve-n-to.jpg",
+		imageUrl: "ve-n-to.avif",
 	},
 ];
 
@@ -1497,7 +1497,7 @@ const unforgettables: CocktailData[] = [
 		],
 		garnish: "ナツメグを上に振りかけます。",
 		tags: ["国際バーテンダー協会公認カクテル - 忘れられないカクテル"],
-		imageUrl: "alexander.jpg", // R2にアップロードする画像ファイル名
+		imageUrl: "alexander.avif", // R2にアップロードする画像ファイル名
 	},
 	{
 		name: "アメリカーノ",
@@ -1514,7 +1514,7 @@ const unforgettables: CocktailData[] = [
 		],
 		garnish: "オレンジの半分のスライスとレモンの皮を添えます。",
 		tags: ["国際バーテンダー協会公認カクテル - 忘れられないカクテル"],
-		imageUrl: "americano.jpg",
+		imageUrl: "americano.avif",
 	},
 	{
 		name: "アビエーション",
@@ -1540,7 +1540,7 @@ const unforgettables: CocktailData[] = [
 		],
 		garnish: "お好みでマラスキーノ・チェリーを添えます。",
 		tags: ["国際バーテンダー協会公認カクテル - 忘れられないカクテル"],
-		imageUrl: "aviation.jpg",
+		imageUrl: "aviation.avif",
 	},
 	{
 		name: "エンジェル・フェイス",
@@ -1561,7 +1561,7 @@ const unforgettables: CocktailData[] = [
 		],
 		garnish: "",
 		tags: ["国際バーテンダー協会公認カクテル - 忘れられないカクテル"],
-		imageUrl: "angel-face.jpg",
+		imageUrl: "angel-face.avif",
 	},
 	{
 		name: "ビトウィーン・ザ・シーツ",
@@ -1579,7 +1579,7 @@ const unforgettables: CocktailData[] = [
 		],
 		garnish: "",
 		tags: ["国際バーテンダー協会公認カクテル - 忘れられないカクテル"],
-		imageUrl: "between-the-sheets.jpg",
+		imageUrl: "between-the-sheets.avif",
 	},
 	{
 		name: "ブールヴァルディエ",
@@ -1607,7 +1607,7 @@ const unforgettables: CocktailData[] = [
 		],
 		garnish: "オレンジの皮を添え、お好みでレモンの皮を添えます。",
 		tags: ["国際バーテンダー協会公認カクテル - 忘れられないカクテル"],
-		imageUrl: "boulevardier.jpg",
+		imageUrl: "boulevardier.avif",
 	},
 	{
 		name: "ブランデー・クラスタ",
@@ -1632,7 +1632,7 @@ const unforgettables: CocktailData[] = [
 		garnish:
 			"オレンジ（またはレモン）のスライスをグラスの縁にこすりつけ、砂糖を細かく砕いて、グラスの縁に砂糖がくっつくようにします。オレンジ/レモンの皮をグラスの内側に慎重に丸めて置きます。",
 		tags: ["国際バーテンダー協会公認カクテル - 忘れられないカクテル"],
-		imageUrl: "brandy-crusta.jpg",
+		imageUrl: "brandy-crusta.avif",
 	},
 	{
 		name: "カジノ",
@@ -1654,7 +1654,7 @@ const unforgettables: CocktailData[] = [
 		],
 		garnish: "レモンの皮とマラスキーノ・チェリーを添えます。",
 		tags: ["国際バーテンダー協会公認カクテル - 忘れられないカクテル"],
-		imageUrl: "casino.jpg",
+		imageUrl: "casino.avif",
 	},
 	{
 		name: "クローバー・クラブ",
@@ -1671,7 +1671,7 @@ const unforgettables: CocktailData[] = [
 		],
 		garnish: "新鮮なラズベリー。",
 		tags: ["国際バーテンダー協会公認カクテル - 忘れられないカクテル"],
-		imageUrl: "clover-club.jpg",
+		imageUrl: "clover-club.avif",
 	},
 	{
 		name: "ダイキリ",
@@ -1688,7 +1688,7 @@ const unforgettables: CocktailData[] = [
 		],
 		garnish: "",
 		tags: ["国際バーテンダー協会公認カクテル - 忘れられないカクテル"],
-		imageUrl: "daiquiri.jpg",
+		imageUrl: "daiquiri.avif",
 	},
 	{
 		name: "ドライ・マティーニ",
@@ -1705,7 +1705,7 @@ const unforgettables: CocktailData[] = [
 		garnish:
 			"レモンの皮から搾ったオイルをドリンクにかけたり、お好みでグリーンオリーブを添えます。",
 		tags: ["国際バーテンダー協会公認カクテル - 忘れられないカクテル"],
-		imageUrl: "dry-martini.jpg",
+		imageUrl: "dry-martini.avif",
 	},
 	{
 		name: "ジン・フィズ",
@@ -1724,7 +1724,7 @@ const unforgettables: CocktailData[] = [
 		],
 		garnish: "レモンのスライス、お好みでレモンの皮を添えます。",
 		tags: ["国際バーテンダー協会公認カクテル - 忘れられないカクテル"],
-		imageUrl: "gin-fizz.jpg",
+		imageUrl: "gin-fizz.avif",
 	},
 	{
 		name: "ハンキー・パンキー",
@@ -1741,7 +1741,7 @@ const unforgettables: CocktailData[] = [
 		],
 		garnish: "オレンジの皮を添えます。",
 		tags: ["国際バーテンダー協会公認カクテル - 忘れられないカクテル"],
-		imageUrl: "hanky-panky.jpg",
+		imageUrl: "hanky-panky.avif",
 	},
 	{
 		name: "ジョン・コリンズ",
@@ -1756,7 +1756,7 @@ const unforgettables: CocktailData[] = [
 		instructions: ["氷を入れたグラスに材料をすべて注ぎ、軽く混ぜます。"],
 		garnish: "レモンスライスとマラスキーノ・チェリーを添えます。",
 		tags: ["国際バーテンダー協会公認カクテル - 忘れられないカクテル"],
-		imageUrl: "john-collins.jpg",
+		imageUrl: "john-collins.avif",
 	},
 	{
 		name: "ラスト・ワード",
@@ -1782,7 +1782,7 @@ const unforgettables: CocktailData[] = [
 		],
 		garnish: "",
 		tags: ["国際バーテンダー協会公認カクテル - 忘れられないカクテル"],
-		imageUrl: "last-word.jpg",
+		imageUrl: "last-word.avif",
 	},
 	{
 		name: "マンハッタン",
@@ -1799,7 +1799,7 @@ const unforgettables: CocktailData[] = [
 		],
 		garnish: "カクテルチェリーを添えます。",
 		tags: ["国際バーテンダー協会公認カクテル - 忘れられないカクテル"],
-		imageUrl: "manhattan.jpg",
+		imageUrl: "manhattan.avif",
 	},
 	{
 		name: "マルティネス",
@@ -1821,7 +1821,7 @@ const unforgettables: CocktailData[] = [
 		],
 		garnish: "レモンの皮を添えます。",
 		tags: ["国際バーテンダー協会公認カクテル - 忘れられないカクテル"],
-		imageUrl: "martinez.jpg",
+		imageUrl: "martinez.avif",
 	},
 	{
 		name: "メアリー・ピックフォード",
@@ -1846,7 +1846,7 @@ const unforgettables: CocktailData[] = [
 		],
 		garnish: "",
 		tags: ["国際バーテンダー協会公認カクテル - 忘れられないカクテル"],
-		imageUrl: "mary-pickford.jpg",
+		imageUrl: "mary-pickford.avif",
 	},
 	{
 		name: "モンキー・グランド",
@@ -1867,7 +1867,7 @@ const unforgettables: CocktailData[] = [
 		],
 		garnish: "",
 		tags: ["国際バーテンダー協会公認カクテル - 忘れられないカクテル"],
-		imageUrl: "monkey-gland.jpg",
+		imageUrl: "monkey-gland.avif",
 	},
 	{
 		name: "ネグローニ",
@@ -1884,7 +1884,7 @@ const unforgettables: CocktailData[] = [
 		],
 		garnish: "オレンジの半分のスライスを添えます。",
 		tags: ["国際バーテンダー協会公認カクテル - 忘れられないカクテル"],
-		imageUrl: "negroni.jpg",
+		imageUrl: "negroni.avif",
 	},
 	{
 		name: "オールド・ファッションド",
@@ -1913,7 +1913,7 @@ const unforgettables: CocktailData[] = [
 		],
 		garnish: "オレンジのスライスまたは皮とカクテルチェリーを添えます。",
 		tags: ["国際バーテンダー協会公認カクテル - 忘れられないカクテル"],
-		imageUrl: "old-fashioned.jpg",
+		imageUrl: "old-fashioned.avif",
 	},
 	{
 		name: "パラダイス",
@@ -1937,7 +1937,7 @@ const unforgettables: CocktailData[] = [
 		],
 		garnish: "",
 		tags: ["国際バーテンダー協会公認カクテル - 忘れられないカクテル"],
-		imageUrl: "paradise.jpg",
+		imageUrl: "paradise.avif",
 	},
 	{
 		name: "プランターズ・パンチ",
@@ -1958,7 +1958,7 @@ const unforgettables: CocktailData[] = [
 		],
 		garnish: "オレンジの皮を添えます。",
 		tags: ["国際バーテンダー協会公認カクテル - 忘れられないカクテル"],
-		imageUrl: "planters-punch.jpg",
+		imageUrl: "planters-punch.avif",
 	},
 	{
 		name: "ポート・フリップ",
@@ -1974,7 +1974,7 @@ const unforgettables: CocktailData[] = [
 		],
 		garnish: "ナツメグを振りかける。",
 		tags: ["国際バーテンダー協会公認カクテル - 忘れられないカクテル"],
-		imageUrl: "porto-flip.jpg",
+		imageUrl: "porto-flip.avif",
 	},
 	{
 		name: "ラモス・フィズ",
@@ -1998,7 +1998,7 @@ const unforgettables: CocktailData[] = [
 		],
 		garnish: "",
 		tags: ["国際バーテンダー協会公認カクテル - 忘れられないカクテル"],
-		imageUrl: "ramos-fizz.jpg",
+		imageUrl: "ramos-fizz.avif",
 	},
 	{
 		name: "リメンバー・ザ・メイン",
@@ -2016,7 +2016,7 @@ const unforgettables: CocktailData[] = [
 		],
 		garnish: "レモンの皮を添えます。",
 		tags: ["国際バーテンダー協会公認カクテル - 忘れられないカクテル"],
-		imageUrl: "remember-the-maine.jpg",
+		imageUrl: "remember-the-maine.avif",
 	},
 	{
 		name: "ラスティ・ネイル",
@@ -2032,7 +2032,7 @@ const unforgettables: CocktailData[] = [
 		],
 		garnish: "レモンの皮を添えます。",
 		tags: ["国際バーテンダー協会公認カクテル - 忘れられないカクテル"],
-		imageUrl: "rusty-nail.jpg",
+		imageUrl: "rusty-nail.avif",
 	},
 	{
 		name: "サゼラック",
@@ -2050,7 +2050,7 @@ const unforgettables: CocktailData[] = [
 		],
 		garnish: "レモンの皮を添えます。",
 		tags: ["国際バーテンダー協会公認カクテル - 忘れられないカクテル"],
-		imageUrl: "sazerac.jpg",
+		imageUrl: "sazerac.avif",
 	},
 	{
 		name: "サイドカー",
@@ -2066,7 +2066,7 @@ const unforgettables: CocktailData[] = [
 		],
 		garnish: "",
 		tags: ["国際バーテンダー協会公認カクテル - 忘れられないカクテル"],
-		imageUrl: "sidecar.jpg",
+		imageUrl: "sidecar.avif",
 	},
 	{
 		name: "スティンガー",
@@ -2082,7 +2082,7 @@ const unforgettables: CocktailData[] = [
 		],
 		garnish: "お好みでミントの葉を添えます。",
 		tags: ["国際バーテンダー協会公認カクテル - 忘れられないカクテル"],
-		imageUrl: "stinger.jpg",
+		imageUrl: "stinger.avif",
 	},
 	{
 		name: "タキシード",
@@ -2105,7 +2105,7 @@ const unforgettables: CocktailData[] = [
 		],
 		garnish: "チェリーとレモンの皮を添えます。",
 		tags: ["国際バーテンダー協会公認カクテル - 忘れられないカクテル"],
-		imageUrl: "tuxedo.jpg",
+		imageUrl: "tuxedo.avif",
 	},
 	{
 		name: "ヴュー・カレ",
@@ -2124,7 +2124,7 @@ const unforgettables: CocktailData[] = [
 		],
 		garnish: "オレンジの皮とマラスキーノチェリーを添えます。",
 		tags: ["国際バーテンダー協会公認カクテル - 忘れられないカクテル"],
-		imageUrl: "vieux-carre.jpg",
+		imageUrl: "vieux-carre.avif",
 	},
 	{
 		name: "ウィスキー・サワー",
@@ -2145,7 +2145,7 @@ const unforgettables: CocktailData[] = [
 		garnish:
 			"オレンジのスライス半分とマラスキーノチェリーを飾り、お好みでオレンジの皮を添えます。",
 		tags: ["国際バーテンダー協会公認カクテル - 忘れられないカクテル"],
-		imageUrl: "whiskey-sour.jpg",
+		imageUrl: "whiskey-sour.avif",
 	},
 	{
 		name: "ホワイト・レディ",
@@ -2161,7 +2161,7 @@ const unforgettables: CocktailData[] = [
 		],
 		garnish: "",
 		tags: ["国際バーテンダー協会公認カクテル - 忘れられないカクテル"],
-		imageUrl: "white-lady.jpg",
+		imageUrl: "white-lady.avif",
 	},
 ];
 
