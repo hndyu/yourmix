@@ -1,3 +1,5 @@
+import "dotenv/config"; // .envファイルを読み込むために追加
+
 /**
  * APIエンドポイント経由でシードデータを投入するスクリプト
  *
@@ -26,11 +28,23 @@ export async function runSeed({
 		console.log(`🌍 Environment: ${isLocal ? "Local" : "Remote"}`);
 		console.log("");
 
+		const seedSecret = process.env.SEED_SECRET;
+		if (!seedSecret) {
+			console.error("❌ SEED_SECRET is not defined in your environment.");
+			console.error(
+				"   Please add it to your .env.local file or environment variables.",
+			);
+			if (exitOnFinish) process.exit(1);
+			return 1;
+		}
+
 		// APIエンドポイントを呼び出す
 		const response = await fetch(`${baseUrl}/api/admin/seed`, {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
+				// 認証ヘッダーを追加
+				Authorization: `Bearer ${seedSecret}`,
 			},
 		});
 

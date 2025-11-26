@@ -11,7 +11,7 @@ import type { D1Database } from "@cloudflare/workers-types";
  * 使用方法:
  *   POST /api/admin/seed
  */
-export async function POST() {
+export async function POST(request: Request) {
 	try {
 		// Cloudflare環境からコンテキストを取得
 		const context = getCloudflareContext();
@@ -25,7 +25,7 @@ export async function POST() {
 		}
 
 		// D1データベースに接続
-		const env = context.env as { DB?: D1Database };
+		const env = context.env as { DB?: D1Database; SEED_SECRET?: string };
 		if (!env.DB) {
 			console.error("DB binding is not available");
 			return NextResponse.json(
@@ -33,6 +33,27 @@ export async function POST() {
 				{ status: 500 },
 			);
 		}
+
+		// --- 認証処理の追加 ---
+		const seedSecret = env.SEED_SECRET;
+		if (!seedSecret) {
+			console.error("SEED_SECRET is not configured in environment variables.");
+			return NextResponse.json(
+				{ error: "サーバー設定エラーです。" },
+				{ status: 500 },
+			);
+		}
+
+		const authHeader = request.headers.get("Authorization");
+		const token = authHeader?.split(" ")[1];
+
+		if (token !== seedSecret) {
+			return NextResponse.json(
+				{ error: "認証に失敗しました。" },
+				{ status: 401 },
+			);
+		}
+		// --- 認証処理ここまで ---
 
 		// シードデータを投入
 		await runSeed(env.DB);

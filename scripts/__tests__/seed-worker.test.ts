@@ -21,6 +21,7 @@ describe("scripts/seed-worker.ts", () => {
 		// 各テストの前にモックの状態をリセット
 		vi.resetAllMocks();
 		process.env = { ...originalEnv };
+		process.env.SEED_SECRET = "test-secret"; // デフォルトでシークレットを設定
 	});
 
 	afterEach(() => {
@@ -30,7 +31,7 @@ describe("scripts/seed-worker.ts", () => {
 	});
 
 	const runScript = async () => {
-		const mod = await import("../../scripts/seed-worker");
+		const mod = await import("../seed-worker");
 		const seedMod = mod as unknown as {
 			runSeed?: (opts?: { exitOnFinish?: boolean }) => Promise<number>;
 		};
@@ -42,6 +43,7 @@ describe("scripts/seed-worker.ts", () => {
 
 	it("ローカル環境でシードが成功した場合、成功ログを出力しexit(0)で終了すること", async () => {
 		process.argv = ["node", "seed-worker.ts", "local"];
+		process.env.SEED_SECRET = "test-secret";
 		mockFetch.mockResolvedValue({
 			ok: true,
 			json: async () => ({ message: "Success" }),
@@ -51,7 +53,11 @@ describe("scripts/seed-worker.ts", () => {
 
 		expect(mockFetch).toHaveBeenCalledWith(
 			"http://localhost:3000/api/admin/seed",
-			expect.any(Object),
+			expect.objectContaining({
+				headers: expect.objectContaining({
+					Authorization: "Bearer test-secret",
+				}),
+			}),
 		);
 		expect(consoleLogSpy).toHaveBeenCalledWith("✅", "Success");
 		expect(code).toBe(0);
@@ -60,6 +66,7 @@ describe("scripts/seed-worker.ts", () => {
 	it("リモート環境でシードが成功した場合、成功ログを出力しexit(0)で終了すること", async () => {
 		process.argv = ["node", "seed-worker.ts", "remote"];
 		process.env.NEXT_PUBLIC_APP_URL = "https://example.com";
+		process.env.SEED_SECRET = "test-secret";
 		mockFetch.mockResolvedValue({
 			ok: true,
 			json: async () => ({ message: "Remote Success" }),
@@ -69,7 +76,11 @@ describe("scripts/seed-worker.ts", () => {
 
 		expect(mockFetch).toHaveBeenCalledWith(
 			"https://example.com/api/admin/seed",
-			expect.any(Object),
+			expect.objectContaining({
+				headers: expect.objectContaining({
+					Authorization: "Bearer test-secret",
+				}),
+			}),
 		);
 		expect(consoleLogSpy).toHaveBeenCalledWith("✅", "Remote Success");
 		expect(code).toBe(0);
@@ -77,6 +88,7 @@ describe("scripts/seed-worker.ts", () => {
 
 	it("APIがエラーを返した場合、エラーログを出力しexit(1)で終了すること", async () => {
 		process.argv = ["node", "seed-worker.ts", "local"];
+		process.env.SEED_SECRET = "test-secret";
 		mockFetch.mockResolvedValue({
 			ok: false,
 			json: async () => ({
@@ -97,6 +109,7 @@ describe("scripts/seed-worker.ts", () => {
 
 	it("fetchが例外をスローした場合、エラーログを出力しexit(1)で終了すること", async () => {
 		process.argv = ["node", "seed-worker.ts", "local"];
+		process.env.SEED_SECRET = "test-secret";
 		const error = new Error("Network Error");
 		mockFetch.mockRejectedValue(error);
 
@@ -112,6 +125,7 @@ describe("scripts/seed-worker.ts", () => {
 
 	it("ローカル環境でfetchが失敗した場合、開発サーバー起動のヒントを表示すること", async () => {
 		process.argv = ["node", "seed-worker.ts", "local"];
+		process.env.SEED_SECRET = "test-secret";
 		const error = new Error("ECONNREFUSED");
 		mockFetch.mockRejectedValue(error);
 
@@ -125,6 +139,7 @@ describe("scripts/seed-worker.ts", () => {
 
 	it("リモート環境でfetchが失敗した場合、ヒントを表示しないこと", async () => {
 		process.argv = ["node", "seed-worker.ts", "remote"];
+		process.env.SEED_SECRET = "test-secret";
 		const error = new Error("ECONNREFUSED");
 		mockFetch.mockRejectedValue(error);
 
@@ -133,6 +148,19 @@ describe("scripts/seed-worker.ts", () => {
 		expect(consoleLogSpy).not.toHaveBeenCalledWith(
 			"💡 Make sure the development server is running:",
 		);
+		expect(code).toBe(1);
+	});
+
+	it("SEED_SECRETが設定されていない場合、エラーを出力してexit(1)で終了すること", async () => {
+		process.argv = ["node", "seed-worker.ts", "local"];
+		process.env.SEED_SECRET = undefined; // シークレットを未設定にする
+
+		const code = await runScript();
+
+		expect(consoleErrorSpy).toHaveBeenCalledWith(
+			"❌ SEED_SECRET is not defined in your environment.",
+		);
+		expect(mockFetch).not.toHaveBeenCalled();
 		expect(code).toBe(1);
 	});
 });
