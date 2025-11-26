@@ -13,6 +13,7 @@ import {
 	Typography,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
+import Image from "next/image";
 import Link from "next/link";
 import * as React from "react";
 import type { Category, Cocktail, Ingredient } from "../types/cocktail";
@@ -175,7 +176,24 @@ export default function CocktailSearchResults({
 					{sortedCocktails.map((cocktail) => (
 						<Grid key={cocktail.id} size={{ xs: 12, sm: 6, md: 4 }}>
 							<StyledResultCard>
-								<CardContent sx={{ p: 3 }}>
+								{cocktail.imageUrl && (
+									<Box
+										sx={{
+											position: "relative",
+											width: "100%",
+											height: 140,
+										}}
+									>
+										<Image
+											src={`/cocktails/${cocktail.imageUrl}`}
+											alt={cocktail.name}
+											fill
+											sizes="(max-width: 600px) 100vw, (max-width: 900px) 50vw, 33vw"
+											style={{ objectFit: "contain" }}
+										/>
+									</Box>
+								)}
+								<CardContent sx={{ p: 3, pt: cocktail.imageUrl ? 2 : 3 }}>
 									<Typography
 										variant="h6"
 										component="h3"

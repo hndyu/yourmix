@@ -17,6 +17,7 @@ const StyledCocktailCard = styled(Card)(({ theme }) => ({
 export default function CocktailDisplaySkeleton() {
 	return (
 		<StyledCocktailCard>
+			<Skeleton variant="rectangular" width="100%" height={250} />
 			<CardContent sx={{ p: 4 }}>
 				{/* ヘッダー部分のスケルトン */}
 				<Box sx={{ mb: 3 }}>

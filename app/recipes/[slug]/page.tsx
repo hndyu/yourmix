@@ -40,7 +40,8 @@ async function getCocktail(slug: string): Promise<Cocktail> {
 
 export async function generateMetadata({
 	params,
-}: { // paramsがPromiseの可能性があるため、型を調整
+}: {
+	// paramsがPromiseの可能性があるため、型を調整
 	params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
 	const { slug } = await params; // paramsをawaitしてslugを取り出す
@@ -54,7 +55,8 @@ export async function generateMetadata({
 
 export default async function RecipeDetailPage({
 	params,
-}: { // paramsがPromiseの可能性があるため、型を調整
+}: {
+	// paramsがPromiseの可能性があるため、型を調整
 	params: Promise<{ slug: string }>;
 }) {
 	const { slug } = await params; // paramsをawaitしてslugを取り出す
@@ -72,6 +74,9 @@ export default async function RecipeDetailPage({
 			text: step,
 			position: index + 1,
 		})),
+		image: cocktail.imageUrl
+			? `${API_BASE_URL}/cocktails/${cocktail.imageUrl}`
+			: undefined,
 	};
 
 	// BreadcrumbListスキーマ

@@ -23,6 +23,7 @@ import {
 	Typography,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
+import Image from "next/image";
 import * as React from "react";
 import type { Cocktail } from "../types/cocktail";
 import {
@@ -85,6 +86,23 @@ export default function CocktailDisplay({
 						transition: "all 0.8s cubic-bezier(0.4, 0, 0.2, 1)",
 					}}
 				>
+					{cocktail.imageUrl && (
+						<Box
+							sx={{
+								position: "relative",
+								width: "100%",
+								height: { xs: 200, sm: 250 },
+							}}
+						>
+							<Image
+								src={`/cocktails/${cocktail.imageUrl}`}
+								alt={cocktail.name}
+								fill
+								sizes="(max-width: 600px) 100vw, (max-width: 1200px) 50vw, 33vw"
+								style={{ objectFit: "contain" }}
+							/>
+						</Box>
+					)}
 					<CardContent sx={{ p: 4 }}>
 						{/* ヘッダー部分 */}
 						<Box sx={{ mb: 3 }}>

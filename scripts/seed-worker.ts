@@ -1,4 +1,5 @@
-import "dotenv/config"; // .envファイルを読み込むために追加
+import dotenv from "dotenv";
+dotenv.config({ path: ".env.local" }); // .env.localファイルを読み込むように修正
 
 /**
  * APIエンドポイント経由でシードデータを投入するスクリプト
@@ -90,3 +91,12 @@ export async function runSeed({
 // Note: do not auto-run here so tests can import and call `runSeed()` safely.
 // To run from CLI, call `node ./scripts/seed-worker.ts` with a runner that
 // invokes the exported `runSeed()` function, or add a small wrapper script.
+
+// このファイルが直接実行された場合のみrunSeedを実行する
+if (
+	typeof require !== "undefined" &&
+	require.main === module &&
+	typeof process !== "undefined"
+) {
+	runSeed();
+}
