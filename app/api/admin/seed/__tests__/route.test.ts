@@ -25,6 +25,7 @@ vi.mock("next/server", () => ({
 
 describe("POST /api/admin/seed", () => {
 	const mockD1Database = {}; // A simple mock for D1Database
+	const mockSecret = "test-seed-secret";
 
 	beforeEach(() => {
 		// Reset mocks before each test
@@ -33,15 +34,22 @@ describe("POST /api/admin/seed", () => {
 		vi.spyOn(console, "error").mockImplementation(() => {});
 	});
 
+	const createMockRequest = (token?: string): Request => {
+		return {
+			headers: new Map([["Authorization", token ? `Bearer ${token}` : ""]]),
+		} as unknown as Request;
+	};
+
 	it("should successfully seed the database", async () => {
 		// Setup mocks for a successful scenario
 		(getCloudflareContext as Mock).mockReturnValue({
-			env: { DB: mockD1Database },
+			env: { DB: mockD1Database, SEED_SECRET: mockSecret },
 		});
 		(runSeed as Mock).mockResolvedValue(true);
 
-		// Call the POST function
-		const response = (await POST()) as unknown as MockResponse;
+		// Call the POST function with proper request
+		const request = createMockRequest(mockSecret);
+		const response = (await POST(request)) as unknown as MockResponse;
 
 		// Assertions
 		expect(getCloudflareContext).toHaveBeenCalledTimes(1);
@@ -58,7 +66,8 @@ describe("POST /api/admin/seed", () => {
 	it("should return an error if Cloudflare context is not available", async () => {
 		(getCloudflareContext as Mock).mockReturnValue(null);
 
-		const response = (await POST()) as unknown as MockResponse;
+		const request = createMockRequest(mockSecret);
+		const response = (await POST(request)) as unknown as MockResponse;
 
 		expect(getCloudflareContext).toHaveBeenCalledTimes(1);
 		expect(runSeed).not.toHaveBeenCalled(); // runSeed should not be called
@@ -73,7 +82,8 @@ describe("POST /api/admin/seed", () => {
 	it("should return an error if env.DB binding is not available", async () => {
 		(getCloudflareContext as Mock).mockReturnValue({ env: {} }); // env exists, but DB is missing
 
-		const response = (await POST()) as unknown as MockResponse;
+		const request = createMockRequest(mockSecret);
+		const response = (await POST(request)) as unknown as MockResponse;
 
 		expect(getCloudflareContext).toHaveBeenCalledTimes(1);
 		expect(runSeed).not.toHaveBeenCalled();
@@ -88,11 +98,12 @@ describe("POST /api/admin/seed", () => {
 	it("should return an error if runSeed fails", async () => {
 		const errorMessage = "Failed to insert data";
 		(getCloudflareContext as Mock).mockReturnValue({
-			env: { DB: mockD1Database },
+			env: { DB: mockD1Database, SEED_SECRET: mockSecret },
 		});
 		(runSeed as Mock).mockRejectedValue(new Error(errorMessage));
 
-		const response = (await POST()) as unknown as MockResponse;
+		const request = createMockRequest(mockSecret);
+		const response = (await POST(request)) as unknown as MockResponse;
 
 		expect(getCloudflareContext).toHaveBeenCalledTimes(1);
 		expect(runSeed).toHaveBeenCalledTimes(1);
@@ -103,6 +114,60 @@ describe("POST /api/admin/seed", () => {
 				error: "シードデータの投入中にエラーが発生しました。",
 				details: errorMessage,
 			},
+			{ status: 500 },
+		);
+		expect(response.options.status).toBe(500);
+	});
+
+	it("should return an error if authentication fails (no Authorization header)", async () => {
+		(getCloudflareContext as Mock).mockReturnValue({
+			env: { DB: mockD1Database, SEED_SECRET: mockSecret },
+		});
+
+		const request = createMockRequest(); // No token
+		const response = (await POST(request)) as unknown as MockResponse;
+
+		expect(getCloudflareContext).toHaveBeenCalledTimes(1);
+		expect(runSeed).not.toHaveBeenCalled();
+		expect(NextResponse.json).toHaveBeenCalledTimes(1);
+		expect(NextResponse.json).toHaveBeenCalledWith(
+			{ error: "認証に失敗しました。" },
+			{ status: 401 },
+		);
+		expect(response.options.status).toBe(401);
+	});
+
+	it("should return an error if authentication fails (invalid token)", async () => {
+		(getCloudflareContext as Mock).mockReturnValue({
+			env: { DB: mockD1Database, SEED_SECRET: mockSecret },
+		});
+
+		const request = createMockRequest("invalid-token");
+		const response = (await POST(request)) as unknown as MockResponse;
+
+		expect(getCloudflareContext).toHaveBeenCalledTimes(1);
+		expect(runSeed).not.toHaveBeenCalled();
+		expect(NextResponse.json).toHaveBeenCalledTimes(1);
+		expect(NextResponse.json).toHaveBeenCalledWith(
+			{ error: "認証に失敗しました。" },
+			{ status: 401 },
+		);
+		expect(response.options.status).toBe(401);
+	});
+
+	it("should return an error if SEED_SECRET is not configured", async () => {
+		(getCloudflareContext as Mock).mockReturnValue({
+			env: { DB: mockD1Database }, // SEED_SECRET is missing
+		});
+
+		const request = createMockRequest(mockSecret);
+		const response = (await POST(request)) as unknown as MockResponse;
+
+		expect(getCloudflareContext).toHaveBeenCalledTimes(1);
+		expect(runSeed).not.toHaveBeenCalled();
+		expect(NextResponse.json).toHaveBeenCalledTimes(1);
+		expect(NextResponse.json).toHaveBeenCalledWith(
+			{ error: "サーバー設定エラーです。" },
 			{ status: 500 },
 		);
 		expect(response.options.status).toBe(500);
