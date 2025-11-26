@@ -1,4 +1,4 @@
-import { defineConfig } from "vitest/config";
+import { configDefaults, defineConfig } from "vitest/config";
 import tsconfigPaths from "vite-tsconfig-paths";
 
 export default defineConfig({
@@ -8,6 +8,7 @@ export default defineConfig({
 		environment: "jsdom",
 		// テストファイルのパターン
 		include: ["**/*.{test,spec}.{js,ts,jsx,tsx}"],
+		exclude: [...configDefaults.exclude, "./tests/**"],
 		// テストの実行設定
 		globals: true,
 		// カバレッジの設定
