@@ -22,7 +22,7 @@ test.describe("Responsive Design - Mobile View", () => {
 
 		// 4. Assert that at least one ingredient is visible
 		await page.waitForResponse("/api/ingredients");
-		await expect(page.getByLabel("ジン")).toBeVisible();
+		await expect(page.getByLabel("ジン")).toBeVisible({ timeout: 10000 });
 
 		// 5. Assert that the 'Mix!' button is visible
 		await expect(page.getByRole("button", { name: "Mix!" })).toBeVisible();

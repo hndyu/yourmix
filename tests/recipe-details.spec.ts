@@ -30,6 +30,7 @@ test("should navigate to the recipe details page after mixing a cocktail", async
 	await recipeLink.click();
 
 	// 5. Assert that the URL is the recipe details page
+	await page.waitForURL(/.*\/recipes\/gin-fizz/);
 	await expect(page).toHaveURL(/.*\/recipes\/gin-fizz/);
 
 	// 6. Assert that the main headings of the details page are visible
