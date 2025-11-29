@@ -32,9 +32,11 @@ export default function NotFound() {
 			<Typography variant="body1" sx={{ mb: 3 }}>
 				お探しのページは移動または削除された可能性があります。
 			</Typography>
-			<Button component={Link} href="/" variant="contained">
-				トップページに戻る
-			</Button>
+			<Link href="/" passHref>
+				<Button component="a" variant="contained">
+					トップページに戻る
+				</Button>
+			</Link>
 		</Box>
 	);
 }
