@@ -42,82 +42,97 @@ test.describe("Share Functionality", () => {
 		await context.grantPermissions(["clipboard-read", "clipboard-write"]);
 	});
 
-	test("should copy the recipe to the clipboard when Web Share API is not supported", async ({
-		page,
-	}) => {
-		// 1. レシピ詳細ページに直接アクセス (例: ジン・フィズ)
-		await page.goto("/recipes/gin-fizz");
-		await page.waitForLoadState("networkidle");
-
-		// 2. ツールチップが "レシピをコピー" になっていることを確認
-		const copyButton = page.getByRole("button", { name: "レシピをコピー" });
-		await expect(copyButton).toBeVisible();
-
-		// 3. ボタンをクリック
-		await copyButton.click();
-
-		// 4. "レシピをクリップボードにコピーしました！" というスナックバーが表示されることを確認
-		const snackbar = page.locator("div[role='alert']", {
-			hasText: "レシピをクリップボードにコピーしました！",
+	test.describe("when Web Share API is not supported", () => {
+		test.beforeEach(async ({ page }) => {
+			// Web Share APIを無効化するスクリプトを注入
+			await page.addInitScript(() => {
+				Object.defineProperty(navigator, "share", {
+					value: undefined,
+					writable: true,
+					configurable: true,
+				});
+				Object.defineProperty(navigator, "canShare", {
+					value: () => false,
+					writable: true,
+					configurable: true,
+				});
+			});
 		});
-		await expect(snackbar).toBeVisible();
 
-		// 5. クリップボードの内容を検証
-		const { expectedText } = await getExpectedText(page);
-		const clipboardText = await page.evaluate(() =>
-			navigator.clipboard.readText(),
-		);
+		test("should copy the recipe to the clipboard", async ({ page }) => {
+			// 1. レシピ詳細ページに直接アクセス (例: ジン・フィズ)
+			await page.goto("/recipes/gin-fizz");
+			await page.waitForLoadState("networkidle");
 
-		// 正規化して比較（改行コードの違いなどを吸収）
-		const normalize = (str: string) =>
-			str.replace(/\r\n/g, "\n").trim();
-		expect(normalize(clipboardText)).toEqual(normalize(expectedText));
+			// 2. ツールチップが "レシピをコピー" になっていることを確認
+			const copyButton = page.getByRole("button", { name: "レシピをコピー" });
+			await expect(copyButton).toBeVisible();
 
-		// 6. スナックバーが時間経過で消えることを確認
-		await expect(snackbar).not.toBeVisible({ timeout: 5000 }); // autoHideDurationに合わせて待機
+			// 3. ボタンをクリック
+			await copyButton.click();
+
+			// 4. "レシピをクリップボードにコピーしました！" というスナックバーが表示されることを確認
+			const snackbar = page.locator("div[role='alert']", {
+				hasText: "レシピをクリップボードにコピーしました！",
+			});
+			await expect(snackbar).toBeVisible();
+
+			// 5. クリップボードの内容を検証
+			const { expectedText } = await getExpectedText(page);
+			const clipboardText = await page.evaluate(() =>
+				navigator.clipboard.readText(),
+			);
+
+			// 正規化して比較（改行コードの違いなどを吸収）
+			const normalize = (str: string) => str.replace(/\r\n/g, "\n").trim();
+			expect(normalize(clipboardText)).toEqual(normalize(expectedText));
+
+			// 6. スナックバーが時間経過で消えることを確認
+			await expect(snackbar).not.toBeVisible({ timeout: 5000 }); // autoHideDurationに合わせて待機
+		});
 	});
 
-	test("should show share icon and tooltip when Web Share API is supported", async ({
-		page,
-	}) => {
-		// Web Share APIをモックする
-		await page.addInitScript(() => {
-			// navigator.shareが存在する状態をシミュレート
-			Object.defineProperty(navigator, "share", {
-				value: async (data?: ShareData) => {
-					console.log("navigator.share called with:", data);
-					return Promise.resolve();
-				},
-				writable: true,
-				configurable: true,
+	test.describe("when Web Share API is supported", () => {
+		test("should show share icon and tooltip", async ({ page }) => {
+			// Web Share APIをモックする
+			await page.addInitScript(() => {
+				// navigator.shareが存在する状態をシミュレート
+				Object.defineProperty(navigator, "share", {
+					value: async (data?: ShareData) => {
+						console.log("navigator.share called with:", data);
+						return Promise.resolve();
+					},
+					writable: true,
+					configurable: true,
+				});
+				// canUseWebShareがtrueを返すようにcanShareも定義
+				Object.defineProperty(navigator, "canShare", {
+					value: (data?: ShareData) => {
+						console.log("navigator.canShare called with:", data);
+						return true;
+					},
+					writable: true,
+					configurable: true,
+				});
 			});
-			// canUseWebShareがtrueを返すようにcanShareも定義
-			Object.defineProperty(navigator, "canShare", {
-				value: (data?: ShareData) => {
-					console.log("navigator.canShare called with:", data);
-					return true;
-				},
-				writable: true,
-				configurable: true,
-			});
+
+			// 1. レシピ詳細ページにアクセス
+			await page.goto("/recipes/gin-fizz");
+			await page.waitForLoadState("networkidle");
+
+			// 2. 共有ボタンとツールチップが "共有" になっていることを確認
+			const shareButton = page.getByRole("button", { name: "共有" });
+			await expect(shareButton).toBeVisible();
+
+			// 3. 共有アイコンが表示されていることを確認
+			// Material UIのアイコンは通常 <svg> タグでレンダリングされる
+			// data-testidがない場合、子要素のSVGの存在を確認する
+			const shareIcon = shareButton.locator('svg[data-testid="ShareIcon"]');
+			await expect(shareIcon).toBeVisible();
+
+			// 4. コピーアイコンが表示されていないことを確認
+			const copyIcon = shareButton.locator('svg[data-testid="CopyIcon"]');
+			await expect(copyIcon).not.toBeVisible();
 		});
-
-		// 1. レシピ詳細ページにアクセス
-		await page.goto("/recipes/gin-fizz");
-		await page.waitForLoadState("networkidle");
-
-		// 2. 共有ボタンとツールチップが "共有" になっていることを確認
-		const shareButton = page.getByRole("button", { name: "共有" });
-		await expect(shareButton).toBeVisible();
-
-		// 3. 共有アイコンが表示されていることを確認
-		// Material UIのアイコンは通常 <svg> タグでレンダリングされる
-		// data-testidがない場合、子要素のSVGの存在を確認する
-		const shareIcon = shareButton.locator('svg[data-testid="ShareIcon"]');
-		await expect(shareIcon).toBeVisible();
-
-		// 4. コピーアイコンが表示されていないことを確認
-		const copyIcon = shareButton.locator('svg[data-testid="CopyIcon"]');
-		await expect(copyIcon).not.toBeVisible();
 	});
 });
