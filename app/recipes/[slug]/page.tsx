@@ -105,14 +105,20 @@ export default async function RecipeDetailPage({
 				<Box>
 					{/* パンくずリスト */}
 					<Breadcrumbs aria-label="breadcrumb" sx={{ mb: 3 }}>
-						<Link
-							component={NextLink}
-							underline="hover"
-							color="inherit"
-							href="/"
-						>
-							ホーム
-						</Link>
+						<NextLink href="/" passHref style={{ textDecoration: "none" }}>
+							<Typography
+								component="span"
+								sx={{
+									color: "inherit",
+									textDecoration: "none", // 初期状態は下線なし
+									"&:hover": {
+										textDecoration: "underline", // ホバー時に下線
+									},
+								}}
+							>
+								ホーム
+							</Typography>
+						</NextLink>
 						<Typography color="text.primary">{cocktail.name}</Typography>
 					</Breadcrumbs>
 
