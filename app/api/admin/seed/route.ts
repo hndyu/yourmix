@@ -35,7 +35,7 @@ export async function POST(request: Request) {
 		}
 
 		// --- 認証処理の追加 ---
-		const seedSecret = env.SEED_SECRET;
+		const seedSecret = process.env.SEED_SECRET;
 		if (!seedSecret) {
 			console.error("SEED_SECRET is not configured in environment variables.");
 			return NextResponse.json(
