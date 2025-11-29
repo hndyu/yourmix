@@ -38,7 +38,7 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "./vitest-setup.ts",
+    "./vitest-setup.ts", "app/icon.tsx.back",
   ],
   "exclude": [
     "node_modules"
