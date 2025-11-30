@@ -13,36 +13,42 @@ export default function Icon() {
 		// ImageResponse JSX element
 		// biome-ignore lint/a11y/noSvgWithoutTitle: <explanation>
 		<svg
-			width="32"
-			height="32"
-			viewBox="0 0 32 32"
-			fill="none"
-			xmlns="http://www.w3.org/2000/svg"
-			style={{
-				backgroundColor: "transparent",
-			}}
-		>
-			<defs>
-				<linearGradient id="liquidGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-					<stop offset="0%" stopColor="#FBBF24" />
-					<stop offset="100%" stopColor="#F472B6" />
-				</linearGradient>
-			</defs>
-			{/* グラスの液体部分 */}
-			<path
-				d="M6 12C6 10.8954 6.89543 10 8 10H24C25.1046 10 26 10.8954 26 12V14C20 18 12 18 6 14V12Z"
-				fill="url(#liquidGradient)"
-			/>
-			{/* グラスの輪郭 */}
-			<path
-				d="M4 6H28L17.4286 18.2857C16.8571 19.1429 15.1429 19.1429 14.5714 18.2857L4 6Z"
-				stroke="#4B5563"
-				strokeWidth="2"
-			/>
-			{/* グラスの脚 */}
-			<path d="M16 19V26" stroke="#4B5563" strokeWidth="2" />
-			<path d="M12 26H20" stroke="#4B5563" strokeWidth="2" />
-		</svg>,
+      width="32"
+      height="32"
+      viewBox="0 0 32 32"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <defs>
+        <linearGradient id="liquidGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#FBBF24" />
+          <stop offset="100%" stopColor="#F472B6" />
+        </linearGradient>
+
+        {/* グラス内部のクリップパス */}
+        <clipPath id="glassClip">
+          <path d="M4 6H28L17.4286 18.2857c-.5715.8572-2.2857.8572-2.8572 0L4 6z" />
+        </clipPath>
+      </defs>
+
+      {/* 液体：クリップパスで内部に制限 */}
+      <g clipPath="url(#glassClip)">
+        <path
+          d="M6 12c0-1.1046.89543-2 2-2h16c1.1046 0 2 .8954 2 2v2c-6 4-14 4-20 0v-2z"
+          fill="url(#liquidGradient)"
+        />
+      </g>
+
+      {/* グラスのふち */}
+      <path
+        d="M4 6H28L17.4286 18.2857c-.5715.8572-2.2857.8572-2.8572 0L4 6z"
+        stroke="#4B5563"
+        strokeWidth="2"
+      />
+
+      <path d="M16 19V26" stroke="#4B5563" strokeWidth="2" />
+      <path d="M12 26H20" stroke="#4B5563" strokeWidth="2" />
+    </svg>,
 		// ImageResponse options
 		{
 			// For convenience, we can re-use the exported icons size metadata

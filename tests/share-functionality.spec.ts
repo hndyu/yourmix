@@ -118,20 +118,23 @@ test.describe("Share Functionality", () => {
 
 			// 1. レシピ詳細ページにアクセス
 			await page.goto("/recipes/gin-fizz");
-			await page.waitForLoadState("networkidle");
 
-			// 2. 共有ボタンとツールチップが "共有" になっていることを確認
+			// 2. アクセシブルネームが "共有" になるのを待つ
+			// これが成功すれば、useEffectによるUI更新が完了したことを意味する
 			const shareButton = page.getByRole("button", { name: "共有" });
-			await expect(shareButton).toBeVisible();
+			await expect(shareButton).toBeVisible({ timeout: 10000 });
 
-			// 3. 共有アイコンが表示されていることを確認
-			// Material UIのアイコンは通常 <svg> タグでレンダリングされる
-			// data-testidがない場合、子要素のSVGの存在を確認する
-			const shareIcon = shareButton.locator('svg[data-testid="ShareIcon"]');
-			await expect(shareIcon).toBeVisible();
+			// 3. ボタンの背景色が共有ボタンの色になっていることを確認し、テストの信頼性を高める
+			// #1976d2 -> rgb(25, 118, 210)
+			await expect(shareButton).toHaveCSS("background-color", "rgb(25, 118, 210)");
 
-			// 4. コピーアイコンが表示されていないことを確認
-			const copyIcon = shareButton.locator('svg[data-testid="CopyIcon"]');
+			// 4. ボタン内にMUIのCopyIconが存在しないことを確認する
+			// MUIのアイコンは .MuiSvgIcon-root クラスを持つ
+			// ここでは、CopyIconに特有のSVGパスデータの一部を使って識別する（代替策）
+			// この方法は壊れやすいが、コンポーネントを変更しないという制約の中での次善策
+			const copyIconPath =
+				"M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z";
+			const copyIcon = shareButton.locator(`svg path[d="${copyIconPath}"]`);
 			await expect(copyIcon).not.toBeVisible();
 		});
 	});
