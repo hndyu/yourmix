@@ -57,6 +57,7 @@ export default function CocktailDisplay({
 }: CocktailDisplayProps) {
 	const [isWebShareSupported, setIsWebShareSupported] = React.useState(false);
 	const [snackbarOpen, setSnackbarOpen] = React.useState(false);
+	const [imageError, setImageError] = React.useState(false);
 
 	React.useEffect(() => {
 		// クライアントサイドでnavigator.shareの存在を確認
@@ -74,6 +75,9 @@ export default function CocktailDisplay({
 	const handleSnackbarClose = () => {
 		setSnackbarOpen(false);
 	};
+	const handleImageError = () => {
+		setImageError(true);
+	};
 
 	return (
 		<>
@@ -86,7 +90,7 @@ export default function CocktailDisplay({
 						transition: "all 0.8s cubic-bezier(0.4, 0, 0.2, 1)",
 					}}
 				>
-					{cocktail.imageUrl && (
+					{cocktail.imageUrl && !imageError && (
 						<Box
 							sx={{
 								position: "relative",
@@ -100,6 +104,7 @@ export default function CocktailDisplay({
 								fill
 								sizes="(max-width: 600px) 100vw, (max-width: 1200px) 50vw, 33vw"
 								style={{ objectFit: "contain" }}
+								onError={handleImageError}
 							/>
 						</Box>
 					)}

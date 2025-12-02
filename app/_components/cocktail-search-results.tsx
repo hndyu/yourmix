@@ -9,7 +9,6 @@ import {
 	Divider,
 	Fade,
 	Grid,
-	Paper,
 	Typography,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
@@ -17,6 +16,8 @@ import Image from "next/image";
 import Link from "next/link";
 import * as React from "react";
 import type { Category, Cocktail, Ingredient } from "../types/cocktail";
+import { useCocktailSearch } from "../utils/useCocktailSearch";
+import { NoResults } from "./no-results";
 
 const StyledResultCard = styled(Card)(({ theme }) => ({
 	borderRadius: "15px",
@@ -30,6 +31,149 @@ const StyledResultCard = styled(Card)(({ theme }) => ({
 		boxShadow: "0 8px 30px rgba(0, 0, 0, 0.15)",
 	},
 }));
+
+interface CocktailCardProps {
+	cocktail: Cocktail;
+	ingredientSortOrderMap: Map<
+		string,
+		{ categoryOrder: number; groupOrder: number }
+	>;
+	isIngredientSelected: (name: string) => boolean;
+}
+
+const CocktailCard = ({
+	cocktail,
+	ingredientSortOrderMap,
+	isIngredientSelected,
+}: CocktailCardProps) => {
+	const [isImageVisible, setIsImageVisible] = React.useState(true);
+
+	const handleImageError = () => {
+		setIsImageVisible(false);
+	};
+
+	return (
+		<Grid size={{ xs: 12, sm: 6, md: 4 }}>
+			<StyledResultCard>
+				{cocktail.imageUrl && isImageVisible && (
+					<Box
+						sx={{
+							position: "relative",
+							width: "100%",
+							height: 140,
+						}}
+					>
+						<Image
+							src={`/cocktails/${cocktail.imageUrl}`}
+							alt={cocktail.name}
+							fill
+							sizes="(max-width: 600px) 100vw, (max-width: 900px) 50vw, 33vw"
+							style={{ objectFit: "contain" }}
+							onError={handleImageError}
+						/>
+					</Box>
+				)}
+				<CardContent
+					sx={{ p: 3, pt: cocktail.imageUrl && isImageVisible ? 2 : 3 }}
+				>
+					<Typography
+						variant="h6"
+						component="h3"
+						sx={{
+							fontWeight: "bold",
+							color: "#2c3e50",
+							mb: 1,
+							lineHeight: 1.3,
+						}}
+					>
+						🍹 {cocktail.name}
+					</Typography>
+
+					<Typography
+						variant="body2"
+						color="text.secondary"
+						sx={{
+							mb: 2,
+							lineHeight: 1.5,
+						}}
+					>
+						{cocktail.description}
+					</Typography>
+
+					<Typography
+						variant="caption"
+						color="text.secondary"
+						sx={{
+							display: "block",
+							mb: 1,
+							fontWeight: "medium",
+						}}
+					>
+						材料:
+					</Typography>
+					<Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
+						{[...cocktail.ingredients]
+							.sort((a, b) => {
+								const orderInfoA = ingredientSortOrderMap.get(a.name) ?? {
+									categoryOrder: Number.POSITIVE_INFINITY,
+									groupOrder: Number.POSITIVE_INFINITY,
+								};
+								const orderInfoB = ingredientSortOrderMap.get(b.name) ?? {
+									categoryOrder: Number.POSITIVE_INFINITY,
+									groupOrder: Number.POSITIVE_INFINITY,
+								};
+
+								if (orderInfoA.categoryOrder !== orderInfoB.categoryOrder) {
+									return orderInfoA.categoryOrder - orderInfoB.categoryOrder;
+								}
+
+								if (orderInfoA.groupOrder !== orderInfoB.groupOrder) {
+									return orderInfoA.groupOrder - orderInfoB.groupOrder;
+								}
+
+								return (a.id ?? 0) - (b.id ?? 0);
+							})
+							.map((ingredient) => {
+								const isSelected = isIngredientSelected(ingredient.name);
+
+								return (
+									<Chip
+										key={ingredient.name}
+										label={ingredient.name}
+										size="small"
+										variant={isSelected ? "filled" : "outlined"}
+										color={isSelected ? "primary" : "default"}
+										sx={{
+											fontSize: "0.7rem",
+										}}
+									/>
+								);
+							})}
+					</Box>
+
+					<Link
+						href={`/recipes/${cocktail.slug}`}
+						style={{ textDecoration: "none", width: "100%" }}
+					>
+						<Button
+							variant="outlined"
+							size="small"
+							fullWidth
+							sx={{
+								mt: 2,
+								borderRadius: "20px",
+								textTransform: "none",
+								fontWeight: "medium",
+							}}
+						>
+							詳細を見る
+						</Button>
+					</Link>
+				</CardContent>
+			</StyledResultCard>
+		</Grid>
+	);
+};
 
 interface CocktailSearchResultsProps {
 	cocktails: Cocktail[];
@@ -46,102 +190,11 @@ export default function CocktailSearchResults({
 	show = true,
 	allIngredients,
 }: CocktailSearchResultsProps) {
-	const ingredientSortOrderMap = React.useMemo(() => {
-		const map = new Map<
-			string,
-			{ categoryOrder: number; groupOrder: number }
-		>();
-		const categoryOrderMap = new Map(
-			categories.map((c) => [c.name, c.sortOrder ?? Number.POSITIVE_INFINITY]),
-		);
-
-		for (const group of allIngredients) {
-			const groupOrder = group.sortOrder ?? Number.POSITIVE_INFINITY;
-			const categoryOrder =
-				categoryOrderMap.get(group.categoryName ?? "") ??
-				Number.POSITIVE_INFINITY;
-
-			const orderInfo = { categoryOrder, groupOrder };
-			map.set(group.name, orderInfo);
-			if (group.actualNames) {
-				for (const actualName of group.actualNames) {
-					map.set(actualName, orderInfo);
-				}
-			}
-		}
-		return map;
-	}, [allIngredients, categories]);
-
-	const isIngredientSelected = React.useCallback(
-		(ingredientName: string) => {
-			const isDirectlySelected = selectedIngredients.includes(ingredientName);
-			if (isDirectlySelected) return true;
-
-			const parentIngredient = allIngredients.find((ing) =>
-				ing.actualNames?.includes(ingredientName),
-			);
-			return parentIngredient
-				? selectedIngredients.includes(parentIngredient.name)
-				: false;
-		},
-		[selectedIngredients, allIngredients],
-	);
-
-	// カクテルを「ユーザーが選択しマッチした材料数 / カクテルを作るのに必要なすべての材料数」の割合が高い順に並び替える
-	const sortedCocktails = React.useMemo(() => {
-		return [...cocktails].sort((a, b) => {
-			const calculateMatchRatio = (cocktail: Cocktail) => {
-				if (cocktail.ingredients.length === 0) {
-					return 0; // 材料がないカクテルは比率0とする
-				}
-				const matchedCount = cocktail.ingredients.filter((ingredient) =>
-					isIngredientSelected(ingredient.name),
-				).length;
-
-				return matchedCount / cocktail.ingredients.length;
-			};
-
-			const ratioA = calculateMatchRatio(a);
-			const ratioB = calculateMatchRatio(b);
-
-			// 比率が高い順にソート (降順)
-			// 比率が同じ場合は、元の順序を維持
-			return ratioB - ratioA;
-		});
-	}, [cocktails, isIngredientSelected]);
+	const { sortedCocktails, ingredientSortOrderMap, isIngredientSelected } =
+		useCocktailSearch(cocktails, selectedIngredients, categories, allIngredients);
 
 	if (cocktails.length === 0) {
-		return (
-			<Fade in={show} timeout={800} easing="ease-out">
-				<Paper
-					elevation={1}
-					sx={{
-						p: 4,
-						textAlign: "center",
-						backgroundColor: "#fafafa",
-						borderRadius: "15px",
-						transform: show ? "translateY(0)" : "translateY(20px)",
-						opacity: show ? 1 : 0,
-						transition: "all 0.8s cubic-bezier(0.4, 0, 0.2, 1)",
-					}}
-				>
-					<Typography
-						component="h2"
-						variant="h6"
-						color="text.secondary"
-						gutterBottom
-					>
-						🔍 検索結果
-					</Typography>
-					<Typography variant="body1" color="text.secondary">
-						選択された材料にマッチするレシピが見つかりませんでした。
-					</Typography>
-					<Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-						他の材料を選択してみてください。
-					</Typography>
-				</Paper>
-			</Fade>
-		);
+		return <NoResults show={show} />;
 	}
 
 	return (
@@ -174,132 +227,12 @@ export default function CocktailSearchResults({
 
 				<Grid container spacing={3}>
 					{sortedCocktails.map((cocktail) => (
-						<Grid key={cocktail.id} size={{ xs: 12, sm: 6, md: 4 }}>
-							<StyledResultCard>
-								{cocktail.imageUrl && (
-									<Box
-										sx={{
-											position: "relative",
-											width: "100%",
-											height: 140,
-										}}
-									>
-										<Image
-											src={`/cocktails/${cocktail.imageUrl}`}
-											alt={cocktail.name}
-											fill
-											sizes="(max-width: 600px) 100vw, (max-width: 900px) 50vw, 33vw"
-											style={{ objectFit: "contain" }}
-										/>
-									</Box>
-								)}
-								<CardContent sx={{ p: 3, pt: cocktail.imageUrl ? 2 : 3 }}>
-									<Typography
-										variant="h6"
-										component="h3"
-										sx={{
-											fontWeight: "bold",
-											color: "#2c3e50",
-											mb: 1,
-											lineHeight: 1.3,
-										}}
-									>
-										🍹 {cocktail.name}
-									</Typography>
-
-									<Typography
-										variant="body2"
-										color="text.secondary"
-										sx={{
-											mb: 2,
-											lineHeight: 1.5,
-										}}
-									>
-										{cocktail.description}
-									</Typography>
-
-									<Typography
-										variant="caption"
-										color="text.secondary"
-										sx={{
-											display: "block",
-											mb: 1,
-											fontWeight: "medium",
-										}}
-									>
-										材料:
-									</Typography>
-									<Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
-										{[...cocktail.ingredients] // idが0の材料も表示するため、フィルタリングを削除
-											.sort((a, b) => {
-												const orderInfoA = ingredientSortOrderMap.get(
-													a.name,
-												) ?? {
-													categoryOrder: Number.POSITIVE_INFINITY,
-													groupOrder: Number.POSITIVE_INFINITY,
-												};
-												const orderInfoB = ingredientSortOrderMap.get(
-													b.name,
-												) ?? {
-													categoryOrder: Number.POSITIVE_INFINITY,
-													groupOrder: Number.POSITIVE_INFINITY,
-												};
-
-												if (
-													orderInfoA.categoryOrder !== orderInfoB.categoryOrder
-												) {
-													return (
-														orderInfoA.categoryOrder - orderInfoB.categoryOrder
-													);
-												}
-
-												if (orderInfoA.groupOrder !== orderInfoB.groupOrder) {
-													return orderInfoA.groupOrder - orderInfoB.groupOrder;
-												}
-
-												return (a.id ?? 0) - (b.id ?? 0);
-											})
-											.map((ingredient) => {
-												const isSelected = isIngredientSelected(
-													ingredient.name,
-												);
-
-												return (
-													<Chip
-														key={ingredient.name}
-														label={ingredient.name}
-														size="small"
-														variant={isSelected ? "filled" : "outlined"}
-														color={isSelected ? "primary" : "default"}
-														sx={{
-															fontSize: "0.7rem",
-														}}
-													/>
-												);
-											})}
-									</Box>
-
-									<Link
-										href={`/recipes/${cocktail.slug}`}
-										style={{ textDecoration: "none", width: "100%" }}
-									>
-										<Button
-											variant="outlined"
-											size="small"
-											fullWidth
-											sx={{
-												mt: 2,
-												borderRadius: "20px",
-												textTransform: "none",
-												fontWeight: "medium",
-											}}
-										>
-											詳細を見る
-										</Button>
-									</Link>
-								</CardContent>
-							</StyledResultCard>
-						</Grid>
+						<CocktailCard
+							key={cocktail.id}
+							cocktail={cocktail}
+							ingredientSortOrderMap={ingredientSortOrderMap}
+							isIngredientSelected={isIngredientSelected}
+						/>
 					))}
 				</Grid>
 			</Box>
