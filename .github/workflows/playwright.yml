@@ -30,7 +30,7 @@ jobs:
       run: npm run start:ci > server.log 2>&1 &
     - name: Wait for Server to be Ready
       run: |
-        npx wait-on http://localhost:3000 -t 60000 || (echo "--- Server Log ---" && cat server.log && exit 1)
+        npx wait-on http://localhost:3000/favicon.ico -t 60000 || (echo "--- Server Log ---" && cat server.log && exit 1)
     - name: Run Playwright tests
       run: npx playwright test
     - uses: actions/upload-artifact@v4
