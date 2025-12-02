@@ -20,7 +20,7 @@
 		"seed": "echo '⚠️  Please use seed:local or seed:remote instead' && exit 1",
 		"seed:local": "tsx scripts/seed-worker.ts local",
 		"seed:remote": "tsx scripts/seed-worker.ts remote",
-		"start:ci": "npx wrangler pages dev .open-next --port 3000"
+		"start:ci": "npx wrangler pages dev .open-next --port 3000 --local"
 	},
 	"dependencies": {
 		"@emotion/cache": "^11.14.0",
