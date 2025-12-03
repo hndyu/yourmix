@@ -1,8 +1,9 @@
-import { configDefaults, defineConfig } from "vitest/config";
+import react from "@vitejs/plugin-react";
 import tsconfigPaths from "vite-tsconfig-paths";
+import { configDefaults, defineConfig } from "vitest/config";
 
 export default defineConfig({
-	plugins: [tsconfigPaths()],
+	plugins: [tsconfigPaths(), react()],
 	test: {
 		// テスト環境の設定
 		environment: "jsdom",
