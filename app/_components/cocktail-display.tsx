@@ -334,6 +334,21 @@ export default function CocktailDisplay({
 							</Box>
 						)}
 
+						{/* AI生成注意書き */}
+						<Typography
+							variant="caption"
+							color="text.secondary"
+							sx={{
+								display: "block",
+								mt: 1,
+								mb: 2,
+								textAlign: "center",
+								fontStyle: "italic",
+							}}
+						>
+							※カクテルの画像と説明文はAIによって生成されたイメージです。
+						</Typography>
+
 						{/* 削除ボタン（オプション） */}
 						{onRemove && (
 							<Box sx={{ textAlign: "center", mt: 3 }}>
