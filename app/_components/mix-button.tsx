@@ -87,6 +87,7 @@ export default function MixButton({
 			size="large"
 			disabled={isButtonDisabled}
 			className={isLoading ? "loading" : ""}
+			data-testid="mix-button"
 		>
 			<Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
 				{isLoading ? (

@@ -1,6 +1,40 @@
 import { test, expect } from "@playwright/test";
 
 test("should be able to mix a gin-fizz", async ({ page }) => {
+	// Mock the ingredients API
+	await page.route("**/api/ingredients", async (route) => {
+		console.log("Mocking /api/ingredients hit");
+		const json = {
+			ingredients: [
+				{ id: 1, name: "ジン", categoryId: 1, groupId: 1 },
+				{ id: 2, name: "リキュール", categoryId: 1, groupId: 2 },
+			],
+			categories: [{ id: 1, name: "スピリッツ", sortOrder: 1 }],
+		};
+		await route.fulfill({ json });
+	});
+
+	// Mock the cocktail generation API
+	await page.route("/api/generate-cocktail", async (route) => {
+		const json = {
+			name: "ジン・フィズ",
+			description: "さっぱりとした味わいのカクテルです。",
+			ingredients: [
+				{ name: "ジン", amount: "45ml" },
+				{ name: "レモンジュース", amount: "30ml" },
+				{ name: "砂糖", amount: "2tsp" },
+				{ name: "ソーダ", amount: "適量" },
+			],
+			instructions: ["シェイクしてグラスに注ぐ", "ソーダで満たす"],
+		};
+		await route.fulfill({ json });
+	});
+
+	// Mock the search API (to return empty or specific results if needed, here empty to focus on generation)
+	await page.route("/api/cocktails?*", async (route) => {
+		await route.fulfill({ json: { cocktails: [] } });
+	});
+
 	// 1. Navigate to the homepage
 	await page.goto("/");
 
@@ -9,20 +43,20 @@ test("should be able to mix a gin-fizz", async ({ page }) => {
 		page.getByRole("heading", { name: "YourMix", level: 1 }),
 	).toBeVisible();
 
-	// Wait for ingredients to load before attempting to select them
-	await page.waitForResponse("/api/ingredients");
+	// 3. Select ingredients using accessible roles
+	await page.getByRole("checkbox", { name: "ジン" }).click();
+	await page.getByRole("checkbox", { name: "リキュール" }).click();
 
-	// 3. Select ingredients
-	await page.getByLabel("ジン").click();
-	await page.getByLabel("リキュール").click();
-
-	// 4. Click the mix button
-	await page.getByRole("button", { name: "Mix!" }).click();
-
-	// Wait for the cocktail generation API response
-	await page.waitForResponse("/api/generate-cocktail");
+	// 4. Click the mix button and wait for the cocktail generation API response
+	await Promise.all([
+		page.waitForResponse((resp) => resp.url().includes("/api/generate-cocktail")),
+		page.getByRole("button", { name: "Mix!" }).click(),
+	]);
 
 	// 5. Assert that the result is displayed
-	await expect(page.getByText("ジン・フィズ")).toBeVisible();
+	// We check for the cocktail name in the heading
+	await expect(
+		page.getByRole("heading", { name: "ジン・フィズ", level: 2 }), // CocktailDisplay uses h3 (or h2 in detail page)
+	).toBeVisible();
 });
 

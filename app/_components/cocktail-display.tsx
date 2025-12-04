@@ -89,6 +89,7 @@ export default function CocktailDisplay({
 						opacity: show ? 1 : 0,
 						transition: "all 0.8s cubic-bezier(0.4, 0, 0.2, 1)",
 					}}
+					data-testid="cocktail-display"
 				>
 					{cocktail.imageUrl && !imageError && (
 						<Box
