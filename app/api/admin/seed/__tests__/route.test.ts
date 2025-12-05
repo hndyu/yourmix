@@ -1,8 +1,10 @@
 import { describe, it, expect, vi, beforeEach, type Mock } from "vitest";
-import { POST } from "../route"; // Assuming POST is the function to test
+import { POST } from "../route";
 import { NextResponse } from "next/server";
 import * as cloudflare from "@opennextjs/cloudflare";
 import * as seedScript from "../../../../../scripts/seed";
+// Mock drizzle
+import { drizzle } from "drizzle-orm/d1";
 
 const { getCloudflareContext } = cloudflare;
 const { runSeed } = seedScript;
@@ -10,6 +12,7 @@ const { runSeed } = seedScript;
 // Mock the external dependencies
 vi.mock("@opennextjs/cloudflare");
 vi.mock("../../../../../scripts/seed");
+vi.mock("drizzle-orm/d1");
 
 // Define a type for our mock response
 type MockResponse = {
@@ -24,14 +27,15 @@ vi.mock("next/server", () => ({
 }));
 
 describe("POST /api/admin/seed", () => {
-	const mockD1Database = {}; // A simple mock for D1Database
+	const mockD1Database = {};
 	const mockSecret = "test-seed-secret";
+	const mockDb = {}; // Mock drizzle instance
 
 	beforeEach(() => {
-		// Reset mocks before each test
 		vi.clearAllMocks();
-		// Suppress console.error output during tests
 		vi.spyOn(console, "error").mockImplementation(() => {});
+		// Setup mock for drizzle
+		(drizzle as Mock).mockReturnValue(mockDb);
 	});
 
 	const createMockRequest = (token?: string): Request => {
@@ -41,20 +45,18 @@ describe("POST /api/admin/seed", () => {
 	};
 
 	it("should successfully seed the database", async () => {
-		// Setup mocks for a successful scenario
 		(getCloudflareContext as Mock).mockReturnValue({
 			env: { DB: mockD1Database, SEED_SECRET: mockSecret },
 		});
 		(runSeed as Mock).mockResolvedValue(true);
 
-		// Call the POST function with proper request
 		const request = createMockRequest(mockSecret);
 		const response = (await POST(request)) as unknown as MockResponse;
 
-		// Assertions
 		expect(getCloudflareContext).toHaveBeenCalledTimes(1);
+		expect(drizzle).toHaveBeenCalledWith(mockD1Database, expect.anything()); // Verify drizzle was initialized
 		expect(runSeed).toHaveBeenCalledTimes(1);
-		expect(runSeed).toHaveBeenCalledWith(mockD1Database);
+		expect(runSeed).toHaveBeenCalledWith(mockDb); // Verify mocked db was passed, not D1
 		expect(NextResponse.json).toHaveBeenCalledTimes(1);
 		expect(NextResponse.json).toHaveBeenCalledWith(
 			{ message: "シードデータの投入が完了しました。" },
@@ -106,8 +108,9 @@ describe("POST /api/admin/seed", () => {
 		const response = (await POST(request)) as unknown as MockResponse;
 
 		expect(getCloudflareContext).toHaveBeenCalledTimes(1);
+		expect(drizzle).toHaveBeenCalledWith(mockD1Database, expect.anything());
 		expect(runSeed).toHaveBeenCalledTimes(1);
-		expect(runSeed).toHaveBeenCalledWith(mockD1Database);
+		expect(runSeed).toHaveBeenCalledWith(mockDb);
 		expect(NextResponse.json).toHaveBeenCalledTimes(1);
 		expect(NextResponse.json).toHaveBeenCalledWith(
 			{

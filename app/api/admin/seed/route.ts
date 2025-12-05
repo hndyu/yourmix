@@ -2,6 +2,8 @@ import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { NextResponse } from "next/server";
 import { runSeed } from "../../../../scripts/seed";
 import type { D1Database } from "@cloudflare/workers-types";
+import { drizzle } from "drizzle-orm/d1";
+import * as schema from "../../../../app/db/schema";
 
 /**
  * データベースにシードデータを投入する管理用APIエンドポイント
@@ -34,6 +36,9 @@ export async function POST(request: Request) {
 			);
 		}
 
+		// Initialize Drizzle
+		const db = drizzle(env.DB, { schema });
+
 		// --- 認証処理の追加 ---
 		const seedSecret = env.SEED_SECRET;
 		if (!seedSecret) {
@@ -56,7 +61,7 @@ export async function POST(request: Request) {
 		// --- 認証処理ここまで ---
 
 		// シードデータを投入
-		await runSeed(env.DB);
+		await runSeed(db);
 
 		return NextResponse.json(
 			{ message: "シードデータの投入が完了しました。" },

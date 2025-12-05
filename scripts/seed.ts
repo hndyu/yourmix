@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from "uuid";
 import * as schema from "../app/db/schema";
-import { drizzle } from "drizzle-orm/d1";
-import type { D1Database } from "@cloudflare/workers-types";
+// import { drizzle } from "drizzle-orm/d1";
+// import type { D1Database } from "@cloudflare/workers-types";
 import { contemporaryClassics } from "./data/contemporary-classics";
 import { newEra } from "./data/new-era";
 import { unforgettables } from "./data/unforgettables";
@@ -9,11 +9,10 @@ import { ingredientDetails, ingredientGroupsData } from "./data/ingredients";
 import type { IngredientData, SeedDataOverrides } from "./types";
 
 export async function seed(
-	d1: D1Database,
+	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	db: any,
 	overrides: SeedDataOverrides = {},
 ) {
-	const db = drizzle(d1, { schema });
-
 	console.log("🌱 Seeding database...");
 
 	// 既存のデータをクリア
@@ -170,7 +169,7 @@ export async function seed(
 
 		// instructions テーブル
 		await db.insert(schema.instructions).values(
-			cocktailData.instructions.map((text, index) => ({
+			cocktailData.instructions.map((text: string, index: number) => ({
 				cocktailId,
 				step: index + 1,
 				text,
@@ -195,7 +194,7 @@ export async function seed(
 
 		// cocktail_tags テーブル
 		await db.insert(schema.cocktailTags).values(
-			cocktailData.tags.map((tagName) => {
+			cocktailData.tags.map((tagName: string) => {
 				const tagId = tagMap.get(tagName);
 				if (tagId === undefined) {
 					throw new Error(`Tag not found: ${tagName}`);
@@ -213,9 +212,10 @@ export async function seed(
 }
 
 // エラーハンドリングを改善したseed関数のラッパー
-export async function runSeed(d1: D1Database, overrides?: SeedDataOverrides) {
+// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+export async function runSeed(db: any, overrides?: SeedDataOverrides) {
 	try {
-		await seed(d1, overrides);
+		await seed(db, overrides);
 		console.log("✅ Seed script completed successfully.");
 		return true;
 	} catch (error) {
@@ -229,27 +229,14 @@ export async function runSeed(d1: D1Database, overrides?: SeedDataOverrides) {
 }
 
 // Node.js環境で直接実行される場合（開発用）
-// この場合、WranglerのローカルD1環境を使用する必要があります
 if (
 	typeof require !== "undefined" &&
 	require.main === module &&
 	typeof process !== "undefined"
 ) {
-	console.log("⚠️  This script requires a Cloudflare D1 database connection.");
-	console.log("");
-	console.log("💡 To run this script, use one of the following methods:");
-	console.log("");
-	console.log("   Method 1: Using Wrangler (Recommended)");
 	console.log(
-		"   npx wrangler d1 execute yourmix-db --local --file=./scripts/seed-executor.ts",
+		"⚠️  This script is a library and cannot be run directly without a database connection.",
 	);
-	console.log("");
-	console.log("   Method 2: Using npm script");
-	console.log("   npm run seed:local  (for local database)");
-	console.log("   npm run seed:remote (for remote database)");
-	console.log("");
-	console.log("   Method 3: Create a worker that calls this script");
-	console.log("   See wrangler.jsonc for D1 database configuration");
 	console.log("");
 	process.exit(1);
 }
