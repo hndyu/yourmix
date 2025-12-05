@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from "uuid";
 import * as schema from "../app/db/schema";
-import { createDb } from "../app/db/db";
+import { drizzle } from "drizzle-orm/d1";
 import type { D1Database } from "@cloudflare/workers-types";
 
 // シードデータの型定義
@@ -2892,7 +2892,7 @@ export async function seed(
 	d1: D1Database,
 	overrides: SeedDataOverrides = {},
 ) {
-	const db = createDb(d1);
+	const db = drizzle(d1, { schema });
 
 	console.log("🌱 Seeding database...");
 

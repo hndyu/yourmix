@@ -1,7 +1,7 @@
 import { drizzle } from "drizzle-orm/d1";
 import { getCloudflareContext } from "@opennextjs/cloudflare";
 import * as schema from "./schema";
-import type { D1Database } from "@cloudflare/workers-types";
+
 
 /**
  * Drizzleインスタンスを生成する
@@ -14,11 +14,4 @@ export default function getDb() {
 	return drizzle(env.DB, { schema });
 }
 
-/**
- * Drizzleインスタンスを生成する
- * @param d1 - Cloudflare D1データベースインスタンス
- * @returns Drizzleインスタンス
- */
-export const createDb = (d1: D1Database) => {
-	return drizzle(d1, { schema });
-};
+
