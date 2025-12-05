@@ -1,9 +1,8 @@
-import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { GoogleGenAI, Type } from "@google/genai";
 import { and, eq, ne } from "drizzle-orm";
 import { NextResponse } from "next/server";
-import * as schema from "../../db/schema";
-import { createDb } from "../../db/db";
+import * as schema from "@/app/db/schema";
+import getDb from "@/app/db/db";
 
 // APIキーを環境変数から取得
 const apiKey = process.env.GEMINI_API_KEY;
@@ -25,18 +24,7 @@ export async function POST(request: Request) {
 	}
 
 	try {
-		// Cloudflare環境からコンテキストを取得
-		const context = getCloudflareContext();
-		const env = context.env as Env;
-
-		if (!env.DB) {
-			console.error("DB binding is not available.");
-			return NextResponse.json(
-				{ error: "データベース接続に失敗しました。" },
-				{ status: 500 },
-			);
-		}
-		const db = createDb(env.DB);
+		const db = getDb();
 
 		const { ingredients: selectedIngredients } = (await request.json()) as {
 			ingredients: string[];

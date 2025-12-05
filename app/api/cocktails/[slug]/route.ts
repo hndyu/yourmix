@@ -1,9 +1,8 @@
-import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { asc, eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
-import * as schema from "../../../db/schema";
-import { createDb } from "../../../db/db";
-import type { Cocktail } from "../../../types/cocktail";
+import * as schema from "@/app/db/schema";
+import getDb from "@/app/db/db";
+import type { Cocktail } from "@/app/types/cocktail";
 
 /**
  * 特定のカクテルを取得するAPIエンドポイント
@@ -23,18 +22,7 @@ export async function GET(
 			);
 		}
 
-		// Cloudflare環境からコンテキストを取得
-		const context = getCloudflareContext();
-		const env = context.env as Env;
-
-		if (!env.DB) {
-			console.error("DB binding is not available.");
-			return NextResponse.json(
-				{ error: "データベース接続に失敗しました。" },
-				{ status: 500 },
-			);
-		}
-		const db = createDb(env.DB);
+		const db = getDb();
 
 		// 特定のスラグに一致するカクテル情報をJOINして取得
 		const results = await db

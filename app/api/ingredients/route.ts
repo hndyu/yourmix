@@ -1,9 +1,8 @@
-import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { asc, eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
-import * as schema from "../../db/schema";
-import { createDb } from "../../db/db";
-import type { GroupedIngredient } from "../../types/cocktail";
+import * as schema from "@/app/db/schema";
+import getDb from "@/app/db/db";
+import type { GroupedIngredient } from "@/app/types/cocktail";
 
 /**
  * カクテルの材料一覧を取得するAPIエンドポイント
@@ -12,18 +11,7 @@ import type { GroupedIngredient } from "../../types/cocktail";
 
 export async function GET() {
 	try {
-		// Cloudflare環境からコンテキストを取得
-		const context = getCloudflareContext();
-		const env = context.env as Env;
-
-		if (!env.DB) {
-			console.error("DB binding is not available.");
-			return NextResponse.json(
-				{ error: "データベース接続に失敗しました。" },
-				{ status: 500 },
-			);
-		}
-		const db = createDb(env.DB);
+		const db = getDb();
 
 		const [allCategories, allIngredientsWithGroups] = await Promise.all([
 			// カテゴリを並び順で取得

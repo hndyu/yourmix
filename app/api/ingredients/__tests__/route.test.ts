@@ -24,6 +24,15 @@ const mockDb = {
 	leftJoin: vi.fn().mockReturnThis(),
 };
 
+vi.mock("drizzle-orm/d1", () => ({
+	drizzle: vi.fn((dbBinding) => {
+		if (!dbBinding) {
+			throw new Error("D1Database binding is required.");
+		}
+		return mockDb;
+	}),
+}));
+
 describe("GET /api/ingredients", () => {
 	// モックデータ
 	const mockCategories = [
@@ -100,9 +109,7 @@ describe("GET /api/ingredients", () => {
 
 	it("正常なリクエストで材料とカテゴリのリストを返す", async () => {
 		// Drizzleをインスタンス化する部分をモック
-		vi.mock("drizzle-orm/d1", () => ({
-			drizzle: () => mockDb,
-		}));
+
 
 		const response = await GET();
 		const data = (await response.json()) as {
@@ -146,7 +153,7 @@ describe("GET /api/ingredients", () => {
 		const data = await response.json();
 
 		expect(response.status).toBe(500);
-		expect(data).toEqual({ error: "データベース接続に失敗しました。" });
+		expect(data).toEqual({ error: "材料の取得中にエラーが発生しました。" });
 	});
 
 	it("データ取得中にエラーが発生した場合、500エラーを返す", async () => {
@@ -158,9 +165,7 @@ describe("GET /api/ingredients", () => {
 		const orderByMock = vi.fn().mockRejectedValue(new Error("DB query failed"));
 		mockDb.orderBy = orderByMock;
 
-		vi.mock("drizzle-orm/d1", () => ({
-			drizzle: () => mockDb,
-		}));
+
 
 		const response = await GET();
 		const data = await response.json();
@@ -181,9 +186,7 @@ describe("GET /api/ingredients", () => {
 		orderByMock.mockResolvedValueOnce([]).mockResolvedValueOnce([]);
 		mockDb.orderBy = orderByMock;
 
-		vi.mock("drizzle-orm/d1", () => ({
-			drizzle: () => mockDb,
-		}));
+
 
 		const response = await GET();
 		const data = (await response.json()) as {

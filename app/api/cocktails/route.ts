@@ -1,8 +1,7 @@
-import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { and, eq, inArray } from "drizzle-orm";
 import { NextResponse } from "next/server";
-import * as schema from "../../db/schema";
-import { createDb } from "../../db/db";
+import * as schema from "@/app/db/schema";
+import getDb from "@/app/db/db";
 
 /**
  * カクテル一覧を取得するAPIエンドポイント
@@ -18,17 +17,7 @@ export async function GET(request: Request) {
 			? ingredientsParam.split(",").map(Number)
 			: [];
 
-		const context = getCloudflareContext();
-		const env = context.env as Env;
-
-		if (!env.DB) {
-			console.error("DB binding is not available.");
-			return NextResponse.json(
-				{ error: "データベース接続に失敗しました。" },
-				{ status: 500 },
-			);
-		}
-		const db = createDb(env.DB);
+		const db = getDb();
 
 		// DrizzleのRelational Queriesを使用してデータを取得
 		const allCocktails = await db.query.cocktails.findMany({

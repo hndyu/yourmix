@@ -27,7 +27,12 @@ const mockDb = {
 };
 
 vi.mock("drizzle-orm/d1", () => ({
-	drizzle: vi.fn(() => mockDb),
+	drizzle: vi.fn((dbBinding) => {
+		if (!dbBinding) {
+			throw new Error("D1Database binding is required.");
+		}
+		return mockDb;
+	}),
 }));
 
 describe("GET /api/cocktails", () => {
@@ -161,7 +166,7 @@ describe("GET /api/cocktails", () => {
 		const data = (await response.json()) as { error: string };
 
 		expect(response.status).toBe(500);
-		expect(data).toEqual({ error: "データベース接続に失敗しました。" });
+		expect(data).toEqual({ error: "カクテルの取得中にエラーが発生しました。" });
 	});
 
 	it("データ取得中にエラーが発生した場合、500エラーを返す", async () => {
