@@ -6,6 +6,7 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import AuthControls from "./auth-controls";
 
 // ヘッダーコンポーネント
 export default function Header() {
@@ -44,8 +45,10 @@ export default function Header() {
 					</Typography>
 				</Link>
 
-				{/* 右側：将来的にナビゲーションやユーザーアイコンなど */}
-				<Box>{/* ここにボタンやアイコンを追加可能 */}</Box>
+				{/* 右側：ナビゲーションやユーザーアイコン */}
+				<Box>
+					<AuthControls />
+				</Box>
 			</Toolbar>
 		</AppBar>
 	);
