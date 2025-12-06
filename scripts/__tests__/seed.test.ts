@@ -43,7 +43,7 @@ describe("scripts/seed.ts", () => {
 	describe("seed()", () => {
 		it("正常にシード処理が実行され、各テーブルのデータが作成されること", async () => {
 			const { seed } = await import("../../scripts/seed");
-			await seed(mockEnv.DB);
+			await seed(mockDbClient);
 
 			// 1. 既存データの削除が呼ばれるか
 			expect(mockDbClient.delete).toHaveBeenCalledWith(schema.cocktailTags);
@@ -81,7 +81,7 @@ describe("scripts/seed.ts", () => {
 		it("材料に紐づく材料グループが存在しない場合にエラーをスローすること", async () => {
 			const { seed } = await import("../../scripts/seed");
 			await expect(
-				seed(mockEnv.DB, {
+				seed(mockDbClient, {
 					unforgettables: [],
 					newEra: [],
 					contemporaryClassics: [
@@ -110,7 +110,7 @@ describe("scripts/seed.ts", () => {
 				.spyOn(console, "log")
 				.mockImplementation(() => {});
 			const { runSeed } = await import("../../scripts/seed");
-			const result = await runSeed(mockEnv.DB);
+			const result = await runSeed(mockDbClient);
 
 			expect(result).toBe(true);
 			expect(consoleLogSpy).toHaveBeenCalledWith(
@@ -132,7 +132,7 @@ describe("scripts/seed.ts", () => {
 			});
 
 			const { runSeed } = await import("../../scripts/seed");
-			await expect(runSeed(mockEnv.DB)).rejects.toThrow(errorMessage);
+			await expect(runSeed(mockDbClient)).rejects.toThrow(errorMessage);
 
 			expect(consoleErrorSpy).toHaveBeenCalledWith(
 				"❌ Seed script failed:",

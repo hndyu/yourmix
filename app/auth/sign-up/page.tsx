@@ -83,6 +83,7 @@ export default function SignUpPage() {
 								autoFocus
 								value={name}
 								onChange={(e) => setName(e.target.value)}
+								inputProps={{ "data-testid": "name-input" }}
 							/>
 							<TextField
 								margin="normal"
@@ -94,6 +95,7 @@ export default function SignUpPage() {
 								autoComplete="email"
 								value={email}
 								onChange={(e) => setEmail(e.target.value)}
+								inputProps={{ "data-testid": "email-input" }}
 							/>
 							<TextField
 								margin="normal"
@@ -106,12 +108,14 @@ export default function SignUpPage() {
 								autoComplete="new-password"
 								value={password}
 								onChange={(e) => setPassword(e.target.value)}
+								inputProps={{ "data-testid": "password-input" }}
 							/>
 							<Button
 								type="submit"
 								fullWidth
 								variant="contained"
 								sx={{ mt: 3, mb: 2 }}
+								data-testid="sign-up-button"
 							>
 								アカウント登録
 							</Button>

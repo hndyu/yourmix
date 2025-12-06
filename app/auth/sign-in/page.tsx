@@ -81,6 +81,7 @@ export default function SignInPage() {
 								autoFocus
 								value={email}
 								onChange={(e) => setEmail(e.target.value)}
+								inputProps={{ "data-testid": "email-input" }}
 							/>
 							<TextField
 								margin="normal"
@@ -93,12 +94,14 @@ export default function SignInPage() {
 								autoComplete="current-password"
 								value={password}
 								onChange={(e) => setPassword(e.target.value)}
+								inputProps={{ "data-testid": "password-input" }}
 							/>
 							<Button
 								type="submit"
 								fullWidth
 								variant="contained"
 								sx={{ mt: 3, mb: 2 }}
+								data-testid="sign-in-button"
 							>
 								ログイン
 							</Button>

@@ -5,8 +5,11 @@ import Header from "../header";
 
 // next/navigation の usePathname をモック化
 const usePathnameMock = vi.fn();
+const useRouterMock = vi.fn();
+
 vi.mock("next/navigation", () => ({
 	usePathname: () => usePathnameMock(),
+	useRouter: () => useRouterMock(),
 }));
 
 describe("Header Component", () => {
