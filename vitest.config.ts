@@ -9,7 +9,7 @@ export default defineConfig({
 		environment: "jsdom",
 		// テストファイルのパターン
 		include: ["**/*.{test,spec}.{js,ts,jsx,tsx}"],
-		exclude: [...configDefaults.exclude, "./tests/**"],
+		exclude: [...configDefaults.exclude, "./tests/e2e/**"],
 		// テストの実行設定
 		globals: true,
 		// カバレッジの設定

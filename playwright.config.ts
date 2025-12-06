@@ -12,8 +12,8 @@ import { defineConfig, devices } from "@playwright/test";
  * See https://playwright.dev/docs/test-configuration.
  */
 export default defineConfig({
-	testDir: "./tests",
-	timeout: 1000 * 1000,
+	testDir: "./tests/e2e",
+	timeout: 300 * 1000,
 	/* Run tests in files in parallel */
 	fullyParallel: true,
 	/* Fail the build on CI if you accidentally left test.only in the source code. */
@@ -79,5 +79,5 @@ export default defineConfig({
 				url: "http://localhost:3000",
 				reuseExistingServer: true,
 				timeout: 300000,
-		  },
+			},
 });
