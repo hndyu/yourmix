@@ -3,6 +3,17 @@
 import { signIn } from "@/lib/auth-client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
+import {
+	Container,
+	Box,
+	Typography,
+	TextField,
+	Button,
+	Card,
+	CardContent,
+	Link as MuiLink,
+} from "@mui/material";
 
 export default function SignInPage() {
 	const [email, setEmail] = useState("");
@@ -30,44 +41,78 @@ export default function SignInPage() {
 	};
 
 	return (
-		<div className="flex flex-col items-center justify-center min-h-screen py-2">
-			<h1 className="text-2xl font-bold mb-4">ログイン</h1>
-			{error && <p className="text-red-500 mb-4">{error}</p>}
-			<form
-				onSubmit={handleSubmit}
-				className="flex flex-col gap-4 w-full max-w-sm"
+		<Container component="main" maxWidth="xs">
+			<Box
+				sx={{
+					marginTop: 8,
+					display: "flex",
+					flexDirection: "column",
+					alignItems: "center",
+				}}
 			>
-				<input
-					type="email"
-					placeholder="Email"
-					value={email}
-					onChange={(e) => setEmail(e.target.value)}
-					className="border p-2 rounded text-black"
-					required
-				/>
-				<input
-					type="password"
-					placeholder="Password"
-					value={password}
-					onChange={(e) => setPassword(e.target.value)}
-					className="border p-2 rounded text-black"
-					required
-				/>
-				<button
-					type="submit"
-					className="bg-green-500 text-white p-2 rounded hover:bg-green-600"
-				>
-					ログイン
-				</button>
-			</form>
-			<div className="mt-4">
-				<p>
-					アカウントがない場合：{" "}
-					<a href="/auth/sign-up" className="text-blue-500 hover:underline">
-						ログイン
-					</a>
-				</p>
-			</div>
-		</div>
+				<Card sx={{ width: "100%", p: 2 }}>
+					<CardContent>
+						<Box
+							sx={{
+								display: "flex",
+								flexDirection: "column",
+								alignItems: "center",
+								mb: 3,
+							}}
+						>
+							<Typography component="h1" variant="h5">
+								ログイン
+							</Typography>
+						</Box>
+						{error && (
+							<Typography color="error" variant="body2" sx={{ mb: 2 }}>
+								{error}
+							</Typography>
+						)}
+						<Box component="form" onSubmit={handleSubmit} noValidate>
+							<TextField
+								margin="normal"
+								required
+								fullWidth
+								id="email"
+								label="メールアドレス"
+								name="email"
+								autoComplete="email"
+								autoFocus
+								value={email}
+								onChange={(e) => setEmail(e.target.value)}
+							/>
+							<TextField
+								margin="normal"
+								required
+								fullWidth
+								name="password"
+								label="パスワード"
+								type="password"
+								id="password"
+								autoComplete="current-password"
+								value={password}
+								onChange={(e) => setPassword(e.target.value)}
+							/>
+							<Button
+								type="submit"
+								fullWidth
+								variant="contained"
+								sx={{ mt: 3, mb: 2 }}
+							>
+								ログイン
+							</Button>
+							<Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+								<Link href="/auth/sign-up" passHref legacyBehavior>
+									<MuiLink variant="body2" underline="hover">
+										アカウントをお持ちでない方: 登録
+									</MuiLink>
+								</Link>
+							</Box>
+						</Box>
+					</CardContent>
+				</Card>
+			</Box>
+		</Container>
 	);
 }

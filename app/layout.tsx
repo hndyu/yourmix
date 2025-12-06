@@ -1,5 +1,8 @@
 // import "./globals.css";
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v15-appRouter";
+import { ThemeProvider } from "@mui/material/styles";
+import CssBaseline from "@mui/material/CssBaseline";
+import theme from "./utils/theme";
 import type { Metadata } from "next";
 import type { WebSite, WithContext } from "schema-dts";
 import Footer from "./_components/footer";
@@ -36,9 +39,12 @@ export default function RootLayout({
 			</head>
 			<body>
 				<AppRouterCacheProvider>
-					<Header />
-					<main>{children}</main>
-					<Footer />
+					<ThemeProvider theme={theme}>
+						<CssBaseline />
+						<Header />
+						<main>{children}</main>
+						<Footer />
+					</ThemeProvider>
 				</AppRouterCacheProvider>
 			</body>
 		</html>
