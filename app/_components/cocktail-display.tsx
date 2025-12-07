@@ -88,6 +88,8 @@ export default function CocktailDisplay({
 						transform: show ? "translateY(0)" : "translateY(20px)",
 						opacity: show ? 1 : 0,
 						transition: "all 0.8s cubic-bezier(0.4, 0, 0.2, 1)",
+						mt: 2,
+						mx: 4,
 					}}
 					data-testid="cocktail-display"
 				>

@@ -54,7 +54,7 @@ const CocktailCard = ({
 
 	return (
 		<Grid size={{ xs: 12, sm: 6, md: 4 }}>
-			<StyledResultCard>
+			<StyledResultCard sx={{ mx: 4 }}>
 				{cocktail.imageUrl && isImageVisible && (
 					<Box
 						sx={{
