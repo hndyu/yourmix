@@ -32,9 +32,6 @@ export default function CocktailDisplaySkeleton() {
 						<Typography variant="h4" component="h2" sx={{ flex: 1 }}>
 							<Skeleton width="70%" />
 						</Typography>
-						<Box sx={{ display: "flex", gap: 1, ml: 2 }}>
-							<Skeleton variant="circular" width={40} height={40} />
-						</Box>
 					</Box>
 					<Typography variant="body1" sx={{ fontStyle: "italic" }}>
 						<Skeleton />

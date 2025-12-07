@@ -131,30 +131,31 @@ export default function CocktailDisplay({
 								>
 									🍹 {cocktail.name}
 								</Typography>
-
 								{/* 共有ボタン群 */}
-								<Box sx={{ display: "flex", gap: 1, ml: 2 }}>
-									<Tooltip
-										title={isWebShareSupported ? "共有" : "レシピをコピー"}
-									>
-										<IconButton
-											onClick={handleShare}
-											sx={{
-												backgroundColor: isWebShareSupported
-													? "#1976d2"
-													: "#4caf50",
-												color: "white",
-												"&:hover": {
-													backgroundColor: isWebShareSupported
-														? "#1565c0"
-														: "#388e3c",
-												},
-											}}
+								{isDetailPage && (
+									<Box sx={{ display: "flex", gap: 1, ml: 2 }}>
+										<Tooltip
+											title={isWebShareSupported ? "共有" : "レシピをコピー"}
 										>
-											{isWebShareSupported ? <ShareIcon /> : <CopyIcon />}
-										</IconButton>
-									</Tooltip>
-								</Box>
+											<IconButton
+												onClick={handleShare}
+												sx={{
+													backgroundColor: isWebShareSupported
+														? "#1976d2"
+														: "#4caf50",
+													color: "white",
+													"&:hover": {
+														backgroundColor: isWebShareSupported
+															? "#1565c0"
+															: "#388e3c",
+													},
+												}}
+											>
+												{isWebShareSupported ? <ShareIcon /> : <CopyIcon />}
+											</IconButton>
+										</Tooltip>
+									</Box>
+								)}
 							</Box>
 							<Typography
 								variant="body1"
