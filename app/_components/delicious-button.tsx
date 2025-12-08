@@ -8,10 +8,8 @@ import {
 	DialogContent,
 	DialogContentText,
 	DialogActions,
-	Badge,
 } from "@mui/material";
-import RestaurantIcon from "@mui/icons-material/Restaurant";
-import RestaurantMenuIcon from "@mui/icons-material/RestaurantMenu";
+import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import { useRouter } from "next/navigation";
 import { useSession } from "../../lib/auth-client";
 
@@ -28,7 +26,6 @@ export default function DeliciousButton({
 }: DeliciousButtonProps) {
 	const [count, setCount] = useState(initialCount);
 	const [isLiked, setIsLiked] = useState(initialIsLiked);
-	const [isPending, startTransition] = useTransition();
 	const [loginDialogOpen, setLoginDialogOpen] = useState(false);
 	const router = useRouter();
 	const { data: session } = useSession();
@@ -46,7 +43,7 @@ export default function DeliciousButton({
 		setCount((prev) => (newIsLiked ? prev + 1 : prev - 1));
 
 		try {
-			const res = await fetch(`/api/recipes/${cocktailId}/delicious`, {
+			const res = await fetch(`/api/likes/${cocktailId}`, {
 				method: "POST",
 			});
 
@@ -84,7 +81,7 @@ export default function DeliciousButton({
 				variant={isLiked ? "contained" : "outlined"}
 				color="warning" // Orange/Gold for delicious/food theme
 				onClick={handleClick}
-				startIcon={isLiked ? <RestaurantMenuIcon /> : <RestaurantIcon />}
+				startIcon={<ThumbUpIcon />}
 				sx={{
 					borderRadius: "20px",
 					textTransform: "none",
@@ -96,7 +93,6 @@ export default function DeliciousButton({
 						borderColor: "#f57c00",
 					},
 				}}
-				disabled={isPending}
 			>
 				おいしい！{" "}
 				{count > 0 && <span style={{ marginLeft: "4px" }}>{count}</span>}
