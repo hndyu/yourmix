@@ -43,8 +43,8 @@ export default function SignUpPage() {
 	};
 
 	return (
-		<Container component="main" maxWidth="xs">
-			<Box
+        <Container component="main" maxWidth="xs">
+            <Box
 				sx={{
 					marginTop: 8,
 					display: "flex",
@@ -120,16 +120,16 @@ export default function SignUpPage() {
 								アカウント登録
 							</Button>
 							<Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-								<Link href="/auth/sign-in" passHref legacyBehavior>
-									<MuiLink variant="body2" underline="hover">
+								<Link href="/auth/sign-in">
+                                    <MuiLink variant="body2" underline="hover">
 										すでにアカウントをお持ちの方: ログイン
 									</MuiLink>
-								</Link>
+                                </Link>
 							</Box>
 						</Box>
 					</CardContent>
 				</Card>
 			</Box>
-		</Container>
-	);
+        </Container>
+    );
 }

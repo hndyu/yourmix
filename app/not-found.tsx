@@ -15,7 +15,7 @@ export const metadata: Metadata = {
 
 export default function NotFound() {
 	return (
-		<Box
+        <Box
 			sx={{
 				display: "flex",
 				flexDirection: "column",
@@ -26,17 +26,17 @@ export default function NotFound() {
 				p: 3,
 			}}
 		>
-			<Typography variant="h4" component="h1" gutterBottom>
+            <Typography variant="h4" component="h1" gutterBottom>
 				404 - ページが見つかりません
 			</Typography>
-			<Typography variant="body1" sx={{ mb: 3 }}>
+            <Typography variant="body1" sx={{ mb: 3 }}>
 				お探しのページは移動または削除された可能性があります。
 			</Typography>
-			<Link href="/" passHref>
+            <Link href="/">
 				<Button component="a" variant="contained">
 					トップページに戻る
 				</Button>
 			</Link>
-		</Box>
-	);
+        </Box>
+    );
 }
