@@ -14,12 +14,13 @@ import {
 	Divider,
 } from "@mui/material";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { useState } from "react";
 
 export default function AuthControls() {
 	const { data: session, isPending } = useSession();
 	const router = useRouter();
+	const pathname = usePathname();
 
 	// User Menu State
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -115,7 +116,7 @@ export default function AuthControls() {
 		<Box sx={{ display: "flex", gap: 1 }}>
 			<Button
 				component={Link}
-				href="/auth/sign-in"
+				href={`/auth/sign-in?callbackUrl=${encodeURIComponent(pathname)}`}
 				color="inherit"
 				variant="text"
 				sx={{ fontWeight: "bold" }}
@@ -124,7 +125,7 @@ export default function AuthControls() {
 			</Button>
 			<Button
 				component={Link}
-				href="/auth/sign-up"
+				href={`/auth/sign-up?callbackUrl=${encodeURIComponent(pathname)}`}
 				color="primary"
 				variant="contained"
 				sx={{ fontWeight: "bold" }}

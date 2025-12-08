@@ -2,7 +2,7 @@
 
 import { signUp } from "@/lib/auth-client";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import {
 	Container,
@@ -12,7 +12,6 @@ import {
 	Button,
 	Card,
 	CardContent,
-	Link as MuiLink,
 } from "@mui/material";
 
 export default function SignUpPage() {
@@ -21,6 +20,10 @@ export default function SignUpPage() {
 	const [name, setName] = useState("");
 	const [error, setError] = useState<string | null>(null);
 	const router = useRouter();
+	const searchParams = useSearchParams();
+
+	// 登録前のページURLを取得（なければホームページに遷移）
+	const callbackUrl = searchParams.get("callbackUrl") || "/";
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
@@ -33,7 +36,8 @@ export default function SignUpPage() {
 			},
 			{
 				onSuccess: () => {
-					router.push("/auth/sign-in");
+					// 登録成功後、元のページに遷移
+					router.push(callbackUrl);
 				},
 				onError: (ctx) => {
 					setError(ctx.error.message);

@@ -2,7 +2,7 @@
 
 import { signIn } from "@/lib/auth-client";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import {
 	Container,
@@ -20,6 +20,10 @@ export default function SignInPage() {
 	const [password, setPassword] = useState("");
 	const [error, setError] = useState<string | null>(null);
 	const router = useRouter();
+	const searchParams = useSearchParams();
+
+	// ログイン前のページURLを取得（なければホームページに遷移）
+	const callbackUrl = searchParams.get("callbackUrl") || "/";
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
@@ -31,7 +35,8 @@ export default function SignInPage() {
 			},
 			{
 				onSuccess: () => {
-					router.push("/");
+					// ログイン成功後、元のページに遷移
+					router.push(callbackUrl);
 				},
 				onError: (ctx) => {
 					setError(ctx.error.message);
@@ -106,7 +111,9 @@ export default function SignInPage() {
 								ログイン
 							</Button>
 							<Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-								<Link href="/auth/sign-up">
+								<Link
+									href={`/auth/sign-up?callbackUrl=${encodeURIComponent(callbackUrl)}`}
+								>
 									<Typography
 										variant="body2"
 										sx={{
