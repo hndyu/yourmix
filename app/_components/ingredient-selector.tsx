@@ -223,6 +223,7 @@ export default function IngredientSelector({
 									<Tooltip title={categoryInfo.description} arrow>
 										<HelpOutlineIcon
 											fontSize="small"
+											onClick={(e) => e.stopPropagation()}
 											sx={{ color: "text.secondary", cursor: "pointer" }}
 										/>
 									</Tooltip>
@@ -245,42 +246,60 @@ export default function IngredientSelector({
 										const isLimitReached = selectedCount >= 5;
 
 										return (
-											<FormControlLabel
+											<Box
 												key={ingredient.id}
-												control={
-													<Checkbox
-														checked={isSelected}
-														onChange={() => handleIngredientToggle(ingredient.id)}
-														color="primary"
-														disabled={disabled || (!isSelected && isLimitReached)}
-													/>
-												}
-												label={
-													<Box
+												sx={{
+													display: "flex",
+													alignItems: "center",
+													gap: 1,
+												}}
+											>
+												<Checkbox
+													checked={isSelected}
+													onChange={() => handleIngredientToggle(ingredient.id)}
+													color="primary"
+													disabled={disabled || (!isSelected && isLimitReached)}
+												/>
+												<Box
+													sx={{
+														display: "flex",
+														alignItems: "center",
+														gap: 0.5,
+													}}
+												>
+													<Typography
 														sx={{
-															display: "flex",
-															alignItems: "center",
-															gap: 0.5,
+															fontSize: "0.9rem",
+															cursor:
+																disabled || (!isSelected && isLimitReached)
+																	? "default"
+																	: "pointer",
+														}}
+														onClick={() => {
+															if (
+																!disabled &&
+																!(isSelected === false && isLimitReached)
+															) {
+																handleIngredientToggle(ingredient.id);
+															}
 														}}
 													>
-														<Typography sx={{ fontSize: "0.9rem" }}>
-															{ingredient.name}
-														</Typography>
-														{ingredient.description && (
-															<Tooltip title={ingredient.description} arrow>
-																<HelpOutlineIcon
-																	fontSize="small"
-																	sx={{
-																		color: "text.secondary",
-																		cursor: "pointer",
-																		verticalAlign: "middle",
-																	}}
-																/>
-															</Tooltip>
-														)}
-													</Box>
-												}
-											/>
+														{ingredient.name}
+													</Typography>
+													{ingredient.description && (
+														<Tooltip title={ingredient.description} arrow>
+															<HelpOutlineIcon
+																fontSize="small"
+																sx={{
+																	color: "text.secondary",
+																	cursor: "help",
+																	verticalAlign: "middle",
+																}}
+															/>
+														</Tooltip>
+													)}
+												</Box>
+											</Box>
 										);
 									})}
 								</Box>
