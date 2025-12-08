@@ -1,8 +1,9 @@
-import { asc, eq } from "drizzle-orm";
+import { asc, eq, sql, and } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import * as schema from "@/app/db/schema";
 import getDb from "@/app/db/db";
 import type { Cocktail } from "@/app/types/cocktail";
+import { getAuth } from "@/lib/auth";
 
 /**
  * 特定のカクテルを取得するAPIエンドポイント
@@ -67,6 +68,33 @@ export async function GET(
 			);
 		}
 
+		const cocktailId = results[0].cocktails.id;
+
+		// 1. Delicious数 (いいね数) の取得
+		const [countResult] = await db
+			.select({ count: sql<number>`count(*)` })
+			.from(schema.deliciousLikes)
+			.where(eq(schema.deliciousLikes.cocktailId, cocktailId));
+
+		// 2. ユーザーがいいねしているか確認
+		let isLiked = false;
+		const session = await getAuth().api.getSession({
+			headers: request.headers,
+		});
+
+		if (session) {
+			const [like] = await db
+				.select()
+				.from(schema.deliciousLikes)
+				.where(
+					and(
+						eq(schema.deliciousLikes.cocktailId, cocktailId),
+						eq(schema.deliciousLikes.userId, session.user.id),
+					),
+				);
+			isLiked = !!like;
+		}
+
 		// 取得したデータをカクテルオブジェクトに整形
 		const cocktailData = results.reduce(
 			(acc, row) => {
@@ -102,6 +130,9 @@ export async function GET(
 				ingredients: [],
 				tags: [],
 				instructions: [],
+
+				deliciousCount: countResult?.count ?? 0,
+				isLiked: isLiked,
 			} as Cocktail,
 		);
 

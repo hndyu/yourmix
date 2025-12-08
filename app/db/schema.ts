@@ -1,9 +1,10 @@
-import { relations } from "drizzle-orm";
+import { relations, sql } from "drizzle-orm";
 import {
 	integer,
 	primaryKey,
 	sqliteTable,
 	text,
+	unique,
 } from "drizzle-orm/sqlite-core";
 
 // cocktails テーブル
@@ -219,3 +220,33 @@ export const verification = sqliteTable("verification", {
 	createdAt: integer("createdAt", { mode: "timestamp" }),
 	updatedAt: integer("updatedAt", { mode: "timestamp" }),
 });
+
+export const deliciousLikes = sqliteTable(
+	"delicious_likes",
+	{
+		id: integer("id").primaryKey({ autoIncrement: true }),
+		userId: text("user_id")
+			.notNull()
+			.references(() => user.id, { onDelete: "cascade" }),
+		cocktailId: text("cocktail_id")
+			.notNull()
+			.references(() => cocktails.id, { onDelete: "cascade" }),
+		createdAt: integer("created_at", { mode: "timestamp" })
+			.notNull()
+			.default(sql`CURRENT_TIMESTAMP`),
+	},
+	(table) => ({
+		userCocktailUnique: unique().on(table.userId, table.cocktailId),
+	}),
+);
+
+export const deliciousLikesRelations = relations(deliciousLikes, ({ one }) => ({
+	user: one(user, {
+		fields: [deliciousLikes.userId],
+		references: [user.id],
+	}),
+	cocktail: one(cocktails, {
+		fields: [deliciousLikes.cocktailId],
+		references: [cocktails.id],
+	}),
+}));

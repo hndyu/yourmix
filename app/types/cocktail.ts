@@ -40,4 +40,6 @@ export interface Cocktail {
 	garnish?: string;
 	tags?: string[];
 	imageUrl?: string;
+	deliciousCount?: number;
+	isLiked?: boolean;
 }
