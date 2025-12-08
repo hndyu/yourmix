@@ -46,14 +46,12 @@ const StyledCocktailCard = styled(Card)(({ theme }) => ({
 
 interface CocktailDisplayProps {
 	cocktail: Cocktail;
-	onRemove?: () => void;
 	show?: boolean;
 	isDetailPage?: boolean;
 }
 
 export default function CocktailDisplay({
 	cocktail,
-	onRemove,
 	show = true,
 	isDetailPage = false,
 }: CocktailDisplayProps) {
@@ -145,28 +143,29 @@ export default function CocktailDisplay({
 										initialIsLiked={cocktail.isLiked ?? false}
 									/>
 									{isDetailPage && (
-										<Box sx={{ display: "flex", gap: 1, ml: 2 }}>
-											<Tooltip
-												title={isWebShareSupported ? "共有" : "レシピをコピー"}
-											>
-												<IconButton
-													onClick={handleShare}
-													sx={{
+									<Box sx={{ display: "flex", gap: 1, ml: 2 }}>
+										<Tooltip
+											title={isWebShareSupported ? "共有" : "レシピをコピー"}
+										>
+											<IconButton
+												onClick={handleShare}
+												aria-label={isWebShareSupported ? "共有" : "レシピをコピー"}
+												sx={{
+													backgroundColor: isWebShareSupported
+														? "#1976d2"
+														: "#4caf50",
+													color: "white",
+													"&:hover": {
 														backgroundColor: isWebShareSupported
-															? "#1976d2"
-															: "#4caf50",
-														color: "white",
-														"&:hover": {
-															backgroundColor: isWebShareSupported
-																? "#1565c0"
-																: "#388e3c",
-														},
-													}}
-												>
-													{isWebShareSupported ? <ShareIcon /> : <CopyIcon />}
-												</IconButton>
-											</Tooltip>
-										</Box>
+															? "#1565c0"
+															: "#388e3c",
+													},
+												}}
+											>
+												{isWebShareSupported ? <ShareIcon /> : <CopyIcon />}
+											</IconButton>
+										</Tooltip>
+									</Box>
 									)}
 								</Box>
 							</Box>
@@ -363,24 +362,6 @@ export default function CocktailDisplay({
 						>
 							※カクテルの画像と説明文はAIによって生成されたイメージです。
 						</Typography>
-
-						{/* 削除ボタン（オプション） */}
-						{onRemove && (
-							<Box sx={{ textAlign: "center", mt: 3 }}>
-								<Button // このボタンはオリジナルカクテルでのみ表示される想定
-									variant="outlined"
-									color="error"
-									onClick={onRemove}
-									sx={{
-										borderRadius: "25px",
-										px: 3,
-										py: 1,
-									}}
-								>
-									このレシピを削除
-								</Button>
-							</Box>
-						)}
 					</CardContent>
 				</StyledCocktailCard>
 			</Fade>

@@ -259,6 +259,9 @@ export default function IngredientSelector({
 													onChange={() => handleIngredientToggle(ingredient.id)}
 													color="primary"
 													disabled={disabled || (!isSelected && isLimitReached)}
+													inputProps={{
+														"aria-labelledby": `ingredient-label-${ingredient.id}`,
+													}}
 												/>
 												<Box
 													sx={{
@@ -268,6 +271,7 @@ export default function IngredientSelector({
 													}}
 												>
 													<Typography
+														id={`ingredient-label-${ingredient.id}`}
 														sx={{
 															fontSize: "0.9rem",
 															cursor:

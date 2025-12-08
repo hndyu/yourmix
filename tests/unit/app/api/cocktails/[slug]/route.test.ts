@@ -10,31 +10,38 @@ import {
 } from "vitest";
 import { GET } from "@/app/api/cocktails/[slug]/route";
 import type { Cocktail } from "@/app/types/cocktail";
+import * as db from "@/app/db/db";
 
 // 外部モジュールのモック
 vi.mock("@opennextjs/cloudflare", () => ({
 	getCloudflareContext: vi.fn(),
 }));
+vi.mock("@/app/db/db");
+
+// getAuth のモック
+const mockGetSession = vi.fn();
+vi.mock("@/lib/auth", () => ({
+	getAuth: () => ({
+		api: {
+			getSession: mockGetSession,
+		},
+	}),
+}));
 
 // Drizzle ORMのクエリチェーンをモック
 const mockOrderBy = vi.fn();
-const mockDb = {
-	select: vi.fn().mockReturnThis(),
-	from: vi.fn().mockReturnThis(),
-	where: vi.fn(() => ({
-		leftJoin: vi.fn().mockReturnThis(),
-		orderBy: mockOrderBy,
-	})),
-};
-
-vi.mock("drizzle-orm/d1", () => ({
-	drizzle: vi.fn((dbBinding) => {
-		if (!dbBinding) {
-			throw new Error("D1Database binding is required.");
-		}
-		return mockDb;
-	}),
+const mockMainWhere = vi.fn(() => ({
+	leftJoin: vi.fn().mockReturnThis(),
+	orderBy: mockOrderBy,
 }));
+const mockCountWhere = vi.fn();
+const mockLikeWhere = vi.fn();
+
+const mockSelect = vi.fn();
+
+const mockDb = {
+	select: mockSelect,
+};
 
 describe("GET /api/cocktails/[slug]", () => {
 	// モックデータ
@@ -112,16 +119,42 @@ describe("GET /api/cocktails/[slug]", () => {
 	];
 
 	beforeEach(() => {
+		// biome-ignore lint/suspicious/noExplicitAny: テストのために部分的なDBオブジェクトをモックする必要があります
+		vi.mocked(db.default).mockReturnValue(mockDb as any);
 		(getCloudflareContext as Mock).mockReturnValue({
 			env: {
 				DB: "mock-db-binding",
 			},
 		});
+
+		// 呼び出しごとに異なる `where` の実装を返すように設定
+		mockSelect
+			.mockImplementationOnce(() => ({
+				from: vi.fn(() => ({
+					where: mockMainWhere,
+				})),
+			}))
+			.mockImplementationOnce(() => ({
+				from: vi.fn(() => ({
+					where: mockCountWhere,
+				})),
+			}))
+			.mockImplementationOnce(() => ({
+				from: vi.fn(() => ({
+					where: mockLikeWhere,
+				})),
+			}));
+
 		mockOrderBy.mockResolvedValue(mockDbResult);
+		mockCountWhere.mockResolvedValue([{ count: 10 }]);
+		mockLikeWhere.mockResolvedValue([{ userId: "test-user-id" }]);
+
+		mockGetSession.mockResolvedValue({ user: { id: "test-user-id" } });
 	});
 
 	afterEach(() => {
 		vi.clearAllMocks();
+		vi.resetAllMocks(); // モックをリセット
 	});
 
 	it("正常なリクエストで指定されたカクテルの詳細を整形して返す", async () => {
@@ -168,11 +201,16 @@ describe("GET /api/cocktails/[slug]", () => {
 			"氷を入れたグラスにジンを注ぐ",
 			"トニックウォーターで満たす",
 		]);
+
+		// いいね数といいね状態が正しくセットされているか
+		expect(data.cocktail.deliciousCount).toBe(10);
+		expect(data.cocktail.isLiked).toBe(true);
 	});
 
 	it("slugが指定されていない場合、400エラーを返す", async () => {
-		// @ts-expect-error slugがないケースをテスト
-		const response = await GET({} as Request, { params: Promise.resolve({}) });
+		const response = await GET({} as Request, {
+			params: Promise.resolve({} as { slug: string }),
+		});
 		const data = await response.json();
 
 		expect(response.status).toBe(400);
@@ -190,9 +228,13 @@ describe("GET /api/cocktails/[slug]", () => {
 		expect(data).toEqual({ error: "指定されたカクテルが見つかりません。" });
 	});
 
-	it("DBバインディングが存在しない場合、500エラーを返す", async () => {
+	it("DBバインディングが存在しない場合に500エラーを返す", async () => {
 		(getCloudflareContext as Mock).mockReturnValue({
 			env: {}, // DBなし
+		});
+		// getDbのモックを上書き
+		vi.mocked(db.default).mockImplementationOnce(() => {
+			throw new Error("D1Database binding is required.");
 		});
 
 		const response = await GET({} as Request, {
@@ -203,6 +245,7 @@ describe("GET /api/cocktails/[slug]", () => {
 		expect(response.status).toBe(500);
 		expect(data).toEqual({ error: "カクテルの取得中にエラーが発生しました。" });
 	});
+
 
 	it("データ取得中にエラーが発生した場合、500エラーを返す", async () => {
 		const consoleErrorSpy = vi

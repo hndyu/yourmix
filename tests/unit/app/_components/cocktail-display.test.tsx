@@ -8,6 +8,21 @@ import * as affiliateLinks from "@/app/utils/affiliate-links";
 import * as shareUtils from "@/app/utils/share-utils";
 import CocktailDisplay from "@/app/_components/cocktail-display";
 
+// Mock next/navigation
+vi.mock("next/navigation", () => ({
+	useRouter: () => ({
+		push: vi.fn(),
+	}),
+}));
+
+// Mock auth-client
+vi.mock("@/lib/auth-client", () => ({
+	useSession: () => ({
+		data: null,
+		error: null,
+	}),
+}));
+
 // モジュールのモック
 vi.mock("@/app/utils/share-utils", () => ({
 	canUseWebShare: vi.fn(),
@@ -106,30 +121,9 @@ describe("CocktailDisplay Component", () => {
 		expect(heading).toHaveTextContent(`🍹 ${mockCocktail.name}`);
 	});
 
-	it("onRemoveが渡された場合、削除ボタンが表示されクリックで関数が呼ばれる", async () => {
-		const handleRemove = vi.fn();
-		render(<CocktailDisplay cocktail={mockCocktail} onRemove={handleRemove} />);
-
-		const removeButton = screen.getByRole("button", {
-			name: "このレシピを削除",
-		});
-		expect(removeButton).toBeInTheDocument();
-
-		await userEvent.click(removeButton);
-		expect(handleRemove).toHaveBeenCalledTimes(1);
-	});
-
-	it("onRemoveが渡されない場合、削除ボタンは表示されない", () => {
-		render(<CocktailDisplay cocktail={mockCocktail} />);
-		const removeButton = screen.queryByRole("button", {
-			name: "このレシピを削除",
-		});
-		expect(removeButton).not.toBeInTheDocument();
-	});
-
 	it("Web Share APIがサポートされている場合、共有ボタンでshareCocktailが呼ばれる", async () => {
 		vi.mocked(shareUtils.canUseWebShare).mockReturnValue(true);
-		render(<CocktailDisplay cocktail={mockCocktail} />);
+		render(<CocktailDisplay cocktail={mockCocktail} isDetailPage={true} />);
 
 		const shareButton = screen.getByRole("button", { name: "共有" });
 		await userEvent.click(shareButton);
@@ -141,7 +135,7 @@ describe("CocktailDisplay Component", () => {
 		vi.mocked(shareUtils.canUseWebShare).mockReturnValue(false);
 		vi.mocked(shareUtils.shareCocktail).mockResolvedValue(true); // コピー成功をシミュレート
 
-		render(<CocktailDisplay cocktail={mockCocktail} />);
+		render(<CocktailDisplay cocktail={mockCocktail} isDetailPage={true} />);
 
 		const copyButton = screen.getByRole("button", { name: "レシピをコピー" });
 		await userEvent.click(copyButton);

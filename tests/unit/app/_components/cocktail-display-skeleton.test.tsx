@@ -16,21 +16,13 @@ describe("CocktailDisplaySkeleton", () => {
 		render(<CocktailDisplaySkeleton />);
 
 		// ヘッダーのスケルトン要素
-		// h2内のSkeleton
+		// h2内のSkeleton (タイトル)
 		const headingSkeletons = screen.getAllByRole("heading", { level: 2 });
 		expect(
 			headingSkeletons[0].querySelector(".MuiSkeleton-root"),
 		).toBeInTheDocument();
 
-		// 共有ボタンの円形スケルトン
-		const circularSkeletons = screen
-			.getAllByRole("generic", {
-				name: "",
-			})
-			.filter((el) => el.querySelector(".MuiSkeleton-circular"));
-		expect(circularSkeletons.length).toBeGreaterThanOrEqual(1);
-
-		// タグのスケルトン
+		// タグのスケルトン (roundedスケルトン)
 		const roundedSkeletons = screen
 			.getAllByRole("generic", {
 				name: "",

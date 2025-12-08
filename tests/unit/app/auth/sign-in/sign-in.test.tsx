@@ -9,6 +9,9 @@ vi.mock("next/navigation", () => ({
 	useRouter: () => ({
 		push: pushMock,
 	}),
+	useSearchParams: () => ({
+		get: () => null,
+	}),
 }));
 
 // Mock auth-client

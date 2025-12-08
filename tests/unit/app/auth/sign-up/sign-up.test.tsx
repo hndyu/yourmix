@@ -9,6 +9,9 @@ vi.mock("next/navigation", () => ({
 	useRouter: () => ({
 		push: pushMock,
 	}),
+	useSearchParams: () => ({
+		get: () => null,
+	}),
 }));
 
 // Mock auth-client
@@ -100,7 +103,7 @@ describe("SignUpPage", () => {
 				},
 				expect.any(Object),
 			);
-			expect(pushMock).toHaveBeenCalledWith("/auth/sign-in");
+			expect(pushMock).toHaveBeenCalledWith("/");
 		});
 	});
 

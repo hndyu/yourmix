@@ -231,24 +231,4 @@ describe("CocktailMixer", () => {
 			behavior: "smooth",
 		});
 	});
-
-	it("生成されたカクテルの削除ボタンを押すと、該当カクテルが非表示になる", async () => {
-		mockUseAICocktailGenerator.generatedCocktail = mockGeneratedCocktail;
-		render(<CocktailMixer />);
-
-		// 初期状態でカクテルが表示されていることを確認
-		await waitFor(() => {
-			expect(
-				screen.getByText(`Generated Cocktail: ${mockGeneratedCocktail.name}`),
-			).toBeInTheDocument();
-		});
-
-		// 削除ボタンをクリック
-		fireEvent.click(screen.getByTestId("remove-cocktail"));
-
-		// clear関数が呼ばれたことを確認
-		expect(
-			mockUseAICocktailGenerator.clearGeneratedCocktail,
-		).toHaveBeenCalled();
-	});
 });

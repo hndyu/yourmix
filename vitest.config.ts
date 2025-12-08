@@ -3,7 +3,7 @@ import tsconfigPaths from "vite-tsconfig-paths";
 import { configDefaults, defineConfig } from "vitest/config";
 
 export default defineConfig({
-	plugins: [tsconfigPaths(), react()],
+	plugins: [react(), tsconfigPaths()],
 	test: {
 		// テスト環境の設定
 		environment: "jsdom",

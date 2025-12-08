@@ -129,7 +129,6 @@ export default function CocktailMixer() {
 				{!isMixing && generatedCocktail && (
 					<CocktailDisplay
 						cocktail={generatedCocktail}
-						onRemove={handleCloseCocktail}
 						show={showOriginalCocktail}
 					/>
 				)}
