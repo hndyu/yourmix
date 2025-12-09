@@ -85,7 +85,11 @@ export default function SignInForm() {
 								autoFocus
 								value={email}
 								onChange={(e) => setEmail(e.target.value)}
-								inputProps={{ "data-testid": "email-input" }}
+								slotProps={{
+									htmlInput: {
+										"data-testid": "email-input"
+									}
+								}}
 							/>
 							<TextField
 								margin="normal"
@@ -98,7 +102,11 @@ export default function SignInForm() {
 								autoComplete="current-password"
 								value={password}
 								onChange={(e) => setPassword(e.target.value)}
-								inputProps={{ "data-testid": "password-input" }}
+								slotProps={{
+									htmlInput: {
+										"data-testid": "password-input"
+									}
+									}}
 							/>
 							<Button
 								type="submit"

@@ -87,7 +87,11 @@ export default function SignUpForm() {
 								autoFocus
 								value={name}
 								onChange={(e) => setName(e.target.value)}
-								inputProps={{ "data-testid": "name-input" }}
+								slotProps={{
+									htmlInput: {
+										"data-testid": "name-input"
+									}
+								}}
 							/>
 							<TextField
 								margin="normal"
@@ -99,7 +103,11 @@ export default function SignUpForm() {
 								autoComplete="email"
 								value={email}
 								onChange={(e) => setEmail(e.target.value)}
-								inputProps={{ "data-testid": "email-input" }}
+								slotProps={{
+									htmlInput: {
+										"data-testid": "email-input"
+									}
+								}}
 							/>
 							<TextField
 								margin="normal"
@@ -112,7 +120,11 @@ export default function SignUpForm() {
 								autoComplete="new-password"
 								value={password}
 								onChange={(e) => setPassword(e.target.value)}
-								inputProps={{ "data-testid": "password-input" }}
+								slotProps={{
+									htmlInput: {
+										"data-testid": "password-input"
+									}
+								}}
 							/>
 							<Button
 								type="submit"

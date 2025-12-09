@@ -259,8 +259,10 @@ export default function IngredientSelector({
 													onChange={() => handleIngredientToggle(ingredient.id)}
 													color="primary"
 													disabled={disabled || (!isSelected && isLimitReached)}
-													inputProps={{
-														"aria-labelledby": `ingredient-label-${ingredient.id}`,
+													slotProps={{
+														input: {
+															"aria-labelledby": `ingredient-label-${ingredient.id}`,
+														}
 													}}
 												/>
 												<Box
