@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test";
 
-test.describe("Authentication Flow", () => {
+test.describe("Authentication Flow with callbackUrl", () => {
 	// Unique user for each test run to avoid conflicts
 	const timestamp = new Date().getTime();
 	const user = {
@@ -9,9 +9,9 @@ test.describe("Authentication Flow", () => {
 		password: "Password123!",
 	};
 
-	test("should allow a user to sign up and then sign in", async ({ page }) => {
-		// 1. Sign Up
-		await page.goto("/auth/sign-up");
+	test("should allow a user to sign up", async ({ page }) => {
+		// Sign Up
+		await page.goto("/auth/sign-up?callbackUrl=/test-callback");
 
 		await page.getByTestId("name-input").fill(user.name);
 		await page.getByTestId("email-input").fill(user.email);
@@ -19,17 +19,8 @@ test.describe("Authentication Flow", () => {
 
 		await page.getByTestId("sign-up-button").click();
 
-		// Should redirect to Sign In page upon success
-		await expect(page).toHaveURL(/\/auth\/sign-in/);
-
-		// 2. Sign In
-		await page.getByTestId("email-input").fill(user.email);
-		await page.getByTestId("password-input").fill(user.password);
-
-		await page.getByTestId("sign-in-button").click();
-
 		// Should redirect to Home page
-		await expect(page).toHaveURL("/");
+		await expect(page).toHaveURL("/test-callback");
 
 		// Verify logged in state (e.g., check for user menu or absence of login button)
 		// Since we don't have exact text for user menu, checking non-existence of login button or existence of avatar is good.
