@@ -119,6 +119,7 @@ export default function CocktailDisplay({
 									display: "flex",
 									justifyContent: "space-between",
 									alignItems: "flex-start",
+									flexWrap: "wrap",
 									mb: 2,
 								}}
 							>
@@ -129,6 +130,7 @@ export default function CocktailDisplay({
 										fontWeight: "bold",
 										color: "#2c3e50",
 										flex: 1,
+										fontSize: { xs: "2rem", md: "3rem" },
 									}}
 								>
 									🍹 {cocktail.name}
@@ -208,7 +210,7 @@ export default function CocktailDisplay({
 						{/* 材料と作り方を横並びで表示 */}
 						<Box sx={{ display: "flex", gap: 3, flexWrap: "wrap" }}>
 							{/* 材料 */}
-							<Box sx={{ flex: 1, minWidth: 300 }}>
+							<Box sx={{ flex: 1 }}>
 								<Typography
 									component={isDetailPage ? "h2" : "h3"}
 									variant="h6"
@@ -235,6 +237,7 @@ export default function CocktailDisplay({
 																display: "flex",
 																justifyContent: "space-between",
 																alignItems: "center",
+																flexWrap: "wrap",
 																width: "100%",
 															}}
 														>
@@ -304,7 +307,7 @@ export default function CocktailDisplay({
 							</Box>
 
 							{/* 作り方 */}
-							<Box sx={{ flex: 1, minWidth: 300 }}>
+							<Box sx={{ flex: 1 }}>
 								<Typography
 									component={isDetailPage ? "h2" : "h3"}
 									variant="h6"
