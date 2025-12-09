@@ -21,6 +21,10 @@ export default function AuthControls() {
 	const { data: session, isPending } = useSession();
 	const router = useRouter();
 	const pathname = usePathname();
+	console.log("Current pathname:", pathname);
+
+	const callbackUrl =
+		pathname === "/auth/sign-in" || pathname === "/auth/sign-up" ? "/" : pathname;
 
 	// User Menu State
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -118,7 +122,7 @@ export default function AuthControls() {
 		<Box sx={{ display: "flex", gap: 1 }}>
 			<Button
 				component={Link}
-				href={`/auth/sign-in?callbackUrl=${encodeURIComponent(pathname)}`}
+				href={`/auth/sign-in?callbackUrl=${encodeURIComponent(callbackUrl)}`}
 				color="inherit"
 				variant="text"
 				sx={{ fontWeight: "bold" }}
@@ -127,7 +131,7 @@ export default function AuthControls() {
 			</Button>
 			<Button
 				component={Link}
-				href={`/auth/sign-up?callbackUrl=${encodeURIComponent(pathname)}`}
+				href={`/auth/sign-up?callbackUrl=${encodeURIComponent(callbackUrl)}`}
 				color="primary"
 				variant="contained"
 				sx={{ fontWeight: "bold" }}

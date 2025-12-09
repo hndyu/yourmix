@@ -23,7 +23,11 @@ export default function SignUpForm() {
 	const searchParams = useSearchParams();
 
 	// 登録前のページURLを取得（なければホームページに遷移）
-	const callbackUrl = searchParams.get("callbackUrl") || "/";
+	let callbackUrl = searchParams.get("callbackUrl") || "/";
+	// callbackUrlが/auth/sign-upの場合はホームページに遷移
+	if (callbackUrl === "%2Fauth%2Fsign-in") {
+		callbackUrl = "/";
+	}
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
