@@ -108,6 +108,16 @@ describe("POST /api/generate-cocktail", () => {
 		const { POST } = await import("@/app/api/generate-cocktail/route");
 		vi.mocked(NextResponse.json).mockClear();
 
+		// 材料検証用のDBクエリをモック
+		mockDb.select.mockReturnValue({
+			from: vi
+				.fn()
+				.mockResolvedValue([
+					{ displayName: "ジン" },
+					{ displayName: "トニックウォーター" },
+				]),
+		});
+
 		const requestBody = { ingredients: ["ジン", "トニックウォーター"] };
 		const request = {
 			json: () => Promise.resolve(requestBody),
@@ -238,16 +248,12 @@ describe("POST /api/generate-cocktail", () => {
 			.spyOn(console, "error")
 			.mockImplementation(() => {});
 
-		// DBクエリ中にエラーを発生させる (例: "その他の蒸留酒"の処理中)
-		mockDb.select.mockImplementationOnce(() => {
-			return {
-				from: vi.fn(() => {
-					throw new Error("DB query failed during category lookup");
-				}),
-			};
+		// DBクエリ中にエラーを発生させる (バリデーションの段階でエラー)
+		mockDb.select.mockReturnValue({
+			from: vi.fn().mockRejectedValue(new Error("DB query failed")),
 		});
 
-		const requestBody = { ingredients: ["その他の蒸留酒"] };
+		const requestBody = { ingredients: ["ジン"] };
 		const request = {
 			json: () => Promise.resolve(requestBody),
 		} as Request;
@@ -274,6 +280,11 @@ describe("POST /api/generate-cocktail", () => {
 		vi.stubEnv("GEMINI_API_KEY", "test-api-key");
 		const { POST } = await import("@/app/api/generate-cocktail/route");
 		vi.mocked(NextResponse.json).mockClear();
+
+		// 材料検証用のDBクエリをモック
+		mockDb.select.mockReturnValue({
+			from: vi.fn().mockResolvedValue([{ displayName: "ジン" }]),
+		});
 
 		mockGenerateContent.mockResolvedValue({
 			text: "", // 空の応答
@@ -303,6 +314,11 @@ describe("POST /api/generate-cocktail", () => {
 		const consoleErrorSpy = vi
 			.spyOn(console, "error")
 			.mockImplementation(() => {});
+
+		// 材料検証用のDBクエリをモック
+		mockDb.select.mockReturnValue({
+			from: vi.fn().mockResolvedValue([{ displayName: "ジン" }]),
+		});
 
 		mockGenerateContent.mockResolvedValue({
 			text: "this is not valid json", // 不正なJSON
@@ -334,30 +350,38 @@ describe("POST /api/generate-cocktail", () => {
 		vi.stubEnv("GEMINI_API_KEY", "test-api-key");
 		const { POST } = await import("@/app/api/generate-cocktail/route");
 
-		// "その他の蒸留酒"のためのDBクエリをモック
-		// 1. "蒸留酒"カテゴリIDを取得
-		mockDb.select.mockImplementationOnce(() => ({
-			from: vi.fn(() => ({
-				where: vi.fn(() => ({
-					limit: vi.fn(() => Promise.resolve([{ id: 1 }])), // spiritsCategory
-				})),
-			})),
-		}));
+		// DBクエリをモック
+		mockDb.select
+			// 1. 材料検証
+			.mockReturnValueOnce({
+				from: vi
+					.fn()
+					.mockResolvedValue([
+						{ displayName: "その他の蒸留酒" },
+						{ displayName: "レモン" },
+					]),
+			})
+			// 2. "蒸留酒"カテゴリIDを取得
+			.mockReturnValueOnce({
+				from: vi.fn().mockReturnValue({
+					where: vi.fn().mockReturnValue({
+						limit: vi.fn().mockResolvedValue([{ id: 1 }]), // spiritsCategory
+					}),
+				}),
+			});
 
-		// 2. "その他の蒸留酒"を除く蒸留酒グループを取得
-		mockDb.selectDistinct.mockImplementationOnce(() => ({
-			from: vi.fn(() => ({
-				innerJoin: vi.fn(() => ({
-					where: vi.fn(() =>
-						Promise.resolve([
-							{ displayName: "ジン" },
-							{ displayName: "ウォッカ" },
-							{ displayName: "ウイスキー" },
-						]),
-					),
-				})),
-			})),
-		}));
+		// 3. "その他の蒸留酒"を除く蒸留酒グループを取得
+		mockDb.selectDistinct.mockReturnValueOnce({
+			from: vi.fn().mockReturnValue({
+				innerJoin: vi.fn().mockReturnValue({
+					where: vi.fn().mockResolvedValue([
+						{ displayName: "ジン" },
+						{ displayName: "ウォッカ" },
+						{ displayName: "ウイスキー" },
+					]),
+				}),
+			}),
+		});
 
 		const requestBody = { ingredients: ["その他の蒸留酒", "レモン"] };
 		const request = {
@@ -379,15 +403,25 @@ describe("POST /api/generate-cocktail", () => {
 		vi.stubEnv("GEMINI_API_KEY", "test-api-key");
 		const { POST } = await import("@/app/api/generate-cocktail/route");
 
-		// "その他"のためのDBクエリをモック
-		// 1. "その他"を除くカテゴリを取得
-		mockDb.select.mockImplementationOnce(() => ({
-			from: vi.fn(() => ({
-				where: vi.fn(() =>
-					Promise.resolve([{ name: "蒸留酒" }, { name: "醸造酒" }]),
-				),
-			})),
-		}));
+		// DBクエリをモック
+		mockDb.select
+			// 1. 材料検証
+			.mockReturnValueOnce({
+				from: vi
+					.fn()
+					.mockResolvedValue([
+						{ displayName: "その他" },
+						{ displayName: "砂糖" },
+					]),
+			})
+			// 2. "その他"を除くカテゴリを取得
+			.mockReturnValueOnce({
+				from: vi.fn().mockReturnValue({
+					where: vi
+						.fn()
+						.mockResolvedValue([{ name: "蒸留酒" }, { name: "醸造酒" }]),
+				}),
+			});
 
 		const requestBody = { ingredients: ["その他", "砂糖"] };
 		const request = {

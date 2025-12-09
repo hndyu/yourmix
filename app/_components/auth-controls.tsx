@@ -21,7 +21,6 @@ export default function AuthControls() {
 	const { data: session, isPending } = useSession();
 	const router = useRouter();
 	const pathname = usePathname();
-	console.log("Current pathname:", pathname);
 
 	const callbackUrl =
 		pathname === "/auth/sign-in" || pathname === "/auth/sign-up" ? "/" : pathname;

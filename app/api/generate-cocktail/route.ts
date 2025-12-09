@@ -41,6 +41,22 @@ export async function POST(request: Request) {
 			);
 		}
 
+		// DBから有効な材料グループ名を取得
+		const validIngredients = await db
+			.select({ displayName: schema.ingredientGroups.displayName })
+			.from(schema.ingredientGroups);
+		const validIngredientNames = validIngredients.map((i) => i.displayName);
+
+		// 送信された材料名がすべて有効か検証
+		for (const ingredient of selectedIngredients) {
+			if (!validIngredientNames.includes(ingredient)) {
+				return NextResponse.json(
+					{ error: `不正な材料名です: ${ingredient}` },
+					{ status: 400 },
+				);
+			}
+		}
+
 		// 材料リストを処理して、特定の材料名をより具体的な指示に置き換える
 		const processedIngredients = await Promise.all(
 			selectedIngredients.map(async (ingredient) => {
