@@ -143,29 +143,31 @@ export default function CocktailDisplay({
 										initialIsLiked={cocktail.isLiked ?? false}
 									/>
 									{isDetailPage && (
-									<Box sx={{ display: "flex", gap: 1, ml: 2 }}>
-										<Tooltip
-											title={isWebShareSupported ? "共有" : "レシピをコピー"}
-										>
-											<IconButton
-												onClick={handleShare}
-												aria-label={isWebShareSupported ? "共有" : "レシピをコピー"}
-												sx={{
-													backgroundColor: isWebShareSupported
-														? "#1976d2"
-														: "#4caf50",
-													color: "white",
-													"&:hover": {
-														backgroundColor: isWebShareSupported
-															? "#1565c0"
-															: "#388e3c",
-													},
-												}}
+										<Box sx={{ display: "flex", gap: 1, ml: 2 }}>
+											<Tooltip
+												title={isWebShareSupported ? "共有" : "レシピをコピー"}
 											>
-												{isWebShareSupported ? <ShareIcon /> : <CopyIcon />}
-											</IconButton>
-										</Tooltip>
-									</Box>
+												<IconButton
+													onClick={handleShare}
+													aria-label={
+														isWebShareSupported ? "共有" : "レシピをコピー"
+													}
+													sx={{
+														backgroundColor: isWebShareSupported
+															? "#1976d2"
+															: "#4caf50",
+														color: "white",
+														"&:hover": {
+															backgroundColor: isWebShareSupported
+																? "#1565c0"
+																: "#388e3c",
+														},
+													}}
+												>
+													{isWebShareSupported ? <ShareIcon /> : <CopyIcon />}
+												</IconButton>
+											</Tooltip>
+										</Box>
 									)}
 								</Box>
 							</Box>
@@ -191,6 +193,12 @@ export default function CocktailDisplay({
 											backgroundColor: "#e0e0e0",
 											color: "#333",
 											fontWeight: "medium",
+											"& .MuiChip-label": {
+												whiteSpace: "normal",
+												overflow: "visible",
+												textOverflow: "clip",
+											},
+											height: "auto",
 										}}
 									/>
 								))}
