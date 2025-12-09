@@ -41,6 +41,12 @@
 #     - script: "hello.go"
 #       runner: go run
 
+pre-push:
+  parallel: true
+  commands:
+    packages-audit:
+      run: npm audit
+
 pre-commit:
   commands:
     check:
