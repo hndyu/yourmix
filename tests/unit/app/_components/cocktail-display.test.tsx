@@ -1,12 +1,12 @@
-import { render, screen, waitFor } from "@testing-library/react";
-import * as React from "react";
-import userEvent from "@testing-library/user-event";
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { Tooltip } from "@mui/material"; // Tooltipのインポートを追加
+import CocktailDisplay from "@/app/_components/cocktail-display";
 import type { Cocktail } from "@/app/types/cocktail";
 import * as affiliateLinks from "@/app/utils/affiliate-links";
 import * as shareUtils from "@/app/utils/share-utils";
-import CocktailDisplay from "@/app/_components/cocktail-display";
+import { Tooltip } from "@mui/material"; // Tooltipのインポートを追加
+import { render, screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import * as React from "react";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 // Mock next/navigation
 vi.mock("next/navigation", () => ({
@@ -16,11 +16,14 @@ vi.mock("next/navigation", () => ({
 }));
 
 // Mock auth-client
-vi.mock("@/lib/auth-client", () => ({
-	useSession: () => ({
-		data: null,
-		error: null,
-	}),
+vi.mock("@/lib/authClient", () => ({
+	default: {
+		useSession: () => ({
+			data: null,
+			isPending: false,
+			error: null,
+		}),
+	},
 }));
 
 // モジュールのモック

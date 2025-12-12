@@ -1,18 +1,18 @@
 "use client";
 
-import { signIn } from "@/lib/auth-client";
-import { useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
-import Link from "next/link";
+import authClient from "@/app/lib/authClient";
 import {
-	Container,
 	Box,
-	Typography,
-	TextField,
 	Button,
 	Card,
 	CardContent,
+	Container,
+	TextField,
+	Typography,
 } from "@mui/material";
+import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useState } from "react";
 
 export default function SignInForm() {
 	const [email, setEmail] = useState("");
@@ -28,11 +28,10 @@ export default function SignInForm() {
 		callbackUrl = "/";
 	}
 
-
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
 		setError(null);
-		await signIn.email(
+		await authClient.signIn.email(
 			{
 				email,
 				password,
@@ -92,8 +91,8 @@ export default function SignInForm() {
 								onChange={(e) => setEmail(e.target.value)}
 								slotProps={{
 									htmlInput: {
-										"data-testid": "email-input"
-									}
+										"data-testid": "email-input",
+									},
 								}}
 							/>
 							<TextField
@@ -109,9 +108,9 @@ export default function SignInForm() {
 								onChange={(e) => setPassword(e.target.value)}
 								slotProps={{
 									htmlInput: {
-										"data-testid": "password-input"
-									}
-									}}
+										"data-testid": "password-input",
+									},
+								}}
 							/>
 							<Button
 								type="submit"

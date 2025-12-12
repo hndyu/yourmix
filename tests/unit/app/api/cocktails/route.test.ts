@@ -1,15 +1,16 @@
+import { GET } from "@/app/api/cocktails/route";
+import type { DB } from "@/app/db/db";
+import type { Cocktail } from "@/app/types/cocktail";
 import { getCloudflareContext } from "@opennextjs/cloudflare";
 import {
+	type Mock,
 	afterEach,
 	beforeEach,
 	describe,
 	expect,
 	it,
 	vi,
-	type Mock,
 } from "vitest";
-import { GET } from "@/app/api/cocktails/route";
-import type { Cocktail } from "@/app/types/cocktail";
 
 // 外部モジュールのモック
 vi.mock("@opennextjs/cloudflare", () => ({
@@ -24,16 +25,13 @@ const mockDb = {
 			findMany: mockFindMany,
 		},
 	},
-};
+} as unknown as DB;
 
-vi.mock("drizzle-orm/d1", () => ({
-	drizzle: vi.fn((dbBinding) => {
-		if (!dbBinding) {
-			throw new Error("D1Database binding is required.");
-		}
-		return mockDb;
-	}),
+vi.mock("@/app/db/db", () => ({
+	getDb: vi.fn(),
 }));
+
+import { getDb } from "@/app/db/db";
 
 describe("GET /api/cocktails", () => {
 	// モックデータ
@@ -88,7 +86,7 @@ describe("GET /api/cocktails", () => {
 				DB: "mock-db-binding",
 			},
 		});
-		// デフォルトで全カクテルデータを返すように設定
+		vi.mocked(getDb).mockResolvedValue(mockDb);
 		mockFindMany.mockResolvedValue(mockCocktailsData);
 	});
 
@@ -159,6 +157,9 @@ describe("GET /api/cocktails", () => {
 	it("DBバインディングが存在しない場合、500エラーを返す", async () => {
 		(getCloudflareContext as Mock).mockReturnValue({
 			env: {}, // DBなし
+		});
+		vi.mocked(getDb).mockImplementationOnce(async () => {
+			throw new Error("D1Database binding is required.");
 		});
 
 		const request = new Request("http://localhost/api/cocktails");

@@ -1,14 +1,15 @@
+import { getDb } from "@/app/db/db";
+import { getCloudflareContext } from "@opennextjs/cloudflare";
+import { NextResponse } from "next/server";
 import {
+	type Mock,
 	afterEach,
 	beforeEach,
 	describe,
 	expect,
 	it,
 	vi,
-	type Mock,
 } from "vitest";
-import { getCloudflareContext } from "@opennextjs/cloudflare";
-import { NextResponse } from "next/server";
 
 // 外部モジュールのモック
 vi.mock("@opennextjs/cloudflare", () => ({
@@ -38,6 +39,15 @@ vi.mock("next/server", () => ({
 	},
 }));
 
+vi.mock("@/app/db/db", async () => {
+	const actual =
+		await vi.importActual<typeof import("@/app/db/db")>("@/app/db/db");
+	return {
+		...actual,
+		getDb: vi.fn(),
+	};
+});
+
 // Drizzle ORMのモック
 const mockDb = {
 	select: vi.fn(),
@@ -62,15 +72,6 @@ const resetDrizzleMocks = () => {
 	}));
 };
 
-vi.mock("drizzle-orm/d1", () => ({
-	drizzle: vi.fn((dbBinding) => {
-		if (!dbBinding) {
-			throw new Error("D1Database binding is required.");
-		}
-		return mockDb;
-	}),
-}));
-
 describe("POST /api/generate-cocktail", () => {
 	const mockCocktailResponse = {
 		name: "モックカクテル",
@@ -89,6 +90,9 @@ describe("POST /api/generate-cocktail", () => {
 				DB: "mock-db-binding",
 			},
 		});
+		vi.mocked(getDb).mockResolvedValue(
+			await (mockDb as unknown as ReturnType<typeof getDb>),
+		);
 
 		mockGenerateContent.mockResolvedValue({
 			text: JSON.stringify([mockCocktailResponse]),
@@ -176,6 +180,9 @@ describe("POST /api/generate-cocktail", () => {
 
 		(getCloudflareContext as Mock).mockReturnValue({
 			env: {}, // DBなし
+		});
+		vi.mocked(getDb).mockImplementationOnce(async () => {
+			throw new Error("D1Database binding is required.");
 		});
 
 		const requestBody = { ingredients: ["ジン"] };
@@ -374,11 +381,13 @@ describe("POST /api/generate-cocktail", () => {
 		mockDb.selectDistinct.mockReturnValueOnce({
 			from: vi.fn().mockReturnValue({
 				innerJoin: vi.fn().mockReturnValue({
-					where: vi.fn().mockResolvedValue([
-						{ displayName: "ジン" },
-						{ displayName: "ウォッカ" },
-						{ displayName: "ウイスキー" },
-					]),
+					where: vi
+						.fn()
+						.mockResolvedValue([
+							{ displayName: "ジン" },
+							{ displayName: "ウォッカ" },
+							{ displayName: "ウイスキー" },
+						]),
 				}),
 			}),
 		});

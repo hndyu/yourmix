@@ -1,16 +1,16 @@
+import CocktailMixer from "@/app/_components/cocktail-mixer";
+import type { Cocktail } from "@/app/types/cocktail";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import * as React from "react";
 import {
+	type Mock,
 	afterEach,
 	beforeEach,
 	describe,
 	expect,
 	it,
 	vi,
-	type Mock,
 } from "vitest";
-import CocktailMixer from "@/app/_components/cocktail-mixer";
-import type { Cocktail } from "@/app/types/cocktail";
 
 // カスタムフックのモック
 const mockUseCocktails: {
@@ -184,22 +184,26 @@ describe("CocktailMixer", () => {
 		]);
 	});
 
-	it("検索中(isSearching=true)にスケルトンを表示する", () => {
+	it("検索中(isSearching=true)にスケルトンを表示する", async () => {
 		// isSearchingをtrueに設定してレンダリング
 		mockUseCocktails.isLoading = true;
 		render(<CocktailMixer />);
 
-		// isMixingがtrueになり、スケルトンが表示されることを確認
-		expect(screen.getByText("Cocktail Skeleton")).toBeInTheDocument();
+		await waitFor(() => {
+			// isMixingがtrueになり、スケルトンが表示されることを確認
+			expect(screen.getByText("Cocktail Skeleton")).toBeInTheDocument();
+		});
 	});
 
-	it("AI生成中(isGenerating=true)にスケルトンを表示する", () => {
+	it("AI生成中(isGenerating=true)にスケルトンを表示する", async () => {
 		// isGeneratingをtrueに設定してレンダリング
 		mockUseAICocktailGenerator.isGenerating = true;
 		render(<CocktailMixer />);
 
-		// isMixingがtrueになり、スケルトンが表示されることを確認
-		expect(screen.getByText("Cocktail Skeleton")).toBeInTheDocument();
+		await waitFor(() => {
+			// isMixingがtrueになり、スケルトンが表示されることを確認
+			expect(screen.getByText("Cocktail Skeleton")).toBeInTheDocument();
+		});
 	});
 
 	it("カクテル生成と検索が完了したら結果を表示する", async () => {
@@ -212,9 +216,6 @@ describe("CocktailMixer", () => {
 		// 結果が返ってきた状態をシミュレート
 		mockUseAICocktailGenerator.generatedCocktail = mockGeneratedCocktail;
 		mockUseCocktails.cocktails = mockSearchResults;
-
-		// 再レンダリング
-		render(<CocktailMixer />);
 
 		// 結果が表示されていることを確認
 		await waitFor(() => {

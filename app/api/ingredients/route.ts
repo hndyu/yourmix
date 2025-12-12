@@ -1,8 +1,30 @@
+import { getDb } from "@/app/db/db";
+import {
+	categories,
+	cocktailIngredients,
+	cocktailTags,
+	cocktails,
+	deliciousLikes,
+	ingredientGroups,
+	ingredients,
+	instructions,
+	tags,
+} from "@/app/db/schema";
+import type { GroupedIngredient } from "@/app/types/cocktail";
 import { asc, eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
-import * as schema from "@/app/db/schema";
-import getDb from "@/app/db/db";
-import type { GroupedIngredient } from "@/app/types/cocktail";
+
+const schema = {
+	cocktails,
+	cocktailIngredients,
+	cocktailTags,
+	deliciousLikes,
+	ingredients,
+	tags,
+	instructions,
+	categories,
+	ingredientGroups,
+};
 
 /**
  * カクテルの材料一覧を取得するAPIエンドポイント
@@ -11,7 +33,7 @@ import type { GroupedIngredient } from "@/app/types/cocktail";
 
 export async function GET() {
 	try {
-		const db = getDb();
+		const db = await getDb();
 
 		const [allCategories, allIngredientsWithGroups] = await Promise.all([
 			// カテゴリを並び順で取得

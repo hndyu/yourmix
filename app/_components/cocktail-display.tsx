@@ -2,8 +2,8 @@
 
 import DeliciousButton from "./delicious-button";
 
-import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import CopyIcon from "@mui/icons-material/ContentCopy";
+import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import LocalOfferIcon from "@mui/icons-material/LocalOffer";
 import ShareIcon from "@mui/icons-material/Share";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
@@ -136,15 +136,20 @@ export default function CocktailDisplay({
 									🍹 {cocktail.name}
 								</Typography>
 								{/* 共有ボタン群とおいしいボタン */}
-								<Box
-									sx={{ display: "flex", gap: 1, ml: 2, alignItems: "center" }}
-								>
-									<DeliciousButton
-										cocktailId={cocktail.id}
-										initialCount={cocktail.deliciousCount ?? 0}
-										initialIsLiked={cocktail.isLiked ?? false}
-									/>
-									{isDetailPage && (
+								{isDetailPage && (
+									<Box
+										sx={{
+											display: "flex",
+											gap: 1,
+											ml: 2,
+											alignItems: "center",
+										}}
+									>
+										<DeliciousButton
+											cocktailId={cocktail.id}
+											initialCount={cocktail.deliciousCount ?? 0}
+											initialIsLiked={cocktail.isLiked ?? false}
+										/>
 										<Box sx={{ display: "flex", gap: 1, ml: 2 }}>
 											<Tooltip
 												title={isWebShareSupported ? "共有" : "レシピをコピー"}
@@ -170,8 +175,8 @@ export default function CocktailDisplay({
 												</IconButton>
 											</Tooltip>
 										</Box>
-									)}
-								</Box>
+									</Box>
+								)}
 							</Box>
 							<Typography
 								variant="body1"

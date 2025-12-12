@@ -1,8 +1,30 @@
-import { NextResponse } from "next/server";
-import * as schema from "@/app/db/schema";
-import getDb from "@/app/db/db";
-import { getAuth } from "@/lib/auth";
+import { initAuth } from "@/app/auth";
+import { getDb } from "@/app/db/db";
+import {
+	categories,
+	cocktailIngredients,
+	cocktailTags,
+	cocktails,
+	deliciousLikes,
+	ingredientGroups,
+	ingredients,
+	instructions,
+	tags,
+} from "@/app/db/schema";
 import { and, eq, sql } from "drizzle-orm";
+import { NextResponse } from "next/server";
+
+const schema = {
+	cocktails,
+	cocktailIngredients,
+	cocktailTags,
+	deliciousLikes,
+	ingredients,
+	tags,
+	instructions,
+	categories,
+	ingredientGroups,
+};
 
 export async function POST(
 	request: Request,
@@ -10,9 +32,8 @@ export async function POST(
 ) {
 	try {
 		const { cocktailId } = await params;
-		const session = await getAuth().api.getSession({
-			headers: request.headers,
-		});
+		const auth = await initAuth();
+		const session = await auth.api.getSession({ headers: request.headers });
 		if (!session) {
 			return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 		}
@@ -21,7 +42,7 @@ export async function POST(
 			`[Delicious API] Request to toggle like for cocktailId: ${cocktailId} by user: ${session.user.id}`,
 		);
 
-		const db = getDb();
+		const db = await getDb();
 		const userId = session.user.id;
 
 		// Check if already liked

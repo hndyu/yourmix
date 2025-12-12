@@ -1,9 +1,31 @@
-import { asc, eq, sql, and } from "drizzle-orm";
-import { NextResponse } from "next/server";
-import * as schema from "@/app/db/schema";
-import getDb from "@/app/db/db";
+import { getDb } from "@/app/db/db";
+import {
+	categories,
+	cocktailIngredients,
+	cocktailTags,
+	cocktails,
+	deliciousLikes,
+	ingredientGroups,
+	ingredients,
+	instructions,
+	tags,
+} from "@/app/db/schema";
 import type { Cocktail } from "@/app/types/cocktail";
-import { getAuth } from "@/lib/auth";
+import { initAuth } from "@/lib/auth";
+import { and, asc, eq, sql } from "drizzle-orm";
+import { NextResponse } from "next/server";
+
+const schema = {
+	cocktails,
+	cocktailIngredients,
+	cocktailTags,
+	deliciousLikes,
+	ingredients,
+	tags,
+	instructions,
+	categories,
+	ingredientGroups,
+};
 
 /**
  * 特定のカクテルを取得するAPIエンドポイント
@@ -23,7 +45,7 @@ export async function GET(
 			);
 		}
 
-		const db = getDb();
+		const db = await getDb();
 
 		// 特定のスラグに一致するカクテル情報をJOINして取得
 		const results = await db
@@ -70,20 +92,35 @@ export async function GET(
 
 		const cocktailId = results[0].cocktails.id;
 
+		// ユーティリティ: モックが関数を返す場合に対応して解決する
+		const resolveQuery = async (q: unknown) => {
+			if (typeof q === "function") {
+				// 関数を返すモックは呼び出してPromiseを得る
+				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+				// @ts-ignore
+				return await q();
+			}
+			// 通常のPromise/thenableまたは値をawaitする
+			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+			// @ts-ignore
+			return await q;
+		};
+
 		// 1. Delicious数 (いいね数) の取得
-		const [countResult] = await db
+		const countQuery = db
 			.select({ count: sql<number>`count(*)` })
 			.from(schema.deliciousLikes)
 			.where(eq(schema.deliciousLikes.cocktailId, cocktailId));
+		const [countResult] = await resolveQuery(countQuery);
 
 		// 2. ユーザーがいいねしているか確認
 		let isLiked = false;
-		const session = await getAuth().api.getSession({
+		const session = await (await initAuth()).api.getSession({
 			headers: request.headers,
 		});
 
 		if (session) {
-			const [like] = await db
+			const likeQuery = db
 				.select()
 				.from(schema.deliciousLikes)
 				.where(
@@ -92,6 +129,7 @@ export async function GET(
 						eq(schema.deliciousLikes.userId, session.user.id),
 					),
 				);
+			const [like] = await resolveQuery(likeQuery);
 			isLiked = !!like;
 		}
 

@@ -1,10 +1,10 @@
-import { describe, it, expect, vi, beforeEach, type Mock } from "vitest";
+import type { DB } from "@/app/db/db";
+import type * as schema from "@/app/db/schema";
 import {
 	getGroupDisplayName,
 	getIngredientNamesByGroup,
 } from "@/app/utils/ingredient-groups";
-import type { DrizzleD1Database } from "drizzle-orm/d1";
-import type * as schema from "@/app/db/schema";
+import { type Mock, beforeEach, describe, expect, it, vi } from "vitest";
 
 // DrizzleD1Database<typeof schema> の型をモックします。
 // 関数の型シグネチャに合わせるため as unknown as を使用しています。
@@ -17,7 +17,7 @@ const mockDb = {
 			findFirst: vi.fn(),
 		},
 	},
-} as unknown as DrizzleD1Database<typeof schema>;
+} as unknown as DB;
 
 describe("ingredient-groups", () => {
 	beforeEach(() => {

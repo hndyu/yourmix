@@ -1,7 +1,7 @@
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
-import { describe, it, expect, vi, beforeEach } from "vitest";
 import SignUpPage from "@/app/auth/sign-up/page";
-import * as authClient from "@/lib/auth-client";
+import authClient from "@/app/lib/authClient";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
 // Mock next/navigation
 const pushMock = vi.fn();
@@ -15,9 +15,11 @@ vi.mock("next/navigation", () => ({
 }));
 
 // Mock auth-client
-vi.mock("@/lib/auth-client", () => ({
-	signUp: {
-		email: vi.fn(),
+vi.mock("@/app/lib/authClient", () => ({
+	default: {
+		signUp: {
+			email: vi.fn(),
+		},
 	},
 }));
 
@@ -35,14 +37,10 @@ describe("SignUpPage", () => {
 	});
 
 	it("handles successful sign up", async () => {
-		const signUpMock = vi.spyOn(authClient.signUp, "email").mockImplementation(
-			async (
-				data,
-				options,
-			): Promise<{
-				data: typeof data;
-				error: null;
-			}> => {
+		vi.mocked(authClient.signUp.email).mockImplementation(
+			async (data, options) => {
+				// 非同期で成功を解決
+				await Promise.resolve();
 				options?.onSuccess?.({
 					data: {
 						user: {
@@ -95,7 +93,7 @@ describe("SignUpPage", () => {
 		fireEvent.click(screen.getByTestId("sign-up-button"));
 
 		await waitFor(() => {
-			expect(signUpMock).toHaveBeenCalledWith(
+			expect(vi.mocked(authClient.signUp.email)).toHaveBeenCalledWith(
 				{
 					email: "test@example.com",
 					password: "password123",
@@ -108,22 +106,29 @@ describe("SignUpPage", () => {
 	});
 
 	it("handles sign up error", async () => {
-		const signUpMock = vi
-			.spyOn(authClient.signUp, "email")
-			.mockImplementation(async (data, options) => {
+		vi.mocked(authClient.signUp.email).mockImplementation(
+			async (data, options) => {
 				const ctx = {
 					error: {
 						code: "API_ERROR",
 						message: "User already exists",
+						status: 400, // ダミーの値
+						statusText: "Bad Request", // ダミーの値
+						name: "BetterFetchError", // ダミーの値
+						error: new Error("Original Error"), // ダミーのErrorオブジェクト
 					},
+					response: new Response(),
+					request: new Request("http://localhost"),
 				};
-				// @ts-ignore - mock implementation matches usage
+				// 非同期でエラーを解決
+				await Promise.resolve();
 				options?.onError?.(ctx);
 				return {
 					data: null,
 					error: ctx.error,
 				};
-			});
+			},
+		);
 
 		render(<SignUpPage />);
 

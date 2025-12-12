@@ -1,16 +1,17 @@
+import { GET } from "@/app/api/cocktails/[slug]/route";
+import type { Cocktail } from "@/app/types/cocktail";
 import { getCloudflareContext } from "@opennextjs/cloudflare";
 import {
+	type Mock,
 	afterEach,
 	beforeEach,
 	describe,
 	expect,
 	it,
 	vi,
-	type Mock,
 } from "vitest";
-import { GET } from "@/app/api/cocktails/[slug]/route";
-import type { Cocktail } from "@/app/types/cocktail";
-import * as db from "@/app/db/db";
+vi.mock("@/app/db/db");
+import { getDb } from "@/app/db/db";
 
 // 外部モジュールのモック
 vi.mock("@opennextjs/cloudflare", () => ({
@@ -18,25 +19,32 @@ vi.mock("@opennextjs/cloudflare", () => ({
 }));
 vi.mock("@/app/db/db");
 
-// getAuth のモック
+// Auth関連のモック
 const mockGetSession = vi.fn();
-vi.mock("@/lib/auth", () => ({
-	getAuth: () => ({
-		api: {
-			getSession: mockGetSession,
-		},
-	}),
-}));
+vi.mock("@/lib/auth", async (importOriginal) => {
+	const mod = await importOriginal<typeof import("@/app/auth")>();
+	return {
+		...mod,
+		initAuth: vi.fn(async () => ({
+			api: {
+				getSession: mockGetSession,
+			},
+			requestContext: {
+				cf: {
+					// ダミーのCloudflare context
+					country: "US",
+					colo: "LAX",
+				},
+			},
+		})),
+	};
+});
 
 // Drizzle ORMのクエリチェーンをモック
 const mockOrderBy = vi.fn();
-const mockMainWhere = vi.fn(() => ({
-	leftJoin: vi.fn().mockReturnThis(),
-	orderBy: mockOrderBy,
-}));
+const mockMainWhere = vi.fn();
 const mockCountWhere = vi.fn();
 const mockLikeWhere = vi.fn();
-
 const mockSelect = vi.fn();
 
 const mockDb = {
@@ -120,34 +128,52 @@ describe("GET /api/cocktails/[slug]", () => {
 
 	beforeEach(() => {
 		// biome-ignore lint/suspicious/noExplicitAny: テストのために部分的なDBオブジェクトをモックする必要があります
-		vi.mocked(db.default).mockReturnValue(mockDb as any);
+		vi.mocked(getDb).mockResolvedValue(mockDb as any);
 		(getCloudflareContext as Mock).mockReturnValue({
 			env: {
 				DB: "mock-db-binding",
 			},
 		});
 
-		// 呼び出しごとに異なる `where` の実装を返すように設定
-		mockSelect
-			.mockImplementationOnce(() => ({
-				from: vi.fn(() => ({
-					where: mockMainWhere,
-				})),
-			}))
-			.mockImplementationOnce(() => ({
-				from: vi.fn(() => ({
-					where: mockCountWhere,
-				})),
-			}))
-			.mockImplementationOnce(() => ({
-				from: vi.fn(() => ({
-					where: mockLikeWhere,
-				})),
-			}));
+		// Drizzleのselectメソッドのモックを実装
+		const mainQueryChain = {
+			leftJoin: vi.fn().mockReturnThis(),
+			orderBy: mockOrderBy,
+		};
+		const countQueryChain = vi.fn();
+		const likeQueryChain = vi.fn();
 
+		mockSelect.mockImplementation((fields) => {
+			// select() - Main or Like Query
+			if (!fields) {
+				// 1回目のselect()呼び出し (Main Query)
+				if (mockSelect.mock.calls.length === 1) {
+					return {
+						from: () => ({
+							where: () => mainQueryChain,
+						}),
+					};
+				}
+				// 2回目のselect()呼び出し (Like Query)
+				return {
+					from: () => ({
+						where: () => likeQueryChain,
+					}),
+				};
+			}
+
+			// select({ count: ... }) - Count Query
+			return {
+				from: () => ({
+					where: () => countQueryChain,
+				}),
+			};
+		});
+
+		// 各where句の先のモックを設定
 		mockOrderBy.mockResolvedValue(mockDbResult);
-		mockCountWhere.mockResolvedValue([{ count: 10 }]);
-		mockLikeWhere.mockResolvedValue([{ userId: "test-user-id" }]);
+		countQueryChain.mockResolvedValue([{ count: 10 }]);
+		likeQueryChain.mockResolvedValue([{ userId: "test-user-id" }]);
 
 		mockGetSession.mockResolvedValue({ user: { id: "test-user-id" } });
 	});
@@ -233,7 +259,7 @@ describe("GET /api/cocktails/[slug]", () => {
 			env: {}, // DBなし
 		});
 		// getDbのモックを上書き
-		vi.mocked(db.default).mockImplementationOnce(() => {
+		vi.mocked(getDb).mockImplementationOnce(async () => {
 			throw new Error("D1Database binding is required.");
 		});
 
@@ -245,7 +271,6 @@ describe("GET /api/cocktails/[slug]", () => {
 		expect(response.status).toBe(500);
 		expect(data).toEqual({ error: "カクテルの取得中にエラーが発生しました。" });
 	});
-
 
 	it("データ取得中にエラーが発生した場合、500エラーを返す", async () => {
 		const consoleErrorSpy = vi

@@ -1,8 +1,30 @@
+import { getDb } from "@/app/db/db";
+import {
+	categories,
+	cocktailIngredients,
+	cocktailTags,
+	cocktails,
+	deliciousLikes,
+	ingredientGroups,
+	ingredients,
+	instructions,
+	tags,
+} from "@/app/db/schema";
 import { GoogleGenAI, Type } from "@google/genai";
 import { and, eq, ne } from "drizzle-orm";
 import { NextResponse } from "next/server";
-import * as schema from "@/app/db/schema";
-import getDb from "@/app/db/db";
+
+const schema = {
+	cocktails,
+	cocktailIngredients,
+	cocktailTags,
+	deliciousLikes,
+	ingredients,
+	tags,
+	instructions,
+	categories,
+	ingredientGroups,
+};
 
 // APIキーを環境変数から取得
 const apiKey = process.env.GEMINI_API_KEY;
@@ -24,7 +46,7 @@ export async function POST(request: Request) {
 	}
 
 	try {
-		const db = getDb();
+		const db = await getDb();
 
 		const { ingredients: selectedIngredients } = (await request.json()) as {
 			ingredients: string[];

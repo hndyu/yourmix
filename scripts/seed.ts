@@ -1,12 +1,34 @@
+import {
+	categories,
+	cocktailIngredients,
+	cocktailTags,
+	cocktails,
+	deliciousLikes,
+	ingredientGroups,
+	ingredients,
+	instructions,
+	tags,
+} from "@/app/db/schema";
 import { v4 as uuidv4 } from "uuid";
-import * as schema from "../app/db/schema";
 // import { drizzle } from "drizzle-orm/d1";
 // import type { D1Database } from "@cloudflare/workers-types";
 import { contemporaryClassics } from "./data/contemporary-classics";
+import { ingredientDetails, ingredientGroupsData } from "./data/ingredients";
 import { newEra } from "./data/new-era";
 import { unforgettables } from "./data/unforgettables";
-import { ingredientDetails, ingredientGroupsData } from "./data/ingredients";
 import type { IngredientData, SeedDataOverrides } from "./types";
+
+const schema = {
+	categories,
+	cocktailIngredients,
+	cocktails,
+	cocktailTags,
+	deliciousLikes,
+	ingredientGroups,
+	ingredients,
+	instructions,
+	tags,
+};
 
 export async function seed(
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
@@ -16,12 +38,14 @@ export async function seed(
 	console.log("🌱 Seeding database...");
 
 	// 既存のデータをクリア
+	await db.delete(schema.deliciousLikes);
 	await db.delete(schema.cocktailTags);
 	await db.delete(schema.tags);
 	await db.delete(schema.instructions);
 	await db.delete(schema.cocktailIngredients);
 	await db.delete(schema.ingredients);
 	await db.delete(schema.cocktails);
+	await db.delete(schema.ingredientGroups);
 	await db.delete(schema.categories);
 	console.log("🗑️ Cleared existing data.");
 

@@ -1,37 +1,27 @@
+import { GET } from "@/app/api/ingredients/route";
+import type { DB } from "@/app/db/db";
+import type { Category, GroupedIngredient } from "@/app/types/cocktail";
 import { getCloudflareContext } from "@opennextjs/cloudflare";
 import {
+	type Mock,
 	afterEach,
 	beforeEach,
 	describe,
 	expect,
 	it,
 	vi,
-	type Mock,
 } from "vitest";
-import { GET } from "@/app/api/ingredients/route";
-import type { Category, GroupedIngredient } from "@/app/types/cocktail";
 
 // モジュールのモック
 vi.mock("@opennextjs/cloudflare", () => ({
 	getCloudflareContext: vi.fn(),
 }));
 
-// Drizzle ORMのクエリチェーンをモック
-const mockDb = {
-	select: vi.fn().mockReturnThis(),
-	from: vi.fn().mockReturnThis(),
-	orderBy: vi.fn().mockReturnThis(),
-	leftJoin: vi.fn().mockReturnThis(),
-};
-
-vi.mock("drizzle-orm/d1", () => ({
-	drizzle: vi.fn((dbBinding) => {
-		if (!dbBinding) {
-			throw new Error("D1Database binding is required.");
-		}
-		return mockDb;
-	}),
+vi.mock("@/app/db/db", () => ({
+	getDb: vi.fn(),
 }));
+
+import { getDb } from "@/app/db/db";
 
 describe("GET /api/ingredients", () => {
 	// モックデータ
@@ -93,14 +83,17 @@ describe("GET /api/ingredients", () => {
 			},
 		});
 
-		// Drizzleのクエリ結果をモック
-		// Promise.allの順序に合わせてモックを設定
-		const orderByMock = vi.fn();
-		orderByMock
+		const orderByMock = vi
+			.fn()
 			.mockResolvedValueOnce(mockCategories) // categoriesクエリ
 			.mockResolvedValueOnce(mockIngredientsWithGroups); // ingredientsクエリ
 
-		mockDb.orderBy = orderByMock;
+		vi.mocked(getDb).mockResolvedValue({
+			select: vi.fn().mockReturnThis(),
+			from: vi.fn().mockReturnThis(),
+			orderBy: orderByMock,
+			leftJoin: vi.fn().mockReturnThis(),
+		} as unknown as DB);
 	});
 
 	afterEach(() => {
@@ -147,6 +140,9 @@ describe("GET /api/ingredients", () => {
 		(getCloudflareContext as Mock).mockReturnValue({
 			env: {}, // DBなし
 		});
+		vi.mocked(getDb).mockImplementationOnce(async () => {
+			throw new Error("D1Database binding is required.");
+		});
 
 		const response = await GET();
 		const data = await response.json();
@@ -160,9 +156,14 @@ describe("GET /api/ingredients", () => {
 			.spyOn(console, "error")
 			.mockImplementation(() => {});
 
-		// Drizzleのクエリでエラーを発生させる
 		const orderByMock = vi.fn().mockRejectedValue(new Error("DB query failed"));
-		mockDb.orderBy = orderByMock;
+
+		vi.mocked(getDb).mockResolvedValue({
+			select: vi.fn().mockReturnThis(),
+			from: vi.fn().mockReturnThis(),
+			orderBy: orderByMock,
+			leftJoin: vi.fn().mockReturnThis(),
+		} as unknown as DB);
 
 		const response = await GET();
 		const data = await response.json();
@@ -178,10 +179,17 @@ describe("GET /api/ingredients", () => {
 	});
 
 	it("データが空の場合でも正常に空の配列を返す", async () => {
-		// Drizzleのクエリ結果を空配列でモック
-		const orderByMock = vi.fn();
-		orderByMock.mockResolvedValueOnce([]).mockResolvedValueOnce([]);
-		mockDb.orderBy = orderByMock;
+		const orderByMock = vi
+			.fn()
+			.mockResolvedValueOnce([])
+			.mockResolvedValueOnce([]);
+
+		vi.mocked(getDb).mockResolvedValue({
+			select: vi.fn().mockReturnThis(),
+			from: vi.fn().mockReturnThis(),
+			orderBy: orderByMock,
+			leftJoin: vi.fn().mockReturnThis(),
+		} as unknown as DB);
 
 		const response = await GET();
 		const data = (await response.json()) as {

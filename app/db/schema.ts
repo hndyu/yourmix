@@ -6,6 +6,7 @@ import {
 	text,
 	unique,
 } from "drizzle-orm/sqlite-core";
+import * as authSchema from "./auth.schema";
 
 // cocktails テーブル
 export const cocktails = sqliteTable("cocktails", {
@@ -46,9 +47,7 @@ export const cocktailIngredients = sqliteTable(
 		amount: text("amount").notNull(),
 		option_group: integer("option_group"),
 	},
-	(table) => ({
-		pk: primaryKey({ columns: [table.cocktailId, table.ingredientId] }),
-	}),
+	(table) => [primaryKey({ columns: [table.cocktailId, table.ingredientId] })],
 );
 
 // instructions テーブル
@@ -97,9 +96,24 @@ export const cocktailTags = sqliteTable(
 			.notNull()
 			.references(() => tags.id, { onDelete: "cascade" }),
 	},
-	(table) => ({
-		pk: primaryKey({ columns: [table.cocktailId, table.tagId] }),
-	}),
+	(table) => [primaryKey({ columns: [table.cocktailId, table.tagId] })],
+);
+
+export const deliciousLikes = sqliteTable(
+	"delicious_likes",
+	{
+		id: integer("id").primaryKey({ autoIncrement: true }),
+		userId: text("user_id")
+			.notNull()
+			.references(() => authSchema.users.id, { onDelete: "cascade" }),
+		cocktailId: text("cocktail_id")
+			.notNull()
+			.references(() => cocktails.id, { onDelete: "cascade" }),
+		createdAt: integer("created_at", { mode: "timestamp" })
+			.notNull()
+			.default(sql`CURRENT_TIMESTAMP`),
+	},
+	(table) => [unique().on(table.userId, table.cocktailId)],
 );
 
 // Relations
@@ -168,85 +182,35 @@ export const cocktailTagsRelations = relations(cocktailTags, ({ one }) => ({
 	}),
 }));
 
-// Better Auth Schema
-export const user = sqliteTable("user", {
-	id: text("id").primaryKey(),
-	name: text("name").notNull(),
-	email: text("email").notNull().unique(),
-	emailVerified: integer("emailVerified", { mode: "boolean" }).notNull(),
-	image: text("image"),
-	createdAt: integer("createdAt", { mode: "timestamp" }).notNull(),
-	updatedAt: integer("updatedAt", { mode: "timestamp" }).notNull(),
-});
-
-export const session = sqliteTable("session", {
-	id: text("id").primaryKey(),
-	expiresAt: integer("expiresAt", { mode: "timestamp" }).notNull(),
-	token: text("token").notNull().unique(),
-	createdAt: integer("createdAt", { mode: "timestamp" }).notNull(),
-	updatedAt: integer("updatedAt", { mode: "timestamp" }).notNull(),
-	ipAddress: text("ipAddress"),
-	userAgent: text("userAgent"),
-	userId: text("userId")
-		.notNull()
-		.references(() => user.id),
-});
-
-export const account = sqliteTable("account", {
-	id: text("id").primaryKey(),
-	accountId: text("accountId").notNull(),
-	providerId: text("providerId").notNull(),
-	userId: text("userId")
-		.notNull()
-		.references(() => user.id),
-	accessToken: text("accessToken"),
-	refreshToken: text("refreshToken"),
-	idToken: text("idToken"),
-	accessTokenExpiresAt: integer("accessTokenExpiresAt", { mode: "timestamp" }),
-	refreshTokenExpiresAt: integer("refreshTokenExpiresAt", {
-		mode: "timestamp",
-	}),
-	scope: text("scope"),
-	password: text("password"),
-	createdAt: integer("createdAt", { mode: "timestamp" }).notNull(),
-	updatedAt: integer("updatedAt", { mode: "timestamp" }).notNull(),
-});
-
-export const verification = sqliteTable("verification", {
-	id: text("id").primaryKey(),
-	identifier: text("identifier").notNull(),
-	value: text("value").notNull(),
-	expiresAt: integer("expiresAt", { mode: "timestamp" }).notNull(),
-	createdAt: integer("createdAt", { mode: "timestamp" }),
-	updatedAt: integer("updatedAt", { mode: "timestamp" }),
-});
-
-export const deliciousLikes = sqliteTable(
-	"delicious_likes",
-	{
-		id: integer("id").primaryKey({ autoIncrement: true }),
-		userId: text("user_id")
-			.notNull()
-			.references(() => user.id, { onDelete: "cascade" }),
-		cocktailId: text("cocktail_id")
-			.notNull()
-			.references(() => cocktails.id, { onDelete: "cascade" }),
-		createdAt: integer("created_at", { mode: "timestamp" })
-			.notNull()
-			.default(sql`CURRENT_TIMESTAMP`),
-	},
-	(table) => ({
-		userCocktailUnique: unique().on(table.userId, table.cocktailId),
-	}),
-);
-
 export const deliciousLikesRelations = relations(deliciousLikes, ({ one }) => ({
-	user: one(user, {
+	user: one(authSchema.users, {
 		fields: [deliciousLikes.userId],
-		references: [user.id],
+		references: [authSchema.users.id],
 	}),
 	cocktail: one(cocktails, {
 		fields: [deliciousLikes.cocktailId],
 		references: [cocktails.id],
 	}),
 }));
+
+export const schema = {
+	...authSchema,
+	cocktails,
+	ingredients,
+	cocktailIngredients,
+	instructions,
+	categories,
+	ingredientGroups,
+	tags,
+	cocktailTags,
+	deliciousLikes,
+	cocktailsRelations,
+	categoriesRelations,
+	ingredientGroupsRelations,
+	ingredientsRelations,
+	tagsRelations,
+	cocktailIngredientsRelations,
+	instructionsRelations,
+	cocktailTagsRelations,
+	deliciousLikesRelations,
+};

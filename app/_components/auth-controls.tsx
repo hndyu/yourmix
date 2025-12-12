@@ -1,29 +1,31 @@
 "use client";
 
-import { useSession, signOut } from "@/lib/auth-client";
+import authClient from "@/app/lib/authClient";
 import {
-	Box,
-	Typography,
-	Button,
 	Avatar,
+	Box,
+	Button,
+	CircularProgress,
+	Divider,
+	IconButton,
 	Menu,
 	MenuItem,
 	Tooltip,
-	IconButton,
-	CircularProgress,
-	Divider,
+	Typography,
 } from "@mui/material";
 import Link from "next/link";
-import { useRouter, usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 
 export default function AuthControls() {
-	const { data: session, isPending } = useSession();
+	const { data: session, isPending } = authClient.useSession();
 	const router = useRouter();
 	const pathname = usePathname();
 
 	const callbackUrl =
-		pathname === "/auth/sign-in" || pathname === "/auth/sign-up" ? "/" : pathname;
+		pathname === "/auth/sign-in" || pathname === "/auth/sign-up"
+			? "/"
+			: pathname;
 
 	// User Menu State
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -37,7 +39,7 @@ export default function AuthControls() {
 
 	const handleSignOut = async () => {
 		handleClose();
-		await signOut();
+		await authClient.signOut();
 		router.refresh();
 	};
 

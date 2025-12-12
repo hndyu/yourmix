@@ -1,18 +1,18 @@
 "use client";
 
-import { signUp } from "@/lib/auth-client";
-import { useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
-import Link from "next/link";
+import authClient from "@/app/lib/authClient";
 import {
-	Container,
 	Box,
-	Typography,
-	TextField,
 	Button,
 	Card,
 	CardContent,
+	Container,
+	TextField,
+	Typography,
 } from "@mui/material";
+import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useState } from "react";
 
 export default function SignUpForm() {
 	const [email, setEmail] = useState("");
@@ -32,7 +32,7 @@ export default function SignUpForm() {
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
 		setError(null);
-		await signUp.email(
+		await authClient.signUp.email(
 			{
 				email,
 				password,
@@ -93,8 +93,8 @@ export default function SignUpForm() {
 								onChange={(e) => setName(e.target.value)}
 								slotProps={{
 									htmlInput: {
-										"data-testid": "name-input"
-									}
+										"data-testid": "name-input",
+									},
 								}}
 							/>
 							<TextField
@@ -109,8 +109,8 @@ export default function SignUpForm() {
 								onChange={(e) => setEmail(e.target.value)}
 								slotProps={{
 									htmlInput: {
-										"data-testid": "email-input"
-									}
+										"data-testid": "email-input",
+									},
 								}}
 							/>
 							<TextField
@@ -126,8 +126,8 @@ export default function SignUpForm() {
 								onChange={(e) => setPassword(e.target.value)}
 								slotProps={{
 									htmlInput: {
-										"data-testid": "password-input"
-									}
+										"data-testid": "password-input",
+									},
 								}}
 							/>
 							<Button
@@ -140,7 +140,9 @@ export default function SignUpForm() {
 								アカウント登録
 							</Button>
 							<Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-								<Link href={`/auth/sign-in?callbackUrl=${encodeURIComponent(callbackUrl)}`}>
+								<Link
+									href={`/auth/sign-in?callbackUrl=${encodeURIComponent(callbackUrl)}`}
+								>
 									<Typography
 										variant="body2"
 										sx={{

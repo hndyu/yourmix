@@ -1,7 +1,7 @@
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
-import { describe, it, expect, vi, beforeEach } from "vitest";
 import SignInPage from "@/app/auth/sign-in/page";
-import * as authClient from "@/lib/auth-client";
+import authClient from "@/app/lib/authClient";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
 // Mock next/navigation
 const pushMock = vi.fn();
@@ -15,9 +15,11 @@ vi.mock("next/navigation", () => ({
 }));
 
 // Mock auth-client
-vi.mock("@/lib/auth-client", () => ({
-	signIn: {
-		email: vi.fn(),
+vi.mock("@/app/lib/authClient", () => ({
+	default: {
+		signIn: {
+			email: vi.fn(),
+		},
 	},
 }));
 
@@ -34,7 +36,7 @@ describe("SignInPage", () => {
 	});
 
 	it("handles successful sign in", async () => {
-		const signInMock = vi.spyOn(authClient.signIn, "email").mockImplementation(
+		vi.mocked(authClient.signIn.email).mockImplementation(
 			async (
 				data,
 				options,
@@ -89,7 +91,7 @@ describe("SignInPage", () => {
 		fireEvent.click(screen.getByTestId("sign-in-button"));
 
 		await waitFor(() => {
-			expect(signInMock).toHaveBeenCalledWith(
+			expect(vi.mocked(authClient.signIn.email)).toHaveBeenCalledWith(
 				{
 					email: "test@example.com",
 					password: "password123",
@@ -101,9 +103,8 @@ describe("SignInPage", () => {
 	});
 
 	it("handles sign in error", async () => {
-		const signInMock = vi
-			.spyOn(authClient.signIn, "email")
-			.mockImplementation(async (data, options) => {
+		vi.mocked(authClient.signIn.email).mockImplementation(
+			async (data, options) => {
 				const ctx = {
 					error: {
 						code: "API_ERROR",
@@ -116,7 +117,8 @@ describe("SignInPage", () => {
 					data: null,
 					error: ctx.error,
 				};
-			});
+			},
+		);
 
 		render(<SignInPage />);
 

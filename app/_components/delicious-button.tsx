@@ -1,17 +1,17 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import {
 	Button,
 	Dialog,
-	DialogTitle,
+	DialogActions,
 	DialogContent,
 	DialogContentText,
-	DialogActions,
+	DialogTitle,
 } from "@mui/material";
-import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import { useRouter } from "next/navigation";
-import { useSession } from "../../lib/auth-client";
+import { useState, useTransition } from "react";
+import authClient from "../lib/authClient";
 
 interface DeliciousButtonProps {
 	cocktailId: string;
@@ -28,7 +28,7 @@ export default function DeliciousButton({
 	const [isLiked, setIsLiked] = useState(initialIsLiked);
 	const [loginDialogOpen, setLoginDialogOpen] = useState(false);
 	const router = useRouter();
-	const { data: session } = useSession();
+	const { data: session } = authClient.useSession();
 
 	const handleClick = async () => {
 		// If we know client-side that user is not logged in, prompt immediately
@@ -94,8 +94,7 @@ export default function DeliciousButton({
 					},
 				}}
 			>
-				おいしい！{" "}
-				{count > 0 && <span style={{ marginLeft: "4px" }}>{count}</span>}
+				おいしい！ {count > 0 && <span className="ml-1">{count}</span>}
 			</Button>
 
 			<Dialog

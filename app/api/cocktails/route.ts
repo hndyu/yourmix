@@ -1,7 +1,7 @@
+import { getDb } from "@/app/db/db";
+import { schema } from "@/app/db/schema";
 import { and, eq, inArray } from "drizzle-orm";
 import { NextResponse } from "next/server";
-import * as schema from "@/app/db/schema";
-import getDb from "@/app/db/db";
 
 /**
  * カクテル一覧を取得するAPIエンドポイント
@@ -17,7 +17,7 @@ export async function GET(request: Request) {
 			? ingredientsParam.split(",").map(Number)
 			: [];
 
-		const db = getDb();
+		const db = await getDb();
 
 		// DrizzleのRelational Queriesを使用してデータを取得
 		const allCocktails = await db.query.cocktails.findMany({
@@ -30,7 +30,7 @@ export async function GET(request: Request) {
 									.from(schema.cocktailIngredients)
 									.where(
 										and(
-											eq(schema.cocktailIngredients.cocktailId, cocktails.id),
+											eq(cocktails.id, schema.cocktailIngredients.cocktailId),
 											inArray(
 												schema.cocktailIngredients.ingredientId,
 												selectedIngredientIds,
