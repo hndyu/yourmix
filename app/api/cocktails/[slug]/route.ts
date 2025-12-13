@@ -1,3 +1,4 @@
+import { initAuth } from "@/app/auth";
 import { getDb } from "@/app/db/db";
 import {
 	categories,
@@ -11,7 +12,6 @@ import {
 	tags,
 } from "@/app/db/schema";
 import type { Cocktail } from "@/app/types/cocktail";
-import { initAuth } from "@/lib/auth";
 import { and, asc, eq, sql } from "drizzle-orm";
 import { NextResponse } from "next/server";
 

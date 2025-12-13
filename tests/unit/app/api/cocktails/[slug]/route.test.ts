@@ -21,7 +21,7 @@ vi.mock("@/app/db/db");
 
 // Auth関連のモック
 const mockGetSession = vi.fn();
-vi.mock("@/lib/auth", async (importOriginal) => {
+vi.mock("@/app/auth", async (importOriginal) => {
 	const mod = await importOriginal<typeof import("@/app/auth")>();
 	return {
 		...mod,
