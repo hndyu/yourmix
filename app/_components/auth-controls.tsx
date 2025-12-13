@@ -103,10 +103,8 @@ export default function AuthControls() {
 					transformOrigin={{ horizontal: "right", vertical: "top" }}
 					anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
 				>
-					<MenuItem onClick={handleClose}>
-						<Typography variant="body2" noWrap>
-							{session.user.name}
-						</Typography>
+					<MenuItem component={Link} href="/my-page" onClick={handleClose}>
+						<Typography variant="body2">マイページ</Typography>
 					</MenuItem>
 					<Divider />
 					<MenuItem onClick={handleSignOut}>
