@@ -6,9 +6,15 @@ import {
 	Card,
 	CardContent,
 	CardHeader,
+	Dialog,
+	DialogActions,
+	DialogContent,
+	DialogContentText,
+	DialogTitle,
 	Typography,
 } from "@mui/material";
 import { redirect, useRouter } from "next/navigation";
+import { useState } from "react";
 
 interface ErrorResponse {
 	error?: string;
@@ -18,32 +24,46 @@ export default function MyPage() {
 	const { data: session, isPending } = authClient.useSession();
 	const router = useRouter();
 
-	const handleDeleteAccount = async () => {
-		const confirmation = window.confirm(
-			"本当にアカウントを削除しますか？この操作は元に戻せません。",
-		);
-		if (confirmation) {
-			try {
-				const res = await fetch("/api/user", {
-					method: "DELETE",
-				});
-				if (res.ok) {
-					// Also sign out on the client
-					await authClient.signOut();
-					alert("アカウントが削除されました。");
-					router.push("/");
-					router.refresh(); // To ensure session is cleared
-				} else {
-					const data: ErrorResponse = await res.json();
-					alert(`エラー: ${data.error || "アカウントの削除に失敗しました。"}`);
-				}
-			} catch (error) {
-				console.error("Account deletion failed:", error);
-				alert("アカウントの削除中にエラーが発生しました。");
+	const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
+	const [resultDialogOpen, setResultDialogOpen] = useState(false);
+	const [resultDialogMessage, setResultDialogMessage] = useState("");
+
+	const handleDeleteAccount = () => {
+		setConfirmDialogOpen(true);
+	};
+
+	const executeDelete = async () => {
+		setConfirmDialogOpen(false);
+		try {
+			const res = await fetch("/api/user", {
+				method: "DELETE",
+			});
+			if (res.ok) {
+				// Also sign out on the client
+				setResultDialogMessage("アカウントが削除されました。");
+				setResultDialogOpen(true);
+			} else {
+				const data: ErrorResponse = await res.json();
+				setResultDialogMessage(
+					`エラー: ${data.error || "アカウントの削除に失敗しました。"}`,
+				);
+				setResultDialogOpen(true);
 			}
+		} catch (error) {
+			console.error("Account deletion failed:", error);
+			setResultDialogMessage("アカウントの削除中にエラーが発生しました。");
+			setResultDialogOpen(true);
 		}
 	};
 
+	const handleResultDialogClose = async () => {
+		setResultDialogOpen(false);
+		if (resultDialogMessage === "アカウントが削除されました。") {
+			await authClient.signOut();
+			router.push("/");
+			router.refresh(); // To ensure session is cleared
+		}
+	};
 	if (isPending) {
 		return (
 			<main className="container mx-auto my-8 max-w-lg">
@@ -94,6 +114,48 @@ export default function MyPage() {
 					</div>
 				</CardContent>
 			</Card>
+
+			{/* Account Deletion Confirm Dialog */}
+			<Dialog
+				open={confirmDialogOpen}
+				onClose={() => setConfirmDialogOpen(false)}
+				aria-labelledby="confirm-delete-dialog-title"
+				aria-describedby="confirm-delete-dialog-description"
+			>
+				<DialogTitle id="confirm-delete-dialog-title">
+					アカウントの削除
+				</DialogTitle>
+				<DialogContent>
+					<DialogContentText id="confirm-delete-dialog-description">
+						本当にアカウントを削除しますか？この操作は元に戻せません。
+					</DialogContentText>
+				</DialogContent>
+				<DialogActions>
+					<Button onClick={() => setConfirmDialogOpen(false)}>
+						キャンセル
+					</Button>
+					<Button onClick={executeDelete} color="error">
+						削除する
+					</Button>
+				</DialogActions>
+			</Dialog>
+
+			{/* Result Dialog */}
+			<Dialog
+				open={resultDialogOpen}
+				onClose={handleResultDialogClose}
+				aria-labelledby="result-dialog-title"
+			>
+				<DialogTitle id="result-dialog-title">処理結果</DialogTitle>
+				<DialogContent>
+					<DialogContentText>{resultDialogMessage}</DialogContentText>
+				</DialogContent>
+				<DialogActions>
+					<Button onClick={handleResultDialogClose} autoFocus>
+						閉じる
+					</Button>
+				</DialogActions>
+			</Dialog>
 		</main>
 	);
 }
