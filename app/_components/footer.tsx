@@ -1,7 +1,9 @@
 "use client";
 
 import Box from "@mui/material/Box";
+import Link from "@mui/material/Link";
 import Typography from "@mui/material/Typography";
+import NextLink from "next/link";
 
 // フッターコンポーネント
 export default function Footer() {
@@ -15,11 +17,18 @@ export default function Footer() {
 				textAlign: "center",
 				backgroundColor: "#f5f5f5",
 				borderTop: "1px solid #e0e0e0",
+				display: "flex",
+				justifyContent: "center",
+				alignItems: "center",
+				gap: 2,
 			}}
 		>
 			<Typography variant="body2" color="text.secondary">
 				&copy; 2025 YourMix
 			</Typography>
+			<Link component={NextLink} href="/privacy-policy" variant="body2">
+				プライバシーポリシー
+			</Link>
 		</Box>
 	);
 }
