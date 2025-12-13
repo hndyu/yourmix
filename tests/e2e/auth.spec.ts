@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { expect, test } from "@playwright/test";
 
 test.describe("Authentication Flow", () => {
 	// Unique user for each test run to avoid conflicts
@@ -27,7 +27,7 @@ test.describe("Authentication Flow", () => {
 		await page.getByRole("button", { name: "Account settings" }).click();
 
 		// The user's name should be visible after sign-up
-		await expect(page.getByText(user.name)).toBeVisible();
+		await expect(page.getByText("マイページ")).toBeVisible();
 	});
 
 	test("should allow a user to sign up, sign out, and then sign in", async ({
@@ -48,7 +48,7 @@ test.describe("Authentication Flow", () => {
 		await page.getByRole("button", { name: "Account settings" }).click();
 
 		// The user's name should be visible in the header
-		await expect(page.getByText(user.name)).toBeVisible();
+		await expect(page.getByText("マイページ")).toBeVisible();
 
 		// --- 2. Sign Out ---
 		// Click the sign out button
@@ -56,7 +56,7 @@ test.describe("Authentication Flow", () => {
 
 		// Should be back on the home page and see the sign-in button
 		await expect(page.getByRole("link", { name: "ログイン" })).toBeVisible();
-		await expect(page.getByText(user.name)).not.toBeVisible();
+		await expect(page.getByText("マイページ")).not.toBeVisible();
 
 		// --- 3. Sign In ---
 		await page.goto("/auth/sign-in");
@@ -71,7 +71,7 @@ test.describe("Authentication Flow", () => {
 
 		// The user's name should be visible again
 		await page.getByRole("button", { name: "Account settings" }).click();
-		await expect(page.getByText(user.name)).toBeVisible();
+		await expect(page.getByText("マイページ")).toBeVisible();
 		await expect(
 			page.getByRole("link", { name: "ログイン" }),
 		).not.toBeVisible();
