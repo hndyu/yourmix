@@ -36,7 +36,32 @@ describe("SignUpPage", () => {
 		expect(screen.getByTestId("sign-up-button")).toBeInTheDocument();
 	});
 
-	it("handles successful sign up", async () => {
+	it("shows a dialog when trying to sign up without agreeing to the terms", async () => {
+		render(<SignUpPage />);
+
+		fireEvent.change(screen.getByTestId("name-input"), {
+			target: { value: "Test User" },
+		});
+		fireEvent.change(screen.getByTestId("email-input"), {
+			target: { value: "test@example.com" },
+		});
+		fireEvent.change(screen.getByTestId("password-input"), {
+			target: { value: "password123" },
+		});
+
+		fireEvent.click(screen.getByTestId("sign-up-button"));
+
+		await waitFor(() => {
+			expect(
+				screen.getByText("利用規約への同意が必要です"),
+			).toBeInTheDocument();
+		});
+
+		expect(vi.mocked(authClient.signUp.email)).not.toHaveBeenCalled();
+		expect(pushMock).not.toHaveBeenCalled();
+	});
+
+	it("handles successful sign up when terms are agreed", async () => {
 		vi.mocked(authClient.signUp.email).mockImplementation(
 			async (data, options) => {
 				// 非同期で成功を解決
@@ -90,6 +115,9 @@ describe("SignUpPage", () => {
 			target: { value: "password123" },
 		});
 
+		// Click the checkbox to agree to the terms
+		fireEvent.click(screen.getByTestId("terms-agreement-checkbox"));
+
 		fireEvent.click(screen.getByTestId("sign-up-button"));
 
 		await waitFor(() => {
@@ -141,6 +169,9 @@ describe("SignUpPage", () => {
 		fireEvent.change(screen.getByTestId("password-input"), {
 			target: { value: "password123" },
 		});
+
+		// Click the checkbox to agree to the terms
+		fireEvent.click(screen.getByTestId("terms-agreement-checkbox"));
 
 		fireEvent.click(screen.getByTestId("sign-up-button"));
 

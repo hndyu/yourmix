@@ -6,7 +6,13 @@ import {
 	Button,
 	Card,
 	CardContent,
+	Checkbox,
 	Container,
+	Dialog,
+	DialogActions,
+	DialogContent,
+	DialogTitle,
+	FormControlLabel,
 	TextField,
 	Typography,
 } from "@mui/material";
@@ -18,7 +24,9 @@ export default function SignUpForm() {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [name, setName] = useState("");
+	const [termsAgreed, setTermsAgreed] = useState(false);
 	const [error, setError] = useState<string | null>(null);
+	const [openDialog, setOpenDialog] = useState(false);
 	const router = useRouter();
 	const searchParams = useSearchParams();
 
@@ -32,6 +40,12 @@ export default function SignUpForm() {
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
 		setError(null);
+
+		if (!termsAgreed) {
+			setOpenDialog(true);
+			return;
+		}
+
 		await authClient.signUp.email(
 			{
 				email,
@@ -48,6 +62,10 @@ export default function SignUpForm() {
 				},
 			},
 		);
+	};
+
+	const handleCloseDialog = () => {
+		setOpenDialog(false);
 	};
 
 	return (
@@ -130,6 +148,35 @@ export default function SignUpForm() {
 									},
 								}}
 							/>
+							<FormControlLabel
+								control={
+									<Checkbox
+										value="agree"
+										color="primary"
+										checked={termsAgreed}
+										onChange={(e) => setTermsAgreed(e.target.checked)}
+										data-testid="terms-agreement-checkbox"
+									/>
+								}
+								label={
+									<Typography variant="body2">
+										<Link href="/terms-of-service" passHref>
+											<Typography
+												component="span"
+												sx={{
+													color: "primary.main",
+													textDecoration: "none",
+													"&:hover": { textDecoration: "underline" },
+												}}
+											>
+												利用規約
+											</Typography>
+										</Link>
+										に同意する
+									</Typography>
+								}
+								sx={{ mt: 1, mb: 2 }}
+							/>
 							<Button
 								type="submit"
 								fullWidth
@@ -159,6 +206,26 @@ export default function SignUpForm() {
 					</CardContent>
 				</Card>
 			</Box>
+			<Dialog
+				open={openDialog}
+				onClose={handleCloseDialog}
+				aria-labelledby="alert-dialog-title"
+				aria-describedby="alert-dialog-description"
+			>
+				<DialogTitle id="alert-dialog-title">
+					{"利用規約への同意が必要です"}
+				</DialogTitle>
+				<DialogContent>
+					<Typography id="alert-dialog-description">
+						アカウント登録には、利用規約への同意が必要です。
+					</Typography>
+				</DialogContent>
+				<DialogActions>
+					<Button onClick={handleCloseDialog} autoFocus>
+						閉じる
+					</Button>
+				</DialogActions>
+			</Dialog>
 		</Container>
 	);
 }

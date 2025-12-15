@@ -26,6 +26,9 @@ export default function Footer() {
 			<Typography variant="body2" color="text.secondary">
 				&copy; 2025 YourMix
 			</Typography>
+			<Link component={NextLink} href="/terms-of-service" variant="body2">
+				利用規約
+			</Link>
 			<Link component={NextLink} href="/privacy-policy" variant="body2">
 				プライバシーポリシー
 			</Link>

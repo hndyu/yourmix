@@ -19,6 +19,8 @@ test.describe("Authentication Flow", () => {
 		await page.getByTestId("email-input").fill(user.email);
 		await page.getByTestId("password-input").fill(user.password);
 
+		await page.getByTestId("terms-agreement-checkbox").click();
+
 		await page.getByTestId("sign-up-button").click();
 
 		// Should redirect to the specified callbackUrl
@@ -39,6 +41,8 @@ test.describe("Authentication Flow", () => {
 		await page.getByTestId("name-input").fill(user.name);
 		await page.getByTestId("email-input").fill(user.email);
 		await page.getByTestId("password-input").fill(user.password);
+
+		await page.getByTestId("terms-agreement-checkbox").click();
 
 		await page.getByTestId("sign-up-button").click();
 
@@ -75,5 +79,22 @@ test.describe("Authentication Flow", () => {
 		await expect(
 			page.getByRole("link", { name: "ログイン" }),
 		).not.toBeVisible();
+	});
+
+	test("should show a dialog when trying to sign up without agreeing to the terms", async ({
+		page,
+	}) => {
+		await page.goto("/auth/sign-up");
+
+		await page.getByTestId("name-input").fill(user.name);
+		await page.getByTestId("email-input").fill(user.email);
+		await page.getByTestId("password-input").fill(user.password);
+
+		await page.getByTestId("sign-up-button").click();
+
+		await expect(
+			page.getByText("利用規約への同意が必要です").nth(0),
+		).toBeVisible();
+		await expect(page).toHaveURL("/auth/sign-up");
 	});
 });
