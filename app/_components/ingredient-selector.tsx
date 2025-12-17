@@ -124,69 +124,6 @@ export default function IngredientSelector({
 				材料を選択してください
 			</Typography>
 
-			{selectedCount >= 5 && (
-				<Typography
-					variant="body2"
-					color="text.secondary"
-					textAlign="center"
-					sx={{ mb: 2 }}
-				>
-					材料は5つまで選択できます。
-				</Typography>
-			)}
-
-			{selectedCount > 0 && (
-				<Paper
-					elevation={1}
-					sx={{
-						p: 2,
-						mb: 3,
-						backgroundColor: "primary.light",
-						color: "primary.contrastText",
-						opacity: disabled ? 0.6 : 1,
-						transition: "opacity 0.3s ease",
-					}}
-				>
-					<Typography variant="subtitle2" gutterBottom>
-						選択された材料 ({selectedCount}個):
-					</Typography>
-					<Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
-						{selectedIngredients.map((ingredient) => (
-							<Chip
-								key={ingredient.id}
-								label={ingredient.name}
-								size="small"
-								onDelete={() => handleIngredientToggle(ingredient.id)}
-								sx={{
-									backgroundColor: "primary.main",
-									color: "primary.contrastText",
-									"& .MuiChip-deleteIcon": {
-										color: "primary.contrastText",
-									},
-								}}
-							/>
-						))}
-					</Box>
-				</Paper>
-			)}
-
-			{selectedCount > 0 && (
-				<Box sx={{ display: "flex", gap: 1, mb: 2, justifyContent: "center" }}>
-					<Chip
-						label="全解除"
-						onClick={handleClearAll}
-						variant="outlined"
-						color="secondary"
-						clickable
-						disabled={disabled}
-						sx={{
-							opacity: disabled ? 0.6 : 1,
-							cursor: disabled ? "not-allowed" : "pointer",
-						}}
-					/>
-				</Box>
-			)}
-
 			{sortedCategoryEntries.map(([category, ingredients]) => {
 				const categoryInfo = categories.find((c) => c.name === category);
 				const iconName = categoryInfo?.icon;
@@ -262,7 +199,7 @@ export default function IngredientSelector({
 													slotProps={{
 														input: {
 															"aria-labelledby": `ingredient-label-${ingredient.id}`,
-														}
+														},
 													}}
 												/>
 												<Box

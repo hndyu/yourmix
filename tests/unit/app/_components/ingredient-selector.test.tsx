@@ -1,9 +1,9 @@
+import IngredientSelector from "@/app/_components/ingredient-selector";
+import type { Category, Ingredient } from "@/app/types/cocktail";
 import { render, screen } from "@testing-library/react";
 import { userEvent } from "@testing-library/user-event";
 import * as React from "react";
 import { describe, expect, test, vi } from "vitest";
-import type { Category, Ingredient } from "@/app/types/cocktail";
-import IngredientSelector from "@/app/_components/ingredient-selector";
 
 // モックデータ
 const mockCategories: Category[] = [
@@ -132,47 +132,6 @@ describe("IngredientSelector", () => {
 		expect(onIngredientsChange).toHaveBeenCalledWith([], []);
 	});
 
-	test("選択された材料がチップとして表示され、チップの削除ボタンで選択解除できる", async () => {
-		const user = userEvent.setup();
-		const onIngredientsChange = vi.fn();
-		render(
-			<IngredientSelector
-				{...defaultProps}
-				selectedIngredientIds={[1, 2]}
-				onIngredientsChange={onIngredientsChange}
-			/>,
-		);
-
-		expect(screen.getByText("選択された材料 (2個):")).toBeInTheDocument();
-		const chip = screen.getByRole("button", { name: /ジン/i });
-		expect(chip).toBeInTheDocument();
-
-		// チップの削除アイコンをクリック
-		const deleteIcon = chip.querySelector(".MuiChip-deleteIcon");
-		if (deleteIcon) {
-			await user.click(deleteIcon);
-		}
-
-		expect(onIngredientsChange).toHaveBeenCalledWith([2], ["ウォッカ"]);
-	});
-
-	test("「全解除」ボタンで全ての材料の選択が解除される", async () => {
-		const user = userEvent.setup();
-		const onIngredientsChange = vi.fn();
-		render(
-			<IngredientSelector
-				{...defaultProps}
-				selectedIngredientIds={[1, 2]}
-				onIngredientsChange={onIngredientsChange}
-			/>,
-		);
-
-		const clearAllButton = screen.getByRole("button", { name: "全解除" });
-		await user.click(clearAllButton);
-
-		expect(onIngredientsChange).toHaveBeenCalledWith([], []);
-	});
-
 	test("材料が5つ選択されると、他の材料は選択できなくなる", async () => {
 		const user = userEvent.setup();
 		const selectedIds = [1, 2, 3, 4, 5];
@@ -182,8 +141,6 @@ describe("IngredientSelector", () => {
 				selectedIngredientIds={selectedIds}
 			/>,
 		);
-
-		expect(screen.getByText("材料は5つまで選択できます。")).toBeInTheDocument();
 
 		const tonicCheckbox = screen.getByLabelText("トニックウォーター");
 		expect(tonicCheckbox).toBeDisabled();
@@ -210,21 +167,8 @@ describe("IngredientSelector", () => {
 		const ginCheckbox = screen.getByLabelText("ジン");
 		expect(ginCheckbox).toBeDisabled();
 
-		// チップの削除ボタンが無効（クリックイベントが発火しない）
-		const chip = screen.getByRole("button", { name: /ジン/i });
-		const deleteIcon = chip.querySelector(".MuiChip-deleteIcon");
-		// disabled={true} の場合、Chipコンポーネント自体にpointer-events: noneが適用されるため、
-		// ユーザーは削除アイコンをクリックできません。このテストはクリックできないことを前提としています。
-		expect(deleteIcon).toBeInTheDocument(); // アイコンが存在することのみ確認
-
-		// 全解除ボタンが無効
-		const clearAllButton = screen.getByRole("button", { name: "全解除" });
-		expect(clearAllButton).toHaveClass("Mui-disabled");
-
 		// アコーディオンが無効
-		const accordionSummary = screen.getByRole("button", {
-			name: /スピリッツ/i,
-		});
+		const accordionSummary = screen.getByRole("button", { name: "スピリッツ" });
 		expect(accordionSummary).toHaveClass("Mui-disabled");
 	});
 });
