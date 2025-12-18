@@ -1,18 +1,20 @@
+import MixSection from "@/app/_components/mix-section";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import * as React from "react";
-import { describe, expect, it, vi, beforeEach } from "vitest";
-import MixSection from "@/app/_components/mix-section";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
 // 子コンポーネントをモック化
 vi.mock("@/app/_components/ingredient-selector", () => ({
 	default: ({
 		selectedIngredientIds,
+		selectedIngredientNames,
 		onIngredientsChange,
 		disabled,
 		isInitialLoading,
 	}: {
 		selectedIngredientIds: number[];
+		selectedIngredientNames: string[];
 		onIngredientsChange: (ids: number[], names: string[]) => void;
 		disabled: boolean;
 		isInitialLoading: boolean;
@@ -20,6 +22,7 @@ vi.mock("@/app/_components/ingredient-selector", () => ({
 		<div data-testid="ingredient-selector">
 			<p>isInitialLoading: {isInitialLoading.toString()}</p>
 			<p>disabled: {disabled.toString()}</p>
+			<p>selectedCount: {selectedIngredientIds.length}</p>
 			<button
 				type="button"
 				onClick={() => onIngredientsChange([1], ["Ingredient 1"])}
@@ -61,6 +64,7 @@ describe("MixSection", () => {
 		ingredients: [],
 		categories: [],
 		selectedIngredientIds: [],
+		selectedIngredientNames: [],
 		onIngredientsChange: mockOnIngredientsChange,
 		isMixing: false,
 		isInitialLoading: false,
@@ -100,7 +104,11 @@ describe("MixSection", () => {
 	});
 
 	it("材料が選択されると、Mixボタンが有効になり、メッセージが更新されること", () => {
-		const props = { ...defaultProps, selectedIngredientIds: [1] };
+		const props = {
+			...defaultProps,
+			selectedIngredientIds: [1],
+			selectedIngredientNames: ["Ingredient 1"],
+		};
 		render(<MixSection {...props} />);
 
 		expect(screen.getByTestId("mix-button")).toBeEnabled();

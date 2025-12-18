@@ -118,6 +118,7 @@ export default function CocktailMixer() {
 				ingredients={ingredients}
 				categories={categories}
 				selectedIngredientIds={selectedIngredientIds}
+				selectedIngredientNames={selectedIngredientNames}
 				onIngredientsChange={handleIngredientsChange}
 				isMixing={isMixing}
 				isInitialLoading={isInitialLoading}
