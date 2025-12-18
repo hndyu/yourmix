@@ -309,7 +309,7 @@ export default function IngredientSelector({
 					value={null} // 選択後に値をリセット
 					blurOnSelect
 					disabled={disabled}
-					componentsProps={{
+					slotProps={{
 						paper: { sx: { maxHeight: 300 } },
 					}}
 				/>
@@ -446,8 +446,10 @@ export default function IngredientSelector({
 														<Checkbox
 															checked={isSelected}
 															disabled={disabled || isLimitReached}
-															inputProps={{
-																"aria-label": ingredient.name,
+															slotProps={{
+																input: {
+																	"aria-label": ingredient.name,
+																},
 															}}
 														/>
 														<Box>
