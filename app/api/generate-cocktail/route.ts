@@ -64,10 +64,19 @@ export async function POST(request: Request) {
 		}
 
 		// DBから有効な材料グループ名を取得
-		const validIngredients = await db
+		const validGroups = await db
 			.select({ displayName: schema.ingredientGroups.displayName })
 			.from(schema.ingredientGroups);
-		const validIngredientNames = validIngredients.map((i) => i.displayName);
+
+		// DBから有効な材料名を取得
+		const validIngredients = await db
+			.select({ name: schema.ingredients.name })
+			.from(schema.ingredients);
+
+		const validIngredientNames = [
+			...validGroups.map((g) => g.displayName),
+			...validIngredients.map((i) => i.name),
+		];
 
 		// 送信された材料名がすべて有効か検証
 		for (const ingredient of selectedIngredients) {
