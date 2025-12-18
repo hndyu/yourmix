@@ -498,13 +498,6 @@ export default function IngredientSelector({
 												{/* 詳細材料のチップ表示 */}
 												<Collapse in={isExpanded} timeout="auto" unmountOnExit>
 													<Box sx={{ pl: 5, pr: 1, pb: 1 }}>
-														<Typography
-															variant="caption"
-															color="text.secondary"
-															sx={{ mb: 1, display: "block" }}
-														>
-															詳細を指定する（複数選択可）:
-														</Typography>
 														<Box
 															sx={{
 																display: "flex",

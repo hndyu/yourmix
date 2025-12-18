@@ -22,14 +22,14 @@ vi.mock("@/app/_components/ingredient-selector", () => ({
 		<div data-testid="ingredient-selector">
 			<p>isInitialLoading: {isInitialLoading.toString()}</p>
 			<p>disabled: {disabled.toString()}</p>
-			<p>selectedCount: {selectedIngredientIds.length}</p>
+			<p>selectedCount: {selectedIngredientNames.length}</p>
 			<button
 				type="button"
 				onClick={() => onIngredientsChange([1], ["Ingredient 1"])}
 			>
 				Select Ingredient
 			</button>
-			<span>Selected: {selectedIngredientIds.length}</span>
+			<span>Selected: {selectedIngredientNames.length}</span>
 		</div>
 	),
 }));
@@ -119,7 +119,12 @@ describe("MixSection", () => {
 
 	it("isMixingがtrueの場合、ミキシング状態が表示され、コンポーネントが無効化されること", () => {
 		render(
-			<MixSection {...defaultProps} selectedIngredientIds={[1]} isMixing />,
+			<MixSection
+				{...defaultProps}
+				selectedIngredientIds={[1]}
+				selectedIngredientNames={["Ingredient 1"]}
+				isMixing
+			/>,
 		);
 
 		expect(screen.getByText("カクテルを生成中です...")).toBeInTheDocument();
@@ -132,7 +137,13 @@ describe("MixSection", () => {
 
 	it("MixボタンをクリックするとonMixClickが呼び出されること", async () => {
 		const user = userEvent.setup();
-		render(<MixSection {...defaultProps} selectedIngredientIds={[1]} />);
+		render(
+			<MixSection
+				{...defaultProps}
+				selectedIngredientIds={[1]}
+				selectedIngredientNames={["Ingredient 1"]}
+			/>,
+		);
 
 		const mixButton = screen.getByTestId("mix-button");
 		expect(mixButton).toBeEnabled();

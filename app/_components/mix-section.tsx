@@ -28,7 +28,7 @@ export default function MixSection({
 	isMixing = false,
 	isInitialLoading = false,
 }: MixSectionProps) {
-	const selectedCount = selectedIngredientIds.length;
+	const selectedCount = selectedIngredientNames.length;
 
 	return (
 		<Box
