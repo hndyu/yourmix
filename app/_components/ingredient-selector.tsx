@@ -621,7 +621,6 @@ export default function IngredientSelector({
 																	<Chip
 																		key={detailName}
 																		label={detailName}
-																		size="small"
 																		variant={
 																			isDetailSelected ? "filled" : "outlined"
 																		}
