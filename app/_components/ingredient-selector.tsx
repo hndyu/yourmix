@@ -7,6 +7,7 @@ import {
 	Accordion,
 	AccordionDetails,
 	AccordionSummary,
+	Alert,
 	Autocomplete,
 	Box,
 	Checkbox,
@@ -15,6 +16,8 @@ import {
 	FormGroup,
 	IconButton,
 	InputAdornment,
+	Snackbar,
+	Stack,
 	TextField,
 	Tooltip,
 	Typography,
@@ -62,6 +65,27 @@ export default function IngredientSelector({
 			...prev,
 			[ingredientId]: !prev[ingredientId],
 		}));
+	};
+
+	// Snackbarの状態管理
+	const [snackbar, setSnackbar] = React.useState<{
+		open: boolean;
+		message: string;
+		severity: "success" | "warning" | "info" | "error";
+	}>({
+		open: false,
+		message: "",
+		severity: "info",
+	});
+
+	const handleCloseSnackbar = (
+		event?: React.SyntheticEvent | Event,
+		reason?: string,
+	) => {
+		if (reason === "clickaway") {
+			return;
+		}
+		setSnackbar((prev) => ({ ...prev, open: false }));
 	};
 
 	// 検索オプションの生成
@@ -185,11 +209,21 @@ export default function IngredientSelector({
 					(n) => !groupRelatedNames.includes(n),
 				);
 				onIngredientsChange(newIds, newNames);
+				setSnackbar({
+					open: true,
+					message: `${ingredient.name}を削除しました`,
+					severity: "info",
+				});
 				return;
 			}
 			// 何も選択されていない場合 -> 親を選択
 			// 制限チェック
 			if (currentTotalCount >= 5) {
+				setSnackbar({
+					open: true,
+					message: "材料は5つまでです",
+					severity: "warning",
+				});
 				return;
 			}
 
@@ -197,6 +231,11 @@ export default function IngredientSelector({
 				[...selectedIngredientIds, ingredient.id],
 				[...selectedIngredientNames, ingredient.name],
 			);
+			setSnackbar({
+				open: true,
+				message: `${ingredient.name}を追加しました`,
+				severity: "success",
+			});
 			return;
 		}
 
@@ -220,6 +259,11 @@ export default function IngredientSelector({
 			}
 
 			onIngredientsChange(newIds, newNames);
+			setSnackbar({
+				open: true,
+				message: `${targetName}を削除しました`,
+				severity: "info",
+			});
 		} else {
 			// 追加選択
 			// 制限チェック
@@ -245,6 +289,11 @@ export default function IngredientSelector({
 			}
 
 			if (willIncrease && currentTotalCount >= 5) {
+				setSnackbar({
+					open: true,
+					message: "材料は5つまでです",
+					severity: "warning",
+				});
 				return;
 			}
 
@@ -260,6 +309,25 @@ export default function IngredientSelector({
 			}
 
 			onIngredientsChange(newIds, newNames);
+			setSnackbar({
+				open: true,
+				message: `${targetName}を追加しました`,
+				severity: "success",
+			});
+		}
+	};
+
+	// チップ削除のハンドラ
+	const handleDeleteChip = (name: string) => {
+		const ingredient = ingredients.find(
+			(ing) => ing.name === name || ing.actualNames?.includes(name),
+		);
+		if (ingredient) {
+			if (name === ingredient.name) {
+				handleToggle(ingredient, undefined); // グループ全体の解除
+			} else {
+				handleToggle(ingredient, name); // 詳細の解除
+			}
 		}
 	};
 
@@ -325,6 +393,28 @@ export default function IngredientSelector({
 						paper: { sx: { maxHeight: 300 } },
 					}}
 				/>
+
+				{/* 選択された材料のチップ表示 */}
+				<Box sx={{ minHeight: 32, mt: 1 }}>
+					{selectedIngredientNames.length > 0 ? (
+						<Stack direction="row" flexWrap="wrap" gap={1}>
+							{selectedIngredientNames.map((name) => (
+								<Chip
+									key={name}
+									label={name}
+									onDelete={() => handleDeleteChip(name)}
+									color="primary"
+									variant="filled"
+									size="medium"
+								/>
+							))}
+						</Stack>
+					) : (
+						<Typography variant="body2" color="text.secondary" sx={{ pl: 1 }}>
+							選択された材料がここに表示されます
+						</Typography>
+					)}
+				</Box>
 			</Box>
 
 			{sortedCategoryEntries.map(([category, ingredients]) => {
@@ -565,6 +655,22 @@ export default function IngredientSelector({
 					</Accordion>
 				);
 			})}
+
+			<Snackbar
+				open={snackbar.open}
+				autoHideDuration={3000}
+				onClose={handleCloseSnackbar}
+				anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+			>
+				<Alert
+					onClose={handleCloseSnackbar}
+					severity={snackbar.severity}
+					variant="filled"
+					sx={{ width: "100%" }}
+				>
+					{snackbar.message}
+				</Alert>
+			</Snackbar>
 		</Box>
 	);
 }

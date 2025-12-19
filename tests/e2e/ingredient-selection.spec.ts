@@ -33,7 +33,9 @@ test.describe("Ingredient Selection", () => {
 		// 2. Assert that 5 ingredients are selected by checking the chips
 		// The selected ingredients are displayed as buttons with their names.
 		for (let i = 1; i <= 5; i++) {
-			await expect(page.getByText(`Ingredient ${i}`)).toBeVisible();
+			await expect(
+				page.getByRole("region").getByText(`Ingredient ${i}`),
+			).toBeVisible();
 		}
 
 		// 3. Assert that the 6th ingredient's checkbox is disabled
