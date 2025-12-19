@@ -68,13 +68,7 @@ export default function IngredientSelector({
 	const searchOptions = React.useMemo(() => {
 		const options: SearchOption[] = [];
 		for (const ing of ingredients) {
-			// グループ自体のオプション
-			options.push({
-				label: ing.name,
-				ingredient: ing,
-				type: "group",
-			});
-			// 詳細材料のオプション
+			// 材料のみ追加
 			if (ing.actualNames) {
 				for (const actualName of ing.actualNames) {
 					options.push({
@@ -86,8 +80,28 @@ export default function IngredientSelector({
 				}
 			}
 		}
-		return options;
-	}, [ingredients]);
+
+		// ソート順：カテゴリオブジェクトのsortOrder -> 親材料名 -> 詳細材料名
+		return options.sort((a, b) => {
+			const catA = categories.find((c) => c.name === a.ingredient.categoryName);
+			const catB = categories.find((c) => c.name === b.ingredient.categoryName);
+
+			const orderA = catA?.sortOrder ?? Number.POSITIVE_INFINITY;
+			const orderB = catB?.sortOrder ?? Number.POSITIVE_INFINITY;
+
+			if (orderA !== orderB) {
+				return orderA - orderB;
+			}
+
+			const groupA = a.groupName || "";
+			const groupB = b.groupName || "";
+			if (groupA !== groupB) {
+				return groupA.localeCompare(groupB, "ja");
+			}
+
+			return a.label.localeCompare(b.label, "ja");
+		});
+	}, [ingredients, categories]);
 
 	// カテゴリごとのグルーピング
 	const ingredientCategories = React.useMemo(() => {
@@ -273,9 +287,7 @@ export default function IngredientSelector({
 			<Box sx={{ mb: 3 }}>
 				<Autocomplete
 					options={searchOptions}
-					groupBy={(option) =>
-						option.type === "group" ? "カテゴリー" : "詳細材料"
-					}
+					groupBy={(option) => option.groupName || "詳細材料"}
 					getOptionLabel={(option) => option.label}
 					filterOptions={createFilterOptions({
 						matchFrom: "any",
