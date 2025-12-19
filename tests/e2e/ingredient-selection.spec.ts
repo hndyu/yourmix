@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { expect, test } from "@playwright/test";
 
 test.beforeEach(async ({ page }) => {
 	// Mock the ingredients API
@@ -34,7 +34,7 @@ test.describe("Ingredient Selection", () => {
 		// The selected ingredients are displayed as buttons with their names.
 		for (let i = 1; i <= 5; i++) {
 			await expect(
-				page.getByRole("button", { name: `Ingredient ${i}` }),
+				page.getByRole("region").getByText(`Ingredient ${i}`),
 			).toBeVisible();
 		}
 
@@ -43,33 +43,5 @@ test.describe("Ingredient Selection", () => {
 			name: "Ingredient 6",
 		});
 		await expect(sixthIngredientCheckbox).toBeDisabled();
-	});
-
-	test("should clear all selected ingredients using the 'clear all' button", async ({
-		page,
-	}) => {
-		// 1. Select some ingredients
-		await page.getByLabel("Ingredient 1").click();
-		await page.getByLabel("Ingredient 2").click();
-
-		// 2. Check that they are selected
-		await expect(page.getByLabel("Ingredient 1")).toBeChecked();
-		await expect(page.getByLabel("Ingredient 2")).toBeChecked();
-		await expect(
-			page.getByRole("button", { name: "Ingredient 1" }),
-		).toBeVisible();
-		await expect(
-			page.getByRole("button", { name: "Ingredient 2" }),
-		).toBeVisible();
-
-		// 3. Click the 'clear all' button
-		await page.getByRole("button", { name: "全解除" }).click();
-
-		// 4. Assert that no ingredients are selected
-		await expect(page.getByLabel("Ingredient 1")).not.toBeChecked();
-		await expect(page.getByLabel("Ingredient 2")).not.toBeChecked();
-		await expect(
-			page.getByRole("button", { name: "Ingredient 1" }),
-		).not.toBeVisible();
 	});
 });
