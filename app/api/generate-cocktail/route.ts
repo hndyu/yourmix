@@ -110,9 +110,17 @@ export async function POST(request: Request) {
 
 		const response = await ai.models.generateContent({
 			model: "gemini-2.5-flash",
-			contents: `${processedIngredients.join(
-				"、",
-			)}をすべて材料として使い、独創的で美味しいオリジナルカクテルのレシピを1つ提案してください。回答は必ず日本語で行ってください。`,
+			contents: `あなたは世界的に評価の高いプロのミクソロジストです。
+以下の材料をベースに、創造性に溢れ、かつ味のバランスが完璧に整ったオリジナルのカクテルレシピを1つ考案してください。
+
+材料: ${processedIngredients.join("、")}
+
+## ガイドライン:
+1. **味の構成**: ベース、酸味、甘味、苦味、そして香りのレイヤーを深く考慮してください。
+2. **ネーミング**: カクテルのコンセプトを象徴する、洗練された印象的な名前を付けてください。
+3. **説明文**: バーのメニューに相応しい、飲む人の期待を高める情緒的で魅力的な説明文を作成してください。
+4. **手順**: プロの技術に基づいた、明確で再現性の高いステップを記述してください。
+5. **用語**: カジュアル層がターゲットのため、専門用語は避けてください。`,
 			config: {
 				responseMimeType: "application/json",
 				responseSchema: {
