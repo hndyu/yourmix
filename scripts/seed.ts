@@ -10,8 +10,6 @@ import {
 	tags,
 } from "@/app/db/schema";
 import { v4 as uuidv4 } from "uuid";
-// import { drizzle } from "drizzle-orm/d1";
-// import type { D1Database } from "@cloudflare/workers-types";
 import { contemporaryClassics } from "./data/contemporary-classics";
 import { ingredientDetails, ingredientGroupsData } from "./data/ingredients";
 import { newEra } from "./data/new-era";
@@ -86,10 +84,10 @@ export async function seed(
 			description: "アルコールを含まない飲料。",
 		},
 		{
-			name: "その他",
+			name: "食品",
 			sortOrder: 5,
 			icon: "Restaurant",
-			description: "上記以外の材料（シロップ、果物、香辛料など）。",
+			description: "果物、卵、クリーム、調味料など、飲料以外の材料。",
 		},
 	];
 
@@ -122,10 +120,15 @@ export async function seed(
 	const groupsSource = overrides?.ingredientGroupsData ?? ingredientGroupsData;
 	const groupMap = new Map<string, number>();
 	for (const group of groupsSource) {
+		const categoryId = categoryMapByName.get(group.category);
+		if (categoryId === undefined) {
+			throw new Error(`Category ID not found for category: ${group.category}`);
+		}
 		const [newGroup] = await db
 			.insert(schema.ingredientGroups)
 			.values({
 				displayName: group.displayName,
+				categoryId: categoryId,
 				sortOrder: group.order,
 				description: group.description,
 			})
@@ -154,20 +157,15 @@ export async function seed(
 					);
 				}
 				const description = ingredientDetailsSource[ing.name]?.description;
-				const categoryId = categoryMapByName.get(ing.category);
-				if (categoryId === undefined) {
-					throw new Error(
-						`Category ID not found for category: ${ing.category}`,
-					);
-				}
 
+				const details = ingredientDetailsSource[ing.name];
 				const [newIngredient] = await db
 					.insert(schema.ingredients)
 					.values({
 						name: ing.name,
 						groupId: groupId,
-						categoryId: categoryId,
 						description: description ?? null,
+						sortOrder: details?.order ?? 0,
 					})
 					.returning({ id: schema.ingredients.id });
 				ingredientMap.set(ing.name, newIngredient.id);

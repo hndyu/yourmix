@@ -50,9 +50,11 @@ CREATE UNIQUE INDEX `delicious_likes_user_id_cocktail_id_unique` ON `delicious_l
 CREATE TABLE `ingredient_groups` (
 	`id` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
 	`display_name` text NOT NULL,
+	`category_id` integer NOT NULL,
 	`sort_order` integer NOT NULL,
 	`description` text,
-	`icon` text
+	`icon` text,
+	FOREIGN KEY (`category_id`) REFERENCES `categories`(`id`) ON UPDATE no action ON DELETE no action
 );
 --> statement-breakpoint
 CREATE UNIQUE INDEX `ingredient_groups_display_name_unique` ON `ingredient_groups` (`display_name`);--> statement-breakpoint
@@ -61,9 +63,8 @@ CREATE TABLE `ingredients` (
 	`name` text NOT NULL,
 	`group_id` integer NOT NULL,
 	`description` text,
-	`category_id` integer NOT NULL,
-	FOREIGN KEY (`group_id`) REFERENCES `ingredient_groups`(`id`) ON UPDATE no action ON DELETE cascade,
-	FOREIGN KEY (`category_id`) REFERENCES `categories`(`id`) ON UPDATE no action ON DELETE no action
+	`sort_order` integer DEFAULT 0 NOT NULL,
+	FOREIGN KEY (`group_id`) REFERENCES `ingredient_groups`(`id`) ON UPDATE no action ON DELETE cascade
 );
 --> statement-breakpoint
 CREATE UNIQUE INDEX `ingredients_name_unique` ON `ingredients` (`name`);--> statement-breakpoint

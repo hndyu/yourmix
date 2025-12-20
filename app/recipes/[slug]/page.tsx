@@ -1,4 +1,3 @@
-import * as React from "react";
 import {
 	Box,
 	Breadcrumbs,
@@ -7,35 +6,30 @@ import {
 	Link,
 	Typography,
 } from "@mui/material";
+import type { Metadata } from "next";
+import { headers } from "next/headers";
 import NextLink from "next/link";
 import { notFound } from "next/navigation";
+import * as React from "react";
 import type { BreadcrumbList, Recipe, WithContext } from "schema-dts";
-import type { Metadata } from "next";
-import type { Cocktail } from "../../types/cocktail";
 import CocktailDisplay from "../../_components/cocktail-display";
+import { initAuth } from "../../auth";
+import { getCocktailBySlug } from "../../lib/cocktail-data";
+import type { Cocktail } from "../../types/cocktail";
 
 // 環境変数からAPIのベースURLを取得します。
 // 開発環境では 'http://localhost:3000' などを設定し、本番環境ではデプロイされたURLを設定します。
 const API_BASE_URL =
 	process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:3000"; // Fallback for development
 
-async function getCocktail(slug: string): Promise<Cocktail> {
-	// APIエンドポイントを絶対URLで指定します
-	const res = await fetch(`${API_BASE_URL}/api/cocktails/${slug}`, {
-		cache: "no-store",
-	});
+async function getCocktail(slug: string, userId?: string): Promise<Cocktail> {
+	const cocktail = await getCocktailBySlug(slug, userId);
 
-	if (res.status === 404) {
+	if (!cocktail) {
 		notFound();
 	}
 
-	if (!res.ok) {
-		// その他のエラーの場合は error.tsx がレンダリングされます
-		throw new Error("レシピの取得に失敗しました。");
-	}
-
-	const data = (await res.json()) as { cocktail: Cocktail };
-	return data.cocktail;
+	return cocktail;
 }
 
 export async function generateMetadata({
@@ -60,7 +54,13 @@ export default async function RecipeDetailPage({
 	params: Promise<{ slug: string }>;
 }) {
 	const { slug } = await params; // paramsをawaitしてslugを取り出す
-	const cocktail = await getCocktail(slug);
+
+	const session = await (await initAuth()).api.getSession({
+		headers: await headers(),
+	});
+	const userId = session?.user?.id;
+
+	const cocktail = await getCocktail(slug, userId);
 
 	// Recipeスキーマ
 	const recipeJsonLd: WithContext<Recipe> = {

@@ -1,5 +1,5 @@
-import { vi, describe, it, expect, beforeEach } from "vitest";
 import * as schema from "@/app/db/schema";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
 // Drizzle ORMとUUIDをモック化
 const mockDbClient = {
@@ -25,6 +25,7 @@ describe("scripts/seed.ts", () => {
 		mockEnv = {
 			DB: {} as D1Database, // D1Database自体はモック不要
 			NEXTJS_ENV: "test",
+			NEXT_PUBLIC_API_BASE_URL: "http://localhost:3000",
 			ASSETS: { fetch: vi.fn(), connect: vi.fn() } as unknown as Fetcher,
 		};
 

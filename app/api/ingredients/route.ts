@@ -51,6 +51,7 @@ export async function GET() {
 					groupDisplayName: schema.ingredientGroups.displayName,
 					groupSortOrder: schema.ingredientGroups.sortOrder,
 					groupDescription: schema.ingredientGroups.description,
+					sortOrder: schema.ingredients.sortOrder,
 				})
 				.from(schema.ingredients)
 				.leftJoin(
@@ -59,10 +60,13 @@ export async function GET() {
 				)
 				.leftJoin(
 					schema.categories,
-					eq(schema.ingredients.categoryId, schema.categories.id),
+					eq(schema.ingredientGroups.categoryId, schema.categories.id),
 				)
-				// グループの表示順でソート
-				.orderBy(asc(schema.ingredientGroups.sortOrder)),
+				// グループの表示順でソートし、次に材料の表示順でソート
+				.orderBy(
+					asc(schema.ingredientGroups.sortOrder),
+					asc(schema.ingredients.sortOrder),
+				),
 		]);
 
 		// 表示用に材料をグループ化

@@ -10,11 +10,21 @@ import CocktailDisplaySkeleton from "./cocktail-display-skeleton";
 import CocktailSearchResults from "./cocktail-search-results";
 import MixSection from "./mix-section";
 
-export default function CocktailMixer() {
+type CocktailMixerProps = {
+	initialIngredients?: Ingredient[];
+	initialCategories?: Category[];
+};
+
+export default function CocktailMixer({
+	initialIngredients = [],
+	initialCategories = [],
+}: CocktailMixerProps) {
 	// --- Hooks ---
 	// 材料とカテゴリのマスターデータ
-	const [ingredients, setIngredients] = React.useState<Ingredient[]>([]);
-	const [categories, setCategories] = React.useState<Category[]>([]);
+	const [ingredients, setIngredients] =
+		React.useState<Ingredient[]>(initialIngredients);
+	const [categories, setCategories] =
+		React.useState<Category[]>(initialCategories);
 
 	// 選択された材料の状態
 	const [selectedIngredientIds, setSelectedIngredientIds] = React.useState<
@@ -38,7 +48,10 @@ export default function CocktailMixer() {
 	} = useAICocktailGenerator();
 
 	// 全体のローディング状態
-	const [isInitialLoading, setIsInitialLoading] = React.useState(true);
+	// 初期データが渡されている場合はローディング完了とする
+	const [isInitialLoading, setIsInitialLoading] = React.useState(
+		initialIngredients.length === 0,
+	);
 	const isMixing = isSearching || isGenerating;
 
 	// 表示アニメーションとスクロールの状態
@@ -48,8 +61,10 @@ export default function CocktailMixer() {
 	const resultsRef = React.useRef<HTMLDivElement>(null);
 
 	// --- Effects ---
-	// 初期化時に材料関連のマスターデータを取得
+	// 初期化時に材料関連のマスターデータを取得（propsがない場合のみ）
 	React.useEffect(() => {
+		if (ingredients.length > 0 && categories.length > 0) return;
+
 		const fetchMasterData = async () => {
 			setIsInitialLoading(true);
 			try {
@@ -67,7 +82,7 @@ export default function CocktailMixer() {
 			}
 		};
 		fetchMasterData();
-	}, []);
+	}, [ingredients.length, categories.length]);
 
 	// Mixボタンクリック時の処理
 	const handleMixClick = async () => {

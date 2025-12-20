@@ -9,18 +9,18 @@ export const newEra: CocktailData[] = [
 			{ name: "ジン", amount: "52.5ml", category: "蒸留酒" },
 			{ name: "ハチミツ・シロップ", amount: "小さじ2杯", category: "その他" },
 			{
-				name: "レモン・ジュース",
+				name: "レモンジュース",
 				amount: "22.5ml",
 				category: "ノンアルコール",
 			},
 			{
-				name: "オレンジ・ジュース",
+				name: "オレンジジュース",
 				amount: "22.5ml",
 				category: "ノンアルコール",
 			},
 		],
 		instructions: [
-			"ハチミツ・シロップ、レモン・ジュース、オレンジ・ジュースを溶けるまでかき混ぜ、ジンを加えて氷と一緒にシェイクします。冷やしたグラスに注ぎます。",
+			"ハチミツ・シロップ、レモンジュース、オレンジジュースを溶けるまでかき混ぜ、ジンを加えて氷と一緒にシェイクします。冷やしたグラスに注ぎます。",
 		],
 		garnish: "お好みでレモンまたはオレンジの皮を添えます。",
 		tags: ["国際バーテンダー協会公認カクテル - 新時代の一杯"],
@@ -32,7 +32,7 @@ export const newEra: CocktailData[] = [
 			"ジンにブラックベリーのリキュールを加えて、果実の風味が豊かで飲みやすいモダンな一杯。",
 		ingredients: [
 			{ name: "ジン", amount: "50ml", category: "蒸留酒" },
-			{ name: "レモン・ジュース", amount: "25ml", category: "ノンアルコール" },
+			{ name: "レモンジュース", amount: "25ml", category: "ノンアルコール" },
 			{ name: "シュガー・シロップ", amount: "12.5ml", category: "その他" },
 			{
 				name: "クレーム・ド・ミュール",
@@ -53,12 +53,12 @@ export const newEra: CocktailData[] = [
 			"ライムとハチミツを使い、蒸留酒で仕上げた、シンプルで爽快な南国テイストのカクテル。",
 		ingredients: [
 			{ name: "アグアルディエンテ", amount: "60ml", category: "蒸留酒" },
-			{ name: "ライム・ジュース", amount: "15ml", category: "ノンアルコール" },
+			{ name: "ライムジュース", amount: "15ml", category: "ノンアルコール" },
 			{ name: "ハチミツ", amount: "15ml", category: "その他" },
 			{ name: "水", amount: "50ml", category: "ノンアルコール" },
 		],
 		instructions: [
-			"ハチミツを水とライム・ジュースと混ぜ、グラスの底と側面に塗ります。",
+			"ハチミツを水とライムジュースと混ぜ、グラスの底と側面に塗ります。",
 			"砕いた氷を加え、次にアグアルディエンテを加えます。",
 			"最後に下から上に向かって勢いよくかき混ぜます。",
 		],
@@ -73,12 +73,12 @@ export const newEra: CocktailData[] = [
 		ingredients: [
 			{ name: "シャルトリューズ", amount: "45ml", category: "混成酒" },
 			{
-				name: "パイナップル・ジュース",
+				name: "パイナップルジュース",
 				amount: "30ml",
 				category: "ノンアルコール",
 			},
 			{
-				name: "ライム・ジュース",
+				name: "ライムジュース",
 				amount: "22.5ml",
 				category: "ノンアルコール",
 			},
@@ -119,7 +119,7 @@ export const newEra: CocktailData[] = [
 				amount: "15ml",
 				category: "その他",
 			},
-			{ name: "ライム・ジュース", amount: "15ml", category: "ノンアルコール" },
+			{ name: "ライムジュース", amount: "15ml", category: "ノンアルコール" },
 			{ name: "ハチミツ・シロップ", amount: "15ml", category: "その他" },
 		],
 		instructions: [
@@ -178,7 +178,7 @@ export const newEra: CocktailData[] = [
 				category: "混成酒",
 			},
 			{
-				name: "パイナップル・ジュース",
+				name: "パイナップルジュース",
 				amount: "15ml",
 				category: "ノンアルコール",
 			},
@@ -197,7 +197,7 @@ export const newEra: CocktailData[] = [
 		ingredients: [
 			{ name: "ジン", amount: "60ml", category: "蒸留酒" },
 			{
-				name: "レモン・ジュース",
+				name: "レモンジュース",
 				amount: "22.5ml",
 				category: "ノンアルコール",
 			},
@@ -219,7 +219,7 @@ export const newEra: CocktailData[] = [
 		ingredients: [
 			{ name: "テキーラ", amount: "45ml", category: "蒸留酒" },
 			{ name: "グラン・マルニエ", amount: "30ml", category: "混成酒" },
-			{ name: "ライム・ジュース", amount: "15ml", category: "ノンアルコール" },
+			{ name: "ライムジュース", amount: "15ml", category: "ノンアルコール" },
 		],
 		instructions: [
 			"グラスの縁に塩を敷き詰めます。材料をシェイカーに注ぎます。",
@@ -262,11 +262,11 @@ export const newEra: CocktailData[] = [
 			},
 			{ name: "パッションフルーツピュレ", amount: "30ml", category: "その他" },
 			{
-				name: "パイナップル・ジュース",
+				name: "パイナップルジュース",
 				amount: "90ml",
 				category: "ノンアルコール",
 			},
-			{ name: "ライム・ジュース", amount: "30ml", category: "ノンアルコール" },
+			{ name: "ライムジュース", amount: "30ml", category: "ノンアルコール" },
 			{ name: "ショウガのスライス", amount: "1枚", category: "その他" },
 		],
 		instructions: [
@@ -292,7 +292,7 @@ export const newEra: CocktailData[] = [
 				category: "混成酒",
 			},
 			{
-				name: "ライム・ジュース",
+				name: "ライムジュース",
 				amount: "22.5ml",
 				category: "ノンアルコール",
 			},
@@ -315,11 +315,11 @@ export const newEra: CocktailData[] = [
 			{ name: "ブラックストラップ・ラム", amount: "45ml", category: "蒸留酒" },
 			{ name: "カンパリ", amount: "22.5ml", category: "混成酒" },
 			{
-				name: "パイナップル・ジュース",
+				name: "パイナップルジュース",
 				amount: "45ml",
 				category: "ノンアルコール",
 			},
-			{ name: "ライム・ジュース", amount: "15ml", category: "ノンアルコール" },
+			{ name: "ライムジュース", amount: "15ml", category: "ノンアルコール" },
 			{ name: "シュガー・シロップ", amount: "15ml", category: "その他" },
 		],
 		instructions: [
@@ -337,7 +337,7 @@ export const newEra: CocktailData[] = [
 		ingredients: [
 			{ name: "ホワイト・ラム", amount: "30ml", category: "蒸留酒" },
 			{ name: "ピーチ・ブランデー", amount: "15ml", category: "混成酒" },
-			{ name: "ライム・ジュース", amount: "15ml", category: "ノンアルコール" },
+			{ name: "ライムジュース", amount: "15ml", category: "ノンアルコール" },
 			{ name: "ハチミツ・シロップ", amount: "30ml", category: "その他" },
 			{ name: "ミントの葉", amount: "10枚", category: "その他" },
 			{ name: "パイナップルの塊", amount: "3～4個", category: "その他" },
@@ -356,7 +356,7 @@ export const newEra: CocktailData[] = [
 			{ name: "シャルトリューズ", amount: "22.5ml", category: "混成酒" },
 			{ name: "アペロール", amount: "22.5ml", category: "混成酒" },
 			{
-				name: "ライム・ジュース",
+				name: "ライムジュース",
 				amount: "22.5ml",
 				category: "ノンアルコール",
 			},
@@ -386,7 +386,7 @@ export const newEra: CocktailData[] = [
 				option_group: 2,
 			},
 			{ name: "シンプル・シロップ", amount: "22.5ml", category: "その他" },
-			{ name: "レモン・ジュース", amount: "30ml", category: "ノンアルコール" },
+			{ name: "レモンジュース", amount: "30ml", category: "ノンアルコール" },
 			{ name: "卵白", amount: "数滴", category: "その他" },
 			{ name: "赤ワイン", amount: "15ml", category: "醸造酒" },
 		],
@@ -406,7 +406,7 @@ export const newEra: CocktailData[] = [
 			{ name: "ミントの葉", amount: "6～8枚", category: "その他" },
 			{ name: "熟成ラム", amount: "45ml", category: "蒸留酒" },
 			{
-				name: "ライム・ジュース",
+				name: "ライムジュース",
 				amount: "22.5ml",
 				category: "ノンアルコール",
 			},
@@ -448,7 +448,7 @@ export const newEra: CocktailData[] = [
 			},
 		],
 		instructions: [
-			"グラスにテキーラを注ぎ、ライム・ジュースを絞ります。",
+			"グラスにテキーラを注ぎ、ライムジュースを絞ります。",
 			"氷と塩を加え、ピンクグレープフルーツソーダを注ぎます。",
 			"軽くかき混ぜます。",
 		],
@@ -464,7 +464,7 @@ export const newEra: CocktailData[] = [
 			{ name: "バーボン・ウイスキー", amount: "30ml", category: "蒸留酒" },
 			{ name: "アマーロ・ノニーノ", amount: "30ml", category: "混成酒" },
 			{ name: "アペロール", amount: "30ml", category: "混成酒" },
-			{ name: "レモン・ジュース", amount: "30ml", category: "ノンアルコール" },
+			{ name: "レモンジュース", amount: "30ml", category: "ノンアルコール" },
 		],
 		instructions: [
 			"すべての材料をカクテルシェイカーに注ぎ、氷と一緒によくシェイクし、冷やしたグラスに注ぎます。",
@@ -481,7 +481,7 @@ export const newEra: CocktailData[] = [
 			{ name: "スコッチ・ウイスキー", amount: "60ml", category: "蒸留酒" },
 			{ name: "ラガヴーリン", amount: "7.5ml", category: "蒸留酒" },
 			{
-				name: "レモン・ジュース",
+				name: "レモンジュース",
 				amount: "22.5ml",
 				category: "ノンアルコール",
 			},
@@ -509,12 +509,12 @@ export const newEra: CocktailData[] = [
 		ingredients: [
 			{ name: "ピスコ", amount: "60ml", category: "蒸留酒" },
 			{
-				name: "パイナップル・ジュース",
+				name: "パイナップルジュース",
 				amount: "22.5ml",
 				category: "ノンアルコール",
 			},
 			{ name: "シンプル・シロップ", amount: "15ml", category: "その他" },
-			{ name: "レモン・ジュース", amount: "15ml", category: "ノンアルコール" },
+			{ name: "レモンジュース", amount: "15ml", category: "ノンアルコール" },
 			{ name: "白ワイン", amount: "30ml", category: "醸造酒" },
 			{ name: "チョウジ", amount: "3個", category: "その他" },
 		],
@@ -556,7 +556,7 @@ export const newEra: CocktailData[] = [
 			"ウォッカにレモンとカシスを合わせた、フルーティーで軽快なスパークリングカクテル。",
 		ingredients: [
 			{ name: "ウォッカ", amount: "25ml", category: "蒸留酒" },
-			{ name: "レモン・ジュース", amount: "25ml", category: "ノンアルコール" },
+			{ name: "レモンジュース", amount: "25ml", category: "ノンアルコール" },
 			{ name: "クレーム・ド・カシス", amount: "15ml", category: "混成酒" },
 			{ name: "シュガー・シロップ", amount: "10ml", category: "その他" },
 			{ name: "スパークリングワイン", amount: "適量", category: "醸造酒" },
@@ -593,7 +593,7 @@ export const newEra: CocktailData[] = [
 			"ミントとレモンが爽やかに香るジンベースのカクテルで、気分をリフレッシュしたい時にぴったり。",
 		ingredients: [
 			{ name: "ジン", amount: "60ml", category: "蒸留酒" },
-			{ name: "レモン・ジュース", amount: "30ml", category: "ノンアルコール" },
+			{ name: "レモンジュース", amount: "30ml", category: "ノンアルコール" },
 			{ name: "シンプル・シロップ", amount: "15ml", category: "その他" },
 			{ name: "ミントの葉", amount: "5～6枚", category: "その他" },
 			{ name: "卵白", amount: "お好みで数滴", category: "その他" },
@@ -617,7 +617,7 @@ export const newEra: CocktailData[] = [
 				amount: "15ml",
 				category: "その他",
 			},
-			{ name: "ライム・ジュース", amount: "15ml", category: "ノンアルコール" },
+			{ name: "ライムジュース", amount: "15ml", category: "ノンアルコール" },
 			{ name: "ハチミツ・シロップ", amount: "10ml", category: "その他" },
 			{ name: "赤唐辛子薄切り", amount: "2枚", category: "その他" },
 		],
@@ -663,7 +663,7 @@ export const newEra: CocktailData[] = [
 				option_group: 4,
 			},
 			{ name: "ジン", amount: "30ml", category: "蒸留酒" },
-			{ name: "ライム・ジュース", amount: "15ml", category: "ノンアルコール" },
+			{ name: "ライムジュース", amount: "15ml", category: "ノンアルコール" },
 			{ name: "アンゴスチュラ・ビターズ", amount: "2振", category: "混成酒" },
 			{ name: "ジンジャービール", amount: "適量", category: "ノンアルコール" },
 		],
@@ -689,9 +689,9 @@ export const newEra: CocktailData[] = [
 				amount: "7.5ml",
 				category: "混成酒",
 			},
-			{ name: "ライム・ジュース", amount: "15ml", category: "ノンアルコール" },
+			{ name: "ライムジュース", amount: "15ml", category: "ノンアルコール" },
 			{
-				name: "オレンジ・ジュース",
+				name: "オレンジジュース",
 				amount: "15ml",
 				category: "ノンアルコール",
 			},
@@ -734,7 +734,7 @@ export const newEra: CocktailData[] = [
 			"テキーラにライムとアガベ・シロップを加えた、自然な甘みと爽やかさが特徴の新定番カクテル。",
 		ingredients: [
 			{ name: "テキーラ", amount: "60ml", category: "蒸留酒" },
-			{ name: "ライム・ジュース", amount: "30ml", category: "ノンアルコール" },
+			{ name: "ライムジュース", amount: "30ml", category: "ノンアルコール" },
 			{ name: "アガベ・シロップ", amount: "30ml", category: "その他" },
 		],
 		instructions: [
@@ -752,7 +752,7 @@ export const newEra: CocktailData[] = [
 			{ name: "アンゴスチュラ・ビターズ", amount: "45ml", category: "混成酒" },
 			{ name: "オルジェー・シロップ", amount: "30ml", category: "その他" },
 			{
-				name: "レモン・ジュース",
+				name: "レモンジュース",
 				amount: "22.5ml",
 				category: "ノンアルコール",
 			},
@@ -773,7 +773,7 @@ export const newEra: CocktailData[] = [
 		ingredients: [
 			{ name: "グラッパ", amount: "45ml", category: "蒸留酒" },
 			{
-				name: "レモン・ジュース",
+				name: "レモンジュース",
 				amount: "22.5ml",
 				category: "ノンアルコール",
 			},

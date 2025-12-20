@@ -46,7 +46,7 @@ export const unforgettables: CocktailData[] = [
 				amount: "15ml",
 				category: "混成酒",
 			},
-			{ name: "レモン・ジュース", amount: "15ml", category: "ノンアルコール" },
+			{ name: "レモンジュース", amount: "15ml", category: "ノンアルコール" },
 			{
 				name: "クレーム・ド・バイオレット",
 				amount: "5ml",
@@ -90,7 +90,7 @@ export const unforgettables: CocktailData[] = [
 			{ name: "ホワイト・ラム", amount: "30ml", category: "蒸留酒" },
 			{ name: "コニャック", amount: "30ml", category: "蒸留酒" },
 			{ name: "トリプルセック", amount: "30ml", category: "混成酒" },
-			{ name: "レモン・ジュース", amount: "20ml", category: "ノンアルコール" },
+			{ name: "レモンジュース", amount: "20ml", category: "ノンアルコール" },
 		],
 		instructions: [
 			"すべての材料をカクテルシェイカーに加えます。",
@@ -140,7 +140,7 @@ export const unforgettables: CocktailData[] = [
 				category: "混成酒",
 			},
 			{ name: "キュラソー", amount: "茶匙1杯", category: "混成酒" },
-			{ name: "レモン・ジュース", amount: "15ml", category: "ノンアルコール" },
+			{ name: "レモンジュース", amount: "15ml", category: "ノンアルコール" },
 			{ name: "シンプル・シロップ", amount: "茶匙1杯", category: "その他" },
 			{ name: "アロマティック・ビターズ", amount: "2振", category: "混成酒" },
 		],
@@ -164,7 +164,7 @@ export const unforgettables: CocktailData[] = [
 				amount: "10ml",
 				category: "混成酒",
 			},
-			{ name: "レモン・ジュース", amount: "10ml", category: "ノンアルコール" },
+			{ name: "レモンジュース", amount: "10ml", category: "ノンアルコール" },
 			{ name: "オレンジ・ビターズ", amount: "2振", category: "混成酒" },
 		],
 		instructions: [
@@ -182,7 +182,7 @@ export const unforgettables: CocktailData[] = [
 		ingredients: [
 			{ name: "ジン", amount: "45ml", category: "蒸留酒" },
 			{ name: "ラズベリー・シロップ", amount: "15ml", category: "その他" },
-			{ name: "レモン・ジュース", amount: "15ml", category: "ノンアルコール" },
+			{ name: "レモンジュース", amount: "15ml", category: "ノンアルコール" },
 			{ name: "卵白", amount: "数滴", category: "その他" },
 		],
 		instructions: [
@@ -198,7 +198,7 @@ export const unforgettables: CocktailData[] = [
 			"キューバ生まれのラムとライム、砂糖を合わせた、誰にも親しみやすいシンプル＆爽やかな定番カクテル。",
 		ingredients: [
 			{ name: "ホワイト・ラム", amount: "60ml", category: "蒸留酒" },
-			{ name: "ライム・ジュース", amount: "20ml", category: "ノンアルコール" },
+			{ name: "ライムジュース", amount: "20ml", category: "ノンアルコール" },
 			{ name: "砂糖", amount: "茶匙2杯", category: "その他" },
 		],
 		instructions: [
@@ -232,7 +232,7 @@ export const unforgettables: CocktailData[] = [
 			"ジンとレモン、砂糖に炭酸を加えた、軽やかで泡立つ爽快な古典ドリンク。",
 		ingredients: [
 			{ name: "ジン", amount: "45ml", category: "蒸留酒" },
-			{ name: "レモン・ジュース", amount: "30ml", category: "ノンアルコール" },
+			{ name: "レモンジュース", amount: "30ml", category: "ノンアルコール" },
 			{ name: "シンプル・シロップ", amount: "10ml", category: "その他" },
 			{ name: "炭酸水", amount: "適量", category: "ノンアルコール" },
 		],
@@ -268,7 +268,7 @@ export const unforgettables: CocktailData[] = [
 			"ジン、レモン、砂糖、炭酸を合わせた、爽やかで軽快なクラシックカクテル。",
 		ingredients: [
 			{ name: "ジン", amount: "45ml", category: "蒸留酒" },
-			{ name: "レモン・ジュース", amount: "30ml", category: "ノンアルコール" },
+			{ name: "レモンジュース", amount: "30ml", category: "ノンアルコール" },
 			{ name: "シンプル・シロップ", amount: "15ml", category: "その他" },
 			{ name: "炭酸水", amount: "60ml", category: "ノンアルコール" },
 		],
@@ -290,7 +290,7 @@ export const unforgettables: CocktailData[] = [
 				category: "混成酒",
 			},
 			{
-				name: "ライム・ジュース",
+				name: "ライムジュース",
 				amount: "22.5ml",
 				category: "ノンアルコール",
 			},
@@ -345,11 +345,11 @@ export const unforgettables: CocktailData[] = [
 	{
 		name: "メアリー・ピックフォード",
 		description:
-			"ホワイト・ラムにパイナップル・ジュースとグレナデンを加えた、同名の女優にちなんで名付けられた軽やかなカクテル。",
+			"ホワイト・ラムにパイナップルジュースとグレナデンを加えた、同名の女優にちなんで名付けられた軽やかなカクテル。",
 		ingredients: [
 			{ name: "ホワイト・ラム", amount: "45ml", category: "蒸留酒" },
 			{
-				name: "パイナップル・ジュース",
+				name: "パイナップルジュース",
 				amount: "45ml",
 				category: "ノンアルコール",
 			},
@@ -374,7 +374,7 @@ export const unforgettables: CocktailData[] = [
 		ingredients: [
 			{ name: "ジン", amount: "45ml", category: "蒸留酒" },
 			{
-				name: "オレンジ・ジュース",
+				name: "オレンジジュース",
 				amount: "45ml",
 				category: "ノンアルコール",
 			},
@@ -446,7 +446,7 @@ export const unforgettables: CocktailData[] = [
 				category: "混成酒",
 			},
 			{
-				name: "オレンジ・ジュース",
+				name: "オレンジジュース",
 				amount: "15ml",
 				category: "ノンアルコール",
 			},
@@ -464,9 +464,9 @@ export const unforgettables: CocktailData[] = [
 			"ラムとトロピカル・ジュースを使った、南国らしい甘酸っぱく陽気なカクテル。",
 		ingredients: [
 			{ name: "ジャマイカ産ラム", amount: "45ml", category: "蒸留酒" },
-			{ name: "ライム・ジュース", amount: "15ml", category: "ノンアルコール" },
+			{ name: "ライムジュース", amount: "15ml", category: "ノンアルコール" },
 			{
-				name: "サトウキビ・ジュース",
+				name: "サトウキビジュース",
 				amount: "30ml",
 				category: "ノンアルコール",
 			},
@@ -501,8 +501,8 @@ export const unforgettables: CocktailData[] = [
 			"ジンとレモン、クリームを泡立てた、なめらかで軽やかな口当たりの老舗カクテル。",
 		ingredients: [
 			{ name: "ジン", amount: "45ml", category: "蒸留酒" },
-			{ name: "ライム・ジュース", amount: "15ml", category: "ノンアルコール" },
-			{ name: "レモン・ジュース", amount: "15ml", category: "ノンアルコール" },
+			{ name: "ライムジュース", amount: "15ml", category: "ノンアルコール" },
+			{ name: "レモンジュース", amount: "15ml", category: "ノンアルコール" },
 			{ name: "シュガー・シロップ", amount: "30ml", category: "その他" },
 			{ name: "生クリーム", amount: "60ml", category: "その他" },
 			{ name: "卵白", amount: "30ml", category: "その他" },
@@ -578,7 +578,7 @@ export const unforgettables: CocktailData[] = [
 		ingredients: [
 			{ name: "コニャック", amount: "50ml", category: "蒸留酒" },
 			{ name: "トリプルセック", amount: "20ml", category: "混成酒" },
-			{ name: "レモン・ジュース", amount: "20ml", category: "ノンアルコール" },
+			{ name: "レモンジュース", amount: "20ml", category: "ノンアルコール" },
 		],
 		instructions: [
 			"すべての材料をカクテルシェイカーに注ぎ、氷と一緒によくシェイクし、冷やしたグラスに注ぎます。",
@@ -651,7 +651,7 @@ export const unforgettables: CocktailData[] = [
 			"ウイスキーとレモン、砂糖を合わせた、爽やかな酸味と甘みが調和した定番カクテル。",
 		ingredients: [
 			{ name: "バーボン・ウイスキー", amount: "45ml", category: "蒸留酒" },
-			{ name: "レモン・ジュース", amount: "25ml", category: "ノンアルコール" },
+			{ name: "レモンジュース", amount: "25ml", category: "ノンアルコール" },
 			{ name: "シンプル・シロップ", amount: "20ml", category: "その他" },
 			{ name: "卵白", amount: "お好みで数滴", category: "その他" },
 		],
@@ -673,7 +673,7 @@ export const unforgettables: CocktailData[] = [
 		ingredients: [
 			{ name: "ジン", amount: "40ml", category: "蒸留酒" },
 			{ name: "トリプルセック", amount: "30ml", category: "混成酒" },
-			{ name: "レモン・ジュース", amount: "20ml", category: "ノンアルコール" },
+			{ name: "レモンジュース", amount: "20ml", category: "ノンアルコール" },
 		],
 		instructions: [
 			"すべての材料をカクテルシェイカーに注ぎ、氷と一緒によくシェイクし、冷やしたグラスに注ぎます。",

@@ -44,11 +44,19 @@ describe("GET /api/cocktails", () => {
 			garnish: "ライム",
 			cocktailIngredients: [
 				{
-					ingredient: { id: 101, name: "ジン", categoryId: 1 },
+					ingredient: {
+						id: 101,
+						name: "ジン",
+						group: { category: { name: "蒸留酒" } },
+					},
 					amount: "45ml",
 				},
 				{
-					ingredient: { id: 201, name: "トニックウォーター", categoryId: 5 },
+					ingredient: {
+						id: 201,
+						name: "トニックウォーター",
+						group: { category: { name: "ノンアルコール" } },
+					},
 					amount: "120ml",
 				},
 			],
@@ -66,11 +74,19 @@ describe("GET /api/cocktails", () => {
 			garnish: null, // garnishがnullの場合
 			cocktailIngredients: [
 				{
-					ingredient: { id: 102, name: "ウォッカ", categoryId: 1 },
+					ingredient: {
+						id: 102,
+						name: "ウォッカ",
+						group: { category: { name: "蒸留酒" } },
+					},
 					amount: "45ml",
 				},
 				{
-					ingredient: { id: 202, name: "ジンジャーエール", categoryId: 5 },
+					ingredient: {
+						id: 202,
+						name: "ジンジャーエール",
+						group: { category: { name: "ノンアルコール" } },
+					},
 					amount: "120ml",
 				},
 			],
@@ -109,12 +125,12 @@ describe("GET /api/cocktails", () => {
 		expect(firstCocktail.imageUrl).toBe("https://example.com/gin-tonic.jpg");
 		expect(firstCocktail.garnish).toBe("ライム");
 		expect(firstCocktail.ingredients).toEqual([
-			{ id: 101, name: "ジン", amount: "45ml", category: 1 },
+			{ id: 101, name: "ジン", amount: "45ml", category: "蒸留酒" },
 			{
 				id: 201,
 				name: "トニックウォーター",
 				amount: "120ml",
-				category: 5,
+				category: "ノンアルコール",
 			},
 		]);
 		expect(firstCocktail.instructions).toEqual([

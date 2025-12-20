@@ -42,7 +42,15 @@ export async function GET(request: Request) {
 			with: {
 				cocktailIngredients: {
 					with: {
-						ingredient: true,
+						ingredient: {
+							with: {
+								group: {
+									with: {
+										category: true,
+									},
+								},
+							},
+						},
 					},
 				},
 				instructions: {
@@ -66,7 +74,7 @@ export async function GET(request: Request) {
 				id: ci.ingredient.id,
 				name: ci.ingredient.name,
 				amount: ci.amount,
-				category: ci.ingredient.categoryId ?? "",
+				category: ci.ingredient.group.category.name,
 			})),
 			tags: cocktail.cocktailTags.map((ct) => ct.tag.name),
 			instructions: cocktail.instructions.map((inst) => inst.text),
