@@ -103,12 +103,22 @@ export async function seed(
 
 	// タグの登録
 	const tagMap = new Map<string, number>();
+	const tagDescriptions: Record<string, string> = {
+		"国際バーテンダー協会公認カクテル - 現代のクラシック":
+			"国際バーテンダー協会が選んだ、クラシックカクテルの中でも特に歴史が古く世界的に定着しているもの。",
+		"国際バーテンダー協会公認カクテル - 新時代の一杯":
+			"国際バーテンダー協会が選んだ、比較的近代（主に20世紀後半）に誕生し国際的に広く飲まれている定番カクテル。",
+		"国際バーテンダー協会公認カクテル - 忘れられないカクテル":
+			"国際バーテンダー協会が選んだ、21世紀以降に生まれた現代的・革新的なカクテル。",
+	};
+
 	for (const cocktailData of allCocktails) {
 		for (const tagName of cocktailData.tags) {
 			if (!tagMap.has(tagName)) {
+				const description = tagDescriptions[tagName] || null;
 				const [newTag] = await db
 					.insert(schema.tags)
-					.values({ name: tagName })
+					.values({ name: tagName, description: description })
 					.returning({ id: schema.tags.id });
 				tagMap.set(tagName, newTag.id);
 			}

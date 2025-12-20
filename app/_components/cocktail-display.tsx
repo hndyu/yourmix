@@ -191,23 +191,56 @@ export default function CocktailDisplay({
 							{/* メタ情報 */}
 							<Box sx={{ display: "flex", gap: 1, flexWrap: "wrap", mb: 2 }}>
 								{cocktail.tags?.map((tag) => (
-									<Chip
-										key={tag}
-										icon={<LocalOfferIcon />}
-										label={tag}
-										size="small"
-										sx={{
-											backgroundColor: "#e0e0e0",
-											color: "#333",
-											fontWeight: "medium",
-											"& .MuiChip-label": {
-												whiteSpace: "normal",
-												overflow: "visible",
-												textOverflow: "clip",
-											},
-											height: "auto",
-										}}
-									/>
+									<Tooltip
+										key={tag.name}
+										title={tag.description || ""}
+										arrow
+										disableHoverListener={!tag.description}
+									>
+										<Chip
+											icon={<LocalOfferIcon />}
+											label={
+												<Box
+													sx={{
+														display: "flex",
+														alignItems: "center",
+														gap: 0.5,
+													}}
+												>
+													<Typography
+														variant="caption"
+														sx={{ fontWeight: "medium" }}
+													>
+														{tag.name}
+													</Typography>
+													{tag.description && (
+														<HelpOutlineIcon
+															sx={{ fontSize: "0.9rem", opacity: 0.6 }}
+														/>
+													)}
+												</Box>
+											}
+											size="small"
+											sx={{
+												backgroundColor: "#e0e0e0",
+												color: "#333",
+												fontWeight: "medium",
+												"& .MuiChip-label": {
+													whiteSpace: "normal",
+													overflow: "visible",
+													textOverflow: "clip",
+													py: 0.5,
+												},
+												height: "auto",
+												cursor: tag.description ? "help" : "default",
+												"&:hover": tag.description
+													? {
+															backgroundColor: "#d5d5d5",
+														}
+													: {},
+											}}
+										/>
+									</Tooltip>
 								))}
 							</Box>
 						</Box>

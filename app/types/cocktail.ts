@@ -29,6 +29,12 @@ export interface GroupedIngredient {
 	description: string | null;
 }
 
+// タグの型定義
+export interface Tag {
+	name: string;
+	description?: string | null;
+}
+
 // カクテルの型定義
 export interface Cocktail {
 	id: string;
@@ -38,7 +44,7 @@ export interface Cocktail {
 	ingredients: Ingredient[];
 	instructions: string[];
 	garnish?: string;
-	tags?: string[];
+	tags?: Tag[];
 	imageUrl?: string;
 	deliciousCount?: number;
 	isLiked?: boolean;

@@ -77,7 +77,7 @@ describe("GET /api/cocktails/[slug]", () => {
 				groupId: 20,
 			},
 			cocktail_tags: { cocktailId: 1, tagId: 1 },
-			tags: { id: 1, name: "定番" },
+			tags: { id: 1, name: "定番", description: "説明1" },
 			instructions: {
 				cocktailId: 1,
 				step: 1,
@@ -108,7 +108,7 @@ describe("GET /api/cocktails/[slug]", () => {
 				groupId: 50,
 			},
 			cocktail_tags: { cocktailId: 1, tagId: 2 },
-			tags: { id: 2, name: "さっぱり" },
+			tags: { id: 2, name: "さっぱり", description: "説明2" },
 			instructions: {
 				cocktailId: 1,
 				step: 2,
@@ -120,7 +120,7 @@ describe("GET /api/cocktails/[slug]", () => {
 		// 同じタグや材料が複数行あっても重複しないことを確認するためのデータ
 		{
 			cocktails: { id: 1, name: "ジン・トニック", slug: "gin-tonic" },
-			tags: { id: 1, name: "定番" }, // 重複タグ
+			tags: { id: 1, name: "定番", description: "説明1" }, // 重複タグ
 			ingredients: { id: 101, name: "ジン" }, // 重複材料
 			instructions: { text: "氷を入れたグラスにジンを注ぐ" }, // 重複手順
 		},
@@ -219,7 +219,10 @@ describe("GET /api/cocktails/[slug]", () => {
 
 		// タグが重複なく整形されているか
 		expect(data.cocktail.tags).toHaveLength(2);
-		expect(data.cocktail.tags).toEqual(["定番", "さっぱり"]);
+		expect(data.cocktail.tags).toEqual([
+			{ name: "定番", description: "説明1" },
+			{ name: "さっぱり", description: "説明2" },
+		]);
 
 		// 手順が重複なく整形されているか
 		expect(data.cocktail.instructions).toHaveLength(2);

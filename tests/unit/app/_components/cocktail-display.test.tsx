@@ -65,7 +65,10 @@ describe("CocktailDisplay Component", () => {
 			"軽く混ぜる",
 		],
 		garnish: "ライムウェッジ",
-		tags: ["さっぱり", "定番"],
+		tags: [
+			{ name: "さっぱり", description: "さっぱりした味わい" },
+			{ name: "定番", description: "愛され続ける一杯" },
+		],
 	};
 
 	beforeEach(() => {

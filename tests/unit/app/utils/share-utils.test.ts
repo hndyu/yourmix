@@ -1,10 +1,10 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import type { Cocktail } from "@/app/types/cocktail";
 import {
-	shareCocktail,
 	canUseWebShare,
 	copyToClipboard,
+	shareCocktail,
 } from "@/app/utils/share-utils";
-import type { Cocktail } from "@/app/types/cocktail";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 describe("share-utils", () => {
 	// モック用のカクテルデータ
@@ -21,7 +21,7 @@ describe("share-utils", () => {
 			"ステップ2: 冷やして提供する。",
 		],
 		garnish: "レモンツイスト",
-		tags: ["クラシック", "簡単"],
+		tags: [{ name: "クラシック" }, { name: "簡単" }],
 		slug: "test-cocktail",
 		imageUrl: "/images/test-cocktail.jpg",
 	};

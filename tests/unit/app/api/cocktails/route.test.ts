@@ -64,7 +64,10 @@ describe("GET /api/cocktails", () => {
 				{ step: 1, text: "氷を入れたグラスにジンを注ぐ" },
 				{ step: 2, text: "トニックウォーターで満たす" },
 			],
-			cocktailTags: [{ tag: { name: "定番" } }, { tag: { name: "さっぱり" } }],
+			cocktailTags: [
+				{ tag: { name: "定番", description: "説明1" } },
+				{ tag: { name: "さっぱり", description: "説明2" } },
+			],
 		},
 		{
 			id: 2,
@@ -91,7 +94,7 @@ describe("GET /api/cocktails", () => {
 				},
 			],
 			instructions: [{ step: 1, text: "混ぜる" }],
-			cocktailTags: [{ tag: { name: "定番" } }],
+			cocktailTags: [{ tag: { name: "定番", description: "説明1" } }],
 		},
 	];
 
@@ -137,7 +140,10 @@ describe("GET /api/cocktails", () => {
 			"氷を入れたグラスにジンを注ぐ",
 			"トニックウォーターで満たす",
 		]);
-		expect(firstCocktail.tags).toEqual(["定番", "さっぱり"]);
+		expect(firstCocktail.tags).toEqual([
+			{ name: "定番", description: "説明1" },
+			{ name: "さっぱり", description: "説明2" },
+		]);
 
 		// 2件目のデータ整形確認 (null値が正しく処理されるか)
 		const secondCocktail = data.cocktails[1];

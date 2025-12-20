@@ -125,8 +125,14 @@ export async function getCocktailBySlug(
 					option_group: row.cocktail_ingredients?.option_group ?? undefined,
 				});
 			}
-			if (row.tags && !acc.tags.includes(row.tags.name)) {
-				acc.tags.push(row.tags.name);
+			if (
+				row.tags &&
+				!acc.tags.some((t) => "name" in t && t.name === row.tags?.name)
+			) {
+				acc.tags.push({
+					name: row.tags.name,
+					description: row.tags.description,
+				});
 			}
 			if (
 				row.instructions &&

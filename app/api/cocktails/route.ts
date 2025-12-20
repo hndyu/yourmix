@@ -76,7 +76,10 @@ export async function GET(request: Request) {
 				amount: ci.amount,
 				category: ci.ingredient.group.category.name,
 			})),
-			tags: cocktail.cocktailTags.map((ct) => ct.tag.name),
+			tags: cocktail.cocktailTags.map((ct) => ({
+				name: ct.tag.name,
+				description: ct.tag.description,
+			})),
 			instructions: cocktail.instructions.map((inst) => inst.text),
 		}));
 
