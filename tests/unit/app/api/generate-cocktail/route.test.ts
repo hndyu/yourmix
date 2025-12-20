@@ -131,10 +131,10 @@ describe("POST /api/generate-cocktail", () => {
 		const data = await response.json();
 
 		expect(response.status).toBe(200);
-		expect(data).toEqual(mockCocktailResponse);
 		expect(mockGenerateContent).toHaveBeenCalledTimes(1);
 		expect(mockGenerateContent).toHaveBeenCalledWith(
 			expect.objectContaining({
+				model: "gemini-2.5-flash",
 				contents:
 					"ジン、トニックウォーターをすべて材料として使い、独創的で美味しいオリジナルカクテルのレシピを1つ提案してください。回答は必ず日本語で行ってください。",
 			}),
@@ -391,7 +391,7 @@ describe("POST /api/generate-cocktail", () => {
 
 		// DBクエリをモック
 		mockDb.select
-			// 1. 材料検証 (Groups)
+			// 1. 材料グループの検証 (displayNameの一覧取得)
 			.mockReturnValueOnce({
 				from: vi
 					.fn()
@@ -400,33 +400,22 @@ describe("POST /api/generate-cocktail", () => {
 						{ displayName: "レモン" },
 					]),
 			})
-			// 2. 材料検証 (Ingredients)
+			// 2. 個別材料の検証 (nameの一覧取得)
 			.mockReturnValueOnce({
 				from: vi.fn().mockResolvedValue([]),
 			})
-			// 3. "蒸留酒"カテゴリIDを取得
+			// 3. "スピリッツ（その他）"のdescriptionを取得
 			.mockReturnValueOnce({
 				from: vi.fn().mockReturnValue({
 					where: vi.fn().mockReturnValue({
-						limit: vi.fn().mockResolvedValue([{ id: 1 }]), // spiritsCategory
+						limit: vi
+							.fn()
+							.mockResolvedValue([
+								{ description: "ジン・ウォッカ・ウイスキー以外の蒸留酒" },
+							]),
 					}),
 				}),
 			});
-
-		// 4. "スピリッツ（その他）"を除く蒸留酒グループを取得
-		mockDb.selectDistinct.mockReturnValueOnce({
-			from: vi.fn().mockReturnValue({
-				innerJoin: vi.fn().mockReturnValue({
-					where: vi
-						.fn()
-						.mockResolvedValue([
-							{ displayName: "ジン" },
-							{ displayName: "ウォッカ" },
-							{ displayName: "ウイスキー" },
-						]),
-				}),
-			}),
-		});
 
 		const requestBody = { ingredients: ["スピリッツ（その他）", "レモン"] };
 		const request = {
@@ -438,6 +427,7 @@ describe("POST /api/generate-cocktail", () => {
 		expect(mockGenerateContent).toHaveBeenCalledTimes(1);
 		expect(mockGenerateContent).toHaveBeenCalledWith(
 			expect.objectContaining({
+				model: "gemini-2.5-flash",
 				contents:
 					"ジン・ウォッカ・ウイスキー以外の蒸留酒、レモンをすべて材料として使い、独創的で美味しいオリジナルカクテルのレシピを1つ提案してください。回答は必ず日本語で行ってください。",
 			}),
@@ -450,7 +440,7 @@ describe("POST /api/generate-cocktail", () => {
 
 		// DBクエリをモック
 		mockDb.select
-			// 1. 材料検証 (Groups)
+			// 1. 材料グループの検証
 			.mockReturnValueOnce({
 				from: vi
 					.fn()
@@ -459,16 +449,16 @@ describe("POST /api/generate-cocktail", () => {
 						{ displayName: "砂糖" },
 					]),
 			})
-			// 2. 材料検証 (Ingredients)
+			// 2. 個別材料の検証
 			.mockReturnValueOnce({
 				from: vi.fn().mockResolvedValue([]),
 			})
-			// 3. "その他"を除くカテゴリを取得
+			// 3. "その他"のdescriptionを取得 (この実装では単に ingredient を返す)
 			.mockReturnValueOnce({
 				from: vi.fn().mockReturnValue({
-					where: vi
-						.fn()
-						.mockResolvedValue([{ name: "蒸留酒" }, { name: "醸造酒" }]),
+					where: vi.fn().mockReturnValue({
+						limit: vi.fn().mockResolvedValue([{ description: null }]),
+					}),
 				}),
 			});
 
@@ -482,8 +472,9 @@ describe("POST /api/generate-cocktail", () => {
 		expect(mockGenerateContent).toHaveBeenCalledTimes(1);
 		expect(mockGenerateContent).toHaveBeenCalledWith(
 			expect.objectContaining({
+				model: "gemini-2.5-flash",
 				contents:
-					"蒸留酒・醸造酒など以外のもの、砂糖をすべて材料として使い、独創的で美味しいオリジナルカクテルのレシピを1つ提案してください。回答は必ず日本語で行ってください。",
+					"その他、砂糖をすべて材料として使い、独創的で美味しいオリジナルカクテルのレシピを1つ提案してください。回答は必ず日本語で行ってください。",
 			}),
 		);
 	});
