@@ -62,13 +62,33 @@ export default async function RecipeDetailPage({
 
 	const cocktail = await getCocktail(slug, userId);
 
+	// 材料をグループ化して表示するための処理（JSON-LD用）
+	const displayIngredients = [];
+	const processedOptionGroups = new Set<number>();
+
+	for (const ingredient of cocktail.ingredients) {
+		if (ingredient.option_group) {
+			if (!processedOptionGroups.has(ingredient.option_group)) {
+				const groupIngredients = cocktail.ingredients.filter(
+					(i) => i.option_group === ingredient.option_group,
+				);
+				displayIngredients.push(
+					`${groupIngredients.map((i) => i.name).join(" または ")} ${ingredient.amount}`,
+				);
+				processedOptionGroups.add(ingredient.option_group);
+			}
+		} else {
+			displayIngredients.push(`${ingredient.name} ${ingredient.amount}`);
+		}
+	}
+
 	// Recipeスキーマ
 	const recipeJsonLd: WithContext<Recipe> = {
 		"@context": "https://schema.org",
 		"@type": "Recipe",
 		name: cocktail.name,
 		description: cocktail.description,
-		recipeIngredient: cocktail.ingredients.map((i) => `${i.name} ${i.amount}`),
+		recipeIngredient: displayIngredients,
 		recipeInstructions: cocktail.instructions.map((step, index) => ({
 			"@type": "HowToStep",
 			text: step,

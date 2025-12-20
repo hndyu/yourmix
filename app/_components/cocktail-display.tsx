@@ -79,6 +79,45 @@ export default function CocktailDisplay({
 		setImageError(true);
 	};
 
+	// 材料をグループ化して表示するための処理
+	const displayIngredients = React.useMemo(() => {
+		const result: {
+			name: string;
+			amount: string;
+			description?: string;
+			originalIngredients: typeof cocktail.ingredients;
+		}[] = [];
+		const processedOptionGroups = new Set<number>();
+
+		for (const ingredient of cocktail.ingredients) {
+			if (ingredient.option_group) {
+				if (!processedOptionGroups.has(ingredient.option_group)) {
+					const groupIngredients = cocktail.ingredients.filter(
+						(i) => i.option_group === ingredient.option_group,
+					);
+					result.push({
+						name: groupIngredients.map((i) => i.name).join(" または "),
+						amount: ingredient.amount || "",
+						description: groupIngredients
+							.map((i) => i.description)
+							.filter(Boolean)
+							.join("\n"),
+						originalIngredients: groupIngredients,
+					});
+					processedOptionGroups.add(ingredient.option_group);
+				}
+			} else {
+				result.push({
+					name: ingredient.name,
+					amount: ingredient.amount || "",
+					description: ingredient.description || undefined,
+					originalIngredients: [ingredient],
+				});
+			}
+		}
+		return result;
+	}, [cocktail.ingredients]);
+
 	return (
 		<>
 			{/* カクテルカードをFadeでアニメーション */}
@@ -262,65 +301,102 @@ export default function CocktailDisplay({
 								</Typography>
 								<Paper elevation={1} sx={{ p: 2, backgroundColor: "#fafafa" }}>
 									<List dense>
-										{cocktail.ingredients.map((ingredient) =>
-											(() => {
-												const keyword = extractIngredientKeyword(
-													ingredient.name,
-												);
-												const link = getAffiliateLink(keyword);
-												return (
-													<ListItem key={ingredient.name} sx={{ py: 0.5 }}>
-														<Box
-															sx={{
-																display: "flex",
-																justifyContent: "space-between",
-																alignItems: "center",
-																flexWrap: "wrap",
-																width: "100%",
-															}}
-														>
-															<ListItemText
-																primary={
-																	<Box
-																		sx={{
-																			display: "flex",
-																			alignItems: "center",
-																			gap: 0.5,
-																		}}
-																	>
-																		<Typography
-																			component="span"
-																			sx={{ fontSize: "0.95rem" }}
+										{displayIngredients.map((item) => (
+											<ListItem key={item.name} sx={{ py: 0.5 }}>
+												<Box
+													sx={{
+														display: "flex",
+														justifyContent: "space-between",
+														alignItems: "center",
+														flexWrap: "wrap",
+														width: "100%",
+													}}
+												>
+													<ListItemText
+														primary={
+															<Box
+																sx={{
+																	display: "flex",
+																	alignItems: "center",
+																	gap: 0.5,
+																	flexWrap: "wrap",
+																}}
+															>
+																{item.originalIngredients.map((ing, idx) => (
+																	<React.Fragment key={ing.name}>
+																		<Box
+																			sx={{
+																				display: "flex",
+																				alignItems: "center",
+																				gap: 0.5,
+																			}}
 																		>
-																			{ingredient.name}
-																		</Typography>
-																		{ingredient.description && (
-																			<Tooltip
-																				title={ingredient.description}
-																				arrow
+																			<Typography
+																				component="span"
+																				sx={{ fontSize: "0.95rem" }}
 																			>
-																				<HelpOutlineIcon
-																					fontSize="small"
-																					sx={{
-																						color: "text.secondary",
-																						cursor: "pointer",
-																						verticalAlign: "middle", // アイコンを中央揃えに
-																					}}
-																				/>
-																			</Tooltip>
+																				{ing.name}
+																			</Typography>
+																			{ing.description && (
+																				<Tooltip title={ing.description} arrow>
+																					<HelpOutlineIcon
+																						fontSize="small"
+																						sx={{
+																							color: "text.secondary",
+																							cursor: "pointer",
+																							verticalAlign: "middle",
+																						}}
+																					/>
+																				</Tooltip>
+																			)}
+																		</Box>
+																		{idx <
+																			item.originalIngredients.length - 1 && (
+																			<Typography
+																				component="span"
+																				sx={{
+																					fontSize: "0.95rem",
+																					mx: 0.5,
+																					color: "text.secondary",
+																				}}
+																			>
+																				または
+																			</Typography>
 																		)}
-																	</Box>
-																}
-																secondary={ingredient.amount}
-															/>
-															{link && (
+																	</React.Fragment>
+																))}
+															</Box>
+														}
+														secondary={item.amount}
+													/>
+													<Box
+														sx={{
+															display: "flex",
+															gap: 0.5,
+															flexWrap: "wrap",
+															mt: { xs: 1, sm: 0 },
+														}}
+													>
+														{item.originalIngredients.map((ing) => {
+															const keyword = extractIngredientKeyword(
+																ing.name,
+															);
+															const link = getAffiliateLink(keyword);
+															if (!link) return null;
+
+															return (
 																<Chip
+																	key={`${ing.name}-buy`}
 																	component="a"
 																	href={link}
 																	target="_blank"
 																	rel="noopener noreferrer"
 																	icon={<ShoppingCartIcon />}
-																	label="材料を買う"
+																	label={
+																		item.originalIngredients.length > 1
+																			? `${ing.name}を買う`
+																			: "材料を買う"
+																	}
 																	clickable
 																	sx={{
 																		backgroundColor: "#ff6b35",
@@ -334,12 +410,12 @@ export default function CocktailDisplay({
 																	}}
 																	size="small"
 																/>
-															)}
-														</Box>
-													</ListItem>
-												);
-											})(),
-										)}
+															);
+														})}
+													</Box>
+												</Box>
+											</ListItem>
+										))}
 									</List>
 								</Paper>
 							</Box>
