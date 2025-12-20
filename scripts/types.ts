@@ -19,6 +19,7 @@ export interface IngredientGroupData {
 	displayName: string;
 	order: number;
 	description: string;
+	category: string;
 }
 
 export interface SeedDataOverrides {
@@ -26,5 +27,8 @@ export interface SeedDataOverrides {
 	newEra?: CocktailData[];
 	contemporaryClassics?: CocktailData[];
 	ingredientGroupsData?: IngredientGroupData[];
-	ingredientDetails?: Record<string, { group: string; description: string }>;
+	ingredientDetails?: Record<
+		string,
+		{ group: string; description: string; order?: number }
+	>;
 }

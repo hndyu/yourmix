@@ -1,5 +1,5 @@
 import { ingredientGroups, ingredients } from "@/app/db/schema";
-import { eq } from "drizzle-orm";
+import { asc, eq } from "drizzle-orm";
 import type { DB } from "../db/db";
 
 const schema = {
@@ -50,6 +50,7 @@ export async function getIngredientNamesByGroup(
 		with: {
 			ingredients: {
 				columns: { name: true },
+				orderBy: (ingredients, { asc }) => [asc(ingredients.sortOrder)],
 			},
 		},
 	});

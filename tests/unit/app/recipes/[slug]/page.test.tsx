@@ -1,16 +1,18 @@
+import { initAuth } from "@/app/auth";
+import { getCocktailBySlug } from "@/app/lib/cocktail-data";
+import RecipeDetailPage, { generateMetadata } from "@/app/recipes/[slug]/page";
+import type { Cocktail } from "@/app/types/cocktail";
+import { render, screen } from "@testing-library/react";
+import * as React from "react";
 import {
+	type Mock,
 	afterEach,
 	beforeEach,
 	describe,
 	expect,
 	it,
 	vi,
-	type Mock,
 } from "vitest";
-import * as React from "react";
-import { render, screen } from "@testing-library/react";
-import RecipeDetailPage, { generateMetadata } from "@/app/recipes/[slug]/page";
-import type { Cocktail } from "@/app/types/cocktail";
 
 // next/navigation のモック
 const { notFound } = vi.hoisted(() => {
@@ -32,6 +34,21 @@ vi.mock("@/app/_components/cocktail-display", () => ({
 			<p>Is Detail Page: {isDetailPage.toString()}</p>
 		</div>
 	),
+}));
+
+// app/lib/cocktail-data のモック
+vi.mock("@/app/lib/cocktail-data", () => ({
+	getCocktailBySlug: vi.fn(),
+}));
+
+// app/auth のモック
+vi.mock("@/app/auth", () => ({
+	initAuth: vi.fn(),
+}));
+
+// next/headers のモック
+vi.mock("next/headers", () => ({
+	headers: vi.fn(),
 }));
 
 const mockCocktail: Cocktail = {
@@ -60,22 +77,23 @@ const mockParams = { params: Promise.resolve({ slug: "gin-and-tonic" }) };
 
 describe("Recipe Detail Page", () => {
 	beforeEach(() => {
-		// 各テストの前に fetch をモック
-		global.fetch = vi.fn();
+		// initAuth のデフォルトのモック動作を設定
+		(initAuth as Mock).mockResolvedValue({
+			api: {
+				getSession: vi.fn().mockResolvedValue({
+					user: { id: "test-user-id" },
+				}),
+			},
+		});
 	});
 
 	afterEach(() => {
-		// 各テストの後にモックをクリア
 		vi.restoreAllMocks();
 	});
 
 	describe("generateMetadata", () => {
 		it("should generate correct metadata on successful fetch", async () => {
-			(fetch as Mock).mockResolvedValue({
-				ok: true,
-				status: 200,
-				json: async () => ({ cocktail: mockCocktail }),
-			});
+			(getCocktailBySlug as Mock).mockResolvedValue(mockCocktail);
 
 			const metadata = await generateMetadata(mockParams);
 
@@ -85,46 +103,37 @@ describe("Recipe Detail Page", () => {
 			);
 		});
 
-		it("should call notFound on 404 fetch", async () => {
-			(fetch as Mock).mockResolvedValue({
-				ok: false,
-				status: 404,
-			});
+		it("should call notFound on null result (404)", async () => {
+			(getCocktailBySlug as Mock).mockResolvedValue(null);
 
 			try {
 				await generateMetadata(mockParams);
 			} catch (error) {
-				// notFound() は内部的にエラーをスローするため、それをキャッチします。
+				// notFound() throws internally
 			}
 			expect(notFound).toHaveBeenCalledTimes(1);
 		});
 
-		it("should throw an error on non-404 failed fetch", async () => {
-			(fetch as Mock).mockResolvedValue({
-				ok: false,
-				status: 500,
-			});
+		it("should throw an error on failed fetch", async () => {
+			(getCocktailBySlug as Mock).mockRejectedValue(
+				new Error("Database error"),
+			);
 
 			await expect(generateMetadata(mockParams)).rejects.toThrow(
-				"レシピの取得に失敗しました。",
+				"Database error",
 			);
 		});
 	});
 
 	describe("RecipeDetailPage Component", () => {
 		it("should render cocktail details on successful fetch", async () => {
-			(fetch as Mock).mockResolvedValue({
-				ok: true,
-				status: 200,
-				json: async () => ({ cocktail: mockCocktail }),
-			});
+			(getCocktailBySlug as Mock).mockResolvedValue(mockCocktail);
 
 			const Page = await RecipeDetailPage(mockParams);
 			render(Page);
 
 			// パンくずリストの確認
 			expect(screen.getByText("ホーム")).toBeInTheDocument();
-			// パンくずリストとカクテル名で複数存在するため getAllByText を使用
 			const cocktailNameElements = screen.getAllByText("Gin and Tonic");
 			expect(cocktailNameElements.length).toBeGreaterThan(0);
 
@@ -151,28 +160,24 @@ describe("Recipe Detail Page", () => {
 			expect(jsonLd[1]["@type"]).toBe("BreadcrumbList");
 		});
 
-		it("should call notFound on 404 fetch", async () => {
-			(fetch as Mock).mockResolvedValue({
-				ok: false,
-				status: 404,
-			});
+		it("should call notFound on null result (404)", async () => {
+			(getCocktailBySlug as Mock).mockResolvedValue(null);
 
 			try {
 				await RecipeDetailPage(mockParams);
 			} catch (error) {
-				// notFound() は内部的にエラーをスローするため、それをキャッチします。
+				// notFound() throws internally
 			}
 			expect(notFound).toHaveBeenCalledTimes(1);
 		});
 
-		it("should throw an error on non-404 failed fetch", async () => {
-			(fetch as Mock).mockResolvedValue({
-				ok: false,
-				status: 500,
-			});
+		it("should throw an error on failed fetch", async () => {
+			(getCocktailBySlug as Mock).mockRejectedValue(
+				new Error("Database error"),
+			);
 
 			await expect(RecipeDetailPage(mockParams)).rejects.toThrow(
-				"レシピの取得に失敗しました。",
+				"Database error",
 			);
 		});
 	});

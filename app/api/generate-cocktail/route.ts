@@ -91,7 +91,7 @@ export async function POST(request: Request) {
 		// 材料リストを処理して、特定の材料名をより具体的な指示に置き換える
 		const processedIngredients = await Promise.all(
 			selectedIngredients.map(async (ingredient) => {
-				if (ingredient === "その他の蒸留酒") {
+				if (ingredient === "スピリッツ（その他）") {
 					// "蒸留酒"カテゴリのIDを取得
 					const spiritsCategory = await db
 						.select({ id: schema.categories.id })
@@ -102,7 +102,7 @@ export async function POST(request: Request) {
 					if (spiritsCategory.length > 0) {
 						const spiritsCategoryId = spiritsCategory[0].id;
 
-						// "蒸留酒"カテゴリに属し、"その他の蒸留酒"グループ以外のグループ名を取得
+						// "蒸留酒"カテゴリに属し、"スピリッツ（その他）"グループ以外のグループ名を取得
 						const spiritGroups = await db
 							.selectDistinct({
 								displayName: schema.ingredientGroups.displayName,
@@ -114,8 +114,11 @@ export async function POST(request: Request) {
 							)
 							.where(
 								and(
-									eq(schema.ingredients.categoryId, spiritsCategoryId),
-									ne(schema.ingredientGroups.displayName, "その他の蒸留酒"),
+									eq(schema.ingredientGroups.categoryId, spiritsCategoryId),
+									ne(
+										schema.ingredientGroups.displayName,
+										"スピリッツ（その他）",
+									),
 								),
 							);
 

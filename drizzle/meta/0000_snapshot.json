@@ -1,7 +1,7 @@
 {
 	"version": "6",
 	"dialect": "sqlite",
-	"id": "e54f847b-fa93-4e03-ba34-598884cabacb",
+	"id": "ee452471-3f2f-4f6d-94e8-4ee8f7cc1e36",
 	"prevId": "00000000-0000-0000-0000-000000000000",
 	"tables": {
 		"categories": {
@@ -320,6 +320,13 @@
 					"notNull": true,
 					"autoincrement": false
 				},
+				"category_id": {
+					"name": "category_id",
+					"type": "integer",
+					"primaryKey": false,
+					"notNull": true,
+					"autoincrement": false
+				},
 				"sort_order": {
 					"name": "sort_order",
 					"type": "integer",
@@ -349,7 +356,17 @@
 					"isUnique": true
 				}
 			},
-			"foreignKeys": {},
+			"foreignKeys": {
+				"ingredient_groups_category_id_categories_id_fk": {
+					"name": "ingredient_groups_category_id_categories_id_fk",
+					"tableFrom": "ingredient_groups",
+					"tableTo": "categories",
+					"columnsFrom": ["category_id"],
+					"columnsTo": ["id"],
+					"onDelete": "no action",
+					"onUpdate": "no action"
+				}
+			},
 			"compositePrimaryKeys": {},
 			"uniqueConstraints": {},
 			"checkConstraints": {}
@@ -385,12 +402,13 @@
 					"notNull": false,
 					"autoincrement": false
 				},
-				"category_id": {
-					"name": "category_id",
+				"sort_order": {
+					"name": "sort_order",
 					"type": "integer",
 					"primaryKey": false,
 					"notNull": true,
-					"autoincrement": false
+					"autoincrement": false,
+					"default": 0
 				}
 			},
 			"indexes": {
@@ -408,15 +426,6 @@
 					"columnsFrom": ["group_id"],
 					"columnsTo": ["id"],
 					"onDelete": "cascade",
-					"onUpdate": "no action"
-				},
-				"ingredients_category_id_categories_id_fk": {
-					"name": "ingredients_category_id_categories_id_fk",
-					"tableFrom": "ingredients",
-					"tableTo": "categories",
-					"columnsFrom": ["category_id"],
-					"columnsTo": ["id"],
-					"onDelete": "no action",
 					"onUpdate": "no action"
 				}
 			},

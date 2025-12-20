@@ -385,7 +385,7 @@ describe("POST /api/generate-cocktail", () => {
 		consoleErrorSpy.mockRestore();
 	});
 
-	it("「その他の蒸留酒」が正しく処理され、プロンプトに反映される", async () => {
+	it("「スピリッツ（その他）」が正しく処理され、プロンプトに反映される", async () => {
 		vi.stubEnv("GEMINI_API_KEY", "test-api-key");
 		const { POST } = await import("@/app/api/generate-cocktail/route");
 
@@ -396,7 +396,7 @@ describe("POST /api/generate-cocktail", () => {
 				from: vi
 					.fn()
 					.mockResolvedValue([
-						{ displayName: "その他の蒸留酒" },
+						{ displayName: "スピリッツ（その他）" },
 						{ displayName: "レモン" },
 					]),
 			})
@@ -413,7 +413,7 @@ describe("POST /api/generate-cocktail", () => {
 				}),
 			});
 
-		// 4. "その他の蒸留酒"を除く蒸留酒グループを取得
+		// 4. "スピリッツ（その他）"を除く蒸留酒グループを取得
 		mockDb.selectDistinct.mockReturnValueOnce({
 			from: vi.fn().mockReturnValue({
 				innerJoin: vi.fn().mockReturnValue({
@@ -428,7 +428,7 @@ describe("POST /api/generate-cocktail", () => {
 			}),
 		});
 
-		const requestBody = { ingredients: ["その他の蒸留酒", "レモン"] };
+		const requestBody = { ingredients: ["スピリッツ（その他）", "レモン"] };
 		const request = {
 			json: () => Promise.resolve(requestBody),
 		} as Request;
