@@ -92,52 +92,15 @@ export async function POST(request: Request) {
 		const processedIngredients = await Promise.all(
 			selectedIngredients.map(async (ingredient) => {
 				if (ingredient === "スピリッツ（その他）") {
-					// "蒸留酒"カテゴリのIDを取得
-					const spiritsCategory = await db
-						.select({ id: schema.categories.id })
-						.from(schema.categories)
-						.where(eq(schema.categories.name, "蒸留酒"))
+					const group = await db
+						.select({ description: schema.ingredientGroups.description })
+						.from(schema.ingredientGroups)
+						.where(eq(schema.ingredientGroups.displayName, ingredient))
 						.limit(1);
 
-					if (spiritsCategory.length > 0) {
-						const spiritsCategoryId = spiritsCategory[0].id;
-
-						// "蒸留酒"カテゴリに属し、"スピリッツ（その他）"グループ以外のグループ名を取得
-						const spiritGroups = await db
-							.selectDistinct({
-								displayName: schema.ingredientGroups.displayName,
-							})
-							.from(schema.ingredientGroups)
-							.innerJoin(
-								schema.ingredients,
-								eq(schema.ingredientGroups.id, schema.ingredients.groupId),
-							)
-							.where(
-								and(
-									eq(schema.ingredientGroups.categoryId, spiritsCategoryId),
-									ne(
-										schema.ingredientGroups.displayName,
-										"スピリッツ（その他）",
-									),
-								),
-							);
-
-						const exclusionList = spiritGroups
-							.map((g) => g.displayName)
-							.join("・");
-						return `${exclusionList}以外の蒸留酒`;
+					if (group.length > 0 && group[0].description) {
+						return group[0].description;
 					}
-				}
-
-				if (ingredient === "その他") {
-					// "その他"カテゴリ以外のカテゴリ名を取得
-					const otherCategories = await db
-						.select({ name: schema.categories.name })
-						.from(schema.categories)
-						.where(ne(schema.categories.name, "その他"));
-
-					const exclusionList = otherCategories.map((c) => c.name).join("・");
-					return `${exclusionList}など以外のもの`;
 				}
 
 				// それ以外の場合は、元の材料名をそのまま使用
