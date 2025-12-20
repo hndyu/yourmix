@@ -1,9 +1,15 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import Button from "@mui/material/Button";
+import { notFound } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export default function TestErrorPage() {
+	// 本番環境ではこのページを表示しない（404を返す）
+	if (process.env.NODE_ENV === "production") {
+		notFound();
+	}
+
 	const [shouldThrow, setShouldThrow] = useState(false);
 
 	useEffect(() => {
