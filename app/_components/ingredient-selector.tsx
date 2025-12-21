@@ -204,12 +204,11 @@ export default function IngredientSelector({
 		if (disabled) return;
 
 		const targetName = specificName || ingredient.name;
+		const ingredientActualIds = ingredient.actualIds || [ingredient.id];
+		const ingredientActualNames = ingredient.actualNames || [ingredient.name];
 
 		// このグループに関連する全ての名前（親＋子）
-		const groupRelatedNames = [
-			ingredient.name,
-			...(ingredient.actualNames || []),
-		];
+		const groupRelatedNames = [ingredient.name, ...ingredientActualNames];
 		// 現在選択されている、このグループに関連する名前のリスト
 		const currentSelectedGroupNames = selectedIngredientNames.filter((n) =>
 			groupRelatedNames.includes(n),
@@ -219,9 +218,8 @@ export default function IngredientSelector({
 		if (!specificName) {
 			// 既にこのグループの何かが選択されている場合 -> 全解除
 			if (currentSelectedGroupNames.length > 0) {
-				const groupIds = ingredient.actualIds || [ingredient.id];
 				const newIds = selectedIngredientIds.filter(
-					(id) => !groupIds.includes(id),
+					(id) => !ingredientActualIds.includes(id),
 				);
 				const newNames = selectedIngredientNames.filter(
 					(n) => !groupRelatedNames.includes(n),
@@ -247,10 +245,7 @@ export default function IngredientSelector({
 
 			// グループ内のすべてのIDを追加
 			const newIds = Array.from(
-				new Set([
-					...selectedIngredientIds,
-					...(ingredient.actualIds || [ingredient.id]),
-				]),
+				new Set([...selectedIngredientIds, ...ingredientActualIds]),
 			);
 			onIngredientsChange(newIds, [
 				...selectedIngredientNames,
@@ -265,7 +260,14 @@ export default function IngredientSelector({
 		}
 
 		// ケース2: 詳細チップ（または検索からの詳細指定）をクリックした場合
-		const isTargetNameSelected = selectedIngredientNames.includes(targetName);
+		// グループ全体として選択されているか（名前が含まれ、かつ全てのIDが含まれている）
+		const isGroupActive =
+			selectedIngredientNames.includes(ingredient.name) &&
+			ingredientActualIds.every((id) => selectedIngredientIds.includes(id));
+
+		// ターゲット名が選択されているか（グループ全体選択ではなく、個別材料としての選択）
+		const isTargetNameSelected =
+			selectedIngredientNames.includes(targetName) && !isGroupActive;
 		const targetId =
 			ingredient.actualDetails?.find((d) => d.name === targetName)?.id ||
 			ingredient.id;
@@ -284,10 +286,8 @@ export default function IngredientSelector({
 		} else {
 			// 追加選択
 			// 制限チェック
-			const details = ingredient.actualNames || [];
-
 			const selectedDetails = currentSelectedGroupNames.filter((n) =>
-				details.includes(n),
+				ingredientActualNames.includes(n),
 			);
 			const isGroupOnlySelected =
 				currentSelectedGroupNames.includes(ingredient.name) &&
@@ -324,8 +324,7 @@ export default function IngredientSelector({
 			if (isGroupSelected) {
 				// 親を解除
 				newNames = newNames.filter((n) => n !== ingredient.name);
-				const groupIds = ingredient.actualIds || [ingredient.id];
-				newIds = newIds.filter((id) => !groupIds.includes(id));
+				newIds = newIds.filter((id) => !ingredientActualIds.includes(id));
 			}
 
 			newNames = [...newNames, targetName];
@@ -494,13 +493,28 @@ export default function IngredientSelector({
 									}}
 								>
 									{ingredients.map((ingredient) => {
+										// グループ全体として選択されているか（名前が含まれ、かつ全てのIDが含まれている）
+										const isGroupSelectedWhole =
+											selectedIngredientNames.includes(ingredient.name) &&
+											(ingredient.actualIds?.every((id) =>
+												selectedIngredientIds.includes(id),
+											) ??
+												false);
+
 										// このグループのどの名前が選択されているか（親 or 詳細）
-										const selectedNames = selectedIngredientNames.filter(
-											(n) =>
-												n === ingredient.name ||
-												ingredient.actualNames?.includes(n),
+										const selectedNamesInGroup = selectedIngredientNames.filter(
+											(n) => {
+												// グループ名と一致していても、グループ全体選択状態ならそれは「詳細」ではない
+												if (n === ingredient.name && isGroupSelectedWhole)
+													return false;
+												return ingredient.actualNames?.includes(n);
+											},
 										);
-										const isSelected = selectedNames.length > 0;
+
+										// チェックボックスの状態：グループ全体、または何らかの詳細が選択されている
+										const isSelected =
+											isGroupSelectedWhole || selectedNamesInGroup.length > 0;
+
 										// グループ全体としての選択制限（何も選択されていない場合、制限数に達していたら選択不可）
 										const isLimitReached =
 											!isSelected && currentTotalCount >= 5;
@@ -510,20 +524,13 @@ export default function IngredientSelector({
 											ingredient.actualNames.length > 0;
 										const isExpanded = expandedIngredients[ingredient.id];
 
-										// 詳細チップのための制限判定ロジック
-										const details = ingredient.actualNames || [];
-										const selectedDetails = selectedNames.filter((n) =>
-											details.includes(n),
-										);
-										const isGroupSelected = selectedNames.includes(
-											ingredient.name,
-										);
 										// 詳細を追加できるか：
 										// 1. 全体制限未満である
-										// 2. または、このグループの詳細がまだ選択されておらず、かつグループ名が選択されている（=置換なので増えない）
+										// 2. または、このグループの詳細がまだ選択されておらず、かつグループ全体が選択されている（=置換なので増えない）
 										const canAddDetail =
 											currentTotalCount < 5 ||
-											(selectedDetails.length === 0 && isGroupSelected);
+											(selectedNamesInGroup.length === 0 &&
+												isGroupSelectedWhole);
 
 										return (
 											<Box
@@ -586,19 +593,13 @@ export default function IngredientSelector({
 															</Typography>
 															{/* 選択中の詳細名があれば表示 */}
 															{isSelected &&
-																selectedNames.length > 0 &&
-																selectedNames.some(
-																	(n) => n !== ingredient.name,
-																) && (
+																selectedNamesInGroup.length > 0 && (
 																	<Typography
 																		variant="caption"
 																		color="primary"
 																		sx={{ display: "block" }}
 																	>
-																		使用:{" "}
-																		{selectedNames
-																			.filter((n) => n !== ingredient.name)
-																			.join("、")}
+																		使用: {selectedNamesInGroup.join("、")}
 																	</Typography>
 																)}
 														</Box>
@@ -631,8 +632,13 @@ export default function IngredientSelector({
 															}}
 														>
 															{ingredient.actualNames?.map((detailName) => {
+																const detailId = ingredient.actualDetails?.find(
+																	(d) => d.name === detailName,
+																)?.id;
 																const isDetailSelected =
-																	selectedNames.includes(detailName);
+																	detailId !== undefined &&
+																	selectedIngredientIds.includes(detailId) &&
+																	!isGroupSelectedWhole;
 
 																const isChipDisabled =
 																	disabled ||

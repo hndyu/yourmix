@@ -29,6 +29,8 @@ const mockIngredients: Ingredient[] = [
 		name: "ジン",
 		category: "スピリッツ",
 		categoryName: "スピリッツ",
+		actualNames: ["ジン"],
+		actualIds: [1],
 		sortOrder: 1,
 	},
 	{
@@ -36,6 +38,8 @@ const mockIngredients: Ingredient[] = [
 		name: "ウォッカ",
 		category: "スピリッツ",
 		categoryName: "スピリッツ",
+		actualNames: ["ウォッカ"],
+		actualIds: [2],
 		sortOrder: 2,
 	},
 	{
@@ -43,6 +47,8 @@ const mockIngredients: Ingredient[] = [
 		name: "カシスリキュール",
 		category: "リキュール",
 		categoryName: "リキュール",
+		actualNames: ["カシスリキュール"],
+		actualIds: [3],
 		sortOrder: 3,
 	},
 	{
@@ -50,6 +56,8 @@ const mockIngredients: Ingredient[] = [
 		name: "ピーチリキュール",
 		category: "リキュール",
 		categoryName: "リキュール",
+		actualNames: ["ピーチリキュール"],
+		actualIds: [4],
 		sortOrder: 4,
 	},
 	{
@@ -57,6 +65,8 @@ const mockIngredients: Ingredient[] = [
 		name: "オレンジジュース",
 		category: "その他",
 		categoryName: "その他",
+		actualNames: ["オレンジジュース"],
+		actualIds: [5],
 		sortOrder: 5,
 	},
 	{
@@ -64,6 +74,8 @@ const mockIngredients: Ingredient[] = [
 		name: "トニックウォーター",
 		category: "その他",
 		categoryName: "その他",
+		actualNames: ["トニックウォーター"],
+		actualIds: [6],
 		sortOrder: 6,
 	},
 ];
