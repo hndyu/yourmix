@@ -494,15 +494,13 @@ export default function IngredientSelector({
 									}}
 								>
 									{ingredients.map((ingredient) => {
-										const isSelected = selectedIngredientIds.includes(
-											ingredient.id,
-										);
 										// このグループのどの名前が選択されているか（親 or 詳細）
 										const selectedNames = selectedIngredientNames.filter(
 											(n) =>
 												n === ingredient.name ||
 												ingredient.actualNames?.includes(n),
 										);
+										const isSelected = selectedNames.length > 0;
 										// グループ全体としての選択制限（何も選択されていない場合、制限数に達していたら選択不可）
 										const isLimitReached =
 											!isSelected && currentTotalCount >= 5;
