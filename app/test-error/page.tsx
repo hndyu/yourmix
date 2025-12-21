@@ -6,7 +6,11 @@ import { useEffect, useState } from "react";
 
 export default function TestErrorPage() {
 	// 本番環境ではこのページを表示しない（404を返す）
-	if (process.env.NODE_ENV === "production") {
+	// ただし、E2Eテスト環境（NEXT_PUBLIC_IS_E2E_TEST=true）の場合は表示する
+	if (
+		process.env.NODE_ENV === "production" &&
+		process.env.NEXT_PUBLIC_IS_E2E_TEST !== "true"
+	) {
 		notFound();
 	}
 

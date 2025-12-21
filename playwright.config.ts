@@ -79,5 +79,8 @@ export default defineConfig({
 				url: "http://localhost:3000",
 				reuseExistingServer: true,
 				timeout: 300000,
+				env: {
+					NEXT_PUBLIC_IS_E2E_TEST: "true",
+				},
 			},
 });
