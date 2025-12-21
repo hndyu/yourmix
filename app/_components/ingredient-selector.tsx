@@ -105,7 +105,7 @@ export default function IngredientSelector({
 			}
 		}
 
-		// ソート順：カテゴリオブジェクトのsortOrder -> 親材料名 -> 詳細材料名
+		// ソート順：カテゴリオブジェクトのsortOrder -> 材料のsortOrder -> 詳細材料の並び順
 		return options.sort((a, b) => {
 			const catA = categories.find((c) => c.name === a.ingredient.categoryName);
 			const catB = categories.find((c) => c.name === b.ingredient.categoryName);
@@ -117,13 +117,17 @@ export default function IngredientSelector({
 				return orderA - orderB;
 			}
 
-			const groupA = a.groupName || "";
-			const groupB = b.groupName || "";
-			if (groupA !== groupB) {
-				return groupA.localeCompare(groupB, "ja");
+			const sortOrderA = a.ingredient.sortOrder ?? Number.POSITIVE_INFINITY;
+			const sortOrderB = b.ingredient.sortOrder ?? Number.POSITIVE_INFINITY;
+
+			if (sortOrderA !== sortOrderB) {
+				return sortOrderA - sortOrderB;
 			}
 
-			return a.label.localeCompare(b.label, "ja");
+			// 同じグループ内の詳細材料の並び順は、actualNamesのインデックスに従う
+			const indexA = a.ingredient.actualNames?.indexOf(a.label) ?? -1;
+			const indexB = b.ingredient.actualNames?.indexOf(b.label) ?? -1;
+			return indexA - indexB;
 		});
 	}, [ingredients, categories]);
 
