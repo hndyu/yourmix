@@ -158,14 +158,29 @@ export default function IngredientSelector({
 
 	const currentTotalCount = React.useMemo(() => {
 		let count = 0;
-		for (const id of selectedIngredientIds) {
-			const ingredient = ingredients.find((ing) => ing.id === id);
+		// 選択された材料グループを特定
+		const selectedGroups = new Set<number>();
+		for (const name of selectedIngredientNames) {
+			const ing = ingredients.find(
+				(i) => i.name === name || i.actualNames?.includes(name),
+			);
+			if (ing) {
+				selectedGroups.add(ing.id);
+			}
+		}
+
+		for (const groupId of selectedGroups) {
+			const ingredient = ingredients.find((ing) => ing.id === groupId);
 			if (!ingredient) continue;
 
-			// このグループで選択されている名前（親または詳細）
-			const relatedNames = [ingredient.name, ...(ingredient.actualNames || [])];
+			// このグループに関連する全ての名前（親＋子）
+			const groupRelatedNames = [
+				ingredient.name,
+				...(ingredient.actualNames || []),
+			];
+			// 現在選択されている、このグループに関連する名前のリスト
 			const currentSelectedGroupNames = selectedIngredientNames.filter((n) =>
-				relatedNames.includes(n),
+				groupRelatedNames.includes(n),
 			);
 
 			// 詳細が選択されているか？
@@ -182,7 +197,7 @@ export default function IngredientSelector({
 			}
 		}
 		return count;
-	}, [selectedIngredientIds, selectedIngredientNames, ingredients]);
+	}, [selectedIngredientNames, ingredients]);
 
 	// 材料の選択/解除ロジック
 	const handleToggle = (ingredient: Ingredient, specificName?: string) => {
@@ -200,14 +215,13 @@ export default function IngredientSelector({
 			groupRelatedNames.includes(n),
 		);
 
-		const isIdSelected = selectedIngredientIds.includes(ingredient.id);
-
 		// ケース1: 親グループのチェックボックスをクリックした場合 (specificName が undefined)
 		if (!specificName) {
 			// 既にこのグループの何かが選択されている場合 -> 全解除
 			if (currentSelectedGroupNames.length > 0) {
+				const groupIds = ingredient.actualIds || [ingredient.id];
 				const newIds = selectedIngredientIds.filter(
-					(id) => id !== ingredient.id,
+					(id) => !groupIds.includes(id),
 				);
 				const newNames = selectedIngredientNames.filter(
 					(n) => !groupRelatedNames.includes(n),
@@ -231,10 +245,17 @@ export default function IngredientSelector({
 				return;
 			}
 
-			onIngredientsChange(
-				[...selectedIngredientIds, ingredient.id],
-				[...selectedIngredientNames, ingredient.name],
+			// グループ内のすべてのIDを追加
+			const newIds = Array.from(
+				new Set([
+					...selectedIngredientIds,
+					...(ingredient.actualIds || [ingredient.id]),
+				]),
 			);
+			onIngredientsChange(newIds, [
+				...selectedIngredientNames,
+				ingredient.name,
+			]);
 			setSnackbar({
 				open: true,
 				message: `${ingredient.name}を追加しました`,
@@ -245,22 +266,14 @@ export default function IngredientSelector({
 
 		// ケース2: 詳細チップ（または検索からの詳細指定）をクリックした場合
 		const isTargetNameSelected = selectedIngredientNames.includes(targetName);
+		const targetId =
+			ingredient.actualDetails?.find((d) => d.name === targetName)?.id ||
+			ingredient.id;
 
 		if (isTargetNameSelected) {
 			// 選択解除
 			const newNames = selectedIngredientNames.filter((n) => n !== targetName);
-
-			// IDの解除判定
-			// 解除後も、このグループに関連する名前が残っているかチェック
-			const remainingGroupNames = newNames.filter((n) =>
-				groupRelatedNames.includes(n),
-			);
-
-			let newIds = selectedIngredientIds;
-			// もしもうこのグループの名前が一つもなければ、IDも外す
-			if (remainingGroupNames.length === 0) {
-				newIds = selectedIngredientIds.filter((id) => id !== ingredient.id);
-			}
+			const newIds = selectedIngredientIds.filter((id) => id !== targetId);
 
 			onIngredientsChange(newIds, newNames);
 			setSnackbar({
@@ -302,15 +315,21 @@ export default function IngredientSelector({
 			}
 
 			// 親の名前が含まれていたら削除しつつ、新しい詳細を追加
-			const newNames = selectedIngredientNames
-				.filter((n) => n !== ingredient.name)
-				.concat(targetName);
-
-			// IDの追加判定
+			const isGroupSelected = currentSelectedGroupNames.includes(
+				ingredient.name,
+			);
+			let newNames = selectedIngredientNames;
 			let newIds = selectedIngredientIds;
-			if (!isIdSelected) {
-				newIds = [...selectedIngredientIds, ingredient.id];
+
+			if (isGroupSelected) {
+				// 親を解除
+				newNames = newNames.filter((n) => n !== ingredient.name);
+				const groupIds = ingredient.actualIds || [ingredient.id];
+				newIds = newIds.filter((id) => !groupIds.includes(id));
 			}
+
+			newNames = [...newNames, targetName];
+			newIds = Array.from(new Set([...newIds, targetId]));
 
 			onIngredientsChange(newIds, newNames);
 			setSnackbar({

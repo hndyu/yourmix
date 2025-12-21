@@ -1,36 +1,14 @@
 import { getDb } from "@/app/db/db";
-import {
-	categories,
-	cocktailIngredients,
-	cocktailTags,
-	cocktails,
-	deliciousLikes,
-	ingredientGroups,
-	ingredients,
-	instructions,
-	tags,
-} from "@/app/db/schema";
+import { schema } from "@/app/db/schema";
 import type { GroupedIngredient } from "@/app/types/cocktail";
 import { asc, eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
 
-const schema = {
-	cocktails,
-	cocktailIngredients,
-	cocktailTags,
-	deliciousLikes,
-	ingredients,
-	tags,
-	instructions,
-	categories,
-	ingredientGroups,
-};
-
 /**
- * カクテルの材料一覧を取得するAPIエンドポイント
+ * 材料マスタを取得するAPIエンドポイント
  * GET /api/ingredients
+ * @returns カテゴリとグループ化された材料データのJSONレスポンス
  */
-
 export async function GET() {
 	try {
 		const db = await getDb();
@@ -77,12 +55,16 @@ export async function GET() {
 
 				if (group) {
 					group.actualNames.push(ing.name);
+					group.actualIds.push(ing.id);
+					group.actualDetails.push({ id: ing.id, name: ing.name });
 				} else {
 					group = {
 						id: ing.id,
 						name: displayName,
-						categoryName: ing.categoryName ?? "",
+						categoryName: ing.categoryName,
 						actualNames: [ing.name],
+						actualIds: [ing.id],
+						actualDetails: [{ id: ing.id, name: ing.name }],
 						sortOrder: ing.groupSortOrder,
 						description: ing.groupDescription,
 					};
@@ -107,7 +89,6 @@ export async function GET() {
 			return acc;
 		}, {});
 
-		// カテゴリ情報と材料、グループマッピングを一緒に返す
 		return NextResponse.json(
 			{
 				categories: allCategories,
@@ -117,10 +98,9 @@ export async function GET() {
 			{ status: 200 },
 		);
 	} catch (error) {
-		// エラーが発生した場合のログ出力とエラーレスポンス
 		console.error("Error fetching ingredients:", error);
 		return NextResponse.json(
-			{ error: "材料の取得中にエラーが発生しました。" },
+			{ error: "材料データの取得中にエラーが発生しました。" },
 			{ status: 500 },
 		);
 	}

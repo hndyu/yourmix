@@ -43,6 +43,8 @@ export async function getIngredientsMasterData() {
 
 			if (group) {
 				group.actualNames?.push(ing.name);
+				group.actualIds?.push(ing.id);
+				group.actualDetails?.push({ id: ing.id, name: ing.name });
 			} else {
 				group = {
 					id: ing.id,
@@ -50,6 +52,8 @@ export async function getIngredientsMasterData() {
 					category: ing.categoryName ?? "", // Ingredient型に合わせる
 					categoryName: ing.categoryName ?? "",
 					actualNames: [ing.name],
+					actualIds: [ing.id],
+					actualDetails: [{ id: ing.id, name: ing.name }],
 					sortOrder: ing.groupSortOrder,
 					description: ing.groupDescription,
 				};

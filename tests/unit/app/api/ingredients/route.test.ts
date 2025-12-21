@@ -148,7 +148,9 @@ describe("GET /api/ingredients", () => {
 		const data = await response.json();
 
 		expect(response.status).toBe(500);
-		expect(data).toEqual({ error: "材料の取得中にエラーが発生しました。" });
+		expect(data).toEqual({
+			error: "材料データの取得中にエラーが発生しました。",
+		});
 	});
 
 	it("データ取得中にエラーが発生した場合、500エラーを返す", async () => {
@@ -169,7 +171,9 @@ describe("GET /api/ingredients", () => {
 		const data = await response.json();
 
 		expect(response.status).toBe(500);
-		expect(data).toEqual({ error: "材料の取得中にエラーが発生しました。" });
+		expect(data).toEqual({
+			error: "材料データの取得中にエラーが発生しました。",
+		});
 		expect(consoleErrorSpy).toHaveBeenCalledWith(
 			"Error fetching ingredients:",
 			expect.any(Error),

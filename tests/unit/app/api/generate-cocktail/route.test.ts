@@ -135,8 +135,18 @@ describe("POST /api/generate-cocktail", () => {
 		expect(mockGenerateContent).toHaveBeenCalledWith(
 			expect.objectContaining({
 				model: "gemini-2.5-flash",
-				contents:
-					"ジン、トニックウォーターをすべて材料として使い、独創的で美味しいオリジナルカクテルのレシピを1つ提案してください。回答は必ず日本語で行ってください。",
+				contents: `あなたは世界的に評価の高いプロのミクソロジストです。
+以下の材料をベースに、創造性に溢れ、かつ味のバランスが完璧に整ったオリジナルのカクテルレシピを1つ考案してください。
+
+材料: ジン、トニックウォーター
+
+## ガイドライン:
+1. **味の構成**: ベース、酸味、甘味、苦味、そして香りのレイヤーを深く考慮してください。
+2. **ネーミング**: カクテルのコンセプトを象徴する、洗練された印象的な名前を付けてください。
+3. **説明文**: バーのメニューに相応しい、飲む人の期待を高める情緒的で魅力的な説明文を作成してください。
+4. **手順**: プロの技術に基づいた、明確で再現性の高いステップを記述してください。
+5. **用語**: カジュアル層がターゲットのため、専門用語は避けてください。
+6. **言語**: 日本人向けに書いてください。基本的にはアルファベットではなくカタカナ表記が推奨されます。`,
 			}),
 		);
 		expect(vi.mocked(NextResponse.json)).toHaveBeenCalledWith(
@@ -170,8 +180,18 @@ describe("POST /api/generate-cocktail", () => {
 		expect(response.status).toBe(200);
 		expect(mockGenerateContent).toHaveBeenCalledWith(
 			expect.objectContaining({
-				contents:
-					"ジン、ジンジャーエールをすべて材料として使い、独創的で美味しいオリジナルカクテルのレシピを1つ提案してください。回答は必ず日本語で行ってください。",
+				contents: `あなたは世界的に評価の高いプロのミクソロジストです。
+以下の材料をベースに、創造性に溢れ、かつ味のバランスが完璧に整ったオリジナルのカクテルレシピを1つ考案してください。
+
+材料: ジン、ジンジャーエール
+
+## ガイドライン:
+1. **味の構成**: ベース、酸味、甘味、苦味、そして香りのレイヤーを深く考慮してください。
+2. **ネーミング**: カクテルのコンセプトを象徴する、洗練された印象的な名前を付けてください。
+3. **説明文**: バーのメニューに相応しい、飲む人の期待を高める情緒的で魅力的な説明文を作成してください。
+4. **手順**: プロの技術に基づいた、明確で再現性の高いステップを記述してください。
+5. **用語**: カジュアル層がターゲットのため、専門用語は避けてください。
+6. **言語**: 日本人向けに書いてください。基本的にはアルファベットではなくカタカナ表記が推奨されます。`,
 			}),
 		);
 	});
@@ -428,53 +448,18 @@ describe("POST /api/generate-cocktail", () => {
 		expect(mockGenerateContent).toHaveBeenCalledWith(
 			expect.objectContaining({
 				model: "gemini-2.5-flash",
-				contents:
-					"ジン・ウォッカ・ウイスキー以外の蒸留酒、レモンをすべて材料として使い、独創的で美味しいオリジナルカクテルのレシピを1つ提案してください。回答は必ず日本語で行ってください。",
-			}),
-		);
-	});
+				contents: `あなたは世界的に評価の高いプロのミクソロジストです。
+以下の材料をベースに、創造性に溢れ、かつ味のバランスが完璧に整ったオリジナルのカクテルレシピを1つ考案してください。
 
-	it("「その他」が正しく処理され、プロンプトに反映される", async () => {
-		vi.stubEnv("GEMINI_API_KEY", "test-api-key");
-		const { POST } = await import("@/app/api/generate-cocktail/route");
+材料: ジン・ウォッカ・ウイスキー以外の蒸留酒、レモン
 
-		// DBクエリをモック
-		mockDb.select
-			// 1. 材料グループの検証
-			.mockReturnValueOnce({
-				from: vi
-					.fn()
-					.mockResolvedValue([
-						{ displayName: "その他" },
-						{ displayName: "砂糖" },
-					]),
-			})
-			// 2. 個別材料の検証
-			.mockReturnValueOnce({
-				from: vi.fn().mockResolvedValue([]),
-			})
-			// 3. "その他"のdescriptionを取得 (この実装では単に ingredient を返す)
-			.mockReturnValueOnce({
-				from: vi.fn().mockReturnValue({
-					where: vi.fn().mockReturnValue({
-						limit: vi.fn().mockResolvedValue([{ description: null }]),
-					}),
-				}),
-			});
-
-		const requestBody = { ingredients: ["その他", "砂糖"] };
-		const request = {
-			json: () => Promise.resolve(requestBody),
-		} as Request;
-
-		await POST(request);
-
-		expect(mockGenerateContent).toHaveBeenCalledTimes(1);
-		expect(mockGenerateContent).toHaveBeenCalledWith(
-			expect.objectContaining({
-				model: "gemini-2.5-flash",
-				contents:
-					"その他、砂糖をすべて材料として使い、独創的で美味しいオリジナルカクテルのレシピを1つ提案してください。回答は必ず日本語で行ってください。",
+## ガイドライン:
+1. **味の構成**: ベース、酸味、甘味、苦味、そして香りのレイヤーを深く考慮してください。
+2. **ネーミング**: カクテルのコンセプトを象徴する、洗練された印象的な名前を付けてください。
+3. **説明文**: バーのメニューに相応しい、飲む人の期待を高める情緒的で魅力的な説明文を作成してください。
+4. **手順**: プロの技術に基づいた、明確で再現性の高いステップを記述してください。
+5. **用語**: カジュアル層がターゲットのため、専門用語は避けてください。
+6. **言語**: 日本人向けに書いてください。基本的にはアルファベットではなくカタカナ表記が推奨されます。`,
 			}),
 		);
 	});

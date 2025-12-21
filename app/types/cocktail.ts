@@ -6,6 +6,8 @@ export interface Ingredient {
 	amount?: string;
 	categoryName?: string | null;
 	actualNames?: string[]; // グループ化された材料の実際の名称リスト
+	actualIds?: number[]; // グループ化された材料の実際のIDリスト
+	actualDetails?: { id: number; name: string }[]; // 名前とIDのペア
 	sortOrder?: number | null;
 	description?: string | null;
 	option_group?: number;
@@ -25,6 +27,8 @@ export interface GroupedIngredient {
 	name: string;
 	categoryName: string | null;
 	actualNames: string[];
+	actualIds: number[];
+	actualDetails: { id: number; name: string }[];
 	sortOrder: number | null;
 	description: string | null;
 }
