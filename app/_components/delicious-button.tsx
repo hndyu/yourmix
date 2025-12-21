@@ -1,17 +1,10 @@
 "use client";
 
 import ThumbUpIcon from "@mui/icons-material/ThumbUp";
-import {
-	Button,
-	Dialog,
-	DialogActions,
-	DialogContent,
-	DialogContentText,
-	DialogTitle,
-} from "@mui/material";
 import { useRouter } from "next/navigation";
-import { useState, useTransition } from "react";
+import { useState } from "react";
 import authClient from "../lib/authClient";
+import { Button } from "./ui/button";
 
 interface DeliciousButtonProps {
 	cocktailId: string;
@@ -26,99 +19,81 @@ export default function DeliciousButton({
 }: DeliciousButtonProps) {
 	const [count, setCount] = useState(initialCount);
 	const [isLiked, setIsLiked] = useState(initialIsLiked);
-	const [loginDialogOpen, setLoginDialogOpen] = useState(false);
+	const [showLoginModal, setShowLoginModal] = useState(false);
 	const router = useRouter();
 	const { data: session } = authClient.useSession();
 
 	const handleClick = async () => {
-		// If we know client-side that user is not logged in, prompt immediately
 		if (!session) {
-			setLoginDialogOpen(true);
+			setShowLoginModal(true);
 			return;
 		}
 
-		// Optimistic Update
 		const newIsLiked = !isLiked;
 		setIsLiked(newIsLiked);
 		setCount((prev) => (newIsLiked ? prev + 1 : prev - 1));
 
 		try {
-			const res = await fetch(`/api/likes/${cocktailId}`, {
-				method: "POST",
-			});
+			const res = await fetch(`/api/likes/${cocktailId}`, { method: "POST" });
 
 			if (res.status === 401) {
-				// Revert and show login dialog if unauthorized (double check)
 				setIsLiked(!newIsLiked);
 				setCount((prev) => (!newIsLiked ? prev + 1 : prev - 1));
-				setLoginDialogOpen(true);
+				setShowLoginModal(true);
 				return;
 			}
 
-			if (!res.ok) {
-				throw new Error("Failed to update delicious status");
-			}
-
-			const data = await res.json();
-			// Sync with server source of truth if needed, or just trust optimistic
-			// setCount(data.count);
+			if (!res.ok) throw new Error("Failed to update delicious status");
 		} catch (error) {
 			console.error(error);
-			// Revert on error
 			setIsLiked(!newIsLiked);
 			setCount((prev) => (!newIsLiked ? prev + 1 : prev - 1));
 		}
 	};
 
 	const handleLoginRedirect = () => {
-		setLoginDialogOpen(false);
+		setShowLoginModal(false);
 		router.push("/auth/sign-in");
 	};
 
 	return (
 		<>
-			<Button
-				variant={isLiked ? "contained" : "outlined"}
-				color="warning" // Orange/Gold for delicious/food theme
+			<button
+				type="button"
 				onClick={handleClick}
-				startIcon={<ThumbUpIcon />}
-				sx={{
-					borderRadius: "20px",
-					textTransform: "none",
-					fontWeight: "bold",
-					color: isLiked ? "white" : "#ff9800",
-					borderColor: "#ff9800",
-					"&:hover": {
-						backgroundColor: isLiked ? "#f57c00" : "rgba(255, 152, 0, 0.04)",
-						borderColor: "#f57c00",
-					},
-				}}
+				className={`
+          flex items-center gap-2 px-4 py-2 rounded-full font-bold transition-all
+          ${
+						isLiked
+							? "bg-amber-500 text-white shadow-lg shadow-amber-500/30 hover:bg-amber-600"
+							: "bg-transparent border border-amber-500 text-amber-500 hover:bg-amber-500/10"
+					}
+        `}
 			>
-				おいしい！ {count > 0 && <span className="ml-1">{count}</span>}
-			</Button>
+				<ThumbUpIcon fontSize="small" />
+				<span>おいしい！</span>
+				{count > 0 && <span>{count}</span>}
+			</button>
 
-			<Dialog
-				open={loginDialogOpen}
-				onClose={() => setLoginDialogOpen(false)}
-				aria-labelledby="alert-dialog-title"
-				aria-describedby="alert-dialog-description"
-			>
-				<DialogTitle id="alert-dialog-title">
-					{"ログインが必要です"}
-				</DialogTitle>
-				<DialogContent>
-					<DialogContentText id="alert-dialog-description">
-						「おいしい！」を送るにはログインが必要です。
-						ログインページに移動しますか？
-					</DialogContentText>
-				</DialogContent>
-				<DialogActions>
-					<Button onClick={() => setLoginDialogOpen(false)}>キャンセル</Button>
-					<Button onClick={handleLoginRedirect} autoFocus>
-						ログインする
-					</Button>
-				</DialogActions>
-			</Dialog>
+			{/* Custom Login Modal */}
+			{showLoginModal && (
+				<div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in">
+					<div className="w-full max-w-sm bg-stone-900 border border-stone-800 rounded-2xl p-6 shadow-2xl animate-in zoom-in-95">
+						<h3 className="text-lg font-bold text-white mb-2">
+							ログインが必要です
+						</h3>
+						<p className="text-stone-400 mb-6 text-sm">
+							「おいしい！」を送るにはログインが必要です。ログインページに移動しますか？
+						</p>
+						<div className="flex justify-end gap-3">
+							<Button variant="ghost" onClick={() => setShowLoginModal(false)}>
+								キャンセル
+							</Button>
+							<Button onClick={handleLoginRedirect}>ログインする</Button>
+						</div>
+					</div>
+				</div>
+			)}
 		</>
 	);
 }
