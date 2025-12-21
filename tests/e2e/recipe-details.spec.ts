@@ -1,23 +1,8 @@
-import { test, expect } from "@playwright/test";
+import { expect, test } from "@playwright/test";
 
 test("should navigate to the recipe details page after mixing a cocktail", async ({
 	page,
 }) => {
-	// Mock the ingredients API
-	await page.route("/api/ingredients", async (route) => {
-		const json = {
-			ingredients: [
-				{ id: 1, name: "ジン", categoryId: 1, groupId: 1 },
-				{ id: 2, name: "炭酸水", categoryId: 2, groupId: 3 },
-			],
-			categories: [
-				{ id: 1, name: "スピリッツ", sortOrder: 1 },
-				{ id: 2, name: "割り材", sortOrder: 2 },
-			],
-		};
-		await route.fulfill({ json });
-	});
-
 	// Mock the cocktail generation API (not strictly needed if we only test search results, but good to have)
 	await page.route("/api/generate-cocktail", async (route) => {
 		await route.fulfill({ json: {} }); // Return empty or dummy, we focus on search results here
@@ -46,12 +31,13 @@ test("should navigate to the recipe details page after mixing a cocktail", async
 	// 1. Navigate to the homepage
 	await page.goto("/");
 
-	// Wait for ingredients to load
-	await page.waitForResponse("/api/ingredients");
-
 	// 2. Select ingredients for a Gin Fizz
-	await page.getByLabel("ジン").click();
-	await page.getByLabel("炭酸水").click();
+	const searchBox = page.getByPlaceholder("材料を検索 (例: ジン、レモン...)");
+	const ingredients = ["ジン", "炭酸水"];
+	for (const name of ingredients) {
+		await searchBox.fill(name);
+		await page.getByRole("option", { name: name }).first().click();
+	}
 
 	// 3. Click the mix button and wait for the search API response simultaneously
 	await Promise.all([
