@@ -33,6 +33,9 @@ export default function CocktailMixer({
 	const [selectedIngredientNames, setSelectedIngredientNames] = React.useState<
 		string[]
 	>([]);
+	// 検索実行時の材料（検索結果の強調表示に使用）
+	const [lastSearchedIngredientNames, setLastSearchedIngredientNames] =
+		React.useState<string[]>([]);
 
 	// カスタムフックによる状態管理
 	const {
@@ -93,6 +96,9 @@ export default function CocktailMixer({
 		searchCocktails([]); // 既存の検索結果をクリア
 		setHasScrolledAfterMix(false);
 
+		// 現在選択されている材料を検索実行時の材料として保存
+		setLastSearchedIngredientNames([...selectedIngredientNames]);
+
 		// 検索と生成を並行して実行
 		await Promise.all([
 			searchCocktails(selectedIngredientIds),
@@ -152,7 +158,7 @@ export default function CocktailMixer({
 				{searchResults.length > 0 && (
 					<CocktailSearchResults
 						cocktails={searchResults}
-						selectedIngredients={selectedIngredientNames}
+						selectedIngredients={lastSearchedIngredientNames}
 						show={showSearchResults}
 						allIngredients={ingredients}
 						categories={categories}
