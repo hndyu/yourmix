@@ -88,20 +88,22 @@ export default function CocktailDisplay({
 			{/* Main Card */}
 			<div className="bg-card border border-border backdrop-blur-sm rounded-[32px] overflow-hidden shadow-2xl shadow-black/10 dark:shadow-black/50 transition-colors duration-300">
 				{/* Header / Hero Section */}
-				<div className="relative w-full aspect-[2/1] md:aspect-[3/1] bg-secondary/30 flex items-center justify-center p-8">
-					{cocktail.imageUrl && !imageError && (
-						<div className="relative w-full h-full max-w-md mx-auto">
-							<Image
-								src={`/cocktails/${cocktail.imageUrl}`}
-								alt={cocktail.name}
-								fill
-								className="object-contain drop-shadow-2xl"
-								onError={() => setImageError(true)}
-								priority
-							/>
-						</div>
-					)}
-				</div>
+				{isDetailPage && (
+					<div className="relative w-full aspect-[2/1] md:aspect-[3/1] bg-secondary/30 flex items-center justify-center p-8">
+						{cocktail.imageUrl && !imageError && (
+							<div className="relative w-full h-full max-w-md mx-auto">
+								<Image
+									src={`/cocktails/${cocktail.imageUrl}`}
+									alt={cocktail.name}
+									fill
+									className="object-contain drop-shadow-2xl"
+									onError={() => setImageError(true)}
+									priority
+								/>
+							</div>
+						)}
+					</div>
+				)}
 
 				<div className="p-6 md:p-10">
 					{/* Title & Actions */}
