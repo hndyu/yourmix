@@ -77,16 +77,15 @@ describe("MixSection", () => {
 	it("初期状態が正しくレンダリングされること", () => {
 		render(<MixSection {...defaultProps} />);
 
+		// Heading might be split by br tag, so we might need fuzzy match or regex
 		expect(
 			screen.getByRole("heading", {
-				name: "あなただけのカクテルを作ってみよう",
+				name: /あなただけのカクテルを[\s\S]*作ってみよう/,
 			}),
 		).toBeInTheDocument();
 		expect(screen.getByTestId("ingredient-selector")).toBeInTheDocument();
 		expect(screen.getByTestId("mix-button")).toBeInTheDocument();
-		expect(
-			screen.getByText("材料を選択してからMixボタンを押してください"),
-		).toBeInTheDocument();
+		expect(screen.getByText("材料を選んでください")).toBeInTheDocument();
 		expect(screen.getByTestId("mix-button")).toBeDisabled();
 	});
 
@@ -112,9 +111,7 @@ describe("MixSection", () => {
 		render(<MixSection {...props} />);
 
 		expect(screen.getByTestId("mix-button")).toBeEnabled();
-		expect(
-			screen.getByText("選択された材料 (1個) からレシピを生成します"),
-		).toBeInTheDocument();
+		expect(screen.getByText("1個の材料から生成します")).toBeInTheDocument();
 	});
 
 	it("isMixingがtrueの場合、ミキシング状態が表示され、コンポーネントが無効化されること", () => {
@@ -127,7 +124,7 @@ describe("MixSection", () => {
 			/>,
 		);
 
-		expect(screen.getByText("カクテルを生成中です...")).toBeInTheDocument();
+		expect(screen.getByText("最高のレシピを考案中...")).toBeInTheDocument();
 		expect(screen.getByTestId("ingredient-selector")).toHaveTextContent(
 			"disabled: true",
 		);

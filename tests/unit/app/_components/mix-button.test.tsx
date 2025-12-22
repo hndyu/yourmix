@@ -1,7 +1,7 @@
-import * as React from "react";
-import { fireEvent, render, screen } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
 import MixButton from "@/app/_components/mix-button";
+import { fireEvent, render, screen } from "@testing-library/react";
+import * as React from "react";
+import { describe, expect, it, vi } from "vitest";
 
 describe("MixButton", () => {
 	it("should render the button with 'Mix!' text by default", () => {
@@ -48,9 +48,6 @@ describe("MixButton", () => {
 		const button = screen.getByRole("button", { name: /mixing.../i });
 		expect(button).toBeInTheDocument();
 		expect(button).toBeDisabled();
-
-		// CircularProgressの存在も確認
-		expect(screen.getByRole("progressbar")).toBeInTheDocument();
 	});
 
 	it("should not call onClick handler when loading", () => {

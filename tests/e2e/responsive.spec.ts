@@ -17,18 +17,21 @@ test.describe("Responsive Design - Mobile View", () => {
 
 		// 3. Assert that the main sections are visible
 		await expect(
-			page.getByRole("heading", { name: "材料を選択してください" }),
+			page.getByRole("heading", {
+				name: /あなただけのカクテルを.*作ってみよう/,
+			}),
 		).toBeVisible();
 
 		// 4. Assert that the 'Mix!' button is initially disabled
 		const mixButton = page.getByRole("button", { name: /Mix!/ });
 		await expect(mixButton).toBeDisabled();
 
-		// 5. Assert that ingredients are visible
-		await expect(page.getByLabel("ジン")).toBeVisible({ timeout: 10000 });
+		// 5. Assert that ingredients are visible (using button role now)
+		const ginButton = page.getByRole("button", { name: /^ワイン.*$/ }).first();
+		await expect(ginButton).toBeVisible({ timeout: 10000 });
 
 		// 6. Select an ingredient and assert that the 'Mix!' button becomes enabled
-		await page.getByLabel("ジン").click();
+		await ginButton.click();
 		await expect(mixButton).toBeEnabled();
 
 		// 7. Assert that the footer is visible

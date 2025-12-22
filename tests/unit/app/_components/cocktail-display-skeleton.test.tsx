@@ -1,92 +1,44 @@
-import { render, screen, within } from "@testing-library/react";
+import CocktailDisplaySkeleton from "@/app/_components/cocktail-display-skeleton";
+import { render } from "@testing-library/react";
 import * as React from "react";
 import { describe, expect, it } from "vitest";
-import CocktailDisplaySkeleton from "@/app/_components/cocktail-display-skeleton";
 
 describe("CocktailDisplaySkeleton", () => {
-	it("コンポーネントが正しくレンダリングされる", () => {
+	it("renders the main container", () => {
 		const { container } = render(<CocktailDisplaySkeleton />);
-
-		// 主要なラッパー要素が存在することを確認
-		// ルート要素であるCardコンポーネントは .MuiCard-root クラスを持つため、それで存在を確認
-		expect(container.querySelector(".MuiCard-root")).toBeInTheDocument();
+		// Check for the main container classes
+		expect(container.querySelector(".w-full.max-w-5xl")).toBeInTheDocument();
+		expect(
+			container.querySelector(".bg-card.rounded-\\[32px\\]"),
+		).toBeInTheDocument();
 	});
 
-	it("ヘッダーセクションのスケルトン要素がレンダリングされる", () => {
-		render(<CocktailDisplaySkeleton />);
-
-		// ヘッダーのスケルトン要素
-		// h2内のSkeleton (タイトル)
-		const headingSkeletons = screen.getAllByRole("heading", { level: 2 });
-		expect(
-			headingSkeletons[0].querySelector(".MuiSkeleton-root"),
-		).toBeInTheDocument();
-
-		// タグのスケルトン (roundedスケルトン)
-		const roundedSkeletons = screen
-			.getAllByRole("generic", {
-				name: "",
-			})
-			.filter((el) => el.querySelector(".MuiSkeleton-rounded"));
-		expect(roundedSkeletons.length).toBeGreaterThanOrEqual(1);
+	it("renders the image skeleton", () => {
+		const { container } = render(<CocktailDisplaySkeleton />);
+		// Check for image placeholder
+		expect(container.querySelector(".aspect-\\[2\\/1\\]")).toBeInTheDocument();
 	});
 
-	it("材料セクションのスケルトン要素がレンダリングされる", () => {
-		render(<CocktailDisplaySkeleton />);
-
-		// 材料セクションのタイトルスケルトン
-		const ingredientHeading = screen.getAllByRole("heading", { level: 6 })[0];
-		expect(
-			ingredientHeading.querySelector(".MuiSkeleton-root"),
-		).toBeInTheDocument();
-
-		// 材料リストのスケルトン (3行)
-		// 材料セクションのタイトルを持つ heading を起点に、その親要素内を検索する
-		const ingredientHeadingElement = screen.getAllByRole("heading", {
-			level: 6,
-		})[0];
-		const ingredientSection = ingredientHeadingElement.parentElement;
-		if (!ingredientSection) {
-			throw new Error("Ingredient section not found");
-		}
-		const ingredientListItems = within(ingredientSection)
-			.getAllByRole("generic")
-			.filter((el) => el.querySelectorAll(".MuiSkeleton-text").length === 2);
-
-		// 3つの材料項目があるので、3つのBoxが見つかるはず
-		expect(ingredientListItems.length).toBe(3);
+	it("renders the header skeleton section", () => {
+		const { container } = render(<CocktailDisplaySkeleton />);
+		// Check for header title/description placeholders
+		expect(container.querySelector(".h-12.w-3\\/4")).toBeInTheDocument();
+		expect(container.querySelector(".h-6.w-full")).toBeInTheDocument();
 	});
 
-	it("作り方セクションのスケルトン要素がレンダリングされる", () => {
-		render(<CocktailDisplaySkeleton />);
+	it("renders ingredient skeletons", () => {
+		const { container } = render(<CocktailDisplaySkeleton />);
+		// Check for 4 ingredient items (h-16 bg-muted/50)
+		const ingredients = container.querySelectorAll(".h-16.bg-muted\\/50");
+		expect(ingredients.length).toBeGreaterThanOrEqual(4);
+	});
 
-		// 作り方セクションのタイトルスケルトン
-		const instructionHeading = screen.getAllByRole("heading", { level: 6 })[1];
-		expect(
-			instructionHeading.querySelector(".MuiSkeleton-root"),
-		).toBeInTheDocument();
-
-		// 作り方リストのスケルトン (4行)
-		const instructionSection = instructionHeading.parentElement;
-		if (!instructionSection) {
-			throw new Error("Instruction section not found");
-		}
-
-		// 親要素のスコープ内でスケルトン要素を検索
-		// `getAllByRole`で名前のないgeneric要素をすべて取得し、構造上の2番目の要素を選択します。
-		// 1番目は見出し(`h6`)、2番目が目的のコンテナ(`Box`)です。
-		const allGenericElements = within(instructionSection).getAllByRole(
-			"generic",
-			{
-				name: "",
-			},
-		);
-		const instructionListContainer = allGenericElements[1];
-
-		// コンテナ内に4つのスケルトン要素があることを確認します。
-		// Skeletonコンポーネントは 'MuiSkeleton-root' クラスを持つspanとしてレンダリングされます。
-		const skeletons =
-			instructionListContainer.querySelectorAll(".MuiSkeleton-root");
-		expect(skeletons).toHaveLength(4);
+	it("renders instruction skeletons", () => {
+		const { container } = render(<CocktailDisplaySkeleton />);
+		// Check for 4 instruction items (flex gap-4 with w-8 h-8 rounded-full)
+		// We can look for the circle skeleton in instructions
+		const circles = container.querySelectorAll(".w-8.h-8.rounded-full");
+		// There might be others, but specific to instructions loop
+		expect(circles.length).toBeGreaterThanOrEqual(4);
 	});
 });

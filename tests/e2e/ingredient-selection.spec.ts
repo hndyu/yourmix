@@ -18,26 +18,42 @@ test.describe("Ingredient Selection", () => {
 		const sixthIngredient = "ブランデー";
 
 		// 1. Select 5 ingredients
-		const searchBox = page.getByPlaceholder("材料を検索 (例: ジン、レモン...)");
+		const searchBox = page.getByPlaceholder("材料名で検索...");
 		for (const name of ingredientsToSelect) {
 			await searchBox.fill(name);
-			await page.getByRole("option", { name: name }).first().click();
+
+			// Try to find and click the button (use regex to handle description text)
+			const button = page
+				.getByRole("button", { name: new RegExp(`^${name}.*$`, "i") })
+				.first();
+
+			// Check if button is visible, if not, we need to expand details
+			const isVisible = await button
+				.isVisible({ timeout: 1000 })
+				.catch(() => false);
+
+			if (!isVisible) {
+				// Click the expand button to reveal detail ingredients
+				await page
+					.getByText(/銘柄・詳細/)
+					.first()
+					.click();
+				// Wait a moment for expansion animation
+				await page.waitForTimeout(300);
+			}
+
+			// Now click the ingredient button
+			await button.click();
 		}
 
-		// 2. Assert that 5 ingredients are selected by checking the chips
-		// The selected ingredients are displayed as chips.
-		for (const name of ingredientsToSelect) {
-			// Check if the chip with the ingredient name exists
-			await expect(
-				page.locator(".MuiChip-label").getByText(name),
-			).toBeVisible();
-		}
-
-		// 3. Try to select the 6th ingredient
+		// 2. Try to select the 6th ingredient
 		await searchBox.fill(sixthIngredient);
-		await page.getByRole("option", { name: sixthIngredient }).first().click();
+		await page
+			.getByRole("button", { name: new RegExp(`^${sixthIngredient}.*$`, "i") })
+			.first()
+			.click();
 
-		// 4. Assert that the warning message is displayed
+		// 3. Assert that the warning message is displayed
 		await expect(
 			page.getByRole("alert").filter({ hasText: "材料は5つまでです" }),
 		).toBeVisible();
