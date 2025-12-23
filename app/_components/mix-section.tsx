@@ -31,7 +31,7 @@ export default function MixSection({
 	return (
 		<section className="flex flex-col items-center justify-center w-full gap-8 py-8 animate-in fade-in duration-500">
 			<div className="text-center space-y-2">
-				<h2 className="text-2xl md:text-3xl font-display font-bold text-stone-200">
+				<h2 className="text-2xl md:text-3xl font-display font-bold text-stone-800 dark:text-stone-200">
 					あなただけのカクテルを
 					<br className="md:hidden" />
 					作ってみよう
@@ -56,7 +56,7 @@ export default function MixSection({
 			<div className="flex flex-col items-center gap-4 mt-8 sticky bottom-4 z-40">
 				<div className="relative">
 					{/* Backdrop for button when sticky? Maybe simpler to just elevate it. */}
-					<div className="absolute inset-0 bg-stone-950/80 blur-xl rounded-full -z-10" />
+					<div className="absolute inset-0 bg-background/80 blur-xl rounded-full -z-10" />
 					<MixButton
 						onClick={onMixClick}
 						disabled={isInitialLoading || selectedCount === 0}

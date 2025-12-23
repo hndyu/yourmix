@@ -37,8 +37,8 @@ export default function IngredientCard({
       relative group flex flex-col rounded-2xl border transition-all duration-300
       ${
 				activeState
-					? "bg-stone-900 border-primary/50 shadow-lg shadow-primary/10"
-					: "bg-stone-900/40 border-stone-800 hover:border-stone-700 hover:bg-stone-900/80"
+					? "bg-white dark:bg-stone-900 border-primary/50 shadow-lg shadow-primary/10"
+					: "bg-white/40 dark:bg-stone-900/40 border-stone-300 dark:border-stone-800 hover:border-stone-400 dark:hover:border-stone-700 hover:bg-white/80 dark:hover:bg-stone-900/80"
 			}
       ${disabled ? "opacity-50 pointer-events-none" : ""}
     `}
@@ -62,8 +62,8 @@ export default function IngredientCard({
 							isSelected
 								? "bg-primary text-black scale-100"
 								: isPartiallySelected
-									? "bg-stone-700 text-primary scale-100"
-									: "bg-stone-800 text-stone-600 scale-90 opacity-0 group-hover:opacity-100 group-hover:scale-100"
+									? "bg-stone-300 dark:bg-stone-700 text-primary scale-100"
+									: "bg-stone-200 dark:bg-stone-800 text-stone-400 dark:text-stone-600 scale-90 opacity-0 group-hover:opacity-100 group-hover:scale-100"
 						}
           `}
 					>
@@ -75,7 +75,7 @@ export default function IngredientCard({
 				<div
 					className={`
           w-12 h-12 rounded-2xl mb-4 flex items-center justify-center transition-colors
-          ${activeState ? "bg-primary/20 text-primary" : "bg-stone-800 text-stone-500 group-hover:text-stone-300"}
+          ${activeState ? "bg-primary/20 text-primary" : "bg-stone-200 dark:bg-stone-800 text-stone-500 dark:text-stone-500 group-hover:text-stone-700 dark:group-hover:text-stone-300"}
         `}
 				>
 					<LocalBarIcon />
@@ -83,12 +83,12 @@ export default function IngredientCard({
 
 				{/* Title */}
 				<h4
-					className={`font-bold text-lg mb-1 leading-tight ${activeState ? "text-primary-foreground" : "text-stone-200"}`}
+					className={`font-bold text-lg mb-1 leading-tight ${activeState ? "text-foreground" : "text-stone-800 dark:text-stone-200"}`}
 				>
 					{ingredient.name}
 				</h4>
 				{ingredient.description && (
-					<p className="text-xs text-stone-500 line-clamp-2 min-h-[2.5em]">
+					<p className="text-xs text-stone-500 dark:text-stone-500 line-clamp-2 min-h-[2.5em]">
 						{ingredient.description}
 					</p>
 				)}
@@ -96,10 +96,10 @@ export default function IngredientCard({
 
 			{/* Details Section (Accordion style within card or bottom sheet) */}
 			{hasDetails && (
-				<div className="border-t border-stone-800/50">
+				<div className="border-t border-stone-200 dark:border-stone-800/50">
 					<button
 						type="button"
-						className="expand-btn w-full px-4 py-2 flex items-center justify-between text-xs text-stone-500 hover:text-stone-300 transition-colors focus:outline-none focus:bg-stone-800/50 rounded-b-2xl"
+						className="expand-btn w-full px-4 py-2 flex items-center justify-between text-xs text-stone-500 dark:text-stone-500 hover:text-stone-700 dark:hover:text-stone-300 transition-colors focus:outline-none focus:bg-stone-100 dark:focus:bg-stone-800/50 rounded-b-2xl"
 						onClick={(e) => {
 							e.stopPropagation();
 							setExpanded(!expanded);
@@ -121,7 +121,7 @@ export default function IngredientCard({
 
 					{/* Expanded Details */}
 					{expanded && (
-						<div className="px-4 pb-4 pt-1 flex flex-wrap gap-2 animate-in slide-in-from-top-2 duration-200 bg-stone-900/40 rounded-b-2xl">
+						<div className="px-4 pb-4 pt-1 flex flex-wrap gap-2 animate-in slide-in-from-top-2 duration-200 bg-stone-100 dark:bg-stone-900/40 rounded-b-2xl">
 							{ingredient.actualNames?.map((name) => {
 								const isDetailSelected = selectedDetailNames.includes(name);
 								return (
@@ -136,8 +136,8 @@ export default function IngredientCard({
                       px-2 py-1 text-xs rounded-md border transition-all
                       ${
 												isDetailSelected
-													? "bg-primary/20 border-primary text-primary-foreground"
-													: "bg-stone-950 border-stone-800 text-stone-400 hover:border-stone-600"
+													? "bg-primary/20 border-primary text-foreground"
+													: "bg-white dark:bg-stone-950 border-stone-300 dark:border-stone-800 text-stone-600 dark:text-stone-400 hover:border-stone-400 dark:hover:border-stone-600"
 											}
                     `}
 									>

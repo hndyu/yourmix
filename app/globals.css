@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@variant dark (&:is(.dark, .dark *));
+
 @theme {
 	--font-sans: var(--font-inter), var(--font-noto-sans-jp), sans-serif;
 	--font-display: var(--font-playfair-display), serif;
