@@ -72,6 +72,6 @@ test("should be able to mix a gin-fizz", async ({ page }) => {
 	// 5. Assert that the result is displayed
 	// We check for the cocktail name in the heading
 	await expect(
-		page.getByRole("heading", { name: "ジン・フィズ", level: 1 }), // CocktailDisplay uses h1
+		page.getByRole("heading", { name: "ジン・フィズ", level: 2 }), // CocktailDisplay uses h2 on homepage
 	).toBeVisible();
 });
