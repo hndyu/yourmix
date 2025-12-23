@@ -10,6 +10,7 @@ import {
 } from "../utils/affiliate-links";
 import { canUseWebShare, shareCocktail } from "../utils/share-utils";
 import DeliciousButton from "./delicious-button";
+import { Toast, type ToastSeverity } from "./ui/toast";
 
 interface CocktailDisplayProps {
 	cocktail: Cocktail;
@@ -23,8 +24,16 @@ export default function CocktailDisplay({
 	isDetailPage = false,
 }: CocktailDisplayProps) {
 	const [isWebShareSupported, setIsWebShareSupported] = React.useState(false);
-	const [showCopyMessage, setShowCopyMessage] = React.useState(false);
 	const [imageError, setImageError] = React.useState(false);
+	const [toastState, setToastState] = React.useState<{
+		open: boolean;
+		message: string;
+		severity: ToastSeverity;
+	}>({
+		open: false,
+		message: "",
+		severity: "info",
+	});
 
 	React.useEffect(() => {
 		setIsWebShareSupported(canUseWebShare());
@@ -33,8 +42,11 @@ export default function CocktailDisplay({
 	const handleShare = async () => {
 		const success = await shareCocktail(cocktail);
 		if (success && !isWebShareSupported) {
-			setShowCopyMessage(true);
-			setTimeout(() => setShowCopyMessage(false), 3000);
+			setToastState({
+				open: true,
+				message: "コピーしました!",
+				severity: "success",
+			});
 		}
 	};
 
@@ -118,23 +130,54 @@ export default function CocktailDisplay({
 
 							{/* Tags */}
 							<div className="flex flex-wrap gap-2">
-								{cocktail.tags?.map((tag) => (
-									<div
-										key={tag.name}
-										className="flex items-center gap-1.5 px-3 py-1 bg-secondary border border-border rounded-full text-xs text-muted-foreground"
-										title={tag.description || ""}
-									>
-										<Tag size={16} />
-										{tag.name}
-										{tag.description && <HelpCircle size={16} />}
-									</div>
-								))}
+								{cocktail.tags?.map((tag) => {
+									const content = (
+										<>
+											<Tag size={16} className="shrink-0" />
+											{tag.name}
+											{tag.description && (
+												<HelpCircle size={16} className="shrink-0" />
+											)}
+										</>
+									);
+									const className = `flex items-center gap-1.5 px-3 py-1 bg-secondary border border-border rounded-full text-xs text-muted-foreground ${
+										tag.description
+											? "cursor-pointer hover:bg-secondary/80 hover:text-foreground transition-colors"
+											: ""
+									}`;
+
+									if (tag.description) {
+										const description = tag.description;
+										return (
+											<button
+												key={tag.name}
+												type="button"
+												className={className}
+												onClick={() =>
+													setToastState({
+														open: true,
+														message: description,
+														severity: "info",
+													})
+												}
+											>
+												{content}
+											</button>
+										);
+									}
+
+									return (
+										<div key={tag.name} className={className}>
+											{content}
+										</div>
+									);
+								})}
 							</div>
 						</div>
 
 						{/* Action Buttons */}
 						{isDetailPage && (
-							<div className="flex md:flex-col items-end gap-3 shrink-0">
+							<div className="flex flex-wrap md:flex-col items-end gap-3 shrink-0">
 								<DeliciousButton
 									cocktailId={cocktail.id}
 									initialCount={cocktail.deliciousCount ?? 0}
@@ -152,11 +195,6 @@ export default function CocktailDisplay({
 									)}
 									{isWebShareSupported ? "共有" : "コピー"}
 								</button>
-								{showCopyMessage && (
-									<span className="text-sm text-green-500 animate-in fade-in">
-										コピーしました!
-									</span>
-								)}
 							</div>
 						)}
 					</div>
@@ -272,6 +310,13 @@ export default function CocktailDisplay({
 					</div>
 				</div>
 			</div>
+
+			<Toast
+				open={toastState.open}
+				message={toastState.message}
+				severity={toastState.severity}
+				onClose={() => setToastState((prev) => ({ ...prev, open: false }))}
+			/>
 		</div>
 	);
 }
