@@ -1,6 +1,5 @@
 "use client";
 
-import { Box } from "@mui/material";
 import * as React from "react";
 import type { Category, Ingredient } from "../types/cocktail";
 import { useAICocktailGenerator } from "../utils/useAICocktailGenerator";
@@ -139,7 +138,7 @@ export default function CocktailMixer({
 				isInitialLoading={isInitialLoading}
 			/>
 
-			<Box ref={resultsRef} sx={{ width: "100%" }}>
+			<div ref={resultsRef} className="w-full">
 				{isMixing && <CocktailDisplaySkeleton />}
 
 				{!isMixing && generatedCocktail && (
@@ -158,7 +157,7 @@ export default function CocktailMixer({
 						categories={categories}
 					/>
 				)}
-			</Box>
+			</div>
 		</>
 	);
 }

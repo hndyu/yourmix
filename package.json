@@ -27,12 +27,7 @@
 		"start:ci": "npx wrangler pages dev .open-next --port 3000 --local"
 	},
 	"dependencies": {
-		"@emotion/cache": "^11.14.0",
-		"@emotion/react": "^11.14.0",
-		"@emotion/styled": "^11.14.0",
 		"@google/genai": "^1.27.0",
-		"@mui/material": "^7.1.0",
-		"@mui/material-nextjs": "^7.1.0",
 		"@opennextjs/cloudflare": "^1.14.0",
 		"@testing-library/user-event": "^14.6.1",
 		"better-auth-cloudflare": "^0.2.8",

@@ -1,8 +1,8 @@
 "use client";
 
 import type { Category, Ingredient } from "@/app/types/cocktail";
-import { Alert, Snackbar } from "@mui/material"; // Temporarily keeping for toast, or replacing with custom toast. Can keep MUI Snackbar for now as it's an overlay.
 import * as React from "react";
+import { Toast, type ToastSeverity } from "../ui/toast";
 import CategoryNav from "./category-nav";
 import IngredientCard from "./ingredient-card";
 import IngredientSearch from "./ingredient-search";
@@ -35,7 +35,7 @@ export default function IngredientSelector({
 	const [snackbar, setSnackbar] = React.useState<{
 		open: boolean;
 		message: string;
-		severity: "success" | "warning" | "info" | "error";
+		severity: ToastSeverity;
 	}>({ open: false, message: "", severity: "info" });
 
 	const handleCloseSnackbar = () =>
@@ -267,16 +267,13 @@ export default function IngredientSelector({
 				</div>
 			</div>
 
-			<Snackbar
+			<Toast
 				open={snackbar.open}
-				autoHideDuration={2000}
+				message={snackbar.message}
+				severity={snackbar.severity}
 				onClose={handleCloseSnackbar}
-				anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-			>
-				<Alert severity={snackbar.severity} variant="filled">
-					{snackbar.message}
-				</Alert>
-			</Snackbar>
+				autoHideDuration={2000}
+			/>
 		</div>
 	);
 }

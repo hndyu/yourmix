@@ -44,6 +44,8 @@ test.describe("Ingredient Selection", () => {
 
 			// Now click the ingredient button
 			await button.click();
+			// Wait for state to update
+			await page.waitForTimeout(100);
 		}
 
 		// 2. Try to select the 6th ingredient
@@ -54,8 +56,6 @@ test.describe("Ingredient Selection", () => {
 			.click();
 
 		// 3. Assert that the warning message is displayed
-		await expect(
-			page.getByRole("alert").filter({ hasText: "材料は5つまでです" }),
-		).toBeVisible();
+		await expect(page.getByText("材料は5つまでです")).toBeVisible();
 	});
 });
