@@ -33,7 +33,7 @@ export default function CategoryNav({
               flex items-center gap-3 px-4 py-3 rounded-xl transition-all text-sm font-medium whitespace-nowrap
               ${
 								isActive
-									? "bg-stone-200 dark:bg-stone-800 text-primary shadow-lg shadow-black/10 dark:shadow-black/20"
+									? "bg-stone-200 dark:bg-stone-800 text-blue-600 dark:text-primary shadow-lg shadow-black/10 dark:shadow-black/20"
 									: "text-stone-600 dark:text-stone-400 hover:text-stone-800 dark:hover:text-stone-200 hover:bg-stone-100 dark:hover:bg-stone-900"
 							}
             `}

@@ -146,7 +146,7 @@ export default function SignUpForm() {
 							>
 								<Link
 									href="/terms-of-service"
-									className="text-primary hover:underline"
+									className="text-blue-600 dark:text-primary hover:text-blue-800 dark:hover:text-amber-400 hover:underline transition-colors"
 								>
 									利用規約
 								</Link>
@@ -173,7 +173,7 @@ export default function SignUpForm() {
 				<div className="mt-6 text-center text-sm">
 					<Link
 						href={`/auth/sign-in?callbackUrl=${encodeURIComponent(callbackUrl)}`}
-						className="text-primary hover:text-amber-400 transition-colors hover:underline"
+						className="text-blue-600 dark:text-primary hover:text-blue-800 dark:hover:text-amber-400 transition-colors hover:underline"
 					>
 						すでにアカウントをお持ちの方: ログイン
 					</Link>
