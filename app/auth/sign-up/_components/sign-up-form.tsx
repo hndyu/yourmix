@@ -53,10 +53,12 @@ export default function SignUpForm() {
 
 	return (
 		<div className="max-w-md mx-auto w-full px-4 py-12">
-			<div className="bg-stone-900/40 border border-stone-800 rounded-2xl p-8 backdrop-blur shadow-2xl">
+			<div className="bg-white/40 dark:bg-stone-900/40 border border-stone-300 dark:border-stone-800 rounded-2xl p-8 backdrop-blur shadow-2xl">
 				<div className="text-center mb-8">
-					<h1 className="text-2xl font-bold text-stone-100">アカウント登録</h1>
-					<p className="text-sm text-stone-500 mt-2">
+					<h1 className="text-2xl font-bold text-stone-800 dark:text-stone-100">
+						アカウント登録
+					</h1>
+					<p className="text-sm text-stone-600 dark:text-stone-500 mt-2">
 						新しいアカウントを作成します
 					</p>
 				</div>
@@ -71,7 +73,7 @@ export default function SignUpForm() {
 					<div>
 						<label
 							htmlFor="name"
-							className="block text-sm font-medium text-stone-400 mb-1"
+							className="block text-sm font-medium text-stone-600 dark:text-stone-400 mb-1"
 						>
 							名前
 						</label>
@@ -79,7 +81,7 @@ export default function SignUpForm() {
 							id="name"
 							type="text"
 							required
-							className="w-full bg-stone-950 border border-stone-800 rounded-lg px-4 py-2 text-stone-100 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+							className="w-full bg-white dark:bg-stone-950 border border-stone-300 dark:border-stone-800 rounded-lg px-4 py-2 text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
 							value={name}
 							onChange={(e) => setName(e.target.value)}
 							data-testid="name-input"
@@ -89,7 +91,7 @@ export default function SignUpForm() {
 					<div>
 						<label
 							htmlFor="email"
-							className="block text-sm font-medium text-stone-400 mb-1"
+							className="block text-sm font-medium text-stone-600 dark:text-stone-400 mb-1"
 						>
 							メールアドレス
 						</label>
@@ -97,7 +99,7 @@ export default function SignUpForm() {
 							id="email"
 							type="email"
 							required
-							className="w-full bg-stone-950 border border-stone-800 rounded-lg px-4 py-2 text-stone-100 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+							className="w-full bg-white dark:bg-stone-950 border border-stone-300 dark:border-stone-800 rounded-lg px-4 py-2 text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
 							value={email}
 							onChange={(e) => setEmail(e.target.value)}
 							data-testid="email-input"
@@ -107,7 +109,7 @@ export default function SignUpForm() {
 					<div>
 						<label
 							htmlFor="password"
-							className="block text-sm font-medium text-stone-400 mb-1"
+							className="block text-sm font-medium text-stone-600 dark:text-stone-400 mb-1"
 						>
 							パスワード
 						</label>
@@ -115,7 +117,7 @@ export default function SignUpForm() {
 							id="password"
 							type="password"
 							required
-							className="w-full bg-stone-950 border border-stone-800 rounded-lg px-4 py-2 text-stone-100 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+							className="w-full bg-white dark:bg-stone-950 border border-stone-300 dark:border-stone-800 rounded-lg px-4 py-2 text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
 							value={password}
 							onChange={(e) => setPassword(e.target.value)}
 							data-testid="password-input"
@@ -128,7 +130,7 @@ export default function SignUpForm() {
 							<input
 								id="terms"
 								type="checkbox"
-								className="h-4 w-4 rounded border-stone-800 bg-stone-950 text-primary focus:ring-primary checked:bg-primary"
+								className="h-4 w-4 rounded border-stone-300 dark:border-stone-800 bg-white dark:bg-stone-950 text-primary focus:ring-primary checked:bg-primary"
 								checked={termsAgreed}
 								onChange={(e) => {
 									setTermsAgreed(e.target.checked);
@@ -138,7 +140,10 @@ export default function SignUpForm() {
 							/>
 						</div>
 						<div className="text-sm">
-							<label htmlFor="terms" className="font-medium text-stone-400">
+							<label
+								htmlFor="terms"
+								className="font-medium text-stone-600 dark:text-stone-400"
+							>
 								<Link
 									href="/terms-of-service"
 									className="text-primary hover:underline"
