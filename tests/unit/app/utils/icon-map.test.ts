@@ -1,6 +1,6 @@
 import { DefaultIcon, iconMap } from "@/app/utils/icon-map";
 import {
-	Beer,
+	BottleWine,
 	CupSoda,
 	HelpCircle,
 	Martini,
@@ -27,7 +27,7 @@ describe("icon-map", () => {
 
 		it("各キーに正しいアイコンコンポーネントがマッピングされている", () => {
 			expect(iconMap.WineBar).toBe(Wine);
-			expect(iconMap.Liquor).toBe(Beer);
+			expect(iconMap.Liquor).toBe(BottleWine);
 			expect(iconMap.LocalBar).toBe(Martini);
 			expect(iconMap.LocalDrink).toBe(CupSoda);
 			expect(iconMap.Restaurant).toBe(Utensils);

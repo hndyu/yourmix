@@ -86,7 +86,7 @@ export default function IngredientCard({
 					{ingredient.name}
 				</h4>
 				{ingredient.description && (
-					<p className="text-xs text-stone-500 dark:text-stone-500 line-clamp-2 min-h-[2.5em]">
+					<p className="text-xs text-stone-500 dark:text-stone-500 min-h-[2.5em]">
 						{ingredient.description}
 					</p>
 				)}

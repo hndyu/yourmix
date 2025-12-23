@@ -84,20 +84,18 @@ export default function CocktailDisplay({
 			{/* Main Card */}
 			<div className="bg-card border border-border backdrop-blur-sm rounded-[32px] overflow-hidden shadow-2xl shadow-black/10 dark:shadow-black/50 transition-colors duration-300">
 				{/* Header / Hero Section */}
-				{isDetailPage && (
-					<div className="relative w-full aspect-[2/1] md:aspect-[3/1] bg-secondary/30 flex items-center justify-center p-8">
-						{cocktail.imageUrl && !imageError && (
-							<div className="relative w-full h-full max-w-md mx-auto">
-								<Image
-									src={`/cocktails/${cocktail.imageUrl}`}
-									alt={cocktail.name}
-									fill
-									className="object-contain drop-shadow-2xl"
-									onError={() => setImageError(true)}
-									priority
-								/>
-							</div>
-						)}
+				{isDetailPage && cocktail.imageUrl && !imageError && (
+					<div className="relative w-full aspect-[1/1] md:aspect-[2/1] bg-secondary/30 flex items-center justify-center p-8">
+						<div className="relative w-full h-full mx-auto">
+							<Image
+								src={`/cocktails/${cocktail.imageUrl}`}
+								alt={cocktail.name}
+								fill
+								className="object-contain drop-shadow-2xl"
+								onError={() => setImageError(true)}
+								priority
+							/>
+						</div>
 					</div>
 				)}
 
@@ -105,9 +103,15 @@ export default function CocktailDisplay({
 					{/* Title & Actions */}
 					<div className="flex flex-col md:flex-row md:items-start justify-between gap-6 mb-8 border-b border-border pb-8">
 						<div className="space-y-4 flex-1">
-							<h1 className="text-3xl md:text-5xl font-display font-bold text-foreground leading-tight">
-								{cocktail.name}
-							</h1>
+							{isDetailPage ? (
+								<h1 className="text-3xl md:text-5xl font-display font-bold text-foreground leading-tight">
+									{cocktail.name}
+								</h1>
+							) : (
+								<h2 className="text-3xl md:text-5xl font-display font-bold text-foreground leading-tight">
+									{cocktail.name}
+								</h2>
+							)}
 							<p className="text-muted-foreground text-lg leading-relaxed italic">
 								{cocktail.description}
 							</p>
@@ -120,11 +124,9 @@ export default function CocktailDisplay({
 										className="flex items-center gap-1.5 px-3 py-1 bg-secondary border border-border rounded-full text-xs text-muted-foreground"
 										title={tag.description || ""}
 									>
-										<Tag size={14} />
+										<Tag size={16} />
 										{tag.name}
-										{tag.description && (
-											<HelpCircle size={12} className="opacity-50" />
-										)}
+										{tag.description && <HelpCircle size={16} />}
 									</div>
 								))}
 							</div>
@@ -210,7 +212,7 @@ export default function CocktailDisplay({
 															href={link}
 															target="_blank"
 															rel="noopener noreferrer"
-															className="inline-flex items-center gap-1 px-2 py-1 bg-secondary hover:bg-orange-100 dark:hover:bg-orange-900/30 text-orange-600 dark:text-orange-400 hover:text-orange-700 dark:hover:text-orange-300 rounded text-[10px] font-bold transition-colors"
+															className="inline-flex items-center gap-1 px-2 py-1 bg-secondary hover:bg-orange-100 dark:hover:bg-orange-900/30 text-orange-600 dark:text-orange-400 hover:text-orange-700 dark:hover:text-orange-300 rounded text-sm font-bold transition-colors"
 														>
 															<ShoppingCart size={12} />
 															買う
@@ -255,7 +257,7 @@ export default function CocktailDisplay({
 							{cocktail.garnish && (
 								<div className="mt-8 p-4 bg-muted/30 rounded-xl border border-border border-dashed">
 									<h4 className="text-sm font-bold text-muted-foreground mb-1 uppercase tracking-wider">
-										Garnish
+										飾り
 									</h4>
 									<p className="text-foreground">{cocktail.garnish}</p>
 								</div>

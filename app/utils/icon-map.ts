@@ -1,5 +1,5 @@
 import {
-	Beer,
+	BottleWine,
 	CupSoda,
 	HelpCircle,
 	Martini,
@@ -13,7 +13,7 @@ export const iconMap: Record<
 	React.ComponentType<{ size?: number | string; className?: string }>
 > = {
 	WineBar: Wine,
-	Liquor: Beer,
+	Liquor: BottleWine,
 	LocalBar: Martini,
 	LocalDrink: CupSoda,
 	Restaurant: Utensils,

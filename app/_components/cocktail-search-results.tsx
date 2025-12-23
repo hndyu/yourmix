@@ -88,7 +88,7 @@ export default function CocktailSearchResults({
 										<span
 											key={ing.name}
 											className={`
-                        text-[10px] px-2 py-1 rounded-full border
+                        text-sm px-2 py-1 rounded-full border
                         ${
 													isSelected
 														? "bg-primary/20 border-primary/30 text-primary"
@@ -101,7 +101,7 @@ export default function CocktailSearchResults({
 									);
 								})}
 								{cocktail.ingredients.length > 5 && (
-									<span className="text-[10px] px-2 py-1 rounded-full bg-stone-950 border border-stone-800 text-stone-500">
+									<span className="text-sm px-2 py-1 rounded-full bg-stone-950 border border-stone-800 text-stone-500">
 										+{cocktail.ingredients.length - 5}
 									</span>
 								)}
