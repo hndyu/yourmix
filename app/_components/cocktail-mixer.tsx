@@ -60,6 +60,7 @@ export default function CocktailMixer({
 	// 表示アニメーションとスクロールの状態
 	const [showOriginalCocktail, setShowOriginalCocktail] = React.useState(false);
 	const [showSearchResults, setShowSearchResults] = React.useState(false);
+	const [hasScrolledAfterMix, setHasScrolledAfterMix] = React.useState(false);
 	const resultsRef = React.useRef<HTMLDivElement>(null);
 
 	// --- Effects ---
@@ -93,6 +94,7 @@ export default function CocktailMixer({
 		setShowSearchResults(false);
 		clearGeneratedCocktail();
 		searchCocktails([]); // 既存の検索結果をクリア
+		setHasScrolledAfterMix(false);
 
 		// 現在選択されている材料を検索実行時の材料として保存
 		setLastSearchedIngredientNames([...selectedIngredientNames]);
@@ -109,6 +111,20 @@ export default function CocktailMixer({
 		setSelectedIngredientIds(ids);
 		setSelectedIngredientNames(names);
 	};
+
+	// 結果が表示されたらスクロール
+	React.useEffect(() => {
+		if (generatedCocktail) setShowOriginalCocktail(true);
+		if (searchResults.length > 0) setShowSearchResults(true);
+
+		if (
+			(generatedCocktail || searchResults.length > 0) &&
+			!hasScrolledAfterMix
+		) {
+			resultsRef.current?.scrollIntoView({ behavior: "smooth" });
+			setHasScrolledAfterMix(true);
+		}
+	}, [generatedCocktail, searchResults, hasScrolledAfterMix]);
 
 	return (
 		<>
