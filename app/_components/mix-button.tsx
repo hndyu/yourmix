@@ -25,7 +25,7 @@ export default function MixButton({
         ${
 					disabled || isLoading
 						? "bg-stone-800 cursor-not-allowed opacity-70"
-						: "bg-gradient-to-r from-amber-500 via-orange-500 to-amber-500 bg-[length:200%_auto] animate-gradient hover:scale-105 hover:shadow-xl hover:shadow-amber-500/20 active:scale-95"
+						: "bg-primary hover:bg-amber-600 shadow-xl shadow-primary/20 hover:shadow-primary/40 hover:scale-105 active:scale-95"
 				}
       `}
 		>
