@@ -1,6 +1,6 @@
 "use client";
 
-import ThumbUpIcon from "@mui/icons-material/ThumbUp";
+import { ThumbsUp } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import authClient from "../lib/authClient";
@@ -70,7 +70,7 @@ export default function DeliciousButton({
 					}
         `}
 			>
-				<ThumbUpIcon fontSize="small" />
+				<ThumbsUp size={18} />
 				<span>おいしい！</span>
 				{count > 0 && <span>{count}</span>}
 			</button>

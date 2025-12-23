@@ -1,11 +1,13 @@
-import { describe, it, expect } from "vitest";
-import { iconMap, DefaultIcon } from "@/app/utils/icon-map";
-import HelpOutline from "@mui/icons-material/HelpOutline";
-import Liquor from "@mui/icons-material/Liquor";
-import LocalBar from "@mui/icons-material/LocalBar";
-import LocalDrink from "@mui/icons-material/LocalDrink";
-import Restaurant from "@mui/icons-material/Restaurant";
-import WineBar from "@mui/icons-material/WineBar";
+import { DefaultIcon, iconMap } from "@/app/utils/icon-map";
+import {
+	Beer,
+	CupSoda,
+	HelpCircle,
+	Martini,
+	Utensils,
+	Wine,
+} from "lucide-react";
+import { describe, expect, it } from "vitest";
 
 describe("icon-map", () => {
 	describe("iconMap", () => {
@@ -24,17 +26,17 @@ describe("icon-map", () => {
 		});
 
 		it("各キーに正しいアイコンコンポーネントがマッピングされている", () => {
-			expect(iconMap.WineBar).toBe(WineBar);
-			expect(iconMap.Liquor).toBe(Liquor);
-			expect(iconMap.LocalBar).toBe(LocalBar);
-			expect(iconMap.LocalDrink).toBe(LocalDrink);
-			expect(iconMap.Restaurant).toBe(Restaurant);
+			expect(iconMap.WineBar).toBe(Wine);
+			expect(iconMap.Liquor).toBe(Beer);
+			expect(iconMap.LocalBar).toBe(Martini);
+			expect(iconMap.LocalDrink).toBe(CupSoda);
+			expect(iconMap.Restaurant).toBe(Utensils);
 		});
 	});
 
 	describe("DefaultIcon", () => {
-		it("DefaultIconがHelpOutlineコンポーネントである", () => {
-			expect(DefaultIcon).toBe(HelpOutline);
+		it("DefaultIconがHelpCircleコンポーネントである", () => {
+			expect(DefaultIcon).toBe(HelpCircle);
 		});
 	});
 });

@@ -1,7 +1,6 @@
 "use client";
 
-import DarkModeIcon from "@mui/icons-material/DarkMode";
-import LightModeIcon from "@mui/icons-material/LightMode";
+import { Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 
@@ -24,11 +23,7 @@ export function ThemeToggle() {
 			className="w-9 h-9 rounded-full flex items-center justify-center transition-colors hover:bg-stone-500/10 text-stone-500 hover:text-stone-900 dark:text-stone-400 dark:hover:text-stone-100"
 			aria-label="Toggle theme"
 		>
-			{resolvedTheme === "dark" ? (
-				<LightModeIcon fontSize="small" />
-			) : (
-				<DarkModeIcon fontSize="small" />
-			)}
+			{resolvedTheme === "dark" ? <Sun size={20} /> : <Moon size={20} />}
 		</button>
 	);
 }

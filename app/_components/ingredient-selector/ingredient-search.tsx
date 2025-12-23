@@ -1,6 +1,6 @@
 "use client";
 
-import SearchIcon from "@mui/icons-material/Search";
+import { Search } from "lucide-react";
 
 interface IngredientSearchProps {
 	value: string;
@@ -14,7 +14,7 @@ export default function IngredientSearch({
 	return (
 		<div className="relative w-full max-w-md mx-auto mb-6">
 			<div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-				<SearchIcon className="text-stone-500 dark:text-stone-500" />
+				<Search className="text-stone-500 dark:text-stone-500" size={18} />
 			</div>
 			<input
 				type="text"

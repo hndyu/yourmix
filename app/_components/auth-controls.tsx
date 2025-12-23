@@ -1,8 +1,7 @@
 "use client";
 
 import authClient from "@/app/lib/authClient";
-import LogoutIcon from "@mui/icons-material/Logout";
-import PersonIcon from "@mui/icons-material/Person";
+import { LogOut, User } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
@@ -87,7 +86,7 @@ export default function AuthControls() {
 								className="flex items-center gap-2 px-3 py-2 text-sm text-stone-300 hover:bg-stone-800 hover:text-white rounded-lg transition-colors"
 								onClick={() => setIsOpen(false)}
 							>
-								<PersonIcon fontSize="small" className="text-stone-500" />
+								<User size={18} className="text-stone-500" />
 								マイページ
 							</Link>
 							<button
@@ -95,7 +94,7 @@ export default function AuthControls() {
 								onClick={handleSignOut}
 								className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-400 hover:bg-red-500/10 hover:text-red-300 rounded-lg transition-colors text-left"
 							>
-								<LogoutIcon fontSize="small" />
+								<LogOut size={18} />
 								ログアウト
 							</button>
 						</div>

@@ -1,9 +1,7 @@
 "use client";
 
 import type { Ingredient } from "@/app/types/cocktail";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import LocalBarIcon from "@mui/icons-material/LocalBar";
+import { CheckCircle, ChevronDown, Martini } from "lucide-react";
 import * as React from "react";
 
 interface IngredientCardProps {
@@ -67,7 +65,7 @@ export default function IngredientCard({
 						}
           `}
 					>
-						<CheckCircleIcon sx={{ fontSize: 16 }} />
+						<CheckCircle size={16} />
 					</div>
 				</div>
 
@@ -78,7 +76,7 @@ export default function IngredientCard({
           ${activeState ? "bg-primary/20 text-primary" : "bg-stone-200 dark:bg-stone-800 text-stone-500 dark:text-stone-500 group-hover:text-stone-700 dark:group-hover:text-stone-300"}
         `}
 				>
-					<LocalBarIcon />
+					<Martini />
 				</div>
 
 				{/* Title */}
@@ -113,9 +111,9 @@ export default function IngredientCard({
 								</span>
 							)}
 						</span>
-						<ExpandMoreIcon
+						<ChevronDown
 							className={`transition-transform duration-300 ${expanded ? "rotate-180" : ""}`}
-							sx={{ fontSize: 16 }}
+							size={16}
 						/>
 					</button>
 

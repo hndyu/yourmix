@@ -1,18 +1,23 @@
-import HelpOutline from "@mui/icons-material/HelpOutline"; // デフォルトアイコン用
-import Liquor from "@mui/icons-material/Liquor";
-import LocalBar from "@mui/icons-material/LocalBar";
-import LocalDrink from "@mui/icons-material/LocalDrink";
-import Restaurant from "@mui/icons-material/Restaurant";
-import WineBar from "@mui/icons-material/WineBar";
+import {
+	Beer,
+	CupSoda,
+	HelpCircle,
+	Martini,
+	Utensils,
+	Wine,
+} from "lucide-react";
 
-// DBのiconカラムの値とMUIアイコンコンポーネントをマッピング
-export const iconMap: Record<string, React.ComponentType> = {
-	WineBar,
-	Liquor,
-	LocalBar,
-	LocalDrink,
-	Restaurant,
+// DBのiconカラムの値とLucideアイコンコンポーネントをマッピング
+export const iconMap: Record<
+	string,
+	React.ComponentType<{ size?: number | string; className?: string }>
+> = {
+	WineBar: Wine,
+	Liquor: Beer,
+	LocalBar: Martini,
+	LocalDrink: CupSoda,
+	Restaurant: Utensils,
 };
 
 // マッピングにない場合に表示するデフォルトアイコン
-export const DefaultIcon = HelpOutline;
+export const DefaultIcon = HelpCircle;

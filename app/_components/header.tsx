@@ -1,5 +1,5 @@
 "use client";
-import LocalBarIcon from "@mui/icons-material/LocalBar";
+import { Martini } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import * as React from "react";
@@ -19,7 +19,7 @@ export default function Header() {
 					className="flex items-center gap-2 text-foreground hover:opacity-80 transition-opacity"
 				>
 					<div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-primary-foreground shadow-lg shadow-primary/40">
-						<LocalBarIcon fontSize="small" />
+						<Martini size={18} />
 					</div>
 					{isHomePage ? (
 						<h1 className="font-display text-xl font-bold tracking-tight">

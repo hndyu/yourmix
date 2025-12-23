@@ -44,7 +44,7 @@ export default function CategoryNav({
 								<span
 									className={`p-1 rounded-full ${isActive ? "bg-primary/10" : "bg-stone-200 dark:bg-stone-800"}`}
 								>
-									<Icon sx={{ fontSize: 20 }} />
+									<Icon size={20} />
 								</span>
 								{category.name}
 							</button>

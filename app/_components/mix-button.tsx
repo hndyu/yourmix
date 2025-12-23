@@ -1,6 +1,6 @@
 "use client";
 
-import LocalBarIcon from "@mui/icons-material/LocalBar";
+import { Martini } from "lucide-react";
 import * as React from "react";
 
 interface MixButtonProps {
@@ -37,8 +37,9 @@ export default function MixButton({
 					</>
 				) : (
 					<>
-						<LocalBarIcon
+						<Martini
 							className={"transition-transform group-hover:rotate-12"}
+							size={24}
 						/>
 						<span>Mix!</span>
 					</>

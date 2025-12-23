@@ -1,10 +1,6 @@
 "use client";
 
-import CopyIcon from "@mui/icons-material/ContentCopy";
-import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
-import LocalOfferIcon from "@mui/icons-material/LocalOffer";
-import ShareIcon from "@mui/icons-material/Share";
-import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import { Copy, HelpCircle, Share2, ShoppingCart, Tag } from "lucide-react";
 import Image from "next/image";
 import * as React from "react";
 import type { Cocktail } from "../types/cocktail";
@@ -124,13 +120,10 @@ export default function CocktailDisplay({
 										className="flex items-center gap-1.5 px-3 py-1 bg-secondary border border-border rounded-full text-xs text-muted-foreground"
 										title={tag.description || ""}
 									>
-										<LocalOfferIcon sx={{ fontSize: 14 }} />
+										<Tag size={14} />
 										{tag.name}
 										{tag.description && (
-											<HelpOutlineIcon
-												sx={{ fontSize: 12 }}
-												className="opacity-50"
-											/>
+											<HelpCircle size={12} className="opacity-50" />
 										)}
 									</div>
 								))}
@@ -151,9 +144,9 @@ export default function CocktailDisplay({
 									className="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold bg-secondary text-foreground hover:bg-secondary/80 transition-colors"
 								>
 									{isWebShareSupported ? (
-										<ShareIcon fontSize="small" />
+										<Share2 size={18} />
 									) : (
-										<CopyIcon fontSize="small" />
+										<Copy size={18} />
 									)}
 									{isWebShareSupported ? "共有" : "コピー"}
 								</button>
@@ -219,7 +212,7 @@ export default function CocktailDisplay({
 															rel="noopener noreferrer"
 															className="inline-flex items-center gap-1 px-2 py-1 bg-secondary hover:bg-orange-100 dark:hover:bg-orange-900/30 text-orange-600 dark:text-orange-400 hover:text-orange-700 dark:hover:text-orange-300 rounded text-[10px] font-bold transition-colors"
 														>
-															<ShoppingCartIcon sx={{ fontSize: 12 }} />
+															<ShoppingCart size={12} />
 															買う
 														</a>
 													);

@@ -1,6 +1,6 @@
 "use client";
 
-import LocalBarIcon from "@mui/icons-material/LocalBar";
+import { Martini } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import * as React from "react";
@@ -65,10 +65,7 @@ export default function CocktailSearchResults({
 									className="object-contain p-4 group-hover:scale-105 transition-transform duration-500"
 								/>
 							) : (
-								<LocalBarIcon
-									sx={{ fontSize: 64 }}
-									className="text-stone-800"
-								/>
+								<Martini size={64} className="text-stone-800" />
 							)}
 							{/* Gradient Overlay */}
 							<div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-stone-900/90 to-transparent" />

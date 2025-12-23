@@ -1,4 +1,4 @@
-import NavigateNextIcon from "@mui/icons-material/NavigateNext";
+import { ChevronRight } from "lucide-react";
 import type { Metadata } from "next";
 import { headers } from "next/headers";
 import Link from "next/link";
@@ -104,7 +104,7 @@ export default async function RecipeDetailPage({
 				<Link href="/" className="hover:text-primary transition-colors">
 					ホーム
 				</Link>
-				<NavigateNextIcon sx={{ fontSize: 16, mx: 1 }} />
+				<ChevronRight size={16} className="mx-1" />
 				<span className="text-stone-300 font-medium">{cocktail.name}</span>
 			</nav>
 
