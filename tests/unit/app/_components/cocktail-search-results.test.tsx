@@ -233,8 +233,8 @@ describe("CocktailSearchResults", () => {
 		// Selected (Gin): bg-primary/20 (contains 'bg-primary/20')
 		expect(ginChip.className).toContain("bg-primary/20");
 
-		// Not selected (Lime): bg-stone-950
-		expect(limeChip.className).toContain("bg-stone-950");
+		// Not selected (Lime): bg-background
+		expect(limeChip.className).toContain("bg-background");
 	});
 
 	it("treats grouped ingredients as selected", () => {

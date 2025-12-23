@@ -57,7 +57,7 @@ describe("AuthControls", () => {
 
 		expect(screen.getByRole("link", { name: "ログイン" })).toBeInTheDocument();
 		expect(
-			screen.getByRole("link", { name: "アカウント登録" }),
+			screen.getByRole("link", { name: /アカウント登録/ }),
 		).toBeInTheDocument();
 	});
 
