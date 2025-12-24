@@ -26,6 +26,7 @@ export async function getIngredientsMasterData() {
 				groupDisplayName: ingredientGroups.displayName,
 				groupSortOrder: ingredientGroups.sortOrder,
 				groupDescription: ingredientGroups.description,
+				groupAssetKey: ingredientGroups.assetKey,
 				sortOrder: ingredients.sortOrder,
 			})
 			.from(ingredients)
@@ -56,6 +57,7 @@ export async function getIngredientsMasterData() {
 					actualDetails: [{ id: ing.id, name: ing.name }],
 					sortOrder: ing.groupSortOrder,
 					description: ing.groupDescription,
+					assetKey: ing.groupAssetKey,
 				};
 				acc.set(displayName, group);
 			}

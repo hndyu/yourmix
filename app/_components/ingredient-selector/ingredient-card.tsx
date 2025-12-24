@@ -76,7 +76,7 @@ export default function IngredientCard({
 				{/* Icon / Image Placeholder */}
 				<div
 					className={`
-          w-12 h-12 rounded-2xl mb-4 flex items-center justify-center transition-colors overflow-hidden
+          w-full h-auto rounded-2xl mb-4 flex items-center justify-center transition-colors overflow-hidden
           ${activeState ? "bg-primary/20 text-primary" : "bg-stone-200 dark:bg-stone-800 text-stone-500 dark:text-stone-500 group-hover:text-stone-700 dark:group-hover:text-stone-300"}
         `}
 				>
@@ -86,7 +86,7 @@ export default function IngredientCard({
 							alt={ingredient.name}
 							width={48}
 							height={48}
-							className="w-full h-full object-cover"
+							className="w-full h-full object-contain"
 						/>
 					) : (
 						<asset.value size={24} />
