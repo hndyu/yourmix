@@ -20,6 +20,7 @@ export interface IngredientGroupData {
 	order: number;
 	description: string;
 	category: string;
+	assetKey?: string;
 }
 
 export interface SeedDataOverrides {

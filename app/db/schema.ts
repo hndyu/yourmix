@@ -62,7 +62,7 @@ export const categories = sqliteTable("categories", {
 	id: integer("id").primaryKey({ autoIncrement: true }),
 	name: text("name").notNull().unique(),
 	sortOrder: integer("sort_order").notNull(),
-	icon: text("icon"),
+	assetKey: text("asset_key"),
 	description: text("description"),
 });
 
@@ -75,7 +75,7 @@ export const ingredientGroups = sqliteTable("ingredient_groups", {
 		.references(() => categories.id),
 	sortOrder: integer("sort_order").notNull(),
 	description: text("description"),
-	icon: text("icon"), // 将来的にグループ用アイコンを設定可能
+	assetKey: text("asset_key"),
 });
 
 // tags テーブル

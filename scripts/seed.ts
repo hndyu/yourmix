@@ -62,31 +62,31 @@ export async function seed(
 		{
 			name: "醸造酒",
 			sortOrder: 1,
-			icon: "WineBar",
+			assetKey: "Wine",
 			description: "穀物や果物などを発酵させて造られたお酒。",
 		},
 		{
 			name: "蒸留酒",
 			sortOrder: 2,
-			icon: "Liquor",
+			assetKey: "BottleWine",
 			description: "醸造酒を蒸留してアルコール度数を高めたお酒。",
 		},
 		{
 			name: "混成酒",
 			sortOrder: 3,
-			icon: "LocalBar",
+			assetKey: "Martini",
 			description: "醸造酒や蒸留酒に糖類、香料、果実などを加えたお酒。",
 		},
 		{
 			name: "ノンアルコール",
 			sortOrder: 4,
-			icon: "LocalDrink",
+			assetKey: "CupSoda",
 			description: "アルコールを含まない飲料。",
 		},
 		{
 			name: "食品",
 			sortOrder: 5,
-			icon: "Restaurant",
+			assetKey: "Utensils",
 			description: "果物、卵、クリーム、調味料など、飲料以外の材料。",
 		},
 	];
@@ -141,6 +141,7 @@ export async function seed(
 				categoryId: categoryId,
 				sortOrder: group.order,
 				description: group.description,
+				assetKey: group.assetKey,
 			})
 			.returning({ id: schema.ingredientGroups.id });
 		groupMap.set(group.displayName, newGroup.id);

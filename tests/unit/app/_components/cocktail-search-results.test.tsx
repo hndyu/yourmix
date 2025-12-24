@@ -30,19 +30,25 @@ vi.mock("next/image", () => ({
 
 // Mock data
 const mockCategories: Category[] = [
-	{ id: 1, name: "蒸留酒", sortOrder: 1, icon: "Liquor", description: "..." },
+	{
+		id: 1,
+		name: "蒸留酒",
+		sortOrder: 1,
+		assetKey: "Liquor",
+		description: "...",
+	},
 	{
 		id: 2,
 		name: "リキュール",
 		sortOrder: 2,
-		icon: "Liquor",
+		assetKey: "Liquor",
 		description: "...",
 	},
 	{
 		id: 3,
 		name: "ジュース",
 		sortOrder: 10,
-		icon: "Liquor",
+		assetKey: "Liquor",
 		description: "...",
 	},
 ];

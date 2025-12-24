@@ -1,7 +1,8 @@
 "use client";
 
 import type { Category } from "@/app/types/cocktail";
-import { DefaultIcon, iconMap } from "@/app/utils/icon-map";
+import { resolveAsset } from "@/app/utils/asset-resolver";
+import Image from "next/image";
 import * as React from "react";
 
 interface CategoryNavProps {
@@ -24,8 +25,7 @@ export default function CategoryNav({
 					</h3>
 					{categories.map((category) => {
 						const isActive = activeCategory === category.name;
-						const Icon =
-							(category.icon && iconMap[category.icon]) || DefaultIcon;
+						const asset = resolveAsset(category.assetKey);
 
 						return (
 							<button
@@ -42,9 +42,19 @@ export default function CategoryNav({
             `}
 							>
 								<span
-									className={`p-1 rounded-full ${isActive ? "bg-primary/10" : "bg-stone-200 dark:bg-stone-800"}`}
+									className={`p-1 rounded-full overflow-hidden w-8 h-8 flex items-center justify-center ${isActive ? "bg-primary/10" : "bg-stone-200 dark:bg-stone-800"}`}
 								>
-									<Icon size={20} />
+									{asset.type === "image" ? (
+										<Image
+											src={asset.value}
+											alt={category.name}
+											width={20}
+											height={20}
+											className="w-full h-full object-cover"
+										/>
+									) : (
+										<asset.value size={20} />
+									)}
 								</span>
 								{category.name}
 							</button>

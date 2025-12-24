@@ -775,6 +775,7 @@ export const ingredientGroupsData: IngredientGroupData[] = [
 		displayName: "ワイン",
 		order: 1,
 		category: "醸造酒",
+		assetKey: "wine",
 		description:
 			"ブドウを発酵させて造られる醸造酒。ワインカクテルや風味付けに使われます。",
 	},
@@ -782,6 +783,7 @@ export const ingredientGroupsData: IngredientGroupData[] = [
 		displayName: "ジン",
 		order: 20,
 		category: "蒸留酒",
+		assetKey: "gin",
 		description:
 			"ジュニパーベリーを主原料とする蒸留酒。爽やかな香りが特徴です。",
 	},
@@ -789,6 +791,7 @@ export const ingredientGroupsData: IngredientGroupData[] = [
 		displayName: "ウォッカ",
 		order: 21,
 		category: "蒸留酒",
+		assetKey: "vodka",
 		description:
 			"穀物やジャガイモを原料とする蒸留酒。クリアでニュートラルな味わいです。",
 	},
@@ -796,12 +799,14 @@ export const ingredientGroupsData: IngredientGroupData[] = [
 		displayName: "ラム",
 		order: 22,
 		category: "蒸留酒",
+		assetKey: "rum",
 		description: "サトウキビを原料とする蒸留酒。甘く豊かな風味が特徴です。",
 	},
 	{
 		displayName: "テキーラ",
 		order: 23,
 		category: "蒸留酒",
+		assetKey: "tequila",
 		description:
 			"リュウゼツランを原料とするメキシコ産蒸留酒。独特の風味が魅力です。",
 	},
@@ -809,6 +814,7 @@ export const ingredientGroupsData: IngredientGroupData[] = [
 		displayName: "ウイスキー",
 		order: 24,
 		category: "蒸留酒",
+		assetKey: "whiskey",
 		description:
 			"大麦やトウモロコシなどの穀物を原料とする蒸留酒。豊かな香りと深いコクが楽しめます。",
 	},
@@ -816,6 +822,7 @@ export const ingredientGroupsData: IngredientGroupData[] = [
 		displayName: "ブランデー",
 		order: 25,
 		category: "蒸留酒",
+		assetKey: "brandy",
 		description:
 			"果実を原料とする蒸留酒。特にブドウから作られるものが有名です。",
 	},
@@ -823,6 +830,7 @@ export const ingredientGroupsData: IngredientGroupData[] = [
 		displayName: "スピリッツ（その他）",
 		order: 26,
 		category: "蒸留酒",
+		assetKey: "spirits",
 		description:
 			"ジン、ウォッカ、ラム、テキーラ、ウイスキー、ブランデー以外の蒸留酒。",
 	},
@@ -830,13 +838,15 @@ export const ingredientGroupsData: IngredientGroupData[] = [
 		displayName: "リキュール",
 		order: 40,
 		category: "混成酒",
+		assetKey: "liqueur",
 		description:
-			"蒸留酒に果実やハーブ、スパイスなどを加えて風味を付けた混成酒。",
+			"蒸留酒に果実やハーブ, スパイスなどを加えて風味を付けた混成酒。",
 	},
 	{
 		displayName: "ビターズ",
 		order: 41,
 		category: "混成酒",
+		assetKey: "bitters",
 		description:
 			"薬草や香辛料をアルコールに浸漬して造られる苦味酒。カクテルの風味を引き締めます。",
 	},
@@ -844,35 +854,64 @@ export const ingredientGroupsData: IngredientGroupData[] = [
 		displayName: "ソフトドリンク",
 		order: 60,
 		category: "ノンアルコール",
+		assetKey: "softdrink",
 		description: "",
 	},
 	{
 		displayName: "シロップ",
 		order: 61,
 		category: "ノンアルコール",
+		assetKey: "syrup",
 		description: "",
 	},
-	{ displayName: "水", order: 62, category: "ノンアルコール", description: "" },
+	{
+		displayName: "水",
+		order: 62,
+		category: "ノンアルコール",
+		assetKey: "water",
+		description: "",
+	},
 	{
 		displayName: "コーヒー",
 		order: 63,
 		category: "ノンアルコール",
+		assetKey: "coffee",
 		description: "",
 	},
 	{
 		displayName: "調味料・香辛料",
 		order: 80,
 		category: "食品",
+		assetKey: "seasoning",
 		description: "",
 	},
-	{ displayName: "果物", order: 81, category: "食品", description: "" },
+	{
+		displayName: "果物",
+		order: 81,
+		category: "食品",
+		assetKey: "fruit",
+		description: "",
+	},
 	{
 		displayName: "ピュレ",
 		order: 82,
 		category: "食品",
+		assetKey: "puree",
 		description:
 			"果物や野菜をすり潰して裏ごししたもの。濃厚な果実感を加えます。",
 	},
-	{ displayName: "クリーム", order: 83, category: "食品", description: "" },
-	{ displayName: "卵", order: 84, category: "食品", description: "" },
+	{
+		displayName: "クリーム",
+		order: 83,
+		category: "食品",
+		assetKey: "cream",
+		description: "",
+	},
+	{
+		displayName: "卵",
+		order: 84,
+		category: "食品",
+		assetKey: "egg",
+		description: "",
+	},
 ];

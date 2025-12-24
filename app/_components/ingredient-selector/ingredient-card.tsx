@@ -1,7 +1,9 @@
 "use client";
 
 import type { Ingredient } from "@/app/types/cocktail";
-import { CheckCircle, ChevronDown, Martini } from "lucide-react";
+import { resolveAsset } from "@/app/utils/asset-resolver";
+import { CheckCircle, ChevronDown } from "lucide-react";
+import Image from "next/image";
 import * as React from "react";
 
 interface IngredientCardProps {
@@ -28,6 +30,8 @@ export default function IngredientCard({
 	// Determine visual state
 	const isPartiallySelected = !isSelected && selectedDetailNames.length > 0;
 	const activeState = isSelected || isPartiallySelected;
+
+	const asset = resolveAsset(ingredient.assetKey);
 
 	return (
 		<div
@@ -72,11 +76,21 @@ export default function IngredientCard({
 				{/* Icon / Image Placeholder */}
 				<div
 					className={`
-          w-12 h-12 rounded-2xl mb-4 flex items-center justify-center transition-colors
+          w-12 h-12 rounded-2xl mb-4 flex items-center justify-center transition-colors overflow-hidden
           ${activeState ? "bg-primary/20 text-primary" : "bg-stone-200 dark:bg-stone-800 text-stone-500 dark:text-stone-500 group-hover:text-stone-700 dark:group-hover:text-stone-300"}
         `}
 				>
-					<Martini />
+					{asset.type === "image" ? (
+						<Image
+							src={asset.value}
+							alt={ingredient.name}
+							width={48}
+							height={48}
+							className="w-full h-full object-cover"
+						/>
+					) : (
+						<asset.value size={24} />
+					)}
 				</div>
 
 				{/* Title */}
