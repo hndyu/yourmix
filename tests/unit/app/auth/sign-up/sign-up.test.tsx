@@ -53,7 +53,7 @@ describe("SignUpPage", () => {
 
 		await waitFor(() => {
 			expect(
-				screen.getByText("利用規約への同意が必要です"),
+				screen.getByText("登録には利用規約への同意が必要です"),
 			).toBeInTheDocument();
 		});
 

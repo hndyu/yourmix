@@ -1,12 +1,28 @@
-// import "./globals.css";
-import { AppRouterCacheProvider } from "@mui/material-nextjs/v15-appRouter";
-import { ThemeProvider } from "@mui/material/styles";
-import CssBaseline from "@mui/material/CssBaseline";
-import theme from "./utils/theme";
+import "./globals.css";
 import type { Metadata } from "next";
+import { Inter, Noto_Sans_JP, Playfair_Display } from "next/font/google";
 import type { WebSite, WithContext } from "schema-dts";
 import Footer from "./_components/footer";
 import Header from "./_components/header";
+import { Providers } from "./providers";
+
+const inter = Inter({
+	subsets: ["latin"],
+	variable: "--font-inter",
+	display: "swap",
+});
+
+const notoSansJP = Noto_Sans_JP({
+	subsets: ["latin"],
+	variable: "--font-noto-sans-jp",
+	display: "swap",
+});
+
+const playfairDisplay = Playfair_Display({
+	subsets: ["latin"],
+	variable: "--font-playfair-display",
+	display: "swap",
+});
 
 export const metadata: Metadata = {
 	title: {
@@ -29,7 +45,11 @@ export default function RootLayout({
 	children: React.ReactNode;
 }>) {
 	return (
-		<html lang="ja">
+		<html
+			lang="ja"
+			className={`${inter.variable} ${notoSansJP.variable} ${playfairDisplay.variable}`}
+			suppressHydrationWarning
+		>
 			<head>
 				<script
 					type="application/ld+json"
@@ -37,15 +57,14 @@ export default function RootLayout({
 					dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
 				/>
 			</head>
-			<body>
-				<AppRouterCacheProvider>
-					<ThemeProvider theme={theme}>
-						<CssBaseline />
-						<Header />
-						<main>{children}</main>
-						<Footer />
-					</ThemeProvider>
-				</AppRouterCacheProvider>
+			<body className="font-sans antialiased min-h-screen flex flex-col">
+				<Providers>
+					<Header />
+					<main className="flex-grow container mx-auto px-4 py-8">
+						{children}
+					</main>
+					<Footer />
+				</Providers>
 			</body>
 		</html>
 	);

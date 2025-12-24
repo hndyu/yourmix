@@ -1,29 +1,20 @@
 "use client";
 
 import authClient from "@/app/lib/authClient";
-import {
-	Box,
-	Button,
-	Card,
-	CardContent,
-	Container,
-	TextField,
-	Typography,
-} from "@mui/material";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
+import { Button } from "../../../_components/ui/button";
 
 export default function SignInForm() {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [error, setError] = useState<string | null>(null);
+	const [isLoading, setIsLoading] = useState(false);
 	const router = useRouter();
 	const searchParams = useSearchParams();
 
-	// ログイン前のページURLを取得（なければホームページに遷移）
 	let callbackUrl = searchParams.get("callbackUrl") || "/";
-	// callbackUrlが/auth/sign-upの場合はホームページに遷移
 	if (callbackUrl === "%2Fauth%2Fsign-up") {
 		callbackUrl = "/";
 	}
@@ -31,6 +22,8 @@ export default function SignInForm() {
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
 		setError(null);
+		setIsLoading(true);
+
 		await authClient.signIn.email(
 			{
 				email,
@@ -38,109 +31,92 @@ export default function SignInForm() {
 			},
 			{
 				onSuccess: () => {
-					// ログイン成功後、元のページに遷移
 					router.push(callbackUrl);
+					// No need to set loading false as we redirect
 				},
 				onError: (ctx) => {
 					setError(ctx.error.message);
+					setIsLoading(false);
 				},
 			},
 		);
 	};
 
 	return (
-		<Container component="main" maxWidth="xs">
-			<Box
-				sx={{
-					marginTop: 8,
-					display: "flex",
-					flexDirection: "column",
-					alignItems: "center",
-				}}
-			>
-				<Card sx={{ width: "100%", p: 2 }}>
-					<CardContent>
-						<Box
-							sx={{
-								display: "flex",
-								flexDirection: "column",
-								alignItems: "center",
-								mb: 3,
-							}}
+		<div className="max-w-md mx-auto w-full px-4 py-12">
+			<div className="bg-white/40 dark:bg-stone-900/40 border border-stone-300 dark:border-stone-800 rounded-2xl p-8 backdrop-blur shadow-2xl">
+				<div className="text-center mb-8">
+					<h1 className="text-2xl font-bold text-stone-800 dark:text-stone-100">
+						ログイン
+					</h1>
+					<p className="text-sm text-stone-600 dark:text-stone-500 mt-2">
+						YourMixのアカウントにログイン
+					</p>
+				</div>
+
+				{error && (
+					<div className="bg-red-900/20 border border-red-900/50 text-red-200 text-sm p-3 rounded-lg mb-6">
+						{error}
+					</div>
+				)}
+
+				<form onSubmit={handleSubmit} className="space-y-5">
+					<div>
+						<label
+							htmlFor="email"
+							className="block text-sm font-medium text-stone-600 dark:text-stone-400 mb-1"
 						>
-							<Typography component="h1" variant="h5">
-								ログイン
-							</Typography>
-						</Box>
-						{error && (
-							<Typography color="error" variant="body2" sx={{ mb: 2 }}>
-								{error}
-							</Typography>
-						)}
-						<Box component="form" onSubmit={handleSubmit} noValidate>
-							<TextField
-								margin="normal"
-								required
-								fullWidth
-								id="email"
-								label="メールアドレス"
-								name="email"
-								autoComplete="email"
-								autoFocus
-								value={email}
-								onChange={(e) => setEmail(e.target.value)}
-								slotProps={{
-									htmlInput: {
-										"data-testid": "email-input",
-									},
-								}}
-							/>
-							<TextField
-								margin="normal"
-								required
-								fullWidth
-								name="password"
-								label="パスワード"
-								type="password"
-								id="password"
-								autoComplete="current-password"
-								value={password}
-								onChange={(e) => setPassword(e.target.value)}
-								slotProps={{
-									htmlInput: {
-										"data-testid": "password-input",
-									},
-								}}
-							/>
-							<Button
-								type="submit"
-								fullWidth
-								variant="contained"
-								sx={{ mt: 3, mb: 2 }}
-								data-testid="sign-in-button"
-							>
-								ログイン
-							</Button>
-							<Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-								<Link
-									href={`/auth/sign-up?callbackUrl=${encodeURIComponent(callbackUrl)}`}
-								>
-									<Typography
-										variant="body2"
-										sx={{
-											color: "primary.main",
-											textDecoration: "none",
-											"&:hover": { textDecoration: "underline" },
-										}}
-									>
-										アカウントをお持ちでない方: 登録
-									</Typography>
-								</Link>
-							</Box>
-						</Box>
-					</CardContent>
-				</Card>
-			</Box>
-		</Container>
+							メールアドレス
+						</label>
+						<input
+							id="email"
+							type="email"
+							required
+							className="w-full bg-white dark:bg-stone-950 border border-stone-300 dark:border-stone-800 rounded-lg px-4 py-2 text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+							placeholder="example@email.com"
+							value={email}
+							onChange={(e) => setEmail(e.target.value)}
+							data-testid="email-input"
+						/>
+					</div>
+
+					<div>
+						<label
+							htmlFor="password"
+							className="block text-sm font-medium text-stone-600 dark:text-stone-400 mb-1"
+						>
+							パスワード
+						</label>
+						<input
+							id="password"
+							type="password"
+							required
+							className="w-full bg-white dark:bg-stone-950 border border-stone-300 dark:border-stone-800 rounded-lg px-4 py-2 text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+							value={password}
+							onChange={(e) => setPassword(e.target.value)}
+							data-testid="password-input"
+						/>
+					</div>
+
+					<Button
+						type="submit"
+						className="w-full"
+						isLoading={isLoading}
+						data-testid="sign-in-button"
+					>
+						ログイン
+					</Button>
+				</form>
+
+				<div className="mt-6 text-center text-sm">
+					<Link
+						href={`/auth/sign-up?callbackUrl=${encodeURIComponent(callbackUrl)}`}
+						className="text-blue-600 dark:text-primary hover:text-blue-800 dark:hover:text-amber-400 transition-colors hover:underline"
+					>
+						アカウントをお持ちでない方: 登録
+					</Link>
+				</div>
+			</div>
+		</div>
 	);
 }

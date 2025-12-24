@@ -1,142 +1,129 @@
 "use client";
 
 import authClient from "@/app/lib/authClient";
-import {
-	Avatar,
-	Box,
-	Button,
-	CircularProgress,
-	Divider,
-	IconButton,
-	Menu,
-	MenuItem,
-	Tooltip,
-	Typography,
-} from "@mui/material";
+import { LogIn, LogOut, User } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { Button } from "./ui/button";
 
 export default function AuthControls() {
 	const { data: session, isPending } = authClient.useSession();
 	const router = useRouter();
 	const pathname = usePathname();
+	const [isOpen, setIsOpen] = useState(false);
+	const menuRef = useRef<HTMLDivElement>(null);
 
 	const callbackUrl =
 		pathname === "/auth/sign-in" || pathname === "/auth/sign-up"
 			? "/"
 			: pathname;
 
-	// User Menu State
-	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-	const open = Boolean(anchorEl);
-	const handleClick = (event: React.MouseEvent<HTMLElement>) => {
-		setAnchorEl(event.currentTarget);
-	};
-	const handleClose = () => {
-		setAnchorEl(null);
-	};
+	// Close menu when clicking outside
+	useEffect(() => {
+		function handleClickOutside(event: MouseEvent) {
+			if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+				setIsOpen(false);
+			}
+		}
+		document.addEventListener("mousedown", handleClickOutside);
+		return () => {
+			document.removeEventListener("mousedown", handleClickOutside);
+		};
+	}, []);
 
 	const handleSignOut = async () => {
-		handleClose();
+		setIsOpen(false);
 		await authClient.signOut();
 		router.refresh();
 	};
 
 	if (isPending) {
-		return <CircularProgress size={24} color="inherit" />;
+		return (
+			<div className="w-8 h-8 rounded-full border-2 border-stone-800 border-t-primary animate-spin" />
+		);
 	}
 
 	if (session) {
 		return (
-			<Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-				<Tooltip title="Account settings">
-					<IconButton
-						onClick={handleClick}
-						size="small"
-						sx={{ ml: 2 }}
-						aria-controls={open ? "account-menu" : undefined}
-						aria-haspopup="true"
-						aria-expanded={open ? "true" : undefined}
-					>
-						<Avatar sx={{ width: 32, height: 32, bgcolor: "secondary.main" }}>
-							{session.user.name
-								? session.user.name.charAt(0).toUpperCase()
-								: "U"}
-						</Avatar>
-					</IconButton>
-				</Tooltip>
-				<Menu
-					anchorEl={anchorEl}
-					id="account-menu"
-					open={open}
-					onClose={handleClose}
-					onClick={handleClose}
-					slotProps={{
-						paper: {
-							elevation: 0,
-							sx: {
-								overflow: "visible",
-								filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
-								mt: 1.5,
-								"& .MuiAvatar-root": {
-									width: 32,
-									height: 32,
-									ml: -0.5,
-									mr: 1,
-								},
-								"&::before": {
-									content: '""',
-									display: "block",
-									position: "absolute",
-									top: 0,
-									right: 14,
-									width: 10,
-									height: 10,
-									bgcolor: "background.paper",
-									transform: "translateY(-50%) rotate(45deg)",
-									zIndex: 0,
-								},
-							},
-						},
-					}}
-					transformOrigin={{ horizontal: "right", vertical: "top" }}
-					anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
+			<div className="relative" ref={menuRef}>
+				<button
+					type="button"
+					onClick={() => setIsOpen(!isOpen)}
+					className="flex items-center gap-2 focus:outline-none group"
+					aria-label="User menu"
 				>
-					<MenuItem component={Link} href="/my-page" onClick={handleClose}>
-						<Typography variant="body2">マイページ</Typography>
-					</MenuItem>
-					<Divider />
-					<MenuItem onClick={handleSignOut}>
-						<Typography variant="body2" color="error">
-							ログアウト
-						</Typography>
-					</MenuItem>
-				</Menu>
-			</Box>
+					<div className="w-9 h-9 rounded-full bg-stone-900 border border-stone-800 flex items-center justify-center text-stone-300 group-hover:border-primary/50 group-hover:text-primary transition-colors overflow-hidden">
+						{session.user.image ? (
+							<img
+								src={session.user.image}
+								alt={session.user.name || "User"}
+								className="w-full h-full object-cover"
+							/>
+						) : (
+							<span className="text-sm font-bold">
+								{session.user.name
+									? session.user.name.charAt(0).toUpperCase()
+									: "U"}
+							</span>
+						)}
+					</div>
+				</button>
+
+				{isOpen && (
+					<div className="absolute right-0 mt-2 w-56 bg-stone-900 border border-stone-800 rounded-xl shadow-xl shadow-black/50 overflow-hidden z-50 animate-in fade-in zoom-in-95 duration-200">
+						<div className="px-4 py-3 border-b border-stone-800">
+							<p className="text-sm font-medium text-white max-w-full truncate">
+								{session.user.name}
+							</p>
+							<p className="text-xs text-stone-500 truncate">
+								{session.user.email}
+							</p>
+						</div>
+						<div className="p-1">
+							<Link
+								href="/my-page"
+								className="flex items-center gap-2 px-3 py-2 text-sm text-stone-300 hover:bg-stone-800 hover:text-white rounded-lg transition-colors"
+								onClick={() => setIsOpen(false)}
+							>
+								<User size={18} className="text-stone-500" />
+								マイページ
+							</Link>
+							<button
+								type="button"
+								onClick={handleSignOut}
+								className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-400 hover:bg-red-500/10 hover:text-red-300 rounded-lg transition-colors text-left"
+							>
+								<LogOut size={18} />
+								ログアウト
+							</button>
+						</div>
+					</div>
+				)}
+			</div>
 		);
 	}
 
 	return (
-		<Box sx={{ display: "flex", gap: 1 }}>
+		<div className="flex gap-2">
 			<Button
-				component={Link}
+				variant="ghost"
+				size="sm"
 				href={`/auth/sign-in?callbackUrl=${encodeURIComponent(callbackUrl)}`}
-				color="inherit"
-				variant="text"
-				sx={{ fontWeight: "bold" }}
+				className="px-2 sm:px-3 text-stone-600 dark:text-stone-400"
+				aria-label="ログイン"
 			>
-				ログイン
+				<LogIn size={20} className="sm:mr-2" />
+				<span className="hidden sm:inline">ログイン</span>
 			</Button>
 			<Button
-				component={Link}
+				size="sm"
 				href={`/auth/sign-up?callbackUrl=${encodeURIComponent(callbackUrl)}`}
-				color="primary"
-				variant="contained"
-				sx={{ fontWeight: "bold" }}
+				className="px-3 sm:px-4 font-bold"
 			>
-				アカウント登録
+				<span className="sm:hidden">登録</span>
+				<span className="hidden sm:inline">アカウント登録</span>
 			</Button>
-		</Box>
+		</div>
 	);
 }

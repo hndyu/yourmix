@@ -1,6 +1,6 @@
 "use client";
 
-import Button from "@mui/material/Button";
+import { Button } from "@/app/_components/ui/button";
 import { notFound } from "next/navigation";
 import { useEffect, useState } from "react";
 

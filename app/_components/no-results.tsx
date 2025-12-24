@@ -1,40 +1,28 @@
 "use client";
-import { Fade, Paper, Typography } from "@mui/material";
+
+import { SearchX } from "lucide-react";
 
 interface NoResultsProps {
 	show: boolean;
 }
 
 export function NoResults({ show }: NoResultsProps) {
+	if (!show) return null;
+
 	return (
-		<Fade in={show} timeout={800} easing="ease-out">
-			<Paper
-				elevation={1}
-				sx={{
-					p: 4,
-					textAlign: "center",
-					backgroundColor: "#fafafa",
-					borderRadius: "15px",
-					transform: show ? "translateY(0)" : "translateY(20px)",
-					opacity: show ? 1 : 0,
-					transition: "all 0.8s cubic-bezier(0.4, 0, 0.2, 1)",
-				}}
-			>
-				<Typography
-					component="h2"
-					variant="h6"
-					color="text.secondary"
-					gutterBottom
-				>
-					🔍 検索結果
-				</Typography>
-				<Typography variant="body1" color="text.secondary">
-					選択された材料にマッチするレシピが見つかりませんでした。
-				</Typography>
-				<Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-					他の材料を選択してみてください。
-				</Typography>
-			</Paper>
-		</Fade>
+		<div className="w-full max-w-2xl mx-auto mt-8 p-8 text-center bg-card border border-border rounded-2xl animate-in fade-in slide-in-from-bottom-4 duration-700">
+			<SearchX
+				className="text-stone-300 dark:text-stone-600 mb-4 mx-auto"
+				size={48}
+			/>
+			<h3 className="text-xl font-bold text-foreground mb-2">
+				レシピが見つかりませんでした
+			</h3>
+			<p className="text-stone-600 dark:text-stone-400">
+				選択された材料の組み合わせではレシピが見つかりませんでした。
+				<br />
+				材料を減らすか、別の組み合わせを試してみてください。
+			</p>
+		</div>
 	);
 }

@@ -29,6 +29,7 @@ export async function GET() {
 					groupDisplayName: schema.ingredientGroups.displayName,
 					groupSortOrder: schema.ingredientGroups.sortOrder,
 					groupDescription: schema.ingredientGroups.description,
+					groupAssetKey: schema.ingredientGroups.assetKey,
 					sortOrder: schema.ingredients.sortOrder,
 				})
 				.from(schema.ingredients)
@@ -67,6 +68,7 @@ export async function GET() {
 						actualDetails: [{ id: ing.id, name: ing.name }],
 						sortOrder: ing.groupSortOrder,
 						description: ing.groupDescription,
+						assetKey: ing.groupAssetKey,
 					};
 					acc.set(displayName, group);
 				}

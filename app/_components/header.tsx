@@ -1,55 +1,43 @@
 "use client";
-import * as React from "react";
-import AppBar from "@mui/material/AppBar";
-import Box from "@mui/material/Box";
-import Toolbar from "@mui/material/Toolbar";
-import Typography from "@mui/material/Typography";
+import { Martini } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import * as React from "react";
 import AuthControls from "./auth-controls";
+import { ThemeToggle } from "./theme-toggle";
 
-// ヘッダーコンポーネント
 export default function Header() {
 	const pathname = usePathname();
 	const isHomePage = pathname === "/";
 
 	return (
-		<AppBar position="static" color="transparent" elevation={0}>
-			<Toolbar>
-				{/* 左側：メニューアイコン（必要に応じて） */}
-				{/* <IconButton
-					size="large"
-					edge="start"
-					color="inherit"
-					aria-label="menu"
-					sx={{ mr: 2 }}
-				>
-					<MenuIcon />
-				</IconButton> */}
-
-				{/* 中央：アプリ名やロゴ */}
+		<header className="sticky top-0 z-50 w-full backdrop-blur-md bg-background/80 border-b border-border supports-[backdrop-filter]:bg-background/50 transition-colors duration-300">
+			<div className="container mx-auto px-4 h-16 flex items-center justify-between">
+				{/* Logo / Brand */}
 				<Link
 					href="/"
-					style={{
-						textDecoration: "none",
-						color: "inherit",
-						flexGrow: 1,
-					}}
+					className="flex items-center gap-2 text-foreground hover:opacity-80 transition-opacity"
 				>
-					<Typography
-						variant="h6"
-						component={isHomePage ? "h1" : "div"}
-						sx={{ fontWeight: "bold", color: "#333" }}
-					>
-						YourMix
-					</Typography>
+					<div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-primary-foreground shadow-lg shadow-primary/40">
+						<Martini size={18} />
+					</div>
+					{isHomePage ? (
+						<h1 className="font-display text-xl font-bold tracking-tight">
+							YourMix
+						</h1>
+					) : (
+						<span className="font-display text-xl font-bold tracking-tight">
+							YourMix
+						</span>
+					)}
 				</Link>
 
-				{/* 右側：ナビゲーションやユーザーアイコン */}
-				<Box>
+				{/* Navigation / Actions */}
+				<div className="flex items-center gap-2 sm:gap-4">
+					<ThemeToggle />
 					<AuthControls />
-				</Box>
-			</Toolbar>
-		</AppBar>
+				</div>
+			</div>
+		</header>
 	);
 }

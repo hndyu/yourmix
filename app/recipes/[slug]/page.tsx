@@ -1,14 +1,7 @@
-import {
-	Box,
-	Breadcrumbs,
-	Container,
-	Fade,
-	Link,
-	Typography,
-} from "@mui/material";
+import { ChevronRight } from "lucide-react";
 import type { Metadata } from "next";
 import { headers } from "next/headers";
-import NextLink from "next/link";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import * as React from "react";
 import type { BreadcrumbList, Recipe, WithContext } from "schema-dts";
@@ -17,55 +10,42 @@ import { initAuth } from "../../auth";
 import { getCocktailBySlug } from "../../lib/cocktail-data";
 import type { Cocktail } from "../../types/cocktail";
 
-// 環境変数からAPIのベースURLを取得します。
-// 開発環境では 'http://localhost:3000' などを設定し、本番環境ではデプロイされたURLを設定します。
 const API_BASE_URL =
-	process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:3000"; // Fallback for development
+	process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:3000";
 
 async function getCocktail(slug: string, userId?: string): Promise<Cocktail> {
 	const cocktail = await getCocktailBySlug(slug, userId);
-
-	if (!cocktail) {
-		notFound();
-	}
-
+	if (!cocktail) notFound();
 	return cocktail;
 }
 
 export async function generateMetadata({
 	params,
 }: {
-	// paramsがPromiseの可能性があるため、型を調整
 	params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
-	const { slug } = await params; // paramsをawaitしてslugを取り出す
+	const { slug } = await params;
 	const cocktail = await getCocktail(slug);
-
 	const title = `${cocktail.name}のレシピ`;
 	const description = `${cocktail.name}の作り方と材料を紹介します。${cocktail.description}`;
-
 	return { title, description };
 }
 
 export default async function RecipeDetailPage({
 	params,
 }: {
-	// paramsがPromiseの可能性があるため、型を調整
 	params: Promise<{ slug: string }>;
 }) {
-	const { slug } = await params; // paramsをawaitしてslugを取り出す
-
+	const { slug } = await params;
 	const session = await (await initAuth()).api.getSession({
 		headers: await headers(),
 	});
 	const userId = session?.user?.id;
-
 	const cocktail = await getCocktail(slug, userId);
 
-	// 材料をグループ化して表示するための処理（JSON-LD用）
+	// JSON-LD Generation
 	const displayIngredients = [];
 	const processedOptionGroups = new Set<number>();
-
 	for (const ingredient of cocktail.ingredients) {
 		if (ingredient.option_group) {
 			if (!processedOptionGroups.has(ingredient.option_group)) {
@@ -82,7 +62,6 @@ export default async function RecipeDetailPage({
 		}
 	}
 
-	// Recipeスキーマ
 	const recipeJsonLd: WithContext<Recipe> = {
 		"@context": "https://schema.org",
 		"@type": "Recipe",
@@ -99,7 +78,6 @@ export default async function RecipeDetailPage({
 			: undefined,
 	};
 
-	// BreadcrumbListスキーマ
 	const breadcrumbJsonLd: WithContext<BreadcrumbList> = {
 		"@context": "https://schema.org",
 		"@type": "BreadcrumbList",
@@ -120,33 +98,25 @@ export default async function RecipeDetailPage({
 	};
 
 	return (
-		<Container maxWidth="lg" sx={{ py: 4 }}>
-			<Fade in timeout={1000}>
-				<Box>
-					{/* パンくずリスト */}
-					<Breadcrumbs aria-label="breadcrumb" sx={{ mb: 3 }}>
-						<Link
-							component={NextLink}
-							underline="hover"
-							color="inherit"
-							href="/"
-						>
-							ホーム
-						</Link>
-						<Typography color="text.primary">{cocktail.name}</Typography>
-					</Breadcrumbs>
+		<div className="container mx-auto px-4 py-8">
+			{/* Breadcrumbs */}
+			<nav className="flex items-center text-sm text-stone-500 mb-6 animate-in fade-in duration-500">
+				<Link href="/" className="hover:text-primary transition-colors">
+					ホーム
+				</Link>
+				<ChevronRight size={16} className="mx-1" />
+				<span className="text-stone-300 font-medium">{cocktail.name}</span>
+			</nav>
 
-					{/* カクテル表示コンポーネントを再利用 */}
-					<script
-						type="application/ld+json"
-						// biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
-						dangerouslySetInnerHTML={{
-							__html: JSON.stringify([recipeJsonLd, breadcrumbJsonLd]),
-						}}
-					/>
-					<CocktailDisplay cocktail={cocktail} show isDetailPage />
-				</Box>
-			</Fade>
-		</Container>
+			<script
+				type="application/ld+json"
+				// biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
+				dangerouslySetInnerHTML={{
+					__html: JSON.stringify([recipeJsonLd, breadcrumbJsonLd]),
+				}}
+			/>
+
+			<CocktailDisplay cocktail={cocktail} show isDetailPage />
+		</div>
 	);
 }

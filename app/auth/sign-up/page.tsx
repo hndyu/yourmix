@@ -1,21 +1,13 @@
 import { Suspense } from "react";
 import SignUpForm from "./_components/sign-up-form";
-import { Box, CircularProgress } from "@mui/material";
 
 export default function SignUpPage() {
 	return (
 		<Suspense
 			fallback={
-				<Box
-					sx={{
-						display: "flex",
-						justifyContent: "center",
-						alignItems: "center",
-						height: "100vh",
-					}}
-				>
-					<CircularProgress />
-				</Box>
+				<div className="flex justify-center items-center min-h-[60vh]">
+					<div className="w-8 h-8 border-4 border-stone-800 border-t-primary rounded-full animate-spin" />
+				</div>
 			}
 		>
 			<SignUpForm />

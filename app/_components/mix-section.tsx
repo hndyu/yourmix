@@ -1,9 +1,7 @@
 "use client";
 
-import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
+import type { Category, Ingredient } from "@/app/types/cocktail";
 import * as React from "react";
-import type { Category, Ingredient } from "../types/cocktail";
 import IngredientSelector from "./ingredient-selector";
 import MixButton from "./mix-button";
 
@@ -31,63 +29,51 @@ export default function MixSection({
 	const selectedCount = selectedIngredientNames.length;
 
 	return (
-		<Box
-			component="section"
-			sx={{
-				display: "flex",
-				flexDirection: "column",
-				alignItems: "center",
-				justifyContent: "center",
-				width: "100%",
-				gap: 3,
-			}}
-		>
-			<Typography
-				variant="h5"
-				component="h2"
-				gutterBottom
-				sx={{
-					textAlign: "center",
-					color: "text.secondary",
-					mb: 2,
-					fontWeight: "medium",
-				}}
-			>
-				あなただけのカクテルを作ってみよう
-			</Typography>
+		<section className="flex flex-col items-center justify-center w-full gap-8 py-8 animate-in fade-in duration-500">
+			<div className="text-center space-y-2">
+				<h2 className="text-2xl md:text-3xl font-display font-bold text-stone-800 dark:text-stone-200">
+					あなただけのカクテルを
+					<br className="md:hidden" />
+					作ってみよう
+				</h2>
+				<p className="text-stone-500 text-sm">
+					好みの材料を選んで、AIにオリジナルのレシピを作ってもらいましょう
+				</p>
+			</div>
 
-			<IngredientSelector
-				selectedIngredientIds={selectedIngredientIds}
-				selectedIngredientNames={selectedIngredientNames}
-				ingredients={ingredients}
-				categories={categories}
-				onIngredientsChange={onIngredientsChange}
-				disabled={isMixing || isInitialLoading}
-				isInitialLoading={isInitialLoading}
-			/>
+			<div className="w-full">
+				<IngredientSelector
+					selectedIngredientIds={selectedIngredientIds}
+					selectedIngredientNames={selectedIngredientNames}
+					ingredients={ingredients}
+					categories={categories}
+					onIngredientsChange={onIngredientsChange}
+					disabled={isMixing || isInitialLoading}
+					isInitialLoading={isInitialLoading}
+				/>
+			</div>
 
-			<MixButton
-				onClick={onMixClick}
-				disabled={isInitialLoading || selectedCount === 0}
-				isLoading={isMixing}
-			/>
+			<div className="flex flex-col items-center gap-4 mt-8 sticky bottom-4 z-40">
+				<div className="relative">
+					{/* Backdrop for button when sticky? Maybe simpler to just elevate it. */}
+					<div className="absolute inset-0 bg-background/80 blur-xl rounded-full -z-10" />
+					<MixButton
+						onClick={onMixClick}
+						disabled={isInitialLoading || selectedCount === 0}
+						isLoading={isMixing}
+					/>
+				</div>
 
-			<Typography
-				variant="body2"
-				sx={{
-					textAlign: "center",
-					color: "text.secondary",
-					opacity: 0.8,
-				}}
-			>
-				{isInitialLoading
-					? "材料を読み込んでいます..."
-					: isMixing
-						? "カクテルを生成中です..."
-						: selectedCount > 0
-							? `選択された材料 (${selectedCount}個) からレシピを生成します`
-							: "材料を選択してからMixボタンを押してください"}
-			</Typography>
-		</Box>
+				<p className="text-sm text-stone-500 text-center min-h-[1.5em] transition-opacity duration-300">
+					{isInitialLoading
+						? "材料を読み込んでいます..."
+						: isMixing
+							? "最高のレシピを考案中..."
+							: selectedCount > 0
+								? `${selectedCount}個の材料から生成します`
+								: "材料を選んでください"}
+				</p>
+			</div>
+		</section>
 	);
 }

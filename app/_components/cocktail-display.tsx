@@ -1,30 +1,6 @@
 "use client";
 
-import DeliciousButton from "./delicious-button";
-
-import CopyIcon from "@mui/icons-material/ContentCopy";
-import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
-import LocalOfferIcon from "@mui/icons-material/LocalOffer";
-import ShareIcon from "@mui/icons-material/Share";
-import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-import {
-	Alert,
-	Box,
-	Button,
-	Card,
-	CardContent,
-	Chip,
-	Fade,
-	IconButton,
-	List,
-	ListItem,
-	ListItemText,
-	Paper,
-	Snackbar,
-	Tooltip,
-	Typography,
-} from "@mui/material";
-import { styled } from "@mui/material/styles";
+import { Copy, HelpCircle, Share2, ShoppingCart, Tag } from "lucide-react";
 import Image from "next/image";
 import * as React from "react";
 import type { Cocktail } from "../types/cocktail";
@@ -33,16 +9,8 @@ import {
 	getAffiliateLink,
 } from "../utils/affiliate-links";
 import { canUseWebShare, shareCocktail } from "../utils/share-utils";
-
-// カスタムスタイルのカード
-const StyledCocktailCard = styled(Card)(({ theme }) => ({
-	borderRadius: "20px",
-	boxShadow: "0 8px 32px rgba(0, 0, 0, 0.1)",
-	background: "linear-gradient(135deg, #fff 0%, #f8f9fa 100%)",
-	border: "1px solid rgba(255, 255, 255, 0.2)",
-	overflow: "hidden",
-	marginBottom: theme.spacing(3),
-}));
+import DeliciousButton from "./delicious-button";
+import { Toast, type ToastSeverity } from "./ui/toast";
 
 interface CocktailDisplayProps {
 	cocktail: Cocktail;
@@ -56,30 +24,33 @@ export default function CocktailDisplay({
 	isDetailPage = false,
 }: CocktailDisplayProps) {
 	const [isWebShareSupported, setIsWebShareSupported] = React.useState(false);
-	const [snackbarOpen, setSnackbarOpen] = React.useState(false);
 	const [imageError, setImageError] = React.useState(false);
+	const [toastState, setToastState] = React.useState<{
+		open: boolean;
+		message: string;
+		severity: ToastSeverity;
+	}>({
+		open: false,
+		message: "",
+		severity: "info",
+	});
 
 	React.useEffect(() => {
-		// クライアントサイドでnavigator.shareの存在を確認
 		setIsWebShareSupported(canUseWebShare());
 	}, []);
 
-	// 共有ボタンのクリックハンドラー
 	const handleShare = async () => {
 		const success = await shareCocktail(cocktail);
-		// Web Share APIがサポートされておらず、コピーが成功した場合にスナックバーを表示
 		if (success && !isWebShareSupported) {
-			setSnackbarOpen(true);
+			setToastState({
+				open: true,
+				message: "コピーしました!",
+				severity: "success",
+			});
 		}
 	};
-	const handleSnackbarClose = () => {
-		setSnackbarOpen(false);
-	};
-	const handleImageError = () => {
-		setImageError(true);
-	};
 
-	// 材料をグループ化して表示するための処理
+	// Grouping Logic
 	const displayIngredients = React.useMemo(() => {
 		const result: {
 			name: string;
@@ -118,392 +89,234 @@ export default function CocktailDisplay({
 		return result;
 	}, [cocktail.ingredients]);
 
+	if (!show) return null;
+
 	return (
-		<>
-			{/* カクテルカードをFadeでアニメーション */}
-			<Fade in={show} timeout={1200} easing="ease-out">
-				<StyledCocktailCard
-					sx={{
-						transform: show ? "translateY(0)" : "translateY(20px)",
-						opacity: show ? 1 : 0,
-						transition: "all 0.8s cubic-bezier(0.4, 0, 0.2, 1)",
-						mt: 2,
-						mx: 4,
-					}}
-					data-testid="cocktail-display"
-				>
-					{cocktail.imageUrl && !imageError && (
-						<Box
-							sx={{
-								position: "relative",
-								width: "100%",
-								height: { xs: 200, sm: 250 },
-							}}
-						>
+		<div className="w-full max-w-5xl mx-auto px-4 py-8 animate-in fade-in slide-in-from-bottom-8 duration-1000">
+			{/* Main Card */}
+			<div className="bg-card border border-border backdrop-blur-sm rounded-[32px] overflow-hidden shadow-2xl shadow-black/10 dark:shadow-black/50 transition-colors duration-300">
+				{/* Header / Hero Section */}
+				{isDetailPage && cocktail.imageUrl && !imageError && (
+					<div className="relative w-full aspect-[1/1] md:aspect-[2/1] bg-secondary/30 flex items-center justify-center p-8">
+						<div className="relative w-full h-full mx-auto">
 							<Image
 								src={`/cocktails/${cocktail.imageUrl}`}
 								alt={cocktail.name}
 								fill
-								sizes="(max-width: 600px) 100vw, (max-width: 1200px) 50vw, 33vw"
-								style={{ objectFit: "contain" }}
-								onError={handleImageError}
+								className="object-contain drop-shadow-2xl"
+								onError={() => setImageError(true)}
+								priority
 							/>
-						</Box>
-					)}
-					<CardContent sx={{ p: 4 }}>
-						{/* ヘッダー部分 */}
-						<Box sx={{ mb: 3 }}>
-							<Box
-								sx={{
-									display: "flex",
-									justifyContent: "space-between",
-									alignItems: "flex-start",
-									flexWrap: "wrap",
-									mb: 2,
-								}}
-							>
-								<Typography
-									variant={isDetailPage ? "h3" : "h4"}
-									component={isDetailPage ? "h1" : "h2"}
-									sx={{
-										fontWeight: "bold",
-										color: "#2c3e50",
-										flex: 1,
-										fontSize: { xs: "2rem", md: "3rem" },
-									}}
-								>
-									🍹 {cocktail.name}
-								</Typography>
-								{/* 共有ボタン群とおいしいボタン */}
-								{isDetailPage && (
-									<Box
-										sx={{
-											display: "flex",
-											gap: 1,
-											ml: 2,
-											alignItems: "center",
-										}}
-									>
-										<DeliciousButton
-											cocktailId={cocktail.id}
-											initialCount={cocktail.deliciousCount ?? 0}
-											initialIsLiked={cocktail.isLiked ?? false}
-										/>
-										<Box sx={{ display: "flex", gap: 1, ml: 2 }}>
-											<Tooltip
-												title={isWebShareSupported ? "共有" : "レシピをコピー"}
-											>
-												<IconButton
-													onClick={handleShare}
-													aria-label={
-														isWebShareSupported ? "共有" : "レシピをコピー"
-													}
-													sx={{
-														backgroundColor: isWebShareSupported
-															? "#1976d2"
-															: "#4caf50",
-														color: "white",
-														"&:hover": {
-															backgroundColor: isWebShareSupported
-																? "#1565c0"
-																: "#388e3c",
-														},
-													}}
-												>
-													{isWebShareSupported ? <ShareIcon /> : <CopyIcon />}
-												</IconButton>
-											</Tooltip>
-										</Box>
-									</Box>
-								)}
-							</Box>
-							<Typography
-								variant="body1"
-								sx={{
-									color: "text.secondary",
-									mb: 2,
-									fontStyle: "italic",
-								}}
-							>
+						</div>
+					</div>
+				)}
+
+				<div className="p-6 md:p-10">
+					{/* Title & Actions */}
+					<div className="flex flex-col md:flex-row md:items-start justify-between gap-6 mb-8 border-b border-border pb-8">
+						<div className="space-y-4 flex-1">
+							{isDetailPage ? (
+								<h1 className="text-3xl md:text-5xl font-display font-bold text-foreground leading-tight">
+									{cocktail.name}
+								</h1>
+							) : (
+								<h2 className="text-3xl md:text-5xl font-display font-bold text-foreground leading-tight">
+									{cocktail.name}
+								</h2>
+							)}
+							<p className="text-muted-foreground text-lg leading-relaxed italic">
 								{cocktail.description}
-							</Typography>
-							{/* メタ情報 */}
-							<Box sx={{ display: "flex", gap: 1, flexWrap: "wrap", mb: 2 }}>
-								{cocktail.tags?.map((tag) => (
-									<Tooltip
-										key={tag.name}
-										title={tag.description || ""}
-										arrow
-										disableHoverListener={!tag.description}
-									>
-										<Chip
-											icon={<LocalOfferIcon />}
-											label={
-												<Box
-													sx={{
-														display: "flex",
-														alignItems: "center",
-														gap: 0.5,
-													}}
-												>
-													<Typography
-														variant="caption"
-														sx={{ fontWeight: "medium" }}
-													>
-														{tag.name}
-													</Typography>
-													{tag.description && (
-														<HelpOutlineIcon
-															sx={{ fontSize: "0.9rem", opacity: 0.6 }}
-														/>
-													)}
-												</Box>
-											}
-											size="small"
-											sx={{
-												backgroundColor: "#e0e0e0",
-												color: "#333",
-												fontWeight: "medium",
-												"& .MuiChip-label": {
-													whiteSpace: "normal",
-													overflow: "visible",
-													textOverflow: "clip",
-													py: 0.5,
-												},
-												height: "auto",
-												cursor: tag.description ? "help" : "default",
-												"&:hover": tag.description
-													? {
-															backgroundColor: "#d5d5d5",
-														}
-													: {},
-											}}
-										/>
-									</Tooltip>
-								))}
-							</Box>
-						</Box>
+							</p>
 
-						{/* 材料と作り方を横並びで表示 */}
-						<Box sx={{ display: "flex", gap: 3, flexWrap: "wrap" }}>
-							{/* 材料 */}
-							<Box sx={{ flex: 1 }}>
-								<Typography
-									component={isDetailPage ? "h2" : "h3"}
-									variant="h6"
-									sx={{
-										fontWeight: "bold",
-										color: "#34495e",
-										mb: 2,
-									}}
+							{/* Tags */}
+							<div className="flex flex-wrap gap-2">
+								{cocktail.tags?.map((tag) => {
+									const content = (
+										<>
+											<Tag size={16} className="shrink-0" />
+											{tag.name}
+											{tag.description && (
+												<HelpCircle size={16} className="shrink-0" />
+											)}
+										</>
+									);
+									const className = `flex items-center gap-1.5 px-3 py-1 bg-secondary border border-border rounded-full text-xs text-muted-foreground ${
+										tag.description
+											? "cursor-pointer hover:bg-secondary/80 hover:text-foreground transition-colors"
+											: ""
+									}`;
+
+									if (tag.description) {
+										const description = tag.description;
+										return (
+											<button
+												key={tag.name}
+												type="button"
+												className={className}
+												onClick={() =>
+													setToastState({
+														open: true,
+														message: description,
+														severity: "info",
+													})
+												}
+											>
+												{content}
+											</button>
+										);
+									}
+
+									return (
+										<div key={tag.name} className={className}>
+											{content}
+										</div>
+									);
+								})}
+							</div>
+						</div>
+
+						{/* Action Buttons */}
+						{isDetailPage && (
+							<div className="flex flex-wrap md:flex-col items-end gap-3 shrink-0">
+								<DeliciousButton
+									cocktailId={cocktail.id}
+									initialCount={cocktail.deliciousCount ?? 0}
+									initialIsLiked={cocktail.isLiked ?? false}
+								/>
+								<button
+									type="button"
+									onClick={handleShare}
+									className="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold bg-secondary text-foreground hover:bg-secondary/80 transition-colors"
 								>
-									📋 材料
-								</Typography>
-								<Paper elevation={1} sx={{ p: 2, backgroundColor: "#fafafa" }}>
-									<List dense>
-										{displayIngredients.map((item) => (
-											<ListItem key={item.name} sx={{ py: 0.5 }}>
-												<Box
-													sx={{
-														display: "flex",
-														justifyContent: "space-between",
-														alignItems: "center",
-														flexWrap: "wrap",
-														width: "100%",
-													}}
-												>
-													<ListItemText
-														primary={
-															<Box
-																sx={{
-																	display: "flex",
-																	alignItems: "center",
-																	gap: 0.5,
-																	flexWrap: "wrap",
-																}}
-															>
-																{item.originalIngredients.map((ing, idx) => (
-																	<React.Fragment key={ing.name}>
-																		<Box
-																			sx={{
-																				display: "flex",
-																				alignItems: "center",
-																				gap: 0.5,
-																			}}
-																		>
-																			<Typography
-																				component="span"
-																				sx={{ fontSize: "0.95rem" }}
-																			>
-																				{ing.name}
-																			</Typography>
-																			{ing.description && (
-																				<Tooltip title={ing.description} arrow>
-																					<HelpOutlineIcon
-																						fontSize="small"
-																						sx={{
-																							color: "text.secondary",
-																							cursor: "pointer",
-																							verticalAlign: "middle",
-																						}}
-																					/>
-																				</Tooltip>
-																			)}
-																		</Box>
-																		{idx <
-																			item.originalIngredients.length - 1 && (
-																			<Typography
-																				component="span"
-																				sx={{
-																					fontSize: "0.95rem",
-																					mx: 0.5,
-																					color: "text.secondary",
-																				}}
-																			>
-																				または
-																			</Typography>
-																		)}
-																	</React.Fragment>
-																))}
-															</Box>
-														}
-														secondary={item.amount}
-													/>
-													<Box
-														sx={{
-															display: "flex",
-															gap: 0.5,
-															flexWrap: "wrap",
-															mt: { xs: 1, sm: 0 },
-														}}
-													>
-														{item.originalIngredients.map((ing) => {
-															const keyword = extractIngredientKeyword(
-																ing.name,
-															);
-															const link = getAffiliateLink(keyword);
-															if (!link) return null;
-
-															return (
-																<Chip
-																	key={`${ing.name}-buy`}
-																	component="a"
-																	href={link}
-																	target="_blank"
-																	rel="noopener noreferrer"
-																	icon={<ShoppingCartIcon />}
-																	label={
-																		item.originalIngredients.length > 1
-																			? `${ing.name}を買う`
-																			: "材料を買う"
-																	}
-																	clickable
-																	sx={{
-																		backgroundColor: "#ff6b35",
-																		color: "white",
-																		fontSize: "0.75rem",
-																		height: "24px",
-																		textDecoration: "none",
-																		"&:hover": {
-																			backgroundColor: "#e55a2b",
-																		},
-																	}}
-																	size="small"
-																/>
-															);
-														})}
-													</Box>
-												</Box>
-											</ListItem>
-										))}
-									</List>
-								</Paper>
-							</Box>
-
-							{/* 作り方 */}
-							<Box sx={{ flex: 1 }}>
-								<Typography
-									component={isDetailPage ? "h2" : "h3"}
-									variant="h6"
-									sx={{
-										fontWeight: "bold",
-										color: "#34495e",
-										mb: 2,
-									}}
-								>
-									👨‍🍳 作り方
-								</Typography>
-								<Paper elevation={1} sx={{ p: 2, backgroundColor: "#fafafa" }}>
-									<List>
-										{cocktail.instructions.map((instruction, index) => (
-											<ListItem key={instruction} sx={{ py: 1 }}>
-												<ListItemText
-													primary={`${index + 1}. ${instruction}`}
-													sx={{
-														"& .MuiListItemText-primary": {
-															fontSize: "0.95rem",
-															lineHeight: 1.6,
-														},
-													}}
-												/>
-											</ListItem>
-										))}
-									</List>
-								</Paper>
-							</Box>
-						</Box>
-
-						{/* ガーニッシュ */}
-						{cocktail.garnish && (
-							<Box sx={{ mt: 3 }}>
-								<Typography
-									component={isDetailPage ? "h2" : "h3"}
-									variant="h6"
-									sx={{
-										fontWeight: "bold",
-										color: "#34495e",
-										mb: 1,
-									}}
-								>
-									🌿 飾り
-								</Typography>
-								<Typography variant="body2" color="text.secondary">
-									{cocktail.garnish}
-								</Typography>
-							</Box>
+									{isWebShareSupported ? (
+										<Share2 size={18} />
+									) : (
+										<Copy size={18} />
+									)}
+									{isWebShareSupported ? "共有" : "コピー"}
+								</button>
+							</div>
 						)}
+					</div>
 
-						{/* AI生成注意書き */}
-						<Typography
-							variant="caption"
-							color="text.secondary"
-							sx={{
-								display: "block",
-								mt: 1,
-								mb: 2,
-								textAlign: "center",
-								fontStyle: "italic",
-							}}
-						>
+					{/* Content Grid */}
+					<div className="grid md:grid-cols-2 gap-12">
+						{/* Ingredients */}
+						<div>
+							<h3 className="text-2xl font-bold text-foreground mb-6 flex items-center gap-3">
+								<span className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-primary text-sm">
+									A
+								</span>
+								材料
+							</h3>
+
+							<ul className="space-y-4">
+								{displayIngredients.map((item) => (
+									<li
+										key={item.name}
+										className="bg-secondary/20 rounded-xl p-4 border border-border"
+									>
+										<div className="flex justify-between items-start gap-4">
+											<div className="flex-1">
+												<div className="flex flex-wrap items-center gap-1 text-foreground font-medium">
+													{item.originalIngredients.map((ing, i) => (
+														<span
+															key={ing.name}
+															className="flex items-center gap-1"
+														>
+															{ing.name}
+															{i < item.originalIngredients.length - 1 && (
+																<span className="text-muted-foreground text-sm mx-1">
+																	or
+																</span>
+															)}
+														</span>
+													))}
+												</div>
+												<div className="text-primary mt-1 font-bold">
+													{item.amount}
+												</div>
+											</div>
+
+											{/* Affiliate Links */}
+											<div className="flex flex-col gap-2 shrink-0">
+												{item.originalIngredients.map((ing) => {
+													const keyword = extractIngredientKeyword(ing.name);
+													const link = getAffiliateLink(keyword);
+													if (!link) return null;
+													return (
+														<a
+															key={`link-${ing.name}`}
+															href={link}
+															target="_blank"
+															rel="noopener noreferrer"
+															className="inline-flex items-center gap-1 px-2 py-1 bg-secondary hover:bg-orange-100 dark:hover:bg-orange-900/30 text-orange-600 dark:text-orange-400 hover:text-orange-700 dark:hover:text-orange-300 rounded text-sm font-bold transition-colors"
+														>
+															<ShoppingCart size={12} />
+															買う
+														</a>
+													);
+												})}
+											</div>
+										</div>
+									</li>
+								))}
+							</ul>
+						</div>
+
+						{/* Instructions */}
+						<div>
+							<h3 className="text-2xl font-bold text-foreground mb-6 flex items-center gap-3">
+								<span className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-primary text-sm">
+									B
+								</span>
+								作り方
+							</h3>
+
+							<div className="space-y-6">
+								{cocktail.instructions.map((step, index) => (
+									// biome-ignore lint/suspicious/noArrayIndexKey: Order is static
+									<div key={`step-${index}`} className="group flex gap-4">
+										<div className="flex flex-col items-center">
+											<div className="w-8 h-8 rounded-full bg-background border border-border flex items-center justify-center text-muted-foreground font-bold text-sm shrink-0 group-hover:border-primary/50 group-hover:text-primary transition-colors">
+												{index + 1}
+											</div>
+											{index < cocktail.instructions.length - 1 && (
+												<div className="w-px h-full bg-border mt-2" />
+											)}
+										</div>
+										<p className="pt-1 text-foreground leading-relaxed">
+											{step}
+										</p>
+									</div>
+								))}
+							</div>
+
+							{cocktail.garnish && (
+								<div className="mt-8 p-4 bg-muted/30 rounded-xl border border-border border-dashed">
+									<h4 className="text-sm font-bold text-muted-foreground mb-1 uppercase tracking-wider">
+										飾り
+									</h4>
+									<p className="text-foreground">{cocktail.garnish}</p>
+								</div>
+							)}
+						</div>
+					</div>
+
+					<div className="mt-12 pt-6 border-t border-border text-center">
+						<p className="text-xs text-muted-foreground italic">
 							※カクテルの画像と説明文はAIによって生成されたイメージです。
-						</Typography>
-					</CardContent>
-				</StyledCocktailCard>
-			</Fade>
-			<Snackbar
-				open={snackbarOpen}
-				autoHideDuration={3000}
-				onClose={handleSnackbarClose}
-				anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-			>
-				<Alert
-					onClose={handleSnackbarClose}
-					severity="success"
-					sx={{ width: "100%" }}
-				>
-					レシピをクリップボードにコピーしました！
-				</Alert>
-			</Snackbar>
-		</>
+						</p>
+					</div>
+				</div>
+			</div>
+
+			<Toast
+				open={toastState.open}
+				message={toastState.message}
+				severity={toastState.severity}
+				onClose={() => setToastState((prev) => ({ ...prev, open: false }))}
+			/>
+		</div>
 	);
 }

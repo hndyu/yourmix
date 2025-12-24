@@ -1,37 +1,27 @@
 "use client";
 
-import Box from "@mui/material/Box";
-import Link from "@mui/material/Link";
-import Typography from "@mui/material/Typography";
-import NextLink from "next/link";
+import Link from "next/link";
 
-// フッターコンポーネント
 export default function Footer() {
 	return (
-		<Box
-			component="footer"
-			sx={{
-				py: 2,
-				px: 2,
-				mt: "auto",
-				textAlign: "center",
-				backgroundColor: "#f5f5f5",
-				borderTop: "1px solid #e0e0e0",
-				display: "flex",
-				justifyContent: "center",
-				alignItems: "center",
-				gap: 2,
-			}}
-		>
-			<Typography variant="body2" color="text.secondary">
-				&copy; 2025 YourMix
-			</Typography>
-			<Link component={NextLink} href="/terms-of-service" variant="body2">
-				利用規約
-			</Link>
-			<Link component={NextLink} href="/privacy-policy" variant="body2">
-				プライバシーポリシー
-			</Link>
-		</Box>
+		<footer className="w-full py-6 mt-auto border-t border-stone-300 dark:border-stone-800 bg-stone-100/50 dark:bg-stone-950/50">
+			<div className="container mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-stone-600 dark:text-stone-500">
+				<p>&copy; 2025 YourMix. All rights reserved.</p>
+				<div className="flex items-center gap-6">
+					<Link
+						href="/terms-of-service"
+						className="hover:text-stone-800 dark:hover:text-stone-300 transition-colors"
+					>
+						利用規約
+					</Link>
+					<Link
+						href="/privacy-policy"
+						className="hover:text-stone-800 dark:hover:text-stone-300 transition-colors"
+					>
+						プライバシーポリシー
+					</Link>
+				</div>
+			</div>
+		</footer>
 	);
 }

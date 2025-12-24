@@ -1,26 +1,87 @@
 @import "tailwindcss";
 
-:root {
-	--background: #ffffff;
-	--foreground: #171717;
-}
+@variant dark (&:is(.dark, .dark *));
 
-@theme inline {
+@theme {
+	--font-sans: var(--font-inter), var(--font-noto-sans-jp), sans-serif;
+	--font-display: var(--font-playfair-display), serif;
+
+	--color-primary: var(--primary);
+	--color-primary-foreground: var(--primary-foreground);
+
 	--color-background: var(--background);
 	--color-foreground: var(--foreground);
+
+	--color-card: var(--card);
+	--color-card-foreground: var(--card-foreground);
+
+	--color-border: var(--border);
+	--color-muted: var(--muted);
 }
 
-@media (prefers-color-scheme: dark) {
-	:root {
-		--background: #0a0a0a;
-		--foreground: #ededed;
+/* Custom Utilities */
+@layer utilities {
+	.text-balance {
+		text-wrap: balance;
 	}
 }
 
+:root {
+	/* Light Mode (Stone-50 based) */
+	--background: #fafaf9; /* stone-50 */
+	--foreground: #0c0a09; /* stone-950 */
+
+	--card: rgba(255, 255, 255, 0.7);
+	--card-foreground: #0c0a09;
+
+	--primary: #d97706; /* amber-600 */
+	--primary-foreground: #ffffff;
+
+	--border: #e7e5e4; /* stone-200 */
+	--muted: #e7e5e4; /* stone-200 */
+
+	/* Scrollbar */
+	--scrollbar-thumb: #d6d3d1; /* stone-300 */
+	--scrollbar-thumb-hover: #a8a29e; /* stone-400 */
+}
+
+.dark {
+	/* Dark Mode (Stone-950 based) */
+	--background: #0c0a09; /* stone-950 */
+	--foreground: #fafaf9; /* stone-50 */
+
+	--card: rgba(28, 25, 23, 0.7); /* stone-900 with opacity */
+	--card-foreground: #fafaf9;
+
+	--primary: #f59e0b; /* amber-500 */
+	--primary-foreground: #ffffff;
+
+	--border: #292524; /* stone-800 */
+	--muted: #292524; /* stone-800 */
+
+	/* Scrollbar */
+	--scrollbar-thumb: #44403c; /* stone-700 */
+	--scrollbar-thumb-hover: #57534e; /* stone-600 */
+}
+
 body {
-	background: var(--background);
-	color: var(--foreground);
-	font-family: "Helvetica Neue", arial, "Hiragino Kaku Gothic ProN",
-		"Hiragino Sans", "Noto Sans JP", meiryo, sans-serif;
-	scroll-behavior: smooth;
+	background-color: var(--color-background);
+	color: var(--color-foreground);
+	font-family: var(--font-sans);
+	transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Scrollbar styling for a premium feel */
+::-webkit-scrollbar {
+	width: 8px;
+}
+::-webkit-scrollbar-track {
+	background: transparent;
+}
+::-webkit-scrollbar-thumb {
+	background: var(--scrollbar-thumb);
+	border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+	background: var(--scrollbar-thumb-hover);
 }

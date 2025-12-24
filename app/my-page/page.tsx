@@ -1,18 +1,7 @@
 "use client";
 
+import { Button } from "@/app/_components/ui/button";
 import authClient from "@/app/lib/authClient";
-import {
-	Button,
-	Card,
-	CardContent,
-	CardHeader,
-	Dialog,
-	DialogActions,
-	DialogContent,
-	DialogContentText,
-	DialogTitle,
-	Typography,
-} from "@mui/material";
 import { redirect, useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -66,7 +55,7 @@ export default function MyPage() {
 	};
 	if (isPending) {
 		return (
-			<main className="container mx-auto my-8 max-w-lg">
+			<main className="container mx-auto my-8 max-w-lg px-4">
 				<p>読み込み中...</p>
 			</main>
 		);
@@ -77,85 +66,81 @@ export default function MyPage() {
 	}
 
 	return (
-		<main className="container mx-auto my-8 max-w-lg">
-			<Card>
-				<CardHeader>
-					<Typography variant="h5" component="div">
-						マイページ
-					</Typography>
-					<Typography variant="body2" color="text.secondary">
+		<main className="container mx-auto my-8 max-w-lg px-4">
+			<div className="bg-white dark:bg-stone-900 rounded-xl border border-stone-200 dark:border-stone-800 shadow-sm overflow-hidden">
+				<div className="p-6 border-b border-stone-200 dark:border-stone-800">
+					<h2 className="text-xl font-bold mb-1">マイページ</h2>
+					<p className="text-sm text-stone-500">
 						アカウント情報を確認・編集できます。
-					</Typography>
-				</CardHeader>
-				<CardContent sx={{ "& > :not(style)": { mt: 2 } }}>
+					</p>
+				</div>
+				<div className="p-6 space-y-6">
 					<div>
-						<Typography variant="subtitle1" component="h3" fontWeight="bold">
-							お名前
-						</Typography>
-						<Typography>{session.user.name}</Typography>
+						<h3 className="font-bold mb-1">お名前</h3>
+						<p className="text-stone-700 dark:text-stone-300">
+							{session.user.name}
+						</p>
 					</div>
 					<div>
-						<Typography variant="subtitle1" component="h3" fontWeight="bold">
-							メールアドレス
-						</Typography>
-						<Typography>{session.user.email}</Typography>
+						<h3 className="font-bold mb-1">メールアドレス</h3>
+						<p className="text-stone-700 dark:text-stone-300">
+							{session.user.email}
+						</p>
 					</div>
-					<div className="pt-4">
+					<div className="pt-4 border-t border-stone-200 dark:border-stone-800">
 						<Button
-							variant="contained"
-							color="error"
+							className="bg-red-600 hover:bg-red-700 text-white shadow-red-900/20"
 							onClick={handleDeleteAccount}
 						>
 							アカウントを削除
 						</Button>
-						<Typography variant="caption" display="block" mt={1}>
+						<p className="text-xs text-stone-500 mt-2">
 							この操作は元に戻せません。すべてのお客様の情報が完全に削除されます。
-						</Typography>
+						</p>
 					</div>
-				</CardContent>
-			</Card>
+				</div>
+			</div>
 
 			{/* Account Deletion Confirm Dialog */}
-			<Dialog
-				open={confirmDialogOpen}
-				onClose={() => setConfirmDialogOpen(false)}
-				aria-labelledby="confirm-delete-dialog-title"
-				aria-describedby="confirm-delete-dialog-description"
-			>
-				<DialogTitle id="confirm-delete-dialog-title">
-					アカウントの削除
-				</DialogTitle>
-				<DialogContent>
-					<DialogContentText id="confirm-delete-dialog-description">
-						本当にアカウントを削除しますか？この操作は元に戻せません。
-					</DialogContentText>
-				</DialogContent>
-				<DialogActions>
-					<Button onClick={() => setConfirmDialogOpen(false)}>
-						キャンセル
-					</Button>
-					<Button onClick={executeDelete} color="error">
-						削除する
-					</Button>
-				</DialogActions>
-			</Dialog>
+			{confirmDialogOpen && (
+				<div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in">
+					<div className="w-full max-w-sm bg-stone-900 border border-stone-800 rounded-2xl p-6 shadow-2xl animate-in zoom-in-95">
+						<h3 className="text-lg font-bold text-white mb-2">
+							アカウントの削除
+						</h3>
+						<p className="text-stone-400 mb-6 text-sm">
+							本当にアカウントを削除しますか？この操作は元に戻せません。
+						</p>
+						<div className="flex justify-end gap-3">
+							<Button
+								variant="ghost"
+								onClick={() => setConfirmDialogOpen(false)}
+							>
+								キャンセル
+							</Button>
+							<Button
+								className="bg-red-600 hover:bg-red-700 text-white"
+								onClick={executeDelete}
+							>
+								削除する
+							</Button>
+						</div>
+					</div>
+				</div>
+			)}
 
 			{/* Result Dialog */}
-			<Dialog
-				open={resultDialogOpen}
-				onClose={handleResultDialogClose}
-				aria-labelledby="result-dialog-title"
-			>
-				<DialogTitle id="result-dialog-title">処理結果</DialogTitle>
-				<DialogContent>
-					<DialogContentText>{resultDialogMessage}</DialogContentText>
-				</DialogContent>
-				<DialogActions>
-					<Button onClick={handleResultDialogClose} autoFocus>
-						閉じる
-					</Button>
-				</DialogActions>
-			</Dialog>
+			{resultDialogOpen && (
+				<div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in">
+					<div className="w-full max-w-sm bg-stone-900 border border-stone-800 rounded-2xl p-6 shadow-2xl animate-in zoom-in-95">
+						<h3 className="text-lg font-bold text-white mb-2">処理結果</h3>
+						<p className="text-stone-400 mb-6 text-sm">{resultDialogMessage}</p>
+						<div className="flex justify-end gap-3">
+							<Button onClick={handleResultDialogClose}>閉じる</Button>
+						</div>
+					</div>
+				</div>
+			)}
 		</main>
 	);
 }

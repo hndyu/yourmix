@@ -11,13 +11,14 @@ export interface Ingredient {
 	sortOrder?: number | null;
 	description?: string | null;
 	option_group?: number;
+	assetKey?: string | null;
 }
 
 export interface Category {
 	id: number;
 	name: string;
 	sortOrder: number;
-	icon: string | null;
+	assetKey: string | null;
 	description: string | null;
 }
 
@@ -31,6 +32,7 @@ export interface GroupedIngredient {
 	actualDetails: { id: number; name: string }[];
 	sortOrder: number | null;
 	description: string | null;
+	assetKey: string | null;
 }
 
 // タグの型定義
