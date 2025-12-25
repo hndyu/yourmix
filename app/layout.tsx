@@ -30,6 +30,22 @@ export const metadata: Metadata = {
 		template: "%s | YourMix",
 	},
 	description: "あなただけのカクテルを作ってみよう。",
+	metadataBase: new URL(
+		process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:3000",
+	),
+	openGraph: {
+		title: "YourMix",
+		description: "あなただけのカクテルを作ってみよう。",
+		url: process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:3000",
+		siteName: "YourMix",
+		locale: "ja_JP",
+		type: "website",
+	},
+	twitter: {
+		card: "summary_large_image",
+		title: "YourMix",
+		description: "あなただけのカクテルを作ってみよう。",
+	},
 };
 
 const jsonLd: WithContext<WebSite> = {

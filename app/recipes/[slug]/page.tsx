@@ -28,7 +28,27 @@ export async function generateMetadata({
 	const cocktail = await getCocktail(slug);
 	const title = `${cocktail.name}のレシピ`;
 	const description = `${cocktail.name}の作り方と材料を紹介します。${cocktail.description}`;
-	return { title, description };
+
+	const ogImage = cocktail.imageUrl
+		? [`${API_BASE_URL}/cocktails/${cocktail.imageUrl}`]
+		: [];
+
+	return {
+		title,
+		description,
+		openGraph: {
+			title,
+			description,
+			type: "article",
+			images: ogImage,
+		},
+		twitter: {
+			card: "summary_large_image",
+			title,
+			description,
+			images: ogImage,
+		},
+	};
 }
 
 export default async function RecipeDetailPage({
