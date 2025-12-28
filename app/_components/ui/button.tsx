@@ -23,15 +23,16 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 		ref,
 	) => {
 		const baseStyles =
-			"inline-flex items-center justify-center rounded-xl font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background active:scale-95";
+			"inline-flex items-center justify-center rounded-xl font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-stone-500 focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-white dark:ring-offset-stone-950 active:scale-95";
 
 		const variants = {
 			default:
-				"bg-stone-900 text-white hover:bg-stone-800 shadow-lg shadow-black/20 hover:shadow-black/30",
+				"bg-stone-900 text-white hover:bg-stone-800 dark:bg-stone-100 dark:text-stone-900 dark:hover:bg-stone-200 shadow-lg shadow-black/20 hover:shadow-black/30",
 			outline:
-				"border border-input bg-transparent hover:bg-stone-800 hover:text-stone-50 border-stone-700 text-stone-300",
-			ghost: "hover:bg-stone-800 hover:text-stone-50 text-stone-400",
-			link: "text-primary underline-offset-4 hover:underline",
+				"border border-stone-200 dark:border-stone-700 bg-transparent hover:bg-stone-100 dark:hover:bg-stone-800 hover:text-stone-900 dark:hover:text-stone-50 text-stone-600 dark:text-stone-300",
+			ghost:
+				"hover:bg-stone-100 dark:hover:bg-stone-800 hover:text-stone-900 dark:hover:text-stone-50 text-stone-500 dark:text-stone-400",
+			link: "text-stone-900 dark:text-stone-100 underline-offset-4 hover:underline",
 		};
 
 		const sizes = {
