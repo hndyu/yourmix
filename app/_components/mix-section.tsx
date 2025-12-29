@@ -36,7 +36,7 @@ export default function MixSection({
 					<br className="md:hidden" />
 					作ってみよう
 				</h2>
-				<p className="text-stone-500 text-sm">
+				<p className="text-stone-600 dark:text-stone-400 text-sm">
 					好みの材料を選んで、AIにオリジナルのレシピを作ってもらいましょう
 				</p>
 			</div>
@@ -64,7 +64,7 @@ export default function MixSection({
 					/>
 				</div>
 
-				<p className="text-sm text-stone-500 text-center min-h-[1.5em] transition-opacity duration-300">
+				<p className="text-sm text-stone-600 dark:text-stone-400 text-center min-h-[1.5em] transition-opacity duration-300">
 					{isInitialLoading
 						? "材料を読み込んでいます..."
 						: isMixing

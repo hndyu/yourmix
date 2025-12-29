@@ -35,7 +35,7 @@ export default function SocialLogin() {
 					<span className="w-full border-t border-stone-300 dark:border-stone-800" />
 				</div>
 				<div className="relative flex justify-center text-xs uppercase">
-					<span className="bg-white dark:bg-stone-900 px-2 text-stone-500">
+					<span className="bg-white dark:bg-stone-900 px-3 text-stone-600 dark:text-stone-400">
 						または
 					</span>
 				</div>

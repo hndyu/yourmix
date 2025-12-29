@@ -65,7 +65,7 @@ export default function SignUpForm() {
 				</div>
 
 				{error && (
-					<div className="bg-red-900/20 border border-red-900/50 text-red-200 text-sm p-3 rounded-lg mb-6">
+					<div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-900/50 text-red-600 dark:text-red-200 text-sm p-3 rounded-lg mb-6">
 						{error}
 					</div>
 				)}
@@ -156,7 +156,7 @@ export default function SignUpForm() {
 						</div>
 					</div>
 					{showTermsError && (
-						<p className="text-xs text-red-400">
+						<p className="text-xs text-red-600 dark:text-red-400">
 							登録には利用規約への同意が必要です
 						</p>
 					)}

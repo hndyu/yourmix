@@ -64,8 +64,8 @@ export default function IngredientCard({
 							isSelected
 								? "bg-primary text-black scale-100"
 								: isPartiallySelected
-									? "bg-stone-300 dark:bg-stone-700 text-primary scale-100"
-									: "bg-stone-200 dark:bg-stone-800 text-stone-400 dark:text-stone-600 scale-90 opacity-0 group-hover:opacity-100 group-hover:scale-100"
+									? "bg-stone-200 dark:bg-stone-700 text-primary scale-100 ring-1 ring-primary/20"
+									: "bg-stone-100 dark:bg-stone-800 text-stone-400 dark:text-stone-600 scale-90 opacity-0 group-hover:opacity-100 group-hover:scale-100"
 						}
           `}
 					>
@@ -77,7 +77,7 @@ export default function IngredientCard({
 				<div
 					className={`
           w-full h-auto rounded-2xl mb-4 flex items-center justify-center transition-colors overflow-hidden
-          ${activeState ? "bg-primary/20 text-primary" : "bg-stone-200 dark:bg-stone-800 text-stone-500 dark:text-stone-500 group-hover:text-stone-700 dark:group-hover:text-stone-300"}
+          ${activeState ? "bg-primary/20 text-primary" : "bg-stone-100 dark:bg-stone-800 text-stone-400 dark:text-stone-500 group-hover:text-stone-600 dark:group-hover:text-stone-300"}
         `}
 				>
 					{asset.type === "image" ? (
@@ -100,7 +100,7 @@ export default function IngredientCard({
 					{ingredient.name}
 				</h4>
 				{ingredient.description && (
-					<p className="text-xs text-stone-500 dark:text-stone-500 min-h-[2.5em]">
+					<p className="text-xs text-stone-600 dark:text-stone-500 min-h-[2.5em]">
 						{ingredient.description}
 					</p>
 				)}
@@ -111,7 +111,7 @@ export default function IngredientCard({
 				<div className="border-t border-stone-200 dark:border-stone-800/50">
 					<button
 						type="button"
-						className="expand-btn w-full px-4 py-2 flex items-center justify-between text-xs text-stone-500 dark:text-stone-500 hover:text-stone-700 dark:hover:text-stone-300 transition-colors focus:outline-none focus:bg-stone-100 dark:focus:bg-stone-800/50 rounded-b-2xl"
+						className="expand-btn w-full px-4 py-2 flex items-center justify-between text-xs text-stone-600 dark:text-stone-500 hover:text-stone-800 dark:hover:text-stone-300 transition-colors focus:outline-none focus:bg-stone-100 dark:focus:bg-stone-800/50 rounded-b-2xl"
 						onClick={(e) => {
 							e.stopPropagation();
 							setExpanded(!expanded);
@@ -133,7 +133,7 @@ export default function IngredientCard({
 
 					{/* Expanded Details */}
 					{expanded && (
-						<div className="px-4 pb-4 pt-1 flex flex-wrap gap-2 animate-in slide-in-from-top-2 duration-200 bg-stone-100 dark:bg-stone-900/40 rounded-b-2xl">
+						<div className="px-4 pb-4 pt-1 flex flex-wrap gap-2 animate-in slide-in-from-top-2 duration-200 bg-stone-50 dark:bg-stone-900/40 rounded-b-2xl">
 							{ingredient.actualNames?.map((name) => {
 								const isDetailSelected = selectedDetailNames.includes(name);
 								return (

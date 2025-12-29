@@ -125,7 +125,7 @@ export default function MyPage() {
 						<h2 className="text-xl font-bold mb-1 text-stone-900 dark:text-white">
 							マイページ
 						</h2>
-						<p className="text-sm text-stone-500 dark:text-stone-400">
+						<p className="text-sm text-stone-600 dark:text-stone-400">
 							アカウント情報を確認・編集できます。
 						</p>
 					</div>
@@ -157,7 +157,7 @@ export default function MyPage() {
 						>
 							アカウントを削除
 						</Button>
-						<p className="text-xs text-stone-500 dark:text-stone-400 mt-2">
+						<p className="text-xs text-stone-600 dark:text-stone-400 mt-2">
 							この操作は元に戻せません。すべてのお客様の情報が完全に削除されます。
 						</p>
 					</div>

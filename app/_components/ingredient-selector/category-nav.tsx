@@ -20,7 +20,7 @@ export default function CategoryNav({
 		<div className="sticky top-20 z-10 md:w-64 md:flex-shrink-0 bg-background/90 backdrop-blur md:bg-transparent md:backdrop-blur-none">
 			<div className="relative">
 				<nav className="flex flex-row md:flex-col gap-2 overflow-x-auto md:overflow-visible pb-4 md:pb-0">
-					<h3 className="hidden md:block text-stone-600 dark:text-stone-500 text-sm font-bold uppercase tracking-wider mb-2 px-3">
+					<h3 className="hidden md:block text-stone-500 dark:text-stone-500 text-sm font-bold uppercase tracking-wider mb-2 px-3">
 						カテゴリー
 					</h3>
 					{categories.map((category) => {
@@ -36,8 +36,8 @@ export default function CategoryNav({
               flex items-center gap-3 px-4 py-3 rounded-xl transition-all text-sm font-medium whitespace-nowrap
               ${
 								isActive
-									? "bg-stone-200 dark:bg-stone-800 text-blue-600 dark:text-primary shadow-lg shadow-black/10 dark:shadow-black/20"
-									: "text-stone-600 dark:text-stone-400 hover:text-stone-800 dark:hover:text-stone-200 hover:bg-stone-100 dark:hover:bg-stone-900"
+									? "bg-white dark:bg-stone-800 text-primary shadow-lg shadow-black/5 dark:shadow-black/20 ring-1 ring-stone-200 dark:ring-0"
+									: "text-stone-600 dark:text-stone-400 hover:text-stone-800 dark:hover:text-stone-200 hover:bg-white/60 dark:hover:bg-stone-900"
 							}
             `}
 							>

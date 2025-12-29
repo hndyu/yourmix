@@ -15,8 +15,13 @@
 	--color-card: var(--card);
 	--color-card-foreground: var(--card-foreground);
 
-	--color-border: var(--border);
+	--color-secondary: var(--secondary);
+	--color-secondary-foreground: var(--secondary-foreground);
+
 	--color-muted: var(--muted);
+	--color-muted-foreground: var(--muted-foreground);
+
+	--color-border: var(--border);
 }
 
 /* Custom Utilities */
@@ -37,8 +42,12 @@
 	--primary: #d97706; /* amber-600 */
 	--primary-foreground: #ffffff;
 
+	--secondary: #f5f5f4; /* stone-100 */
+	--secondary-foreground: #0c0a09;
+
 	--border: #e7e5e4; /* stone-200 */
-	--muted: #e7e5e4; /* stone-200 */
+	--muted: #f5f5f4; /* stone-100 */
+	--muted-foreground: #57534e; /* stone-600 */
 
 	/* Scrollbar */
 	--scrollbar-thumb: #d6d3d1; /* stone-300 */
@@ -56,8 +65,12 @@
 	--primary: #f59e0b; /* amber-500 */
 	--primary-foreground: #ffffff;
 
+	--secondary: #1c1917; /* stone-900 */
+	--secondary-foreground: #fafaf9;
+
 	--border: #292524; /* stone-800 */
-	--muted: #292524; /* stone-800 */
+	--muted: #1c1917; /* stone-900 */
+	--muted-foreground: #a8a29e; /* stone-400 */
 
 	/* Scrollbar */
 	--scrollbar-thumb: #44403c; /* stone-700 */
