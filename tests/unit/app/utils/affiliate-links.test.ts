@@ -1,8 +1,8 @@
-import { describe, it, expect } from "vitest";
 import {
-	getAffiliateLink,
 	extractIngredientKeyword,
+	getAffiliateLink,
 } from "@/app/utils/affiliate-links";
+import { describe, expect, it } from "vitest";
 
 describe("affiliate-links", () => {
 	describe("extractIngredientKeyword", () => {

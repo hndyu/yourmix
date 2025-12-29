@@ -28,7 +28,10 @@ async function authBuilder() {
 					enabled: true,
 				},
 				socialProviders: {
-					// Configure social providers as needed
+					google: {
+						clientId: process.env.GOOGLE_CLIENT_ID ?? "",
+						clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? "",
+					},
 				},
 				trustedOrigins: [
 					"http://127.0.0.1:3000",

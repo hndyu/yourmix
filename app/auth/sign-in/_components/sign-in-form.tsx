@@ -4,6 +4,7 @@ import authClient from "@/app/lib/authClient";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
+import SocialLogin from "../../../_components/social-login";
 import { Button } from "../../../_components/ui/button";
 
 export default function SignInForm() {
@@ -107,6 +108,10 @@ export default function SignInForm() {
 						ログイン
 					</Button>
 				</form>
+
+				<div className="mt-6">
+					<SocialLogin />
+				</div>
 
 				<div className="mt-6 text-center text-sm">
 					<Link

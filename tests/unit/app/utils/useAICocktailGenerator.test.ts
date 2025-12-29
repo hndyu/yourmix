@@ -1,8 +1,8 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
-import { renderHook, act } from "@testing-library/react";
-import { useAICocktailGenerator } from "@/app/utils/useAICocktailGenerator";
-import * as cocktailGenerator from "@/app/utils/cocktail-generator";
 import type { Cocktail } from "@/app/types/cocktail";
+import * as cocktailGenerator from "@/app/utils/cocktail-generator";
+import { useAICocktailGenerator } from "@/app/utils/useAICocktailGenerator";
+import { act, renderHook } from "@testing-library/react";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const mockCocktail: Cocktail = {
 	id: "ai-1",

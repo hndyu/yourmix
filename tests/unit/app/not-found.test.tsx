@@ -1,7 +1,7 @@
+import NotFound, { metadata } from "@/app/not-found";
 import { render, screen } from "@testing-library/react";
 import * as React from "react";
 import { describe, expect, it } from "vitest";
-import NotFound, { metadata } from "@/app/not-found";
 
 describe("NotFound Page", () => {
 	describe("metadata", () => {

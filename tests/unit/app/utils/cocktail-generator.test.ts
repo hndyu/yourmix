@@ -1,6 +1,6 @@
-import { describe, it, expect, vi, afterEach } from "vitest";
-import { generateOriginalCocktail } from "@/app/utils/cocktail-generator";
 import type { Cocktail } from "@/app/types/cocktail";
+import { generateOriginalCocktail } from "@/app/utils/cocktail-generator";
+import { afterEach, describe, expect, it, vi } from "vitest";
 
 // fetchをグローバルにモック
 global.fetch = vi.fn();

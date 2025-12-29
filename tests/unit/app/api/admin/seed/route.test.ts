@@ -1,10 +1,10 @@
-import { describe, it, expect, vi, beforeEach, type Mock } from "vitest";
 import { POST } from "@/app/api/admin/seed/route";
-import { NextResponse } from "next/server";
-import * as cloudflare from "@opennextjs/cloudflare";
 import * as seedScript from "@/scripts/seed";
+import * as cloudflare from "@opennextjs/cloudflare";
 // Mock drizzle
 import { drizzle } from "drizzle-orm/d1";
+import { NextResponse } from "next/server";
+import { type Mock, beforeEach, describe, expect, it, vi } from "vitest";
 
 const { getCloudflareContext } = cloudflare;
 const { runSeed } = seedScript;
