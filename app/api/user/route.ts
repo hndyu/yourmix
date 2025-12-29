@@ -12,7 +12,10 @@ export async function DELETE(req: NextRequest) {
 	});
 
 	if (!session?.user) {
-		return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+		return NextResponse.json(
+			{ error: "認証されていません。" },
+			{ status: 401 },
+		);
 	}
 	const { user } = session;
 
@@ -24,7 +27,7 @@ export async function DELETE(req: NextRequest) {
 	} catch (error) {
 		console.error("Failed to delete user:", error);
 		return NextResponse.json(
-			{ error: "Failed to delete account" },
+			{ error: "アカウントの削除に失敗しました。" },
 			{ status: 500 },
 		);
 	}
@@ -37,7 +40,10 @@ export async function PATCH(req: NextRequest) {
 	});
 
 	if (!session?.user) {
-		return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+		return NextResponse.json(
+			{ error: "認証されていません。" },
+			{ status: 401 },
+		);
 	}
 
 	try {
@@ -48,21 +54,27 @@ export async function PATCH(req: NextRequest) {
 
 		if (name !== undefined) {
 			if (typeof name !== "string" || name.trim().length === 0) {
-				return NextResponse.json({ error: "Invalid name" }, { status: 400 });
+				return NextResponse.json(
+					{ error: "無効な名前です。" },
+					{ status: 400 },
+				);
 			}
 			updateData.name = name.trim();
 		}
 
 		if (email !== undefined) {
 			if (typeof email !== "string" || !email.includes("@")) {
-				return NextResponse.json({ error: "Invalid email" }, { status: 400 });
+				return NextResponse.json(
+					{ error: "無効なメールアドレスです。" },
+					{ status: 400 },
+				);
 			}
 			updateData.email = email.trim();
 		}
 
 		if (Object.keys(updateData).length === 0) {
 			return NextResponse.json(
-				{ error: "No changes provided" },
+				{ error: "変更内容がありません。" },
 				{ status: 400 },
 			);
 		}
@@ -79,7 +91,7 @@ export async function PATCH(req: NextRequest) {
 
 			if (existingUser) {
 				return NextResponse.json(
-					{ error: "Email already in use" },
+					{ error: "使用できないメールアドレスです。" },
 					{ status: 409 },
 				);
 			}
@@ -91,7 +103,7 @@ export async function PATCH(req: NextRequest) {
 	} catch (error) {
 		console.error("Failed to update user:", error);
 		return NextResponse.json(
-			{ error: "Failed to update profile" },
+			{ error: "プロフィールの更新に失敗しました。" },
 			{ status: 500 },
 		);
 	}
