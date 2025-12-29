@@ -14,6 +14,7 @@ export default function SignInForm() {
 	const [isLoading, setIsLoading] = useState(false);
 	const router = useRouter();
 	const searchParams = useSearchParams();
+	const lastMethod = authClient.getLastUsedLoginMethod();
 
 	let callbackUrl = searchParams.get("callbackUrl") || "/";
 	if (callbackUrl === "%2Fauth%2Fsign-up") {
@@ -53,6 +54,11 @@ export default function SignInForm() {
 					<p className="text-sm text-stone-600 dark:text-stone-500 mt-2">
 						YourMixのアカウントにログイン
 					</p>
+					{lastMethod === "email" && (
+						<div className="mt-2 inline-block bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300 text-xs px-3 py-1 rounded-full border border-stone-200 dark:border-stone-700">
+							前回のログイン: メールアドレス
+						</div>
+					)}
 				</div>
 
 				{error && (

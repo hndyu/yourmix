@@ -3,7 +3,7 @@ import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { betterAuth } from "better-auth";
 import { withCloudflare } from "better-auth-cloudflare";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import { openAPI } from "better-auth/plugins";
+import { lastLoginMethod, openAPI } from "better-auth/plugins";
 import type { DrizzleD1Database } from "drizzle-orm/d1";
 
 // Define an asynchronous function to build your auth configuration
@@ -52,7 +52,7 @@ async function authBuilder() {
 				rateLimit: {
 					enabled: true,
 				},
-				plugins: [openAPI()],
+				plugins: [openAPI(), lastLoginMethod()],
 			},
 		),
 	);
@@ -85,7 +85,7 @@ export const auth = betterAuth({
 			emailAndPassword: {
 				enabled: true,
 			},
-			plugins: [openAPI()],
+			plugins: [openAPI(), lastLoginMethod()],
 		},
 	),
 
