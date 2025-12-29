@@ -8,6 +8,15 @@ import type { DrizzleD1Database } from "drizzle-orm/d1";
 
 // Define an asynchronous function to build your auth configuration
 async function authBuilder() {
+	const googleClientId = process.env.GOOGLE_CLIENT_ID;
+	const googleClientSecret = process.env.GOOGLE_CLIENT_SECRET;
+
+	if (!googleClientId || !googleClientSecret) {
+		throw new Error(
+			"Missing Google OAuth credentials. Please set GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET environment variables.",
+		);
+	}
+
 	const dbInstance = await getDb(); // Get your D1 database instance
 	return betterAuth(
 		withCloudflare(
@@ -29,8 +38,8 @@ async function authBuilder() {
 				},
 				socialProviders: {
 					google: {
-						clientId: process.env.GOOGLE_CLIENT_ID ?? "",
-						clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? "",
+						clientId: googleClientId,
+						clientSecret: googleClientSecret,
 					},
 				},
 				trustedOrigins: [

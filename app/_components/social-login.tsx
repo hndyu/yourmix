@@ -9,9 +9,7 @@ export default function SocialLogin() {
 	const [isLoading, setIsLoading] = useState<string | null>(null);
 	const searchParams = useSearchParams();
 
-	const handleSocialLogin = async (
-		provider: "google" | "facebook" | "twitter",
-	) => {
+	const handleSocialLogin = async (provider: "google") => {
 		setIsLoading(provider);
 
 		// Get callbackUrl from search params, default to home

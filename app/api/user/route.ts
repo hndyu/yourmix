@@ -46,8 +46,17 @@ export async function PATCH(req: NextRequest) {
 		);
 	}
 
+	let body: { name?: unknown; email?: unknown };
 	try {
-		const body = (await req.json()) as { name?: unknown; email?: unknown };
+		body = await req.json();
+	} catch (error) {
+		return NextResponse.json(
+			{ error: "リクエスト形式が正しくありません。" },
+			{ status: 400 },
+		);
+	}
+
+	try {
 		const { name, email } = body;
 
 		const updateData: { name?: string; email?: string } = {};

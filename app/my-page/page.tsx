@@ -212,7 +212,7 @@ export default function MyPage() {
 									id="name"
 									value={newName}
 									onChange={(e) => setNewName(e.target.value)}
-									className="w-full px-3 py-2 bg-white dark:bg-stone-800 border border-stone-300 dark:border-stone-700 rounded-lg text-stone-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500"
+									className="w-full px-3 py-2 bg-white dark:bg-stone-800 border border-stone-300 dark:border-stone-700 rounded-lg text-stone-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary"
 									placeholder="お名前"
 								/>
 							</div>
@@ -228,7 +228,7 @@ export default function MyPage() {
 									id="email"
 									value={newEmail}
 									onChange={(e) => setNewEmail(e.target.value)}
-									className="w-full px-3 py-2 bg-white dark:bg-stone-800 border border-stone-300 dark:border-stone-700 rounded-lg text-stone-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500"
+									className="w-full px-3 py-2 bg-white dark:bg-stone-800 border border-stone-300 dark:border-stone-700 rounded-lg text-stone-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary"
 									placeholder="メールアドレス"
 								/>
 							</div>

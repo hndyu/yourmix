@@ -45,10 +45,20 @@ export async function POST(request: Request) {
 		);
 	}
 
+	let body: { ingredients?: unknown };
+	try {
+		body = await request.json();
+	} catch (error) {
+		return NextResponse.json(
+			{ error: "リクエスト形式が正しくありません。" },
+			{ status: 400 },
+		);
+	}
+
 	try {
 		const db = await getDb();
 
-		const { ingredients: selectedIngredients } = (await request.json()) as {
+		const { ingredients: selectedIngredients } = body as {
 			ingredients: string[];
 		};
 
