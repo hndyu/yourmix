@@ -25,6 +25,18 @@ vi.mock("@/app/lib/authClient", () => ({
 	},
 }));
 
+vi.mock("@marsidev/react-turnstile", () => ({
+	Turnstile: ({ onSuccess }: { onSuccess: (token: string) => void }) => (
+		<button
+			type="button"
+			data-testid="turnstile-mock"
+			onClick={() => onSuccess("mock-token")}
+		>
+			Turnstile
+		</button>
+	),
+}));
+
 describe("SignInPage", () => {
 	beforeEach(() => {
 		vi.clearAllMocks();
@@ -90,6 +102,8 @@ describe("SignInPage", () => {
 			target: { value: "password123" },
 		});
 
+		fireEvent.click(screen.getByTestId("turnstile-mock"));
+
 		fireEvent.click(screen.getByTestId("sign-in-button"));
 
 		await waitFor(() => {
@@ -130,6 +144,8 @@ describe("SignInPage", () => {
 		fireEvent.change(screen.getByTestId("password-input"), {
 			target: { value: "wrongpass" },
 		});
+
+		fireEvent.click(screen.getByTestId("turnstile-mock"));
 
 		fireEvent.click(screen.getByTestId("sign-in-button"));
 

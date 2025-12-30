@@ -27,6 +27,18 @@ vi.mock("@/app/lib/authClient", () => ({
 	},
 }));
 
+vi.mock("@marsidev/react-turnstile", () => ({
+	Turnstile: ({ onSuccess }: { onSuccess: (token: string) => void }) => (
+		<button
+			type="button"
+			data-testid="turnstile-mock"
+			onClick={() => onSuccess("mock-token")}
+		>
+			Turnstile
+		</button>
+	),
+}));
+
 describe("SignUpPage", () => {
 	beforeEach(() => {
 		vi.clearAllMocks();
@@ -122,6 +134,8 @@ describe("SignUpPage", () => {
 		// Click the checkbox to agree to the terms
 		fireEvent.click(screen.getByTestId("terms-agreement-checkbox"));
 
+		fireEvent.click(screen.getByTestId("turnstile-mock"));
+
 		fireEvent.click(screen.getByTestId("sign-up-button"));
 
 		await waitFor(() => {
@@ -176,6 +190,8 @@ describe("SignUpPage", () => {
 
 		// Click the checkbox to agree to the terms
 		fireEvent.click(screen.getByTestId("terms-agreement-checkbox"));
+
+		fireEvent.click(screen.getByTestId("turnstile-mock"));
 
 		fireEvent.click(screen.getByTestId("sign-up-button"));
 

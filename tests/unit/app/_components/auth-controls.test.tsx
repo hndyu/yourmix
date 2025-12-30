@@ -1,8 +1,7 @@
 import AuthControls from "@/app/_components/auth-controls";
 import authClient from "@/app/lib/authClient";
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import type { User } from "better-auth";
 import * as React from "react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
