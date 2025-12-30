@@ -4,7 +4,7 @@ import authClient from "@/app/lib/authClient";
 import { Turnstile } from "@marsidev/react-turnstile";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import SocialLogin from "../../../_components/social-login";
 import { Button } from "../../../_components/ui/button";
 
@@ -14,6 +14,7 @@ export default function SignInForm() {
 	const [error, setError] = useState<string | null>(null);
 	const [isLoading, setIsLoading] = useState(false);
 	const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+	const [lastMethod, setLastMethod] = useState<string | null>(null);
 
 	// 2FA states
 	const [isTwoFactorRequired, setIsTwoFactorRequired] = useState(false);
@@ -22,7 +23,13 @@ export default function SignInForm() {
 
 	const router = useRouter();
 	const searchParams = useSearchParams();
-	const lastMethod = authClient.getLastUsedLoginMethod();
+
+	useEffect(() => {
+		const method = authClient.getLastUsedLoginMethod();
+		if (method) {
+			setLastMethod(method);
+		}
+	}, []);
 
 	let callbackUrl = searchParams.get("callbackUrl") || "/";
 	if (callbackUrl === "%2Fauth%2Fsign-up") {
@@ -46,13 +53,17 @@ export default function SignInForm() {
 				password,
 			},
 			{
-				fetchOptions: {
-					headers: {
-						"x-captcha-token": captchaToken,
-					},
+				headers: {
+					"x-captcha-response": captchaToken,
 				},
-				onSuccess: () => {
-					router.push(callbackUrl);
+				onSuccess: (ctx) => {
+					if (ctx.data.twoFactorRedirect) {
+						setIsTwoFactorRequired(true);
+						setError(null);
+						setIsLoading(false);
+					} else {
+						router.push(callbackUrl);
+					}
 				},
 				onError: (ctx) => {
 					if (

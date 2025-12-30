@@ -207,7 +207,7 @@ describe("CocktailMixer", () => {
 	});
 
 	it("カクテル生成と検索が完了したら結果を表示する", async () => {
-		render(<CocktailMixer />);
+		const { rerender } = render(<CocktailMixer />);
 
 		// 材料を選択してMix
 		fireEvent.click(screen.getByTestId("select-ingredient"));
@@ -216,6 +216,9 @@ describe("CocktailMixer", () => {
 		// 結果が返ってきた状態をシミュレート
 		mockUseAICocktailGenerator.generatedCocktail = mockGeneratedCocktail;
 		mockUseCocktails.cocktails = mockSearchResults;
+
+		// モックの値を反映させるために再レンダリング
+		rerender(<CocktailMixer />);
 
 		// 結果が表示されていることを確認
 		await waitFor(() => {
