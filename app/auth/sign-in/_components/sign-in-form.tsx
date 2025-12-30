@@ -1,6 +1,7 @@
 "use client";
 
 import authClient from "@/app/lib/authClient";
+import { Turnstile } from "@marsidev/react-turnstile";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
@@ -12,6 +13,7 @@ export default function SignInForm() {
 	const [password, setPassword] = useState("");
 	const [error, setError] = useState<string | null>(null);
 	const [isLoading, setIsLoading] = useState(false);
+	const [captchaToken, setCaptchaToken] = useState<string | null>(null);
 	const router = useRouter();
 	const searchParams = useSearchParams();
 	const lastMethod = authClient.getLastUsedLoginMethod();
@@ -24,6 +26,12 @@ export default function SignInForm() {
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
 		setError(null);
+
+		if (!captchaToken) {
+			setError("CAPTCHAの認証が必要です");
+			return;
+		}
+
 		setIsLoading(true);
 
 		await authClient.signIn.email(
@@ -32,11 +40,14 @@ export default function SignInForm() {
 				password,
 			},
 			{
+				headers: {
+					"x-captcha-token": captchaToken,
+				},
 				onSuccess: () => {
 					router.push(callbackUrl);
 					// No need to set loading false as we redirect
 				},
-				onError: (ctx) => {
+				onError: (ctx: { error: { message: string } }) => {
 					setError(ctx.error.message);
 					setIsLoading(false);
 				},
@@ -102,6 +113,15 @@ export default function SignInForm() {
 							value={password}
 							onChange={(e) => setPassword(e.target.value)}
 							data-testid="password-input"
+						/>
+					</div>
+
+					<div className="flex justify-center py-2">
+						<Turnstile
+							siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || ""}
+							onSuccess={(token) => setCaptchaToken(token)}
+							onError={() => setCaptchaToken(null)}
+							onExpire={() => setCaptchaToken(null)}
 						/>
 					</div>
 

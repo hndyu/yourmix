@@ -3,17 +3,24 @@ import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { betterAuth } from "better-auth";
 import { withCloudflare } from "better-auth-cloudflare";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import { lastLoginMethod, openAPI } from "better-auth/plugins";
+import { captcha, lastLoginMethod, openAPI } from "better-auth/plugins";
 import type { DrizzleD1Database } from "drizzle-orm/d1";
 
 // Define an asynchronous function to build your auth configuration
 async function authBuilder() {
 	const googleClientId = process.env.GOOGLE_CLIENT_ID;
 	const googleClientSecret = process.env.GOOGLE_CLIENT_SECRET;
+	const turnstileSecretKey = process.env.TURNSTILE_SECRET_KEY;
 
 	if (!googleClientId || !googleClientSecret) {
 		throw new Error(
 			"Missing Google OAuth credentials. Please set GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET environment variables.",
+		);
+	}
+
+	if (!turnstileSecretKey) {
+		throw new Error(
+			"Missing Cloudflare Turnstile Secret Key. Please set TURNSTILE_SECRET_KEY environment variables.",
 		);
 	}
 
@@ -52,7 +59,14 @@ async function authBuilder() {
 				rateLimit: {
 					enabled: true,
 				},
-				plugins: [openAPI(), lastLoginMethod()],
+				plugins: [
+					openAPI(),
+					lastLoginMethod(),
+					captcha({
+						provider: "cloudflare-turnstile", // or google-recaptcha, hcaptcha, captchafox
+						secretKey: turnstileSecretKey,
+					}),
+				],
 			},
 		),
 	);

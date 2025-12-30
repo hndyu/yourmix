@@ -1,6 +1,7 @@
 "use client";
 
 import authClient from "@/app/lib/authClient";
+import { Turnstile } from "@marsidev/react-turnstile";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
@@ -15,6 +16,7 @@ export default function SignUpForm() {
 	const [error, setError] = useState<string | null>(null);
 	const [isLoading, setIsLoading] = useState(false);
 	const [showTermsError, setShowTermsError] = useState(false);
+	const [captchaToken, setCaptchaToken] = useState<string | null>(null);
 	const router = useRouter();
 	const searchParams = useSearchParams();
 
@@ -32,6 +34,11 @@ export default function SignUpForm() {
 			return;
 		}
 
+		if (!captchaToken) {
+			setError("CAPTCHAの認証が必要です");
+			return;
+		}
+
 		setIsLoading(true);
 
 		await authClient.signUp.email(
@@ -41,10 +48,13 @@ export default function SignUpForm() {
 				name,
 			},
 			{
+				headers: {
+					"x-captcha-token": captchaToken,
+				},
 				onSuccess: () => {
 					router.push(callbackUrl);
 				},
-				onError: (ctx) => {
+				onError: (ctx: { error: { message: string } }) => {
 					setError(ctx.error.message);
 					setIsLoading(false);
 				},
@@ -160,6 +170,15 @@ export default function SignUpForm() {
 							登録には利用規約への同意が必要です
 						</p>
 					)}
+
+					<div className="flex justify-center py-2">
+						<Turnstile
+							siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || ""}
+							onSuccess={(token) => setCaptchaToken(token)}
+							onError={() => setCaptchaToken(null)}
+							onExpire={() => setCaptchaToken(null)}
+						/>
+					</div>
 
 					<Button
 						type="submit"
