@@ -19,7 +19,9 @@ vi.mock("@/app/lib/authClient", () => ({
 	default: {
 		signIn: {
 			email: vi.fn(),
+			social: vi.fn(),
 		},
+		getLastUsedLoginMethod: vi.fn(() => null),
 	},
 }));
 
