@@ -41,10 +41,9 @@ export default function MyPage() {
 	}, [session?.user]);
 
 	// Check if the user has a credential (password) account linked
-	const isSocialOnly =
-		!isAccountsLoading && accounts.length > 0
-			? !accounts.some((acc) => acc.providerId === "credential")
-			: false;
+	const showSecurity =
+		!isAccountsLoading &&
+		accounts.some((acc) => acc.providerId === "credential");
 
 	const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
 	const [resultDialogOpen, setResultDialogOpen] = useState(false);
@@ -288,7 +287,7 @@ export default function MyPage() {
 				</div>
 			</div>
 
-			{!isSocialOnly && (
+			{showSecurity && (
 				<div className="bg-white dark:bg-stone-900 rounded-xl border border-stone-200 dark:border-stone-800 shadow-sm overflow-hidden">
 					<div className="p-6 border-b border-stone-200 dark:border-stone-800">
 						<h2 className="text-xl font-bold mb-1 text-stone-900 dark:text-white">
