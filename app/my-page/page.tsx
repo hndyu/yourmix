@@ -67,8 +67,55 @@ export default function MyPage() {
 	const [isEnablingTwoFactor, setIsEnablingTwoFactor] = useState(false);
 	const [twoFactorError, setTwoFactorError] = useState("");
 
+	// Password update states
+	const [isChangePasswordDialogOpen, setIsChangePasswordDialogOpen] =
+		useState(false);
+	const [currentPassword, setCurrentPassword] = useState("");
+	const [newPassword, setNewPassword] = useState("");
+	const [confirmNewPassword, setConfirmNewPassword] = useState("");
+	const [isUpdatingPassword, setIsUpdatingPassword] = useState(false);
+	const [passwordUpdateError, setPasswordUpdateError] = useState("");
+
 	const handleDeleteAccount = () => {
 		setConfirmDialogOpen(true);
+	};
+
+	const handleUpdatePassword = async () => {
+		if (newPassword !== confirmNewPassword) {
+			setPasswordUpdateError("新しいパスワードが一致しません。");
+			return;
+		}
+		if (newPassword.length < 8) {
+			setPasswordUpdateError(
+				"新しいパスワードは8文字以上である必要があります。",
+			);
+			return;
+		}
+
+		setIsUpdatingPassword(true);
+		setPasswordUpdateError("");
+
+		const { error } = await authClient.changePassword({
+			currentPassword,
+			newPassword,
+			revokeOtherSessions: true,
+		});
+
+		if (error) {
+			setPasswordUpdateError(
+				error.message || "パスワードの更新に失敗しました。",
+			);
+			setIsUpdatingPassword(false);
+			return;
+		}
+
+		setIsChangePasswordDialogOpen(false);
+		setCurrentPassword("");
+		setNewPassword("");
+		setConfirmNewPassword("");
+		setIsUpdatingPassword(false);
+		setResultDialogMessage("パスワードが正常に更新されました。");
+		setResultDialogOpen(true);
 	};
 
 	const executeDelete = async () => {
@@ -325,6 +372,127 @@ export default function MyPage() {
 									有効にする
 								</Button>
 							)}
+						</div>
+
+						<div className="mt-8 pt-6 border-t border-stone-200 dark:border-stone-800">
+							<div className="flex items-center justify-between">
+								<div>
+									<h3 className="font-bold text-stone-900 dark:text-white">
+										パスワード
+									</h3>
+									<p className="text-sm text-stone-600 dark:text-stone-400 mt-1">
+										アカウントのパスワードを更新します。
+									</p>
+								</div>
+								<Button
+									variant="outline"
+									onClick={() => {
+										setIsChangePasswordDialogOpen(true);
+										setPasswordUpdateError("");
+										setCurrentPassword("");
+										setNewPassword("");
+										setConfirmNewPassword("");
+									}}
+								>
+									パスワードを変更
+								</Button>
+							</div>
+						</div>
+					</div>
+				</div>
+			)}
+
+			{/* Change Password Dialog */}
+			{isChangePasswordDialogOpen && (
+				<div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in">
+					<div className="w-full max-w-sm bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-2xl p-6 shadow-2xl animate-in zoom-in-95">
+						<h3 className="text-lg font-bold text-stone-900 dark:text-white mb-2">
+							パスワードの変更
+						</h3>
+						<p className="text-stone-600 dark:text-stone-400 mb-6 text-sm">
+							現在のパスワードと新しいパスワードを入力してください。
+						</p>
+
+						{passwordUpdateError && (
+							<p className="text-red-600 text-xs mb-4">{passwordUpdateError}</p>
+						)}
+
+						<div className="space-y-4 mb-6">
+							<div>
+								<label
+									htmlFor="current-password"
+									className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1"
+								>
+									現在のパスワード
+								</label>
+								<input
+									type="password"
+									id="current-password"
+									value={currentPassword}
+									onChange={(e) => setCurrentPassword(e.target.value)}
+									className="w-full px-3 py-2 bg-white dark:bg-stone-800 border border-stone-300 dark:border-stone-700 rounded-lg text-stone-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary"
+									placeholder="現在のパスワード"
+								/>
+							</div>
+							<div>
+								<label
+									htmlFor="new-password"
+									className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1"
+								>
+									新しいパスワード
+								</label>
+								<input
+									type="password"
+									id="new-password"
+									value={newPassword}
+									onChange={(e) => setNewPassword(e.target.value)}
+									className="w-full px-3 py-2 bg-white dark:bg-stone-800 border border-stone-300 dark:border-stone-700 rounded-lg text-stone-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary"
+									placeholder="新しいパスワード（8文字以上）"
+								/>
+							</div>
+							<div>
+								<label
+									htmlFor="confirm-new-password"
+									className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1"
+								>
+									新しいパスワード（確認）
+								</label>
+								<input
+									type="password"
+									id="confirm-new-password"
+									value={confirmNewPassword}
+									onChange={(e) => setConfirmNewPassword(e.target.value)}
+									className="w-full px-3 py-2 bg-white dark:bg-stone-800 border border-stone-300 dark:border-stone-700 rounded-lg text-stone-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary"
+									placeholder="新しいパスワード（確認）"
+								/>
+							</div>
+						</div>
+
+						<div className="flex justify-end gap-3">
+							<Button
+								variant="ghost"
+								onClick={() => {
+									setIsChangePasswordDialogOpen(false);
+									setCurrentPassword("");
+									setNewPassword("");
+									setConfirmNewPassword("");
+								}}
+								disabled={isUpdatingPassword}
+							>
+								キャンセル
+							</Button>
+							<Button
+								className="bg-amber-600 hover:bg-amber-700 text-white"
+								onClick={handleUpdatePassword}
+								disabled={
+									isUpdatingPassword ||
+									!currentPassword ||
+									!newPassword ||
+									!confirmNewPassword
+								}
+							>
+								{isUpdatingPassword ? "更新中..." : "更新する"}
+							</Button>
 						</div>
 					</div>
 				</div>
