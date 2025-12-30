@@ -69,7 +69,11 @@ describe("AuthControls", () => {
 					name: "Test User",
 					email: "test@example.com",
 					image: "test-image.jpg",
-				} as User,
+					emailVerified: true,
+					createdAt: new Date(),
+					updatedAt: new Date(),
+					twoFactorEnabled: false,
+				},
 				session: {
 					id: "session-1",
 					userId: "1",
@@ -105,7 +109,12 @@ describe("AuthControls", () => {
 					id: "1",
 					name: "Test User",
 					email: "test@example.com",
-				} as User,
+					emailVerified: true,
+					createdAt: new Date(),
+					updatedAt: new Date(),
+					twoFactorEnabled: false,
+					image: null,
+				},
 				session: {
 					id: "session-1",
 					userId: "1",
@@ -142,7 +151,16 @@ describe("AuthControls", () => {
 	it("handles logout", async () => {
 		vi.mocked(authClient.useSession).mockReturnValue({
 			data: {
-				user: { id: "1", name: "Test User" } as User,
+				user: {
+					id: "1",
+					name: "Test User",
+					email: "test@example.com",
+					emailVerified: true,
+					createdAt: new Date(),
+					updatedAt: new Date(),
+					twoFactorEnabled: false,
+					image: null,
+				},
 				session: {
 					id: "session-1",
 					userId: "1",

@@ -48,8 +48,10 @@ export default function SignUpForm() {
 				name,
 			},
 			{
-				headers: {
-					"x-captcha-token": captchaToken,
+				fetchOptions: {
+					headers: {
+						"x-captcha-token": captchaToken,
+					},
 				},
 				onSuccess: () => {
 					router.push(callbackUrl);

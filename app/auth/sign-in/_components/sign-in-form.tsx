@@ -14,6 +14,12 @@ export default function SignInForm() {
 	const [error, setError] = useState<string | null>(null);
 	const [isLoading, setIsLoading] = useState(false);
 	const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+
+	// 2FA states
+	const [isTwoFactorRequired, setIsTwoFactorRequired] = useState(false);
+	const [twoFactorCode, setTwoFactorCode] = useState("");
+	const [isTrustedDevice, setIsTrustedDevice] = useState(false);
+
 	const router = useRouter();
 	const searchParams = useSearchParams();
 	const lastMethod = authClient.getLastUsedLoginMethod();
@@ -40,20 +46,128 @@ export default function SignInForm() {
 				password,
 			},
 			{
-				headers: {
-					"x-captcha-token": captchaToken,
+				fetchOptions: {
+					headers: {
+						"x-captcha-token": captchaToken,
+					},
 				},
 				onSuccess: () => {
 					router.push(callbackUrl);
-					// No need to set loading false as we redirect
 				},
-				onError: (ctx: { error: { message: string } }) => {
+				onError: (ctx) => {
+					if (
+						ctx.error.status === 403 &&
+						ctx.error.code === "TWO_FACTOR_REQUIRED"
+					) {
+						setIsTwoFactorRequired(true);
+						setError(null);
+					} else {
+						setError(ctx.error.message);
+					}
+					setIsLoading(false);
+				},
+			},
+		);
+	};
+
+	const handleTwoFactorSubmit = async (e: React.FormEvent) => {
+		e.preventDefault();
+		setError(null);
+		setIsLoading(true);
+
+		await authClient.twoFactor.verifyTotp(
+			{
+				code: twoFactorCode,
+				trustDevice: isTrustedDevice,
+			},
+			{
+				onSuccess: () => {
+					router.push(callbackUrl);
+				},
+				onError: (ctx) => {
 					setError(ctx.error.message);
 					setIsLoading(false);
 				},
 			},
 		);
 	};
+
+	if (isTwoFactorRequired) {
+		return (
+			<div className="max-w-md mx-auto w-full px-4 py-12">
+				<div className="bg-white/40 dark:bg-stone-900/40 border border-stone-300 dark:border-stone-800 rounded-2xl p-8 backdrop-blur shadow-2xl">
+					<div className="text-center mb-8">
+						<h1 className="text-2xl font-bold text-stone-800 dark:text-stone-100">
+							2要素認証
+						</h1>
+						<p className="text-sm text-stone-600 dark:text-stone-500 mt-2">
+							認証アプリに表示されている6桁のコードを入力してください。
+						</p>
+					</div>
+
+					{error && (
+						<div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-900/50 text-red-600 dark:text-red-200 text-sm p-3 rounded-lg mb-6">
+							{error}
+						</div>
+					)}
+
+					<form onSubmit={handleTwoFactorSubmit} className="space-y-6">
+						<div>
+							<label
+								htmlFor="2fa-code"
+								className="block text-sm font-medium text-stone-600 dark:text-stone-400 mb-1"
+							>
+								認証コード
+							</label>
+							<input
+								id="2fa-code"
+								type="text"
+								required
+								className="w-full bg-white dark:bg-stone-950 border border-stone-300 dark:border-stone-800 rounded-lg px-4 py-3 text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-primary text-center tracking-[0.5em] text-2xl font-mono"
+								placeholder="000000"
+								maxLength={6}
+								value={twoFactorCode}
+								onChange={(e) => setTwoFactorCode(e.target.value)}
+							/>
+						</div>
+
+						<div className="flex items-center gap-2">
+							<input
+								id="trust-device"
+								type="checkbox"
+								className="w-4 h-4 rounded border-stone-300 text-primary focus:ring-primary"
+								checked={isTrustedDevice}
+								onChange={(e) => setIsTrustedDevice(e.target.checked)}
+							/>
+							<label
+								htmlFor="trust-device"
+								className="text-sm text-stone-600 dark:text-stone-400"
+							>
+								このデバイスを信頼する
+							</label>
+						</div>
+
+						<Button
+							type="submit"
+							className="w-full"
+							isLoading={isLoading}
+							disabled={twoFactorCode.length !== 6}
+						>
+							認証してログイン
+						</Button>
+
+						<button
+							type="button"
+							onClick={() => setIsTwoFactorRequired(false)}
+							className="w-full text-sm text-stone-500 hover:text-stone-700 dark:hover:text-stone-300 transition-colors"
+						>
+							ログイン画面に戻る
+						</button>
+					</form>
+				</div>
+			</div>
+		);
+	}
 
 	return (
 		<div className="max-w-md mx-auto w-full px-4 py-12">

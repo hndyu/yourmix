@@ -2,13 +2,20 @@
 
 import authClient from "@/app/lib/authClient";
 import { useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "./ui/button";
 
 export default function SocialLogin() {
 	const [isLoading, setIsLoading] = useState<string | null>(null);
+	const [lastMethod, setLastMethod] = useState<string | null>(null);
 	const searchParams = useSearchParams();
-	const lastMethod = authClient.getLastUsedLoginMethod();
+
+	useEffect(() => {
+		const method = authClient.getLastUsedLoginMethod();
+		if (method) {
+			setLastMethod(method);
+		}
+	}, []);
 
 	const handleSocialLogin = async (provider: "google") => {
 		setIsLoading(provider);

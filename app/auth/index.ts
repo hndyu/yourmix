@@ -1,9 +1,15 @@
 import { getDb } from "@/app/db/db";
+import { passkey } from "@better-auth/passkey";
 import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { betterAuth } from "better-auth";
 import { withCloudflare } from "better-auth-cloudflare";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import { captcha, lastLoginMethod, openAPI } from "better-auth/plugins";
+import {
+	captcha,
+	lastLoginMethod,
+	openAPI,
+	twoFactor,
+} from "better-auth/plugins";
 import type { DrizzleD1Database } from "drizzle-orm/d1";
 
 // Define an asynchronous function to build your auth configuration
@@ -59,6 +65,7 @@ async function authBuilder() {
 				rateLimit: {
 					enabled: true,
 				},
+				appName: "YourMix", // provide your app name. It'll be used as an issuer.
 				plugins: [
 					openAPI(),
 					lastLoginMethod(),
@@ -66,6 +73,8 @@ async function authBuilder() {
 						provider: "cloudflare-turnstile", // or google-recaptcha, hcaptcha, captchafox
 						secretKey: turnstileSecretKey,
 					}),
+					twoFactor({ issuer: "YourMix" }),
+					passkey(),
 				],
 			},
 		),
@@ -99,7 +108,13 @@ export const auth = betterAuth({
 			emailAndPassword: {
 				enabled: true,
 			},
-			plugins: [openAPI(), lastLoginMethod()],
+			appName: "YourMix", // provide your app name. It'll be used as an issuer.
+			plugins: [
+				openAPI(),
+				lastLoginMethod(),
+				twoFactor({ issuer: "YourMix" }),
+				passkey(),
+			],
 		},
 	),
 

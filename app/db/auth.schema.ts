@@ -16,6 +16,9 @@ export const users = sqliteTable("users", {
 		.default(sql`(cast(unixepoch('subsecond') * 1000 as integer))`)
 		.$onUpdate(() => /* @__PURE__ */ new Date())
 		.notNull(),
+	twoFactorEnabled: integer("two_factor_enabled", { mode: "boolean" }).default(
+		false,
+	),
 });
 
 export const sessions = sqliteTable(
@@ -95,9 +98,50 @@ export const verifications = sqliteTable(
 	(table) => [index("verifications_identifier_idx").on(table.identifier)],
 );
 
+export const twoFactors = sqliteTable(
+	"two_factors",
+	{
+		id: text("id").primaryKey(),
+		secret: text("secret").notNull(),
+		backupCodes: text("backup_codes").notNull(),
+		userId: text("user_id")
+			.notNull()
+			.references(() => users.id, { onDelete: "cascade" }),
+	},
+	(table) => [
+		index("twoFactors_secret_idx").on(table.secret),
+		index("twoFactors_userId_idx").on(table.userId),
+	],
+);
+
+export const passkeys = sqliteTable(
+	"passkeys",
+	{
+		id: text("id").primaryKey(),
+		name: text("name"),
+		publicKey: text("public_key").notNull(),
+		userId: text("user_id")
+			.notNull()
+			.references(() => users.id, { onDelete: "cascade" }),
+		credentialID: text("credential_id").notNull(),
+		counter: integer("counter").notNull(),
+		deviceType: text("device_type").notNull(),
+		backedUp: integer("backed_up", { mode: "boolean" }).notNull(),
+		transports: text("transports"),
+		createdAt: integer("created_at", { mode: "timestamp_ms" }),
+		aaguid: text("aaguid"),
+	},
+	(table) => [
+		index("passkeys_userId_idx").on(table.userId),
+		index("passkeys_credentialID_idx").on(table.credentialID),
+	],
+);
+
 export const usersRelations = relations(users, ({ many }) => ({
 	sessions: many(sessions),
 	accounts: many(accounts),
+	twoFactors: many(twoFactors),
+	passkeys: many(passkeys),
 }));
 
 export const sessionsRelations = relations(sessions, ({ one }) => ({
@@ -110,6 +154,20 @@ export const sessionsRelations = relations(sessions, ({ one }) => ({
 export const accountsRelations = relations(accounts, ({ one }) => ({
 	users: one(users, {
 		fields: [accounts.userId],
+		references: [users.id],
+	}),
+}));
+
+export const twoFactorsRelations = relations(twoFactors, ({ one }) => ({
+	users: one(users, {
+		fields: [twoFactors.userId],
+		references: [users.id],
+	}),
+}));
+
+export const passkeysRelations = relations(passkeys, ({ one }) => ({
+	users: one(users, {
+		fields: [passkeys.userId],
 		references: [users.id],
 	}),
 }));
