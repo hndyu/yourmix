@@ -50,6 +50,12 @@ export default function IngredientSelector({
 		onIngredientsChange,
 	});
 
+	// Optimize lookups in the render loop
+	const selectedIdsSet = React.useMemo(
+		() => new Set(selectedIngredientIds),
+		[selectedIngredientIds],
+	);
+
 	// Wrapper handlers to manage toast feedback
 	const handleGroupToggle = (ingredient: Ingredient) => {
 		if (disabled) return;
@@ -141,7 +147,7 @@ export default function IngredientSelector({
 						// 注意: IDがない場合(空配列)はfalseとする
 						const isGroupSelectedWhole =
 							groupIds.length > 0 &&
-							groupIds.every((id) => selectedIngredientIds.includes(id));
+							groupIds.every((id) => selectedIdsSet.has(id));
 
 						// 2. 個別に選択されている詳細名を特定 (IDベースで判定)
 						// グループ全体選択時は、詳細チップの個別表示はしない（カード全体の選択として見せる）
@@ -157,9 +163,7 @@ export default function IngredientSelector({
 								// IDが含まれている、または（互換性のため）名前が含まれている場合
 								// 基本的にIDで判定するが、データ不整合に備えて名前もチェックするのはありだが、
 								// 今回はロジック整理のためID優先。
-								return (
-									detailId !== -1 && selectedIngredientIds.includes(detailId)
-								);
+								return detailId !== -1 && selectedIdsSet.has(detailId);
 							});
 						}
 

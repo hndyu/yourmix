@@ -20,35 +20,49 @@ export function useIngredientSelection({
 	onIngredientsChange,
 	maxSelectionCount = 5,
 }: UseIngredientSelectionProps) {
+	// 材料名から所属するグループ名を逆引きするためのMapを事前作成
+	const { groupNamesSet, detailToGroupNameMap } = useMemo(() => {
+		const names = new Set<string>();
+		const map = new Map<string, string>();
+		for (const ing of allIngredients) {
+			names.add(ing.name);
+			if (ing.actualNames) {
+				for (const detailName of ing.actualNames) {
+					// グループ名と詳細名が同じ場合は、グループとしての判定を優先するため、
+					// 異なる場合のみMapに登録する。
+					if (detailName !== ing.name) {
+						map.set(detailName, ing.name);
+					}
+				}
+			}
+		}
+		return { groupNamesSet: names, detailToGroupNameMap: map };
+	}, [allIngredients]);
+
 	// 選択された材料の論理的な数を計算
 	const currentTotalCount = useMemo(() => {
 		let count = 0;
-		for (const ingredient of allIngredients) {
-			const detailNames = ingredient.actualNames || [];
+		const countedGroupsAsWhole = new Set<string>();
 
-			// グループ名が選択リストに含まれているか
-			// 注意: グループ名と詳細名が重複する場合（例: "ライム"）、
-			// グループとして選択されているのか、詳細として選択されているのかを判別する必要がある。
-			// ここでは、単純化のために「グループ名が含まれていればグループ選択」とみなすか、
-			// IDの包含関係で判定することも可能だが、現状の仕様に合わせて名前ベースで判定する。
-			const isGroupSelected = selectedIngredientNames.includes(ingredient.name);
-
-			// グループ内の詳細材料で選択されているもの
-			const selectedDetails = selectedIngredientNames.filter((n) =>
-				detailNames.includes(n),
-			);
-
-			if (isGroupSelected) {
-				// グループ選択されている場合は1カウント
-				// ただし、グループ名 == 詳細名 の場合、詳細としてカウントされないように制御が必要
+		// 1. まずグループとしての選択をカウント
+		for (const name of selectedIngredientNames) {
+			if (groupNamesSet.has(name)) {
 				count += 1;
-			} else {
-				// グループ選択されていない場合、選択されている詳細の数を加算
-				count += selectedDetails.length;
+				countedGroupsAsWhole.add(name);
+			}
+		}
+
+		// 2. 次に、グループとして選択されていない詳細材料の選択をカウント
+		for (const name of selectedIngredientNames) {
+			if (!groupNamesSet.has(name)) {
+				const parentGroupName = detailToGroupNameMap.get(name);
+				if (!parentGroupName || !countedGroupsAsWhole.has(parentGroupName)) {
+					count += 1;
+				}
 			}
 		}
 		return count;
-	}, [allIngredients, selectedIngredientNames]);
+	}, [selectedIngredientNames, groupNamesSet, detailToGroupNameMap]);
 
 	const toggleGroup = useCallback(
 		(group: Ingredient): SelectionResult => {
