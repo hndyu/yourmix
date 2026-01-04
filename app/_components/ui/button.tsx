@@ -45,7 +45,11 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 
 		if (href) {
 			return (
-				<Link href={href} className={combinedClassName}>
+				<Link
+					href={href}
+					className={combinedClassName}
+					{...(props as React.AnchorHTMLAttributes<HTMLAnchorElement>)}
+				>
 					{isLoading && <span className="mr-2 animate-spin">⏳</span>}
 					{children}
 				</Link>
