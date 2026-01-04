@@ -20,6 +20,8 @@ export default function SignInForm() {
 	const [isTwoFactorRequired, setIsTwoFactorRequired] = useState(false);
 	const [twoFactorCode, setTwoFactorCode] = useState("");
 	const [isTrustedDevice, setIsTrustedDevice] = useState(false);
+	const [isBackupCodeMode, setIsBackupCodeMode] = useState(false);
+	const [backupCode, setBackupCode] = useState("");
 
 	const router = useRouter();
 	const searchParams = useSearchParams();
@@ -86,21 +88,38 @@ export default function SignInForm() {
 		setError(null);
 		setIsLoading(true);
 
-		await authClient.twoFactor.verifyTotp(
-			{
-				code: twoFactorCode,
-				trustDevice: isTrustedDevice,
-			},
-			{
-				onSuccess: () => {
-					router.push(callbackUrl);
+		if (isBackupCodeMode) {
+			await authClient.twoFactor.verifyBackupCode(
+				{
+					code: backupCode,
 				},
-				onError: (ctx) => {
-					setError(ctx.error.message);
-					setIsLoading(false);
+				{
+					onSuccess: () => {
+						router.push(callbackUrl);
+					},
+					onError: (ctx) => {
+						setError(ctx.error.message);
+						setIsLoading(false);
+					},
 				},
-			},
-		);
+			);
+		} else {
+			await authClient.twoFactor.verifyTotp(
+				{
+					code: twoFactorCode,
+					trustDevice: isTrustedDevice,
+				},
+				{
+					onSuccess: () => {
+						router.push(callbackUrl);
+					},
+					onError: (ctx) => {
+						setError(ctx.error.message);
+						setIsLoading(false);
+					},
+				},
+			);
+		}
 	};
 
 	if (isTwoFactorRequired) {
@@ -112,7 +131,9 @@ export default function SignInForm() {
 							2要素認証
 						</h1>
 						<p className="text-sm text-stone-600 dark:text-stone-500 mt-2">
-							認証アプリに表示されている6桁のコードを入力してください。
+							{isBackupCodeMode
+								? "保存したバックアップコードを入力してください。"
+								: "認証アプリに表示されている6桁のコードを入力してください。"}
 						</p>
 					</div>
 
@@ -123,57 +144,98 @@ export default function SignInForm() {
 					)}
 
 					<form onSubmit={handleTwoFactorSubmit} className="space-y-6">
-						<div>
-							<label
-								htmlFor="2fa-code"
-								className="block text-sm font-medium text-stone-600 dark:text-stone-400 mb-1"
-							>
-								認証コード
-							</label>
-							<input
-								id="2fa-code"
-								type="text"
-								required
-								className="w-full bg-white dark:bg-stone-950 border border-stone-300 dark:border-stone-800 rounded-lg px-4 py-3 text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-primary text-center tracking-[0.5em] text-2xl font-mono"
-								placeholder="000000"
-								maxLength={6}
-								value={twoFactorCode}
-								onChange={(e) => setTwoFactorCode(e.target.value)}
-							/>
-						</div>
+						{isBackupCodeMode ? (
+							<div>
+								<label
+									htmlFor="backup-code"
+									className="block text-sm font-medium text-stone-600 dark:text-stone-400 mb-1"
+								>
+									バックアップコード
+								</label>
+								<input
+									id="backup-code"
+									type="text"
+									required
+									className="w-full bg-white dark:bg-stone-950 border border-stone-300 dark:border-stone-800 rounded-lg px-4 py-3 text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-primary text-center tracking-widest text-xl font-mono uppercase"
+									placeholder="XXXXXXXX"
+									value={backupCode}
+									onChange={(e) => setBackupCode(e.target.value)}
+								/>
+							</div>
+						) : (
+							<>
+								<div>
+									<label
+										htmlFor="2fa-code"
+										className="block text-sm font-medium text-stone-600 dark:text-stone-400 mb-1"
+									>
+										認証コード
+									</label>
+									<input
+										id="2fa-code"
+										type="text"
+										required
+										className="w-full bg-white dark:bg-stone-950 border border-stone-300 dark:border-stone-800 rounded-lg px-4 py-3 text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-primary text-center tracking-[0.5em] text-2xl font-mono"
+										placeholder="000000"
+										maxLength={6}
+										value={twoFactorCode}
+										onChange={(e) => setTwoFactorCode(e.target.value)}
+									/>
+								</div>
 
-						<div className="flex items-center gap-2">
-							<input
-								id="trust-device"
-								type="checkbox"
-								className="w-4 h-4 rounded border-stone-300 text-primary focus:ring-primary"
-								checked={isTrustedDevice}
-								onChange={(e) => setIsTrustedDevice(e.target.checked)}
-							/>
-							<label
-								htmlFor="trust-device"
-								className="text-sm text-stone-600 dark:text-stone-400"
-							>
-								このデバイスを信頼する
-							</label>
-						</div>
+								<div className="flex items-center gap-2">
+									<input
+										id="trust-device"
+										type="checkbox"
+										className="w-4 h-4 rounded border-stone-300 text-primary focus:ring-primary"
+										checked={isTrustedDevice}
+										onChange={(e) => setIsTrustedDevice(e.target.checked)}
+									/>
+									<label
+										htmlFor="trust-device"
+										className="text-sm text-stone-600 dark:text-stone-400"
+									>
+										このデバイスを信頼する
+									</label>
+								</div>
+							</>
+						)}
 
 						<Button
 							type="submit"
 							className="w-full"
 							isLoading={isLoading}
-							disabled={twoFactorCode.length !== 6}
+							disabled={
+								isBackupCodeMode ? !backupCode : twoFactorCode.length !== 6
+							}
 						>
 							認証してログイン
 						</Button>
 
-						<button
-							type="button"
-							onClick={() => setIsTwoFactorRequired(false)}
-							className="w-full text-sm text-stone-500 hover:text-stone-700 dark:hover:text-stone-300 transition-colors"
-						>
-							ログイン画面に戻る
-						</button>
+						<div className="flex flex-col gap-3">
+							<button
+								type="button"
+								onClick={() => {
+									setIsBackupCodeMode(!isBackupCodeMode);
+									setError(null);
+								}}
+								className="w-full text-sm text-blue-600 dark:text-primary hover:underline transition-colors"
+							>
+								{isBackupCodeMode
+									? "認証コード（TOTP）を使用する"
+									: "バックアップコードを使用する"}
+							</button>
+							<button
+								type="button"
+								onClick={() => {
+									setIsTwoFactorRequired(false);
+									setIsBackupCodeMode(false);
+								}}
+								className="w-full text-sm text-stone-500 hover:text-stone-700 dark:hover:text-stone-300 transition-colors"
+							>
+								ログイン画面に戻る
+							</button>
+						</div>
 					</form>
 				</div>
 			</div>
