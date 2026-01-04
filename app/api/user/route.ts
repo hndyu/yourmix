@@ -72,7 +72,8 @@ export async function PATCH(req: NextRequest) {
 		}
 
 		if (email !== undefined) {
-			if (typeof email !== "string" || !email.includes("@")) {
+			const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+			if (typeof email !== "string" || !emailRegex.test(email)) {
 				return NextResponse.json(
 					{ error: "無効なメールアドレスです。" },
 					{ status: 400 },
