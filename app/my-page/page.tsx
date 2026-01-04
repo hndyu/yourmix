@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/app/_components/ui/button";
+import { Toast, type ToastSeverity } from "@/app/_components/ui/toast";
 import authClient from "@/app/lib/authClient";
 import { redirect, useRouter } from "next/navigation";
 import { QRCodeSVG } from "qrcode.react";
@@ -66,6 +67,17 @@ export default function MyPage() {
 	const [twoFactorCode, setTwoFactorCode] = useState("");
 	const [isEnablingTwoFactor, setIsEnablingTwoFactor] = useState(false);
 	const [twoFactorError, setTwoFactorError] = useState("");
+	const [showBackupCodes, setShowBackupCodes] = useState(false);
+
+	const [toastState, setToastState] = useState<{
+		open: boolean;
+		message: string;
+		severity: ToastSeverity;
+	}>({
+		open: false,
+		message: "",
+		severity: "info",
+	});
 
 	// Password update states
 	const [isChangePasswordDialogOpen, setIsChangePasswordDialogOpen] =
@@ -144,6 +156,7 @@ export default function MyPage() {
 
 	const handleResultDialogClose = async () => {
 		setResultDialogOpen(false);
+		setShowBackupCodes(false);
 		if (resultDialogMessage === "アカウントが削除されました。") {
 			await authClient.signOut();
 			router.push("/");
@@ -262,9 +275,8 @@ export default function MyPage() {
 		setTotpUri("");
 		setTwoFactorCode("");
 		setIsEnablingTwoFactor(false);
-		setResultDialogMessage(
-			`2要素認証が有効になりました。\n\nバックアップコードを保存してください。これらはアカウントにアクセスできなくなった際の唯一の復旧手段です：\n\n${backupCodes.join("\n")}`,
-		);
+		setShowBackupCodes(true);
+		setResultDialogMessage("2要素認証が有効になりました。");
 		setResultDialogOpen(true);
 	};
 
@@ -273,6 +285,34 @@ export default function MyPage() {
 		setIsPasswordDialogOpen(true);
 		setPassword("");
 		setTwoFactorError("");
+	};
+
+	const handleCopyBackupCodes = async () => {
+		try {
+			await navigator.clipboard.writeText(backupCodes.join("\n"));
+			setToastState({
+				open: true,
+				message: "クリップボードにコピーしました",
+				severity: "success",
+			});
+		} catch (err) {
+			console.error("Failed to copy:", err);
+			setToastState({
+				open: true,
+				message: "コピーに失敗しました",
+				severity: "error",
+			});
+		}
+	};
+
+	const handleDownloadBackupCodes = () => {
+		const element = document.createElement("a");
+		const file = new Blob([backupCodes.join("\n")], { type: "text/plain" });
+		element.href = URL.createObjectURL(file);
+		element.download = "backup-codes.txt";
+		document.body.appendChild(element);
+		element.click();
+		document.body.removeChild(element);
 	};
 
 	if (isPending) {
@@ -714,17 +754,59 @@ export default function MyPage() {
 				<div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in">
 					<div className="w-full max-w-sm bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-2xl p-6 shadow-2xl animate-in zoom-in-95">
 						<h3 className="text-lg font-bold text-stone-900 dark:text-white mb-2">
-							処理結果
+							{showBackupCodes ? "バックアップコードの保存" : "処理結果"}
 						</h3>
-						<p className="text-stone-600 dark:text-stone-400 mb-6 text-sm whitespace-pre-wrap">
-							{resultDialogMessage}
-						</p>
+						{showBackupCodes ? (
+							<>
+								<p className="text-stone-600 dark:text-stone-400 mb-4 text-sm">
+									2要素認証が有効になりました。
+									<br />
+									<br />
+									バックアップコードを保存してください。これらはアカウントにアクセスできなくなった際の唯一の復旧手段です：
+								</p>
+								<div className="bg-stone-100 dark:bg-stone-800 p-4 rounded-lg mb-4 font-mono text-sm text-center">
+									{backupCodes.map((code) => (
+										<div key={code} className="py-1">
+											{code}
+										</div>
+									))}
+								</div>
+								<div className="flex gap-2 mb-6">
+									<Button
+										variant="outline"
+										className="flex-1"
+										onClick={handleCopyBackupCodes}
+									>
+										クリップボードにコピー
+									</Button>
+									<Button
+										variant="outline"
+										className="flex-1"
+										onClick={handleDownloadBackupCodes}
+									>
+										テキストとして保存
+									</Button>
+								</div>
+							</>
+						) : (
+							<p className="text-stone-600 dark:text-stone-400 mb-6 text-sm whitespace-pre-wrap">
+								{resultDialogMessage}
+							</p>
+						)}
+
 						<div className="flex justify-end gap-3">
 							<Button onClick={handleResultDialogClose}>閉じる</Button>
 						</div>
 					</div>
 				</div>
 			)}
+
+			<Toast
+				open={toastState.open}
+				message={toastState.message}
+				severity={toastState.severity}
+				onClose={() => setToastState((prev) => ({ ...prev, open: false }))}
+			/>
 		</main>
 	);
 }
