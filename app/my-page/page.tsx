@@ -15,6 +15,8 @@ interface Account {
 	providerId: string;
 }
 
+type ResultDialogAction = "none" | "signOut" | "refresh";
+
 export default function MyPage() {
 	const { data: session, isPending, refetch } = authClient.useSession();
 	const router = useRouter();
@@ -49,6 +51,14 @@ export default function MyPage() {
 	const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
 	const [resultDialogOpen, setResultDialogOpen] = useState(false);
 	const [resultDialogMessage, setResultDialogMessage] = useState("");
+	const [resultDialogAction, setResultDialogAction] =
+		useState<ResultDialogAction>("none");
+
+	const showResult = (message: string, action: ResultDialogAction = "none") => {
+		setResultDialogMessage(message);
+		setResultDialogAction(action);
+		setResultDialogOpen(true);
+	};
 
 	const [editDialogOpen, setEditDialogOpen] = useState(false);
 	const [newName, setNewName] = useState("");
@@ -126,8 +136,7 @@ export default function MyPage() {
 		setNewPassword("");
 		setConfirmNewPassword("");
 		setIsUpdatingPassword(false);
-		setResultDialogMessage("パスワードが正常に更新されました。");
-		setResultDialogOpen(true);
+		showResult("パスワードが正常に更新されました。");
 	};
 
 	const executeDelete = async () => {
@@ -138,33 +147,27 @@ export default function MyPage() {
 			});
 			if (res.ok) {
 				// Also sign out on the client
-				setResultDialogMessage("アカウントが削除されました。");
-				setResultDialogOpen(true);
+				showResult("アカウントが削除されました。", "signOut");
 			} else {
 				const data: ErrorResponse = await res.json();
-				setResultDialogMessage(
+				showResult(
 					`エラー: ${data.error || "アカウントの削除に失敗しました。"}`,
 				);
-				setResultDialogOpen(true);
 			}
 		} catch (error) {
 			console.error("Account deletion failed:", error);
-			setResultDialogMessage("アカウントの削除中にエラーが発生しました。");
-			setResultDialogOpen(true);
+			showResult("アカウントの削除中にエラーが発生しました。");
 		}
 	};
 
 	const handleResultDialogClose = async () => {
 		setResultDialogOpen(false);
 		setShowBackupCodes(false);
-		if (resultDialogMessage === "アカウントが削除されました。") {
+		if (resultDialogAction === "signOut") {
 			await authClient.signOut();
 			router.push("/");
 			router.refresh(); // To ensure session is cleared
-		} else if (
-			resultDialogMessage === "プロフィールが更新されました。" ||
-			resultDialogMessage.includes("確認メール")
-		) {
+		} else if (resultDialogAction === "refresh") {
 			router.refresh(); // Refresh to show new name or state
 		}
 	};
@@ -192,19 +195,16 @@ export default function MyPage() {
 			if (res.ok) {
 				await refetch();
 				setEditDialogOpen(false);
-				setResultDialogMessage("プロフィールが更新されました。");
-				setResultDialogOpen(true);
+				showResult("プロフィールが更新されました。", "refresh");
 			} else {
 				const data: ErrorResponse = await res.json();
-				setResultDialogMessage(
+				showResult(
 					`エラー: ${data.error || "プロフィールの更新に失敗しました。"}`,
 				);
-				setResultDialogOpen(true);
 			}
 		} catch (error) {
 			console.error("Profile update failed:", error);
-			setResultDialogMessage("プロフィールの更新中にエラーが発生しました。");
-			setResultDialogOpen(true);
+			showResult("プロフィールの更新中にエラーが発生しました。");
 		} finally {
 			setIsSaving(false);
 		}
@@ -242,8 +242,7 @@ export default function MyPage() {
 			await refetch();
 			setIsPasswordDialogOpen(false);
 			setPassword("");
-			setResultDialogMessage("2要素認証を無効にしました。");
-			setResultDialogOpen(true);
+			showResult("2要素認証を無効にしました。");
 		}
 		setIsEnablingTwoFactor(false);
 	};
@@ -276,8 +275,7 @@ export default function MyPage() {
 		setTwoFactorCode("");
 		setIsEnablingTwoFactor(false);
 		setShowBackupCodes(true);
-		setResultDialogMessage("2要素認証が有効になりました。");
-		setResultDialogOpen(true);
+		showResult("2要素認証が有効になりました。");
 	};
 
 	const handleDisableTwoFactor = () => {
