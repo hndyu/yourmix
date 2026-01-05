@@ -1,13 +1,35 @@
 import { getDb } from "@/app/db/db";
+import { passkey } from "@better-auth/passkey";
 import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { betterAuth } from "better-auth";
 import { withCloudflare } from "better-auth-cloudflare";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import { openAPI } from "better-auth/plugins";
+import {
+	captcha,
+	lastLoginMethod,
+	openAPI,
+	twoFactor,
+} from "better-auth/plugins";
 import type { DrizzleD1Database } from "drizzle-orm/d1";
 
 // Define an asynchronous function to build your auth configuration
 async function authBuilder() {
+	const googleClientId = process.env.GOOGLE_CLIENT_ID;
+	const googleClientSecret = process.env.GOOGLE_CLIENT_SECRET;
+	const turnstileSecretKey = process.env.TURNSTILE_SECRET_KEY;
+
+	if (!googleClientId || !googleClientSecret) {
+		console.warn(
+			"Google OAuth credentials not found. Google login will be disabled.",
+		);
+	}
+
+	if (!turnstileSecretKey) {
+		console.warn(
+			"Cloudflare Turnstile Secret Key not found. Captcha will be disabled.",
+		);
+	}
+
 	const dbInstance = await getDb(); // Get your D1 database instance
 	return betterAuth(
 		withCloudflare(
@@ -28,7 +50,14 @@ async function authBuilder() {
 					enabled: true,
 				},
 				socialProviders: {
-					// Configure social providers as needed
+					...(googleClientId && googleClientSecret
+						? {
+								google: {
+									clientId: googleClientId,
+									clientSecret: googleClientSecret,
+								},
+							}
+						: {}),
 				},
 				trustedOrigins: [
 					"http://127.0.0.1:3000",
@@ -40,7 +69,21 @@ async function authBuilder() {
 				rateLimit: {
 					enabled: true,
 				},
-				plugins: [openAPI()],
+				appName: "YourMix", // provide your app name. It'll be used as an issuer.
+				plugins: [
+					openAPI(),
+					lastLoginMethod(),
+					...(turnstileSecretKey
+						? [
+								captcha({
+									provider: "cloudflare-turnstile", // or google-recaptcha, hcaptcha, captchafox
+									secretKey: turnstileSecretKey,
+								}),
+							]
+						: []),
+					twoFactor({ issuer: "YourMix" }),
+					passkey(),
+				],
 			},
 		),
 	);
@@ -73,7 +116,13 @@ export const auth = betterAuth({
 			emailAndPassword: {
 				enabled: true,
 			},
-			plugins: [openAPI()],
+			appName: "YourMix", // provide your app name. It'll be used as an issuer.
+			plugins: [
+				openAPI(),
+				lastLoginMethod(),
+				twoFactor({ issuer: "YourMix" }),
+				passkey(),
+			],
 		},
 	),
 

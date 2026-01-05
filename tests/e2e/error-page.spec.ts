@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { expect, test } from "@playwright/test";
 
 test.describe("Error Page", () => {
 	test("should display the error page when an error is thrown and allow retrying", async ({
@@ -21,7 +21,9 @@ test.describe("Error Page", () => {
 			page.getByRole("heading", { name: "予期せぬエラーが発生しました" }),
 		).toBeVisible();
 		await expect(
-			page.getByText("ご迷惑をおかけしております。時間をおいて再度お試しください。"),
+			page.getByText(
+				"ご迷惑をおかけしております。時間をおいて再度お試しください。",
+			),
 		).toBeVisible();
 		const retryButton = page.getByRole("button", { name: "再試行" });
 		await expect(retryButton).toBeVisible();

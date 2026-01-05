@@ -2,15 +2,17 @@ import { Suspense } from "react";
 import SignUpForm from "./_components/sign-up-form";
 
 export default function SignUpPage() {
+	const googleClientId = process.env.GOOGLE_CLIENT_ID;
+
 	return (
 		<Suspense
 			fallback={
 				<div className="flex justify-center items-center min-h-[60vh]">
-					<div className="w-8 h-8 border-4 border-stone-800 border-t-primary rounded-full animate-spin" />
+					<div className="w-8 h-8 border-4 border-stone-200 dark:border-stone-800 border-t-primary rounded-full animate-spin" />
 				</div>
 			}
 		>
-			<SignUpForm />
+			<SignUpForm googleClientId={googleClientId} />
 		</Suspense>
 	);
 }

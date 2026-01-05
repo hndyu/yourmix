@@ -18,15 +18,17 @@ export async function generateOriginalCocktail(
 		});
 
 		if (!response.ok) {
-			const errorData = (await response.json()) as { error?: string };
-			throw new Error(errorData.error || "カクテルの生成に失敗しました。");
+			const errorData = (await response.json().catch(() => ({}))) as {
+				error?: string;
+			};
+			throw new Error(errorData?.error || "カクテルの生成に失敗しました。");
 		}
 
 		const cocktailData = (await response.json()) as Cocktail;
 
 		// APIからのデータがCocktail型に準拠していることを確認
 		// ここでは簡単なチェックのみ
-		if (!cocktailData.name || !cocktailData.ingredients) {
+		if (!cocktailData || !cocktailData.name || !cocktailData.ingredients) {
 			throw new Error("受信したカクテルデータの形式が正しくありません。");
 		}
 

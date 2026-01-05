@@ -14,7 +14,7 @@ export default function IngredientSearch({
 	return (
 		<div className="relative w-full max-w-md mx-auto mb-6">
 			<div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-				<Search className="text-stone-500 dark:text-stone-500" size={18} />
+				<Search className="text-stone-400 dark:text-stone-500" size={18} />
 			</div>
 			<input
 				type="text"

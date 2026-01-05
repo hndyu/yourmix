@@ -1,9 +1,9 @@
-import { getCloudflareContext } from "@opennextjs/cloudflare";
-import { NextResponse } from "next/server";
-import { runSeed } from "../../../../scripts/seed";
 import type { D1Database } from "@cloudflare/workers-types";
+import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { drizzle } from "drizzle-orm/d1";
+import { NextResponse } from "next/server";
 import * as schema from "../../../../app/db/schema";
+import { runSeed } from "../../../../scripts/seed";
 
 /**
  * データベースにシードデータを投入する管理用APIエンドポイント

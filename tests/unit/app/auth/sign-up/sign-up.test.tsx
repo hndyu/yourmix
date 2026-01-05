@@ -1,7 +1,7 @@
 import SignUpPage from "@/app/auth/sign-up/page";
 import authClient from "@/app/lib/authClient";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 // Mock next/navigation
 const pushMock = vi.fn();
@@ -20,12 +20,33 @@ vi.mock("@/app/lib/authClient", () => ({
 		signUp: {
 			email: vi.fn(),
 		},
+		signIn: {
+			social: vi.fn(),
+		},
+		getLastUsedLoginMethod: vi.fn(() => null),
 	},
+}));
+
+vi.mock("@marsidev/react-turnstile", () => ({
+	Turnstile: ({ onSuccess }: { onSuccess: (token: string) => void }) => (
+		<button
+			type="button"
+			data-testid="turnstile-mock"
+			onClick={() => onSuccess("mock-token")}
+		>
+			Turnstile
+		</button>
+	),
 }));
 
 describe("SignUpPage", () => {
 	beforeEach(() => {
 		vi.clearAllMocks();
+		vi.stubEnv("NEXT_PUBLIC_TURNSTILE_SITE_KEY", "mock-site-key");
+	});
+
+	afterEach(() => {
+		vi.unstubAllEnvs();
 	});
 
 	it("renders all form fields", () => {
@@ -118,6 +139,8 @@ describe("SignUpPage", () => {
 		// Click the checkbox to agree to the terms
 		fireEvent.click(screen.getByTestId("terms-agreement-checkbox"));
 
+		fireEvent.click(screen.getByTestId("turnstile-mock"));
+
 		fireEvent.click(screen.getByTestId("sign-up-button"));
 
 		await waitFor(() => {
@@ -172,6 +195,8 @@ describe("SignUpPage", () => {
 
 		// Click the checkbox to agree to the terms
 		fireEvent.click(screen.getByTestId("terms-agreement-checkbox"));
+
+		fireEvent.click(screen.getByTestId("turnstile-mock"));
 
 		fireEvent.click(screen.getByTestId("sign-up-button"));
 

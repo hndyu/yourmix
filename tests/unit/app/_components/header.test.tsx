@@ -1,7 +1,7 @@
-import * as React from "react";
-import { render, screen } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
 import Header from "@/app/_components/header";
+import { render, screen } from "@testing-library/react";
+import * as React from "react";
+import { describe, expect, it, vi } from "vitest";
 
 // next/navigation の usePathname をモック化
 const usePathnameMock = vi.fn();

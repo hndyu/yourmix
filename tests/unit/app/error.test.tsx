@@ -1,8 +1,8 @@
+import CustomError from "@/app/error";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import * as React from "react";
-import CustomError from "@/app/error";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 describe("CustomError", () => {
 	const mockError = new Error("Test error");

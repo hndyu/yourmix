@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useCallback, useState } from "react";
 import type { Cocktail } from "../types/cocktail";
 import { generateOriginalCocktail } from "./cocktail-generator";
 

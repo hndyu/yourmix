@@ -6,6 +6,7 @@ import { Toast, type ToastSeverity } from "../ui/toast";
 import CategoryNav from "./category-nav";
 import IngredientCard from "./ingredient-card";
 import IngredientSearch from "./ingredient-search";
+import { useIngredientSelection } from "./use-ingredient-selection";
 
 interface IngredientSelectorProps {
 	selectedIngredientIds: number[];
@@ -28,10 +29,10 @@ export default function IngredientSelector({
 }: IngredientSelectorProps) {
 	const [searchQuery, setSearchQuery] = React.useState("");
 	const [activeCategory, setActiveCategory] = React.useState<string>(
-		categories[0]?.name || "ベース",
+		categories[0]?.name || "その他",
 	);
 
-	// Snackbar state (To be replaced with a custom toast later if needed, leveraging MUi for speed now)
+	// Snackbar state
 	const [snackbar, setSnackbar] = React.useState<{
 		open: boolean;
 		message: string;
@@ -41,141 +42,52 @@ export default function IngredientSelector({
 	const handleCloseSnackbar = () =>
 		setSnackbar((prev) => ({ ...prev, open: false }));
 
-	// Logic from original component for count
-	const currentTotalCount = React.useMemo(() => {
-		let count = 0;
-		const selectedGroups = new Set<number>();
-		for (const name of selectedIngredientNames) {
-			const ing = ingredients.find(
-				(i) => i.name === name || i.actualNames?.includes(name),
-			);
-			if (ing) selectedGroups.add(ing.id);
-		}
-		for (const groupId of selectedGroups) {
-			const ingredient = ingredients.find((ing) => ing.id === groupId);
-			if (!ingredient) continue;
-			const details = ingredient.actualNames || [];
-			// Count selected details specifically
-			const selectedDetails = selectedIngredientNames.filter((n) =>
-				details.includes(n),
-			);
-			if (selectedDetails.length > 0) {
-				count += selectedDetails.length;
-			} else if (selectedIngredientNames.includes(ingredient.name)) {
-				// Group itself selected
-				count += 1;
-			}
-		}
-		return count;
-	}, [selectedIngredientNames, ingredients]);
+	// Use custom hook for logic
+	const { toggleGroup, toggleDetail } = useIngredientSelection({
+		allIngredients: ingredients,
+		selectedIngredientIds,
+		selectedIngredientNames,
+		onIngredientsChange,
+	});
 
-	// Toggle Logic
-	const handleToggle = (ingredient: Ingredient, specificName?: string) => {
+	// Optimize lookups in the render loop
+	const selectedIdsSet = React.useMemo(
+		() => new Set(selectedIngredientIds),
+		[selectedIngredientIds],
+	);
+
+	// Wrapper handlers to manage toast feedback
+	const handleGroupToggle = (ingredient: Ingredient) => {
 		if (disabled) return;
-
-		const targetName = specificName || ingredient.name;
-		const ingredientActualIds = ingredient.actualIds || [ingredient.id];
-		const groupRelatedNames = [
-			ingredient.name,
-			...(ingredient.actualNames || []),
-		];
-		const currentSelectedGroupNames = selectedIngredientNames.filter((n) =>
-			groupRelatedNames.includes(n),
-		);
-
-		// Case 1: Group Toggle (specificName is undefined)
-		if (!specificName) {
-			// If anything in group is selected, unselect all
-			if (currentSelectedGroupNames.length > 0) {
-				const newIds = selectedIngredientIds.filter(
-					(id) => !ingredientActualIds.includes(id),
-				);
-				const newNames = selectedIngredientNames.filter(
-					(n) => !groupRelatedNames.includes(n),
-				);
-				onIngredientsChange(newIds, newNames);
-				return;
-			}
-			// Select group
-			if (currentTotalCount >= 5) {
-				setSnackbar({
-					open: true,
-					message: "材料は5つまでです",
-					severity: "warning",
-				});
-				return;
-			}
-			const newIds = Array.from(
-				new Set([...selectedIngredientIds, ...ingredientActualIds]),
-			);
-			onIngredientsChange(newIds, [
-				...selectedIngredientNames,
-				ingredient.name,
-			]);
+		const result = toggleGroup(ingredient);
+		if (!result.success && result.reason === "LIMIT_REACHED") {
 			setSnackbar({
 				open: true,
-				message: `${ingredient.name}を追加しました`,
+				message: "材料は5つまでです",
+				severity: "warning",
+			});
+		} else if (result.success && result.message) {
+			setSnackbar({
+				open: true,
+				message: result.message,
 				severity: "success",
 			});
-			return;
 		}
+	};
 
-		// Case 2: Detail Toggle
-		const isTargetSelected = selectedIngredientNames.includes(targetName);
-
-		if (isTargetSelected) {
-			// Unselect detail
-			const targetId =
-				ingredient.actualDetails?.find((d) => d.name === targetName)?.id ||
-				ingredient.id;
-			const newNames = selectedIngredientNames.filter((n) => n !== targetName);
-			const newIds = selectedIngredientIds.filter((id) => id !== targetId);
-			onIngredientsChange(newIds, newNames);
-		} else {
-			// Select detail
-			// Check limit
-			// If group is selected (and no details), we are swapping group -> detail (count stays same), unless we are adding 2nd detail
-			const details = ingredient.actualNames || [];
-			const selectedDetails = selectedIngredientNames.filter((n) =>
-				details.includes(n),
-			);
-			const isGroupOnlySelected =
-				currentSelectedGroupNames.includes(ingredient.name) &&
-				selectedDetails.length === 0;
-
-			let willIncrease = true;
-			if (isGroupOnlySelected)
-				willIncrease = false; // 1 -> 1
-			else if (selectedDetails.length > 0) willIncrease = true; // 1 -> 2
-
-			if (willIncrease && currentTotalCount >= 5) {
-				setSnackbar({
-					open: true,
-					message: "材料は5つまでです",
-					severity: "warning",
-				});
-				return;
-			}
-
-			// Add detail
-			// If group was selected, remove group name and IDs first
-			let newNames = selectedIngredientNames;
-			let newIds = selectedIngredientIds;
-
-			if (isGroupOnlySelected) {
-				newNames = newNames.filter((n) => n !== ingredient.name);
-				newIds = newIds.filter((id) => !ingredientActualIds.includes(id));
-			}
-
-			const targetId =
-				ingredient.actualDetails?.find((d) => d.name === targetName)?.id ||
-				ingredient.id;
-			newNames = [...newNames, targetName];
-			newIds = Array.from(new Set([...newIds, targetId]));
-			onIngredientsChange(newIds, newNames);
+	const handleDetailToggle = (ingredient: Ingredient, detailName: string) => {
+		if (disabled) return;
+		const result = toggleDetail(ingredient, detailName);
+		if (!result.success && result.reason === "LIMIT_REACHED") {
 			setSnackbar({
 				open: true,
-				message: `${targetName}を追加しました`,
+				message: "材料は5つまでです",
+				severity: "warning",
+			});
+		} else if (result.success && result.message) {
+			setSnackbar({
+				open: true,
+				message: result.message,
 				severity: "success",
 			});
 		}
@@ -197,8 +109,6 @@ export default function IngredientSelector({
 		// Sort by order
 		return result.sort((a, b) => (a.sortOrder || 999) - (b.sortOrder || 999));
 	}, [ingredients, searchQuery, activeCategory]);
-
-	// Auto-switch category if search is cleared? No, keep it simple.
 
 	if (isInitialLoading) {
 		return (
@@ -230,31 +140,41 @@ export default function IngredientSelector({
 				{/* Grid */}
 				<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
 					{filteredIngredients.map((ingredient) => {
-						const groupRelatedNames = [
-							ingredient.name,
-							...(ingredient.actualNames || []),
-						];
-						const selectedNamesInGroup = selectedIngredientNames.filter((n) =>
-							groupRelatedNames.includes(n),
-						);
-						// Whole group selected if group name is in list AND all IDs are in list
+						const groupIds = ingredient.actualIds || [ingredient.id];
+						const detailNames = ingredient.actualNames || [];
+
+						// 1. グループ全体が選択されているか判定 (全てのIDが含まれているか)
+						// 注意: IDがない場合(空配列)はfalseとする
 						const isGroupSelectedWhole =
-							selectedIngredientNames.includes(ingredient.name) &&
-							(ingredient.actualIds?.every((id) =>
-								selectedIngredientIds.includes(id),
-							) ??
-								false);
+							groupIds.length > 0 &&
+							groupIds.every((id) => selectedIdsSet.has(id));
+
+						// 2. 個別に選択されている詳細名を特定 (IDベースで判定)
+						// グループ全体選択時は、詳細チップの個別表示はしない（カード全体の選択として見せる）
+						let displayedDetailNames: string[] = [];
+
+						if (!isGroupSelectedWhole) {
+							displayedDetailNames = detailNames.filter((name) => {
+								// 名前からIDを解決
+								const detail = ingredient.actualDetails?.find(
+									(d) => d.name === name,
+								);
+								const detailId = detail ? detail.id : -1;
+								// IDが含まれている、または（互換性のため）名前が含まれている場合
+								// 基本的にIDで判定するが、データ不整合に備えて名前もチェックするのはありだが、
+								// 今回はロジック整理のためID優先。
+								return detailId !== -1 && selectedIdsSet.has(detailId);
+							});
+						}
 
 						return (
 							<IngredientCard
 								key={ingredient.id}
 								ingredient={ingredient}
 								isSelected={isGroupSelectedWhole}
-								selectedDetailNames={selectedNamesInGroup.filter(
-									(n) => n !== ingredient.name,
-								)}
-								onToggle={() => handleToggle(ingredient)}
-								onDetailToggle={(name) => handleToggle(ingredient, name)}
+								selectedDetailNames={displayedDetailNames}
+								onToggle={() => handleGroupToggle(ingredient)}
+								onDetailToggle={(name) => handleDetailToggle(ingredient, name)}
 								disabled={disabled}
 							/>
 						);

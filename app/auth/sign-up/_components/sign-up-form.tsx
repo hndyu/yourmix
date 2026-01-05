@@ -1,12 +1,16 @@
 "use client";
 
 import authClient from "@/app/lib/authClient";
+import { Turnstile } from "@marsidev/react-turnstile";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
+import SocialLogin from "../../../_components/social-login";
 import { Button } from "../../../_components/ui/button";
 
-export default function SignUpForm() {
+export default function SignUpForm({
+	googleClientId,
+}: { googleClientId?: string }) {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [name, setName] = useState("");
@@ -14,8 +18,11 @@ export default function SignUpForm() {
 	const [error, setError] = useState<string | null>(null);
 	const [isLoading, setIsLoading] = useState(false);
 	const [showTermsError, setShowTermsError] = useState(false);
+	const [captchaToken, setCaptchaToken] = useState<string | null>(null);
 	const router = useRouter();
 	const searchParams = useSearchParams();
+
+	const turnstileSiteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
 
 	let callbackUrl = searchParams.get("callbackUrl") || "/";
 	if (callbackUrl === "%2Fauth%2Fsign-in") {
@@ -31,6 +38,11 @@ export default function SignUpForm() {
 			return;
 		}
 
+		if (turnstileSiteKey && !captchaToken) {
+			setError("CAPTCHAの認証が必要です");
+			return;
+		}
+
 		setIsLoading(true);
 
 		await authClient.signUp.email(
@@ -40,10 +52,15 @@ export default function SignUpForm() {
 				name,
 			},
 			{
+				headers: turnstileSiteKey
+					? {
+							"x-captcha-response": captchaToken || "",
+						}
+					: {},
 				onSuccess: () => {
 					router.push(callbackUrl);
 				},
-				onError: (ctx) => {
+				onError: (ctx: { error: { message: string } }) => {
 					setError(ctx.error.message);
 					setIsLoading(false);
 				},
@@ -64,7 +81,7 @@ export default function SignUpForm() {
 				</div>
 
 				{error && (
-					<div className="bg-red-900/20 border border-red-900/50 text-red-200 text-sm p-3 rounded-lg mb-6">
+					<div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-900/50 text-red-600 dark:text-red-200 text-sm p-3 rounded-lg mb-6">
 						{error}
 					</div>
 				)}
@@ -155,10 +172,19 @@ export default function SignUpForm() {
 						</div>
 					</div>
 					{showTermsError && (
-						<p className="text-xs text-red-400">
+						<p className="text-xs text-red-600 dark:text-red-400">
 							登録には利用規約への同意が必要です
 						</p>
 					)}
+
+					<div className="flex justify-center py-2">
+						<Turnstile
+							siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || ""}
+							onSuccess={(token) => setCaptchaToken(token)}
+							onError={() => setCaptchaToken(null)}
+							onExpire={() => setCaptchaToken(null)}
+						/>
+					</div>
 
 					<Button
 						type="submit"
@@ -169,6 +195,10 @@ export default function SignUpForm() {
 						アカウント登録
 					</Button>
 				</form>
+
+				<div className="mt-6">
+					<SocialLogin googleClientId={googleClientId} />
+				</div>
 
 				<div className="mt-6 text-center text-sm">
 					<Link

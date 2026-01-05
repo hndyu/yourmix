@@ -1,6 +1,21 @@
 import { expect, test } from "@playwright/test";
+import { installMockTurnstile } from "./helpers/mockTurnstile";
 
 test.describe("Authentication Flow", () => {
+	// Inject Turnstile mock before each test to bypass CAPTCHA in E2E
+	test.beforeEach(async ({ page }) => {
+		await installMockTurnstile(page);
+
+		// Relay browser console messages to terminal to aid debugging
+		page.on("console", (msg) => {
+			try {
+				console.log(`[browser:${msg.type()}] ${msg.text()}`);
+			} catch (e) {
+				console.log("[browser] console message error", e);
+			}
+		});
+	});
+
 	// Unique user for each test run to avoid conflicts
 	const timestamp = new Date().getTime();
 	const user = {
@@ -22,6 +37,14 @@ test.describe("Authentication Flow", () => {
 		await page.getByTestId("terms-agreement-checkbox").click();
 
 		await page.getByTestId("sign-up-button").click();
+
+		// Handle race condition: if CAPTCHA token wasn't ready yet, an error appears.
+		// Retry if we see the CAPTCHA error.
+		const captchaError = page.getByText("CAPTCHAの認証が必要です");
+		if (await captchaError.isVisible()) {
+			await page.waitForTimeout(1000); // Wait for the mock token to be set
+			await page.getByTestId("sign-up-button").click();
+		}
 
 		// Should redirect to the specified callbackUrl
 		await expect(page).toHaveURL("/test-callback");
@@ -46,6 +69,14 @@ test.describe("Authentication Flow", () => {
 		await page.getByTestId("terms-agreement-checkbox").click();
 
 		await page.getByTestId("sign-up-button").click();
+
+		// Handle race condition: if CAPTCHA token wasn't ready yet, an error appears.
+		// Retry if we see the CAPTCHA error.
+		const captchaError = page.getByText("CAPTCHAの認証が必要です");
+		if (await captchaError.isVisible()) {
+			await page.waitForTimeout(1000); // Wait for the mock token to be set
+			await page.getByTestId("sign-up-button").click();
+		}
 
 		// Should redirect to the home page
 		await expect(page).toHaveURL("/");
