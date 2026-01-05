@@ -29,8 +29,19 @@ export default function MyPage() {
 			try {
 				// Call the API method directly
 				const res = await authClient.listAccounts();
-				if (res && "data" in res && res.data) {
-					setAccounts(res.data as Account[]);
+				if (res?.data && Array.isArray(res.data)) {
+					const validatedAccounts = (res.data as unknown[])
+						.filter(
+							(acc): acc is Account =>
+								acc !== null &&
+								typeof acc === "object" &&
+								"providerId" in acc &&
+								typeof (acc as Record<string, unknown>).providerId === "string",
+						)
+						.map((acc) => ({
+							providerId: acc.providerId,
+						}));
+					setAccounts(validatedAccounts);
 				}
 			} catch (e) {
 				console.error("Failed to fetch accounts:", e);
