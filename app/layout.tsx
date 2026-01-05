@@ -74,6 +74,10 @@ export default function RootLayout({
 					// biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
 					dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
 				/>
+				<meta
+					name="google-site-verification"
+					content="F8BfwFA6A33Krh7xVXg4n9KP9X1oOOLQaj6vJ9PuK-A"
+				/>
 			</head>
 			<body className="font-sans antialiased min-h-screen flex flex-col">
 				<Providers>
