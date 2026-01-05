@@ -313,16 +313,18 @@ export default function MyPage() {
 		document.body.removeChild(element);
 	};
 
-	if (isPending) {
+	useEffect(() => {
+		if (!isPending && !session?.user) {
+			router.push("/auth/sign-in?callbackUrl=/my-page");
+		}
+	}, [session, isPending, router]);
+
+	if (isPending || !session?.user) {
 		return (
 			<main className="container mx-auto my-8 max-w-lg px-4">
 				<p>読み込み中...</p>
 			</main>
 		);
-	}
-
-	if (!session?.user) {
-		redirect("/auth/sign-in?callbackUrl=/my-page");
 	}
 
 	return (
