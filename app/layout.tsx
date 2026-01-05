@@ -1,4 +1,5 @@
 import "./globals.css";
+import { GoogleTagManager } from "@next/third-parties/google";
 import type { Metadata } from "next";
 import { Inter, Noto_Sans_JP, Playfair_Display } from "next/font/google";
 import type { WebSite, WithContext } from "schema-dts";
@@ -66,6 +67,7 @@ export default function RootLayout({
 			className={`${inter.variable} ${notoSansJP.variable} ${playfairDisplay.variable}`}
 			suppressHydrationWarning
 		>
+			<GoogleTagManager gtmId="GTM-PK2P5N4M" />
 			<head>
 				<script
 					type="application/ld+json"
