@@ -3,6 +3,7 @@ import { GoogleTagManager } from "@next/third-parties/google";
 import type { Metadata } from "next";
 import { Inter, Noto_Sans_JP, Playfair_Display } from "next/font/google";
 import type { WebSite, WithContext } from "schema-dts";
+import AgeVerificationModal from "./_components/age-verification-modal";
 import Footer from "./_components/footer";
 import Header from "./_components/header";
 import { Providers } from "./providers";
@@ -86,6 +87,7 @@ export default function RootLayout({
 						{children}
 					</main>
 					<Footer />
+					<AgeVerificationModal />
 				</Providers>
 			</body>
 		</html>
