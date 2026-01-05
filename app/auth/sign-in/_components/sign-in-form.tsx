@@ -2,6 +2,7 @@
 
 import authClient from "@/app/lib/authClient";
 import { Turnstile } from "@marsidev/react-turnstile";
+import { KeyRound } from "lucide-react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -13,6 +14,7 @@ export default function SignInForm() {
 	const [password, setPassword] = useState("");
 	const [error, setError] = useState<string | null>(null);
 	const [isLoading, setIsLoading] = useState(false);
+	const [isPasskeyLoading, setIsPasskeyLoading] = useState(false);
 	const [captchaToken, setCaptchaToken] = useState<string | null>(null);
 	const [lastMethod, setLastMethod] = useState<string | null>(null);
 
@@ -81,6 +83,29 @@ export default function SignInForm() {
 				},
 			},
 		);
+	};
+
+	const handlePasskeySignIn = async () => {
+		setIsPasskeyLoading(true);
+		setError(null);
+		try {
+			const { error } = await authClient.signIn.passkey(undefined, {
+				onSuccess: () => {
+					router.push(callbackUrl);
+				},
+				onError: (ctx) => {
+					setError(ctx.error.message);
+				},
+			});
+			if (error) {
+				setError(error.message || "パスキーでのログインに失敗しました");
+			}
+		} catch (e) {
+			console.error(e);
+			setError("パスキーでのログインに失敗しました");
+		} finally {
+			setIsPasskeyLoading(false);
+		}
 	};
 
 	const handleTwoFactorSubmit = async (e: React.FormEvent) => {
@@ -257,6 +282,11 @@ export default function SignInForm() {
 							前回のログイン: メールアドレス
 						</div>
 					)}
+					{lastMethod === "passkey" && (
+						<div className="mt-2 inline-block bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300 text-xs px-3 py-1 rounded-full border border-stone-200 dark:border-stone-700">
+							前回のログイン: パスキー
+						</div>
+					)}
 				</div>
 
 				{error && (
@@ -322,7 +352,18 @@ export default function SignInForm() {
 					</Button>
 				</form>
 
-				<div className="mt-6">
+				<div className="mt-6 space-y-3">
+					<Button
+						type="button"
+						variant="outline"
+						className="w-full flex items-center justify-center gap-2"
+						onClick={handlePasskeySignIn}
+						isLoading={isPasskeyLoading}
+					>
+						<KeyRound className="w-4 h-4" />
+						パスキーでログイン
+					</Button>
+
 					<SocialLogin />
 				</div>
 

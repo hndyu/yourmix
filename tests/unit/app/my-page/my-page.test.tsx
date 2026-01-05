@@ -35,6 +35,11 @@ vi.mock("@/app/lib/authClient", () => ({
 			disable: vi.fn(),
 			verifyTotp: vi.fn(),
 		},
+		passkey: {
+			listUserPasskeys: vi.fn(),
+			addPasskey: vi.fn(),
+			deletePasskey: vi.fn(),
+		},
 		lastLoginMethodClient: vi.fn(),
 		twoFactorClient: vi.fn(),
 	},
@@ -117,6 +122,10 @@ describe("MyPage", () => {
 		vi.mocked(authClient.listAccounts).mockResolvedValue({
 			data: [{ providerId: "credential" }],
 		} as AuthResponse<{ providerId: string }[]>);
+		vi.mocked(authClient.passkey.listUserPasskeys).mockResolvedValue({
+			data: [],
+			error: null,
+		});
 	});
 
 	it("renders user information correctly", async () => {
@@ -329,6 +338,88 @@ describe("MyPage", () => {
 		await waitFor(() => {
 			expect(authClient.signOut).toHaveBeenCalled();
 			expect(pushMock).toHaveBeenCalledWith("/");
+		});
+	});
+
+	it("handles passkey management", async () => {
+		// Mock initial empty list
+		vi.mocked(authClient.passkey.listUserPasskeys)
+			.mockResolvedValueOnce({
+				data: [],
+				error: null,
+			})
+			.mockResolvedValueOnce({
+				data: [
+					{
+						id: "pk-1",
+						name: "My Passkey",
+						createdAt: new Date(),
+					},
+				],
+				error: null,
+			});
+
+		vi.mocked(authClient.passkey.addPasskey).mockResolvedValueOnce({
+			data: {
+				id: "pk-1",
+				name: "My Passkey",
+				createdAt: new Date(),
+				publicKey: "pub-key",
+				userId: "user-1",
+				credentialID: "cred-1",
+				counter: 0,
+				deviceType: "singleDevice",
+				backedUp: false,
+				transports: undefined,
+			},
+			error: null,
+		});
+
+		vi.mocked(authClient.passkey.deletePasskey).mockResolvedValueOnce({
+			data: true,
+			error: null,
+		});
+
+		vi.spyOn(window, "confirm").mockReturnValue(true);
+
+		render(<MyPage />);
+
+		// 1. Open Add Passkey Dialog
+		const addPasskeyButton = await screen.findByText("パスキーを追加");
+		fireEvent.click(addPasskeyButton);
+
+		expect(screen.getByText("パスキー名")).toBeInTheDocument();
+
+		// 2. Submit new passkey
+		const nameInput = screen.getByPlaceholderText("デバイス名など");
+		fireEvent.change(nameInput, { target: { value: "My Passkey" } });
+		fireEvent.click(screen.getByText("追加する"));
+
+		await waitFor(() => {
+			expect(authClient.passkey.addPasskey).toHaveBeenCalledWith({
+				name: "My Passkey",
+			});
+			expect(
+				screen.getByText("パスキーが正常に追加されました。"),
+			).toBeInTheDocument();
+		});
+
+		// 3. Verify list update (mocked via second listUserPasskeys call)
+		// Close result dialog to see the list clearly if needed, but 'findByText' should work
+		const deleteButton = await screen.findByText("削除");
+		expect(screen.getByText("My Passkey")).toBeInTheDocument();
+
+		// 4. Delete passkey
+		fireEvent.click(deleteButton);
+
+		await waitFor(() => {
+			expect(window.confirm).toHaveBeenCalled();
+			expect(authClient.passkey.deletePasskey).toHaveBeenCalledWith({
+				id: "pk-1",
+			});
+			expect(
+				screen.getByText("パスキーが削除されました。"),
+			).toBeInTheDocument();
 		});
 	});
 });

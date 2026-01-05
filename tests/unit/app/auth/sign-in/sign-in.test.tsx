@@ -20,6 +20,7 @@ vi.mock("@/app/lib/authClient", () => ({
 		signIn: {
 			email: vi.fn(),
 			social: vi.fn(),
+			passkey: vi.fn(),
 		},
 		twoFactor: {
 			verifyTotp: vi.fn(),
@@ -27,6 +28,11 @@ vi.mock("@/app/lib/authClient", () => ({
 		},
 		getLastUsedLoginMethod: vi.fn(() => null),
 	},
+}));
+
+// Mock Lucide icons
+vi.mock("lucide-react", () => ({
+	KeyRound: () => <div data-testid="key-icon">Key Icon</div>,
 }));
 
 vi.mock("@marsidev/react-turnstile", () => ({
@@ -51,6 +57,7 @@ describe("SignInPage", () => {
 		expect(screen.getByTestId("email-input")).toBeInTheDocument();
 		expect(screen.getByTestId("password-input")).toBeInTheDocument();
 		expect(screen.getByTestId("sign-in-button")).toBeInTheDocument();
+		expect(screen.getByText("パスキーでログイン")).toBeInTheDocument();
 	});
 
 	it("handles successful sign in", async () => {
@@ -124,7 +131,7 @@ describe("SignInPage", () => {
 
 	it("handles sign in error", async () => {
 		vi.mocked(authClient.signIn.email).mockImplementation(
-			async (data, options) => {
+			async (_data, options) => {
 				const ctx = {
 					error: {
 						code: "API_ERROR",
@@ -161,7 +168,7 @@ describe("SignInPage", () => {
 
 	it("handles 2FA requirement", async () => {
 		vi.mocked(authClient.signIn.email).mockImplementation(
-			async (data, options) => {
+			async (_data, options) => {
 				const ctx = {
 					data: { twoFactorRedirect: true },
 				};
@@ -172,7 +179,7 @@ describe("SignInPage", () => {
 		);
 
 		vi.mocked(authClient.twoFactor.verifyTotp).mockImplementation(
-			async (data, options) => {
+			async (_data, options) => {
 				options?.onSuccess?.({
 					data: {
 						user: {
@@ -238,7 +245,7 @@ describe("SignInPage", () => {
 
 	it("handles backup code verification", async () => {
 		vi.mocked(authClient.signIn.email).mockImplementation(
-			async (data, options) => {
+			async (_data, options) => {
 				const ctx = {
 					data: { twoFactorRedirect: true },
 					request: new Request("https://example.com"),
@@ -251,7 +258,7 @@ describe("SignInPage", () => {
 		);
 
 		vi.mocked(authClient.twoFactor.verifyBackupCode).mockImplementation(
-			async (data, options) => {
+			async (_data, options) => {
 				options?.onSuccess?.({
 					data: {
 						user: {
@@ -317,6 +324,81 @@ describe("SignInPage", () => {
 				expect.any(Object),
 			);
 			expect(pushMock).toHaveBeenCalledWith("/");
+		});
+	});
+
+	it("handles successful passkey sign in", async () => {
+		vi.mocked(authClient.signIn.passkey).mockImplementation(
+			async (_data, options) => {
+				const mockResult = {
+					data: {
+						user: {
+							id: "1",
+							email: "test@example.com",
+							emailVerified: true,
+							name: "Test User",
+							createdAt: new Date(),
+							updatedAt: new Date(),
+							image: null,
+						},
+						session: {
+							id: "1",
+							userId: "1",
+							token: "token",
+							expiresAt: new Date(),
+							ipAddress: "127.0.0.1",
+							userAgent: "user-agent",
+							createdAt: new Date(),
+							updatedAt: new Date(),
+						},
+					},
+					request: new Request("https://example.com"),
+					response: new Response(),
+				};
+				// @ts-ignore
+				options?.onSuccess?.(mockResult);
+				return { data: mockResult.data, error: null };
+			},
+		);
+
+		render(<SignInPage />);
+
+		const passkeyButton = screen.getByText("パスキーでログイン");
+		fireEvent.click(passkeyButton);
+
+		await waitFor(() => {
+			expect(authClient.signIn.passkey).toHaveBeenCalled();
+			expect(pushMock).toHaveBeenCalledWith("/");
+		});
+	});
+
+	it("handles passkey sign in error", async () => {
+		vi.mocked(authClient.signIn.passkey).mockImplementation(
+			async (_data, options) => {
+				const ctx = {
+					error: {
+						code: "FAILED",
+						message: "Passkey authentication failed",
+						status: 400,
+						statusText: "Bad Request",
+					},
+				};
+				// @ts-ignore
+				options?.onError?.(ctx);
+				return { data: null, error: ctx.error };
+			},
+		);
+
+		render(<SignInPage />);
+
+		const passkeyButton = screen.getByText("パスキーでログイン");
+		fireEvent.click(passkeyButton);
+
+		await waitFor(() => {
+			expect(
+				screen.getByText("Passkey authentication failed"),
+			).toBeInTheDocument();
+			expect(pushMock).not.toHaveBeenCalled();
 		});
 	});
 });

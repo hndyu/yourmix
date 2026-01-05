@@ -79,6 +79,19 @@ export default function MyPage() {
 	const [twoFactorError, setTwoFactorError] = useState("");
 	const [showBackupCodes, setShowBackupCodes] = useState(false);
 
+	// Passkey states
+	const [passkeys, setPasskeys] = useState<
+		{
+			id: string;
+			name?: string | null;
+			createdAt?: Date | null;
+		}[]
+	>([]);
+	const [isPasskeysLoading, setIsPasskeysLoading] = useState(true);
+	const [isAddingPasskey, setIsAddingPasskey] = useState(false);
+	const [passkeyName, setPasskeyName] = useState("");
+	const [isPasskeyDialogOpen, setIsPasskeyDialogOpen] = useState(false);
+
 	const [toastState, setToastState] = useState<{
 		open: boolean;
 		message: string;
@@ -97,6 +110,72 @@ export default function MyPage() {
 	const [confirmNewPassword, setConfirmNewPassword] = useState("");
 	const [isUpdatingPassword, setIsUpdatingPassword] = useState(false);
 	const [passwordUpdateError, setPasswordUpdateError] = useState("");
+
+	useEffect(() => {
+		async function fetchPasskeys() {
+			try {
+				const res = await authClient.passkey.listUserPasskeys();
+				if (res.data) {
+					setPasskeys(res.data);
+				}
+			} catch (e) {
+				console.error("Failed to fetch passkeys:", e);
+			} finally {
+				setIsPasskeysLoading(false);
+			}
+		}
+		if (session?.user) {
+			fetchPasskeys();
+		}
+	}, [session?.user]);
+
+	const handleAddPasskey = async () => {
+		if (!passkeyName) return;
+		setIsAddingPasskey(true);
+		try {
+			const res = await authClient.passkey.addPasskey({
+				name: passkeyName,
+			});
+			if (res?.error) {
+				showResult(
+					`エラー: ${res.error.message || "パスキーの追加に失敗しました。"}`,
+				);
+			} else {
+				setPasskeyName("");
+				setIsPasskeyDialogOpen(false);
+				showResult("パスキーが正常に追加されました。", "refresh");
+				const listRes = await authClient.passkey.listUserPasskeys();
+				if (listRes.data) {
+					setPasskeys(listRes.data);
+				}
+			}
+		} catch (e) {
+			console.error("Failed to add passkey:", e);
+			showResult("パスキーの追加中にエラーが発生しました。");
+		} finally {
+			setIsAddingPasskey(false);
+		}
+	};
+
+	const handleDeletePasskey = async (id: string) => {
+		if (!confirm("本当にこのパスキーを削除しますか？")) return;
+		try {
+			const res = await authClient.passkey.deletePasskey({
+				id,
+			});
+			if (res?.error) {
+				showResult(
+					`エラー: ${res.error.message || "パスキーの削除に失敗しました。"}`,
+				);
+			} else {
+				showResult("パスキーが削除されました。");
+				setPasskeys((prev) => prev.filter((pk) => pk.id !== id));
+			}
+		} catch (e) {
+			console.error("Failed to delete passkey:", e);
+			showResult("パスキーの削除中にエラーが発生しました。");
+		}
+	};
 
 	const handleDeleteAccount = () => {
 		setConfirmDialogOpen(true);
@@ -415,6 +494,83 @@ export default function MyPage() {
 						</div>
 
 						<div className="mt-8 pt-6 border-t border-stone-200 dark:border-stone-800">
+							<div className="flex items-center justify-between mb-4">
+								<div>
+									<h3 className="font-bold text-stone-900 dark:text-white">
+										パスキー (Passkeys)
+									</h3>
+									<p className="text-sm text-stone-600 dark:text-stone-400 mt-1">
+										指紋認証や顔認証などを使用して、パスワードなしで安全にログインできます。
+									</p>
+								</div>
+								<Button
+									variant="outline"
+									onClick={() => setIsPasskeyDialogOpen(true)}
+								>
+									パスキーを追加
+								</Button>
+							</div>
+
+							{isPasskeysLoading ? (
+								<p className="text-sm text-stone-500">読み込み中...</p>
+							) : passkeys.length > 0 ? (
+								<div className="space-y-3">
+									{passkeys.map((pk) => (
+										<div
+											key={pk.id}
+											className="flex items-center justify-between p-3 bg-stone-50 dark:bg-stone-800/50 rounded-lg border border-stone-100 dark:border-stone-800"
+										>
+											<div className="flex items-center gap-3">
+												<div className="bg-stone-200 dark:bg-stone-700 p-2 rounded-full">
+													<svg
+														xmlns="http://www.w3.org/2000/svg"
+														width="16"
+														height="16"
+														viewBox="0 0 24 24"
+														fill="none"
+														stroke="currentColor"
+														strokeWidth="2"
+														strokeLinecap="round"
+														strokeLinejoin="round"
+														className="text-stone-600 dark:text-stone-300"
+														role="img"
+													>
+														<title>パスキー</title>
+														<circle cx="12" cy="12" r="10" />
+														<path d="m9 12 2 2 4-4" />
+													</svg>
+												</div>
+												<div>
+													<p className="font-medium text-sm text-stone-900 dark:text-white">
+														{pk.name || "名称未設定のパスキー"}
+													</p>
+													<p className="text-xs text-stone-500 dark:text-stone-400">
+														作成日:{" "}
+														{pk.createdAt
+															? new Date(pk.createdAt).toLocaleDateString()
+															: "不明"}
+													</p>
+												</div>
+											</div>
+											<Button
+												variant="ghost"
+												size="sm"
+												className="text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20"
+												onClick={() => handleDeletePasskey(pk.id)}
+											>
+												削除
+											</Button>
+										</div>
+									))}
+								</div>
+							) : (
+								<p className="text-sm text-stone-500 dark:text-stone-400 italic">
+									登録されているパスキーはありません。
+								</p>
+							)}
+						</div>
+
+						<div className="mt-8 pt-6 border-t border-stone-200 dark:border-stone-800">
 							<div className="flex items-center justify-between">
 								<div>
 									<h3 className="font-bold text-stone-900 dark:text-white">
@@ -437,6 +593,60 @@ export default function MyPage() {
 									パスワードを変更
 								</Button>
 							</div>
+						</div>
+					</div>
+				</div>
+			)}
+
+			{/* Passkey Add Dialog */}
+			{isPasskeyDialogOpen && (
+				<div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in">
+					<div className="w-full max-w-sm bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 rounded-2xl p-6 shadow-2xl animate-in zoom-in-95">
+						<h3 className="text-lg font-bold text-stone-900 dark:text-white mb-2">
+							パスキーの追加
+						</h3>
+						<p className="text-stone-600 dark:text-stone-400 mb-6 text-sm">
+							このパスキーを識別するための名前を入力してください（例: MacBook
+							Pro, iPhoneなど）。
+						</p>
+
+						<div className="space-y-4 mb-6">
+							<div>
+								<label
+									htmlFor="passkey-name"
+									className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1"
+								>
+									パスキー名
+								</label>
+								<input
+									type="text"
+									id="passkey-name"
+									value={passkeyName}
+									onChange={(e) => setPasskeyName(e.target.value)}
+									className="w-full px-3 py-2 bg-white dark:bg-stone-800 border border-stone-300 dark:border-stone-700 rounded-lg text-stone-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary"
+									placeholder="デバイス名など"
+								/>
+							</div>
+						</div>
+
+						<div className="flex justify-end gap-3">
+							<Button
+								variant="ghost"
+								onClick={() => {
+									setIsPasskeyDialogOpen(false);
+									setPasskeyName("");
+								}}
+								disabled={isAddingPasskey}
+							>
+								キャンセル
+							</Button>
+							<Button
+								className="bg-amber-600 hover:bg-amber-700 text-white"
+								onClick={handleAddPasskey}
+								disabled={isAddingPasskey || !passkeyName.trim()}
+							>
+								{isAddingPasskey ? "追加中..." : "追加する"}
+							</Button>
 						</div>
 					</div>
 				</div>
