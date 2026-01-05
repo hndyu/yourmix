@@ -1,7 +1,7 @@
 import SignUpPage from "@/app/auth/sign-up/page";
 import authClient from "@/app/lib/authClient";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 // Mock next/navigation
 const pushMock = vi.fn();
@@ -42,6 +42,11 @@ vi.mock("@marsidev/react-turnstile", () => ({
 describe("SignUpPage", () => {
 	beforeEach(() => {
 		vi.clearAllMocks();
+		vi.stubEnv("NEXT_PUBLIC_TURNSTILE_SITE_KEY", "mock-site-key");
+	});
+
+	afterEach(() => {
+		vi.unstubAllEnvs();
 	});
 
 	it("renders all form fields", () => {

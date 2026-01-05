@@ -8,7 +8,9 @@ import { useState } from "react";
 import SocialLogin from "../../../_components/social-login";
 import { Button } from "../../../_components/ui/button";
 
-export default function SignUpForm() {
+export default function SignUpForm({
+	googleClientId,
+}: { googleClientId?: string }) {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [name, setName] = useState("");
@@ -19,6 +21,8 @@ export default function SignUpForm() {
 	const [captchaToken, setCaptchaToken] = useState<string | null>(null);
 	const router = useRouter();
 	const searchParams = useSearchParams();
+
+	const turnstileSiteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
 
 	let callbackUrl = searchParams.get("callbackUrl") || "/";
 	if (callbackUrl === "%2Fauth%2Fsign-in") {
@@ -34,7 +38,7 @@ export default function SignUpForm() {
 			return;
 		}
 
-		if (!captchaToken) {
+		if (turnstileSiteKey && !captchaToken) {
 			setError("CAPTCHAの認証が必要です");
 			return;
 		}
@@ -48,9 +52,11 @@ export default function SignUpForm() {
 				name,
 			},
 			{
-				headers: {
-					"x-captcha-response": captchaToken,
-				},
+				headers: turnstileSiteKey
+					? {
+							"x-captcha-response": captchaToken || "",
+						}
+					: {},
 				onSuccess: () => {
 					router.push(callbackUrl);
 				},
@@ -191,7 +197,7 @@ export default function SignUpForm() {
 				</form>
 
 				<div className="mt-6">
-					<SocialLogin />
+					<SocialLogin googleClientId={googleClientId} />
 				</div>
 
 				<div className="mt-6 text-center text-sm">

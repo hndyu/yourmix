@@ -9,7 +9,9 @@ import { useEffect, useState } from "react";
 import SocialLogin from "../../../_components/social-login";
 import { Button } from "../../../_components/ui/button";
 
-export default function SignInForm() {
+export default function SignInForm({
+	googleClientId,
+}: { googleClientId?: string }) {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [error, setError] = useState<string | null>(null);
@@ -28,6 +30,8 @@ export default function SignInForm() {
 	const router = useRouter();
 	const searchParams = useSearchParams();
 
+	const turnstileSiteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
+
 	useEffect(() => {
 		const method = authClient.getLastUsedLoginMethod();
 		if (method) {
@@ -44,7 +48,7 @@ export default function SignInForm() {
 		e.preventDefault();
 		setError(null);
 
-		if (!captchaToken) {
+		if (turnstileSiteKey && !captchaToken) {
 			setError("CAPTCHAの認証が必要です");
 			return;
 		}
@@ -57,9 +61,11 @@ export default function SignInForm() {
 				password,
 			},
 			{
-				headers: {
-					"x-captcha-response": captchaToken,
-				},
+				headers: turnstileSiteKey
+					? {
+							"x-captcha-response": captchaToken || "",
+						}
+					: {},
 				onSuccess: (ctx) => {
 					if (ctx.data.twoFactorRedirect) {
 						setIsTwoFactorRequired(true);
@@ -333,14 +339,16 @@ export default function SignInForm() {
 						/>
 					</div>
 
-					<div className="flex justify-center py-2">
-						<Turnstile
-							siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || ""}
-							onSuccess={(token) => setCaptchaToken(token)}
-							onError={() => setCaptchaToken(null)}
-							onExpire={() => setCaptchaToken(null)}
-						/>
-					</div>
+					{turnstileSiteKey && (
+						<div className="flex justify-center py-2">
+							<Turnstile
+								siteKey={turnstileSiteKey}
+								onSuccess={(token) => setCaptchaToken(token)}
+								onError={() => setCaptchaToken(null)}
+								onExpire={() => setCaptchaToken(null)}
+							/>
+						</div>
+					)}
 
 					<Button
 						type="submit"
@@ -364,7 +372,7 @@ export default function SignInForm() {
 						パスキーでログイン
 					</Button>
 
-					<SocialLogin />
+					<SocialLogin googleClientId={googleClientId} />
 				</div>
 
 				<div className="mt-6 text-center text-sm">

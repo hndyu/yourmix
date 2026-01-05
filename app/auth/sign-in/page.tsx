@@ -2,6 +2,8 @@ import { Suspense } from "react";
 import SignInForm from "./_components/sign-in-form";
 
 export default function SignInPage() {
+	const googleClientId = process.env.GOOGLE_CLIENT_ID;
+
 	return (
 		<Suspense
 			fallback={
@@ -10,7 +12,7 @@ export default function SignInPage() {
 				</div>
 			}
 		>
-			<SignInForm />
+			<SignInForm googleClientId={googleClientId} />
 		</Suspense>
 	);
 }

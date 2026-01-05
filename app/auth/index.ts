@@ -19,14 +19,14 @@ async function authBuilder() {
 	const turnstileSecretKey = process.env.TURNSTILE_SECRET_KEY;
 
 	if (!googleClientId || !googleClientSecret) {
-		throw new Error(
-			"Missing Google OAuth credentials. Please set GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET environment variables.",
+		console.warn(
+			"Google OAuth credentials not found. Google login will be disabled.",
 		);
 	}
 
 	if (!turnstileSecretKey) {
-		throw new Error(
-			"Missing Cloudflare Turnstile Secret Key. Please set TURNSTILE_SECRET_KEY environment variables.",
+		console.warn(
+			"Cloudflare Turnstile Secret Key not found. Captcha will be disabled.",
 		);
 	}
 
@@ -50,10 +50,14 @@ async function authBuilder() {
 					enabled: true,
 				},
 				socialProviders: {
-					google: {
-						clientId: googleClientId,
-						clientSecret: googleClientSecret,
-					},
+					...(googleClientId && googleClientSecret
+						? {
+								google: {
+									clientId: googleClientId,
+									clientSecret: googleClientSecret,
+								},
+							}
+						: {}),
 				},
 				trustedOrigins: [
 					"http://127.0.0.1:3000",
@@ -69,10 +73,14 @@ async function authBuilder() {
 				plugins: [
 					openAPI(),
 					lastLoginMethod(),
-					captcha({
-						provider: "cloudflare-turnstile", // or google-recaptcha, hcaptcha, captchafox
-						secretKey: turnstileSecretKey,
-					}),
+					...(turnstileSecretKey
+						? [
+								captcha({
+									provider: "cloudflare-turnstile", // or google-recaptcha, hcaptcha, captchafox
+									secretKey: turnstileSecretKey,
+								}),
+							]
+						: []),
 					twoFactor({ issuer: "YourMix" }),
 					passkey(),
 				],

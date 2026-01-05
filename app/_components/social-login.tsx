@@ -5,17 +5,30 @@ import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Button } from "./ui/button";
 
-export default function SocialLogin() {
+export default function SocialLogin({
+	googleClientId: propGoogleClientId,
+}: { googleClientId?: string }) {
 	const [isLoading, setIsLoading] = useState<string | null>(null);
 	const [lastMethod, setLastMethod] = useState<string | null>(null);
+	const [mounted, setMounted] = useState(false);
 	const searchParams = useSearchParams();
 
+	const googleClientId =
+		propGoogleClientId ||
+		process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID ||
+		process.env.GOOGLE_CLIENT_ID;
+
 	useEffect(() => {
+		setMounted(true);
 		const method = authClient.getLastUsedLoginMethod();
 		if (method) {
 			setLastMethod(method);
 		}
 	}, []);
+
+	if (!mounted || !googleClientId) {
+		return null;
+	}
 
 	const handleSocialLogin = async (provider: "google") => {
 		setIsLoading(provider);
