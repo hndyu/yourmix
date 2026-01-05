@@ -58,10 +58,9 @@ export async function POST(request: Request) {
 	try {
 		const db = await getDb();
 
-		const { ingredients: selectedIngredients } = body as {
+		const { ingredients: selectedIngredients } = (body || {}) as {
 			ingredients: string[];
 		};
-
 		if (
 			!selectedIngredients ||
 			!Array.isArray(selectedIngredients) ||

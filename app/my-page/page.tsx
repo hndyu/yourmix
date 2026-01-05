@@ -228,9 +228,9 @@ export default function MyPage() {
 				// Also sign out on the client
 				showResult("アカウントが削除されました。", "signOut");
 			} else {
-				const data: ErrorResponse = await res.json();
+				const data = (await res.json().catch(() => ({}))) as ErrorResponse;
 				showResult(
-					`エラー: ${data.error || "アカウントの削除に失敗しました。"}`,
+					`エラー: ${data?.error || "アカウントの削除に失敗しました。"}`,
 				);
 			}
 		} catch (error) {
@@ -276,9 +276,9 @@ export default function MyPage() {
 				setEditDialogOpen(false);
 				showResult("プロフィールが更新されました。", "refresh");
 			} else {
-				const data: ErrorResponse = await res.json();
+				const data = (await res.json().catch(() => ({}))) as ErrorResponse;
 				showResult(
-					`エラー: ${data.error || "プロフィールの更新に失敗しました。"}`,
+					`エラー: ${data?.error || "プロフィールの更新に失敗しました。"}`,
 				);
 			}
 		} catch (error) {

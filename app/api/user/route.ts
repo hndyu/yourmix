@@ -57,7 +57,10 @@ export async function PATCH(req: NextRequest) {
 	}
 
 	try {
-		const { name, email } = body;
+		const { name, email } = (body || {}) as {
+			name?: unknown;
+			email?: unknown;
+		};
 
 		const updateData: { name?: string; email?: string } = {};
 
