@@ -3,6 +3,7 @@
 import { ThumbsUp } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { createPortal } from "react-dom";
 import authClient from "../lib/authClient";
 import { Button } from "./ui/button";
 
@@ -76,24 +77,30 @@ export default function DeliciousButton({
 			</button>
 
 			{/* Custom Login Modal */}
-			{showLoginModal && (
-				<div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in">
-					<div className="w-full max-w-sm bg-stone-900 border border-stone-800 rounded-2xl p-6 shadow-2xl animate-in zoom-in-95">
-						<h3 className="text-lg font-bold text-white mb-2">
-							ログインが必要です
-						</h3>
-						<p className="text-stone-400 mb-6 text-sm">
-							「おいしい！」を送るにはログインが必要です。ログインページに移動しますか？
-						</p>
-						<div className="flex justify-end gap-3">
-							<Button variant="ghost" onClick={() => setShowLoginModal(false)}>
-								キャンセル
-							</Button>
-							<Button onClick={handleLoginRedirect}>ログインする</Button>
+			{showLoginModal &&
+				typeof document !== "undefined" &&
+				createPortal(
+					<div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in">
+						<div className="w-full max-w-sm bg-background border border-border rounded-2xl p-6 shadow-2xl animate-in zoom-in-95">
+							<h3 className="text-lg font-bold text-foreground mb-2">
+								ログインが必要です
+							</h3>
+							<p className="text-muted-foreground mb-6 text-sm">
+								「おいしい！」を送るにはログインが必要です。ログインページに移動しますか？
+							</p>
+							<div className="flex justify-end gap-3">
+								<Button
+									variant="ghost"
+									onClick={() => setShowLoginModal(false)}
+								>
+									キャンセル
+								</Button>
+								<Button onClick={handleLoginRedirect}>ログインする</Button>
+							</div>
 						</div>
-					</div>
-				</div>
-			)}
+					</div>,
+					document.body,
+				)}
 		</>
 	);
 }
