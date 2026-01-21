@@ -1,5 +1,6 @@
 import { relations, sql } from "drizzle-orm";
 import {
+	index,
 	integer,
 	primaryKey,
 	sqliteTable,
@@ -21,15 +22,23 @@ export const cocktails = sqliteTable("cocktails", {
 });
 
 // ingredients テーブル
-export const ingredients = sqliteTable("ingredients", {
-	id: integer("id").primaryKey({ autoIncrement: true }),
-	name: text("name").notNull().unique(),
-	groupId: integer("group_id")
-		.notNull()
-		.references(() => ingredientGroups.id, { onDelete: "cascade" }),
-	description: text("description"),
-	sortOrder: integer("sort_order").notNull().default(0),
-});
+export const ingredients = sqliteTable(
+	"ingredients",
+	{
+		id: integer("id").primaryKey({ autoIncrement: true }),
+		name: text("name").notNull().unique(),
+		groupId: integer("group_id")
+			.notNull()
+			.references(() => ingredientGroups.id, { onDelete: "cascade" }),
+		description: text("description"),
+		sortOrder: integer("sort_order").notNull().default(0),
+	},
+	(table) => [
+		// ⚡ Bolt: Index on groupId speeds up JOINs with ingredientGroups
+		// Expected impact: Reduces JOIN complexity from O(N) to O(log N)
+		index("ingredients_group_id_idx").on(table.groupId),
+	],
+);
 
 // cocktail_ingredients 中間テーブル
 export const cocktailIngredients = sqliteTable(
@@ -44,18 +53,31 @@ export const cocktailIngredients = sqliteTable(
 		amount: text("amount").notNull(),
 		option_group: integer("option_group"),
 	},
-	(table) => [primaryKey({ columns: [table.cocktailId, table.ingredientId] })],
+	(table) => [
+		primaryKey({ columns: [table.cocktailId, table.ingredientId] }),
+		// ⚡ Bolt: Index on ingredientId speeds up reverse lookups (finding cocktails by ingredient)
+		// Expected impact: Improves query performance for ingredient-based searches
+		index("cocktail_ingredients_ingredient_id_idx").on(table.ingredientId),
+	],
 );
 
 // instructions テーブル
-export const instructions = sqliteTable("instructions", {
-	id: integer("id").primaryKey({ autoIncrement: true }),
-	cocktailId: text("cocktail_id")
-		.notNull()
-		.references(() => cocktails.id, { onDelete: "cascade" }),
-	step: integer("step").notNull(),
-	text: text("text").notNull(),
-});
+export const instructions = sqliteTable(
+	"instructions",
+	{
+		id: integer("id").primaryKey({ autoIncrement: true }),
+		cocktailId: text("cocktail_id")
+			.notNull()
+			.references(() => cocktails.id, { onDelete: "cascade" }),
+		step: integer("step").notNull(),
+		text: text("text").notNull(),
+	},
+	(table) => [
+		// ⚡ Bolt: Index on cocktailId speeds up instruction retrieval for specific cocktails
+		// Expected impact: Reduces lookup time for instructions from O(N) to O(log N)
+		index("instructions_cocktail_id_idx").on(table.cocktailId),
+	],
+);
 
 // categories テーブル（材料カテゴリの並び順を管理）
 export const categories = sqliteTable("categories", {
@@ -67,16 +89,24 @@ export const categories = sqliteTable("categories", {
 });
 
 // ingredient_groups テーブル（材料の表示グループを管理）
-export const ingredientGroups = sqliteTable("ingredient_groups", {
-	id: integer("id").primaryKey({ autoIncrement: true }),
-	displayName: text("display_name").notNull().unique(),
-	categoryId: integer("category_id")
-		.notNull()
-		.references(() => categories.id),
-	sortOrder: integer("sort_order").notNull(),
-	description: text("description"),
-	assetKey: text("asset_key"),
-});
+export const ingredientGroups = sqliteTable(
+	"ingredient_groups",
+	{
+		id: integer("id").primaryKey({ autoIncrement: true }),
+		displayName: text("display_name").notNull().unique(),
+		categoryId: integer("category_id")
+			.notNull()
+			.references(() => categories.id),
+		sortOrder: integer("sort_order").notNull(),
+		description: text("description"),
+		assetKey: text("asset_key"),
+	},
+	(table) => [
+		// ⚡ Bolt: Index on categoryId speeds up grouping by category
+		// Expected impact: Optimizes category-based filtering and JOINs
+		index("ingredient_groups_category_id_idx").on(table.categoryId),
+	],
+);
 
 // tags テーブル
 export const tags = sqliteTable("tags", {
@@ -96,7 +126,12 @@ export const cocktailTags = sqliteTable(
 			.notNull()
 			.references(() => tags.id, { onDelete: "cascade" }),
 	},
-	(table) => [primaryKey({ columns: [table.cocktailId, table.tagId] })],
+	(table) => [
+		primaryKey({ columns: [table.cocktailId, table.tagId] }),
+		// ⚡ Bolt: Index on tagId speeds up finding cocktails by tag
+		// Expected impact: Improves performance for tag-filtered queries
+		index("cocktail_tags_tag_id_idx").on(table.tagId),
+	],
 );
 
 export const deliciousLikes = sqliteTable(
@@ -113,7 +148,12 @@ export const deliciousLikes = sqliteTable(
 			.notNull()
 			.default(sql`CURRENT_TIMESTAMP`),
 	},
-	(table) => [unique().on(table.userId, table.cocktailId)],
+	(table) => [
+		unique().on(table.userId, table.cocktailId),
+		// ⚡ Bolt: Index on cocktailId speeds up like counting and cocktail-specific like status checks
+		// Expected impact: Significantly reduces time to fetch like counts (O(log N) instead of O(N))
+		index("delicious_likes_cocktail_id_idx").on(table.cocktailId),
+	],
 );
 
 // Relations
