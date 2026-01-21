@@ -1,6 +1,7 @@
 "use client";
 
 import authClient from "@/app/lib/authClient";
+import { isValidCallbackUrl } from "@/app/lib/url";
 import { Turnstile } from "@marsidev/react-turnstile";
 import { KeyRound } from "lucide-react";
 import Link from "next/link";
@@ -39,10 +40,12 @@ export default function SignInForm({
 		}
 	}, []);
 
-	let callbackUrl = searchParams.get("callbackUrl") || "/";
-	if (callbackUrl === "%2Fauth%2Fsign-up") {
-		callbackUrl = "/";
-	}
+	const rawCallbackUrl = searchParams.get("callbackUrl");
+	const callbackUrl = isValidCallbackUrl(rawCallbackUrl)
+		? rawCallbackUrl === "%2Fauth%2Fsign-up"
+			? "/"
+			: rawCallbackUrl
+		: "/";
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
