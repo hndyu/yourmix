@@ -106,10 +106,15 @@ export default function CocktailMixer({
 	};
 
 	// 材料選択の変更をハンドル
-	const handleIngredientsChange = (ids: number[], names: string[]) => {
-		setSelectedIngredientIds(ids);
-		setSelectedIngredientNames(names);
-	};
+	// Optimization: Memoized callback to prevent unnecessary re-renders of child components
+	// that depend on stable function references for their own optimizations (like React.memo).
+	const handleIngredientsChange = React.useCallback(
+		(ids: number[], names: string[]) => {
+			setSelectedIngredientIds(ids);
+			setSelectedIngredientNames(names);
+		},
+		[],
+	);
 
 	// 結果が表示されたらスクロール
 	React.useEffect(() => {

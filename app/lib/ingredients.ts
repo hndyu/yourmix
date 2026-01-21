@@ -36,49 +36,48 @@ export async function getIngredientsMasterData() {
 			.orderBy(asc(ingredientGroups.sortOrder), asc(ingredients.sortOrder)),
 	]);
 
-	// 表示用に材料をグループ化
-	const groupedIngredientsMap = allIngredientsWithGroups.reduce(
-		(acc, ing) => {
-			const displayName = ing.groupDisplayName || ing.name;
-			let group = acc.get(displayName);
+	// 表示用に材料をグループ化し、グループ情報のマッピングを同時に作成
+	// Optimization: O(N) single-pass logic replaces previous O(N^2) reduction/filtering.
+	// This reduces server-side execution time, especially on Cloudflare Workers.
+	const groupMapping: Record<string, string[]> = {};
+	const groupedIngredientsMap = new Map<string, Ingredient>();
 
-			if (group) {
-				group.actualNames?.push(ing.name);
-				group.actualIds?.push(ing.id);
-				group.actualDetails?.push({ id: ing.id, name: ing.name });
-			} else {
-				group = {
-					id: ing.id,
-					name: displayName,
-					category: ing.categoryName ?? "", // Ingredient型に合わせる
-					categoryName: ing.categoryName ?? "",
-					actualNames: [ing.name],
-					actualIds: [ing.id],
-					actualDetails: [{ id: ing.id, name: ing.name }],
-					sortOrder: ing.groupSortOrder,
-					description: ing.groupDescription,
-					assetKey: ing.groupAssetKey,
-				};
-				acc.set(displayName, group);
+	for (const ing of allIngredientsWithGroups) {
+		const displayName = ing.groupDisplayName || ing.name;
+
+		// グループ情報のマッピングを更新（検索時の展開に使用）
+		if (ing.groupDisplayName) {
+			if (!groupMapping[ing.groupDisplayName]) {
+				groupMapping[ing.groupDisplayName] = [];
 			}
-			return acc;
-		},
-		new Map<string, Ingredient>(), // Ingredient型を使用
-	);
+			groupMapping[ing.groupDisplayName].push(ing.name);
+		}
+
+		let group = groupedIngredientsMap.get(displayName);
+
+		if (group) {
+			group.actualNames?.push(ing.name);
+			group.actualIds?.push(ing.id);
+			group.actualDetails?.push({ id: ing.id, name: ing.name });
+		} else {
+			group = {
+				id: ing.id,
+				name: displayName,
+				category: ing.categoryName ?? "",
+				categoryName: ing.categoryName ?? "",
+				actualNames: [ing.name],
+				actualIds: [ing.id],
+				actualDetails: [{ id: ing.id, name: ing.name }],
+				sortOrder: ing.groupSortOrder,
+				description: ing.groupDescription,
+				assetKey: ing.groupAssetKey,
+			};
+			groupedIngredientsMap.set(displayName, group);
+		}
+	}
 
 	// Mapの値を配列に変換 (挿入順が保持される)
 	const groupedIngredients = Array.from(groupedIngredientsMap.values());
-	// グループ情報のマッピングを作成（検索時の展開に使用）
-	const groupMapping = allIngredientsWithGroups.reduce<
-		Record<string, string[]>
-	>((acc, ing) => {
-		if (ing.groupDisplayName && !acc[ing.groupDisplayName]) {
-			acc[ing.groupDisplayName] = allIngredientsWithGroups
-				.filter((i) => i.groupDisplayName === ing.groupDisplayName)
-				.map((i) => i.name);
-		}
-		return acc;
-	}, {});
 
 	return {
 		categories: allCategories as Category[],
