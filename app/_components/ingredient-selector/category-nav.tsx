@@ -11,7 +11,7 @@ interface CategoryNavProps {
 	onSelectCategory: (categoryName: string) => void;
 }
 
-export default function CategoryNav({
+function CategoryNav({
 	categories,
 	activeCategory,
 	onSelectCategory,
@@ -67,3 +67,5 @@ export default function CategoryNav({
 		</div>
 	);
 }
+
+export default React.memo(CategoryNav);

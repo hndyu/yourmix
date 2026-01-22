@@ -15,7 +15,7 @@ interface IngredientCardProps {
 	disabled?: boolean;
 }
 
-export default function IngredientCard({
+function IngredientCard({
 	ingredient,
 	isSelected,
 	selectedDetailNames,
@@ -164,3 +164,5 @@ export default function IngredientCard({
 		</div>
 	);
 }
+
+export default React.memo(IngredientCard);

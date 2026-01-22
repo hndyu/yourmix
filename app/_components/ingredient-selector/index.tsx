@@ -57,41 +57,52 @@ export default function IngredientSelector({
 	);
 
 	// Wrapper handlers to manage toast feedback
-	const handleGroupToggle = (ingredient: Ingredient) => {
-		if (disabled) return;
-		const result = toggleGroup(ingredient);
-		if (!result.success && result.reason === "LIMIT_REACHED") {
-			setSnackbar({
-				open: true,
-				message: "材料は5つまでです",
-				severity: "warning",
-			});
-		} else if (result.success && result.message) {
-			setSnackbar({
-				open: true,
-				message: result.message,
-				severity: "success",
-			});
-		}
-	};
+	const handleGroupToggle = React.useCallback(
+		(ingredient: Ingredient) => {
+			if (disabled) return;
+			const result = toggleGroup(ingredient);
+			if (!result.success && result.reason === "LIMIT_REACHED") {
+				setSnackbar({
+					open: true,
+					message: "材料は5つまでです",
+					severity: "warning",
+				});
+			} else if (result.success && result.message) {
+				setSnackbar({
+					open: true,
+					message: result.message,
+					severity: "success",
+				});
+			}
+		},
+		[disabled, toggleGroup],
+	);
 
-	const handleDetailToggle = (ingredient: Ingredient, detailName: string) => {
-		if (disabled) return;
-		const result = toggleDetail(ingredient, detailName);
-		if (!result.success && result.reason === "LIMIT_REACHED") {
-			setSnackbar({
-				open: true,
-				message: "材料は5つまでです",
-				severity: "warning",
-			});
-		} else if (result.success && result.message) {
-			setSnackbar({
-				open: true,
-				message: result.message,
-				severity: "success",
-			});
-		}
-	};
+	const handleDetailToggle = React.useCallback(
+		(ingredient: Ingredient, detailName: string) => {
+			if (disabled) return;
+			const result = toggleDetail(ingredient, detailName);
+			if (!result.success && result.reason === "LIMIT_REACHED") {
+				setSnackbar({
+					open: true,
+					message: "材料は5つまでです",
+					severity: "warning",
+				});
+			} else if (result.success && result.message) {
+				setSnackbar({
+					open: true,
+					message: result.message,
+					severity: "success",
+				});
+			}
+		},
+		[disabled, toggleDetail],
+	);
+
+	const handleSelectCategory = React.useCallback((cat: string) => {
+		setSearchQuery("");
+		setActiveCategory(cat);
+	}, []);
 
 	// Filtering
 	const filteredIngredients = React.useMemo(() => {
@@ -124,10 +135,7 @@ export default function IngredientSelector({
 			<CategoryNav
 				categories={categories}
 				activeCategory={searchQuery ? "" : activeCategory}
-				onSelectCategory={(cat) => {
-					setSearchQuery("");
-					setActiveCategory(cat);
-				}}
+				onSelectCategory={handleSelectCategory}
 			/>
 
 			{/* Main Content */}
