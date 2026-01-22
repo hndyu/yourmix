@@ -1,5 +1,6 @@
 import { relations, sql } from "drizzle-orm";
 import {
+	index,
 	integer,
 	primaryKey,
 	sqliteTable,
@@ -21,15 +22,19 @@ export const cocktails = sqliteTable("cocktails", {
 });
 
 // ingredients テーブル
-export const ingredients = sqliteTable("ingredients", {
-	id: integer("id").primaryKey({ autoIncrement: true }),
-	name: text("name").notNull().unique(),
-	groupId: integer("group_id")
-		.notNull()
-		.references(() => ingredientGroups.id, { onDelete: "cascade" }),
-	description: text("description"),
-	sortOrder: integer("sort_order").notNull().default(0),
-});
+export const ingredients = sqliteTable(
+	"ingredients",
+	{
+		id: integer("id").primaryKey({ autoIncrement: true }),
+		name: text("name").notNull().unique(),
+		groupId: integer("group_id")
+			.notNull()
+			.references(() => ingredientGroups.id, { onDelete: "cascade" }),
+		description: text("description"),
+		sortOrder: integer("sort_order").notNull().default(0),
+	},
+	(table) => [index("ingredients_groupId_idx").on(table.groupId)],
+);
 
 // cocktail_ingredients 中間テーブル
 export const cocktailIngredients = sqliteTable(
@@ -44,18 +49,25 @@ export const cocktailIngredients = sqliteTable(
 		amount: text("amount").notNull(),
 		option_group: integer("option_group"),
 	},
-	(table) => [primaryKey({ columns: [table.cocktailId, table.ingredientId] })],
+	(table) => [
+		primaryKey({ columns: [table.cocktailId, table.ingredientId] }),
+		index("cocktailIngredients_ingredientId_idx").on(table.ingredientId),
+	],
 );
 
 // instructions テーブル
-export const instructions = sqliteTable("instructions", {
-	id: integer("id").primaryKey({ autoIncrement: true }),
-	cocktailId: text("cocktail_id")
-		.notNull()
-		.references(() => cocktails.id, { onDelete: "cascade" }),
-	step: integer("step").notNull(),
-	text: text("text").notNull(),
-});
+export const instructions = sqliteTable(
+	"instructions",
+	{
+		id: integer("id").primaryKey({ autoIncrement: true }),
+		cocktailId: text("cocktail_id")
+			.notNull()
+			.references(() => cocktails.id, { onDelete: "cascade" }),
+		step: integer("step").notNull(),
+		text: text("text").notNull(),
+	},
+	(table) => [index("instructions_cocktailId_idx").on(table.cocktailId)],
+);
 
 // categories テーブル（材料カテゴリの並び順を管理）
 export const categories = sqliteTable("categories", {
@@ -67,16 +79,20 @@ export const categories = sqliteTable("categories", {
 });
 
 // ingredient_groups テーブル（材料の表示グループを管理）
-export const ingredientGroups = sqliteTable("ingredient_groups", {
-	id: integer("id").primaryKey({ autoIncrement: true }),
-	displayName: text("display_name").notNull().unique(),
-	categoryId: integer("category_id")
-		.notNull()
-		.references(() => categories.id),
-	sortOrder: integer("sort_order").notNull(),
-	description: text("description"),
-	assetKey: text("asset_key"),
-});
+export const ingredientGroups = sqliteTable(
+	"ingredient_groups",
+	{
+		id: integer("id").primaryKey({ autoIncrement: true }),
+		displayName: text("display_name").notNull().unique(),
+		categoryId: integer("category_id")
+			.notNull()
+			.references(() => categories.id),
+		sortOrder: integer("sort_order").notNull(),
+		description: text("description"),
+		assetKey: text("asset_key"),
+	},
+	(table) => [index("ingredientGroups_categoryId_idx").on(table.categoryId)],
+);
 
 // tags テーブル
 export const tags = sqliteTable("tags", {
@@ -96,7 +112,10 @@ export const cocktailTags = sqliteTable(
 			.notNull()
 			.references(() => tags.id, { onDelete: "cascade" }),
 	},
-	(table) => [primaryKey({ columns: [table.cocktailId, table.tagId] })],
+	(table) => [
+		primaryKey({ columns: [table.cocktailId, table.tagId] }),
+		index("cocktailTags_tagId_idx").on(table.tagId),
+	],
 );
 
 export const deliciousLikes = sqliteTable(
@@ -113,7 +132,10 @@ export const deliciousLikes = sqliteTable(
 			.notNull()
 			.default(sql`CURRENT_TIMESTAMP`),
 	},
-	(table) => [unique().on(table.userId, table.cocktailId)],
+	(table) => [
+		unique().on(table.userId, table.cocktailId),
+		index("deliciousLikes_cocktailId_idx").on(table.cocktailId),
+	],
 );
 
 // Relations
