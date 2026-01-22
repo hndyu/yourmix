@@ -1,6 +1,7 @@
 "use client";
 
 import authClient from "@/app/lib/authClient";
+import { isValidCallbackUrl } from "@/app/lib/url";
 import { Turnstile } from "@marsidev/react-turnstile";
 import { KeyRound } from "lucide-react";
 import Link from "next/link";
@@ -40,7 +41,7 @@ export default function SignInForm({
 	}, []);
 
 	let callbackUrl = searchParams.get("callbackUrl") || "/";
-	if (callbackUrl === "%2Fauth%2Fsign-up") {
+	if (!isValidCallbackUrl(callbackUrl) || callbackUrl === "/auth/sign-up") {
 		callbackUrl = "/";
 	}
 
