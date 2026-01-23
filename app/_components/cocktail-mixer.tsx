@@ -87,7 +87,8 @@ export default function CocktailMixer({
 	}, [ingredients.length, categories.length]);
 
 	// Mixボタンクリック時の処理
-	const handleMixClick = async () => {
+	// Wrapped in useCallback to provide stable reference to MixSection and IngredientSelector
+	const handleMixClick = React.useCallback(async () => {
 		// 表示をリセット
 		setShowOriginalCocktail(false);
 		setShowSearchResults(false);
@@ -103,13 +104,23 @@ export default function CocktailMixer({
 			searchCocktails(selectedIngredientIds),
 			generateCocktail(selectedIngredientNames),
 		]);
-	};
+	}, [
+		selectedIngredientNames,
+		selectedIngredientIds,
+		searchCocktails,
+		generateCocktail,
+		clearGeneratedCocktail,
+	]);
 
 	// 材料選択の変更をハンドル
-	const handleIngredientsChange = (ids: number[], names: string[]) => {
-		setSelectedIngredientIds(ids);
-		setSelectedIngredientNames(names);
-	};
+	// Wrapped in useCallback to provide stable reference to prevent unnecessary re-renders in children
+	const handleIngredientsChange = React.useCallback(
+		(ids: number[], names: string[]) => {
+			setSelectedIngredientIds(ids);
+			setSelectedIngredientNames(names);
+		},
+		[],
+	);
 
 	// 結果が表示されたらスクロール
 	React.useEffect(() => {
