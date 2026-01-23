@@ -10,12 +10,12 @@ interface IngredientCardProps {
 	ingredient: Ingredient;
 	isSelected: boolean;
 	selectedDetailNames: string[];
-	onToggle: () => void;
-	onDetailToggle: (name: string) => void;
+	onToggle: (ingredient: Ingredient) => void;
+	onDetailToggle: (ingredient: Ingredient, name: string) => void;
 	disabled?: boolean;
 }
 
-export default function IngredientCard({
+const IngredientCard = React.memo(function IngredientCard({
 	ingredient,
 	isSelected,
 	selectedDetailNames,
@@ -52,7 +52,7 @@ export default function IngredientCard({
 				onClick={(e) => {
 					// Prevent toggle if clicking expand button (though expand button is outside this container now? No, below)
 					// Actually, the structure below had the expand button separate.
-					onToggle();
+					onToggle(ingredient);
 				}}
 			>
 				{/* Selection Indicator */}
@@ -142,7 +142,7 @@ export default function IngredientCard({
 										type="button"
 										onClick={(e) => {
 											e.stopPropagation();
-											onDetailToggle(name);
+											onDetailToggle(ingredient, name);
 										}}
 										className={`
                       px-2 py-1 text-xs rounded-md border transition-all
@@ -163,4 +163,8 @@ export default function IngredientCard({
 			)}
 		</div>
 	);
-}
+});
+
+IngredientCard.displayName = "IngredientCard";
+
+export default IngredientCard;
