@@ -1,6 +1,7 @@
 "use client";
 
 import authClient from "@/app/lib/authClient";
+import { isValidCallbackUrl } from "@/app/lib/url";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Button } from "./ui/button";
@@ -34,7 +35,11 @@ export default function SocialLogin({
 		setIsLoading(provider);
 
 		// Get callbackUrl from search params, default to home
-		const callbackURL = searchParams.get("callbackUrl") || "/";
+		const rawCallbackUrl = searchParams.get("callbackUrl") || "/";
+		// Open Redirect protection: only allow safe relative paths
+		const callbackURL = isValidCallbackUrl(rawCallbackUrl)
+			? rawCallbackUrl
+			: "/";
 
 		try {
 			await authClient.signIn.social({

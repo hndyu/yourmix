@@ -134,7 +134,10 @@ export default async function RecipeDetailPage({
 				type="application/ld+json"
 				// biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
 				dangerouslySetInnerHTML={{
-					__html: JSON.stringify([recipeJsonLd, breadcrumbJsonLd]),
+					__html: JSON.stringify([recipeJsonLd, breadcrumbJsonLd]).replace(
+						/</g,
+						"\\u003c",
+					),
 				}}
 			/>
 

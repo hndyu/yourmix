@@ -1,6 +1,7 @@
 "use client";
 
 import authClient from "@/app/lib/authClient";
+import { isValidCallbackUrl } from "@/app/lib/url";
 import { Turnstile } from "@marsidev/react-turnstile";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -24,8 +25,11 @@ export default function SignUpForm({
 
 	const turnstileSiteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
 
-	let callbackUrl = searchParams.get("callbackUrl") || "/";
-	if (callbackUrl === "%2Fauth%2Fsign-in") {
+	const rawCallbackUrl = searchParams.get("callbackUrl") || "/";
+	// Open Redirect protection: only allow safe relative paths
+	let callbackUrl = isValidCallbackUrl(rawCallbackUrl) ? rawCallbackUrl : "/";
+
+	if (callbackUrl === "/auth/sign-in" || callbackUrl === "%2Fauth%2Fsign-in") {
 		callbackUrl = "/";
 	}
 
