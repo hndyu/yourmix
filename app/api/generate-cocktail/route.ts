@@ -82,14 +82,17 @@ export async function POST(request: Request) {
 			.select({ name: schema.ingredients.name })
 			.from(schema.ingredients);
 
-		const validIngredientNames = [
+		// ⚡ Bolt: Use a Set for O(1) ingredient validation
+		// Prevents O(N * M) complexity where N is total ingredients and M is selected ingredients.
+		// Expected impact: Faster validation for arbitrary number of selected ingredients.
+		const validIngredientNamesSet = new Set([
 			...validGroups.map((g) => g.displayName),
 			...validIngredients.map((i) => i.name),
-		];
+		]);
 
 		// 送信された材料名がすべて有効か検証
 		for (const ingredient of selectedIngredients) {
-			if (!validIngredientNames.includes(ingredient)) {
+			if (!validIngredientNamesSet.has(ingredient)) {
 				return NextResponse.json(
 					{ error: `不正な材料名です: ${ingredient}` },
 					{ status: 400 },
