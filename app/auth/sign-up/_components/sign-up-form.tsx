@@ -1,6 +1,7 @@
 "use client";
 
 import authClient from "@/app/lib/authClient";
+import { isValidCallbackUrl } from "@/app/lib/url";
 import { Turnstile } from "@marsidev/react-turnstile";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -24,10 +25,12 @@ export default function SignUpForm({
 
 	const turnstileSiteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
 
-	let callbackUrl = searchParams.get("callbackUrl") || "/";
-	if (callbackUrl === "%2Fauth%2Fsign-in") {
-		callbackUrl = "/";
-	}
+	const rawCallbackUrl = searchParams.get("callbackUrl");
+	const callbackUrl = isValidCallbackUrl(rawCallbackUrl)
+		? rawCallbackUrl === "%2Fauth%2Fsign-in"
+			? "/"
+			: rawCallbackUrl
+		: "/";
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
