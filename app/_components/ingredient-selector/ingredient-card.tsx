@@ -10,12 +10,12 @@ interface IngredientCardProps {
 	ingredient: Ingredient;
 	isSelected: boolean;
 	selectedDetailNames: string[];
-	onToggle: () => void;
-	onDetailToggle: (name: string) => void;
+	onToggle: (ingredient: Ingredient) => void;
+	onDetailToggle: (ingredient: Ingredient, name: string) => void;
 	disabled?: boolean;
 }
 
-export default function IngredientCard({
+const IngredientCard = React.memo(function IngredientCard({
 	ingredient,
 	isSelected,
 	selectedDetailNames,
@@ -49,10 +49,10 @@ export default function IngredientCard({
 			<button
 				type="button"
 				className="flex flex-col p-4 flex-grow text-left w-full focus:outline-none focus:ring-2 focus:ring-primary/50 rounded-t-2xl"
-				onClick={(e) => {
+				onClick={() => {
 					// Prevent toggle if clicking expand button (though expand button is outside this container now? No, below)
 					// Actually, the structure below had the expand button separate.
-					onToggle();
+					onToggle(ingredient);
 				}}
 			>
 				{/* Selection Indicator */}
@@ -142,7 +142,7 @@ export default function IngredientCard({
 										type="button"
 										onClick={(e) => {
 											e.stopPropagation();
-											onDetailToggle(name);
+											onDetailToggle(ingredient, name);
 										}}
 										className={`
                       px-2 py-1 text-xs rounded-md border transition-all
@@ -163,4 +163,6 @@ export default function IngredientCard({
 			)}
 		</div>
 	);
-}
+});
+
+export default IngredientCard;
