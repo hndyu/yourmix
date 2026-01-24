@@ -5,12 +5,13 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 // Mock next/navigation
 const pushMock = vi.fn();
+const searchParamsGetMock = vi.fn(() => null);
 vi.mock("next/navigation", () => ({
 	useRouter: () => ({
 		push: pushMock,
 	}),
 	useSearchParams: () => ({
-		get: () => null,
+		get: searchParamsGetMock,
 	}),
 }));
 
@@ -50,6 +51,7 @@ vi.mock("@marsidev/react-turnstile", () => ({
 describe("SignInPage", () => {
 	beforeEach(() => {
 		vi.clearAllMocks();
+		searchParamsGetMock.mockReturnValue(null);
 		vi.stubEnv("NEXT_PUBLIC_TURNSTILE_SITE_KEY", "mock-site-key");
 	});
 
@@ -131,6 +133,43 @@ describe("SignInPage", () => {
 				expect.any(Object),
 			);
 			expect(pushMock).toHaveBeenCalledWith("/");
+		});
+	});
+
+	it("prevents open redirect via callbackUrl", async () => {
+		// Mock callbackUrl to an external domain
+		searchParamsGetMock.mockImplementation((key) => {
+			if (key === "callbackUrl") return "https://malicious.com";
+			return null;
+		});
+
+		vi.mocked(authClient.signIn.email).mockImplementation(
+			async (data, options) => {
+				options?.onSuccess?.({
+					// @ts-ignore
+					data: { user: { id: "1" } },
+					request: new Request("https://example.com"),
+					response: new Response(),
+				});
+				return { data, error: null };
+			},
+		);
+
+		render(<SignInPage />);
+
+		fireEvent.change(screen.getByTestId("email-input"), {
+			target: { value: "test@example.com" },
+		});
+		fireEvent.change(screen.getByTestId("password-input"), {
+			target: { value: "password123" },
+		});
+		fireEvent.click(screen.getByTestId("turnstile-mock"));
+		fireEvent.click(screen.getByTestId("sign-in-button"));
+
+		await waitFor(() => {
+			// Should redirect to / instead of malicious.com
+			expect(pushMock).toHaveBeenCalledWith("/");
+			expect(pushMock).not.toHaveBeenCalledWith("https://malicious.com");
 		});
 	});
 
