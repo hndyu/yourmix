@@ -56,42 +56,48 @@ export default function IngredientSelector({
 		[selectedIngredientIds],
 	);
 
-	// Wrapper handlers to manage toast feedback
-	const handleGroupToggle = (ingredient: Ingredient) => {
-		if (disabled) return;
-		const result = toggleGroup(ingredient);
-		if (!result.success && result.reason === "LIMIT_REACHED") {
-			setSnackbar({
-				open: true,
-				message: "材料は5つまでです",
-				severity: "warning",
-			});
-		} else if (result.success && result.message) {
-			setSnackbar({
-				open: true,
-				message: result.message,
-				severity: "success",
-			});
-		}
-	};
+	// ⚡ Bolt: Stable callbacks to prevent IngredientCard re-renders
+	const handleGroupToggle = React.useCallback(
+		(ingredient: Ingredient) => {
+			if (disabled) return;
+			const result = toggleGroup(ingredient);
+			if (!result.success && result.reason === "LIMIT_REACHED") {
+				setSnackbar({
+					open: true,
+					message: "材料は5つまでです",
+					severity: "warning",
+				});
+			} else if (result.success && result.message) {
+				setSnackbar({
+					open: true,
+					message: result.message,
+					severity: "success",
+				});
+			}
+		},
+		[disabled, toggleGroup],
+	);
 
-	const handleDetailToggle = (ingredient: Ingredient, detailName: string) => {
-		if (disabled) return;
-		const result = toggleDetail(ingredient, detailName);
-		if (!result.success && result.reason === "LIMIT_REACHED") {
-			setSnackbar({
-				open: true,
-				message: "材料は5つまでです",
-				severity: "warning",
-			});
-		} else if (result.success && result.message) {
-			setSnackbar({
-				open: true,
-				message: result.message,
-				severity: "success",
-			});
-		}
-	};
+	const handleDetailToggle = React.useCallback(
+		(ingredient: Ingredient, detailName: string) => {
+			if (disabled) return;
+			const result = toggleDetail(ingredient, detailName);
+			if (!result.success && result.reason === "LIMIT_REACHED") {
+				setSnackbar({
+					open: true,
+					message: "材料は5つまでです",
+					severity: "warning",
+				});
+			} else if (result.success && result.message) {
+				setSnackbar({
+					open: true,
+					message: result.message,
+					severity: "success",
+				});
+			}
+		},
+		[disabled, toggleDetail],
+	);
 
 	// Filtering
 	const filteredIngredients = React.useMemo(() => {
@@ -173,8 +179,8 @@ export default function IngredientSelector({
 								ingredient={ingredient}
 								isSelected={isGroupSelectedWhole}
 								selectedDetailNames={displayedDetailNames}
-								onToggle={() => handleGroupToggle(ingredient)}
-								onDetailToggle={(name) => handleDetailToggle(ingredient, name)}
+								onToggle={handleGroupToggle}
+								onDetailToggle={handleDetailToggle}
 								disabled={disabled}
 							/>
 						);
