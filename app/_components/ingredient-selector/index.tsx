@@ -28,6 +28,7 @@ export default function IngredientSelector({
 	isInitialLoading = false,
 }: IngredientSelectorProps) {
 	const [searchQuery, setSearchQuery] = React.useState("");
+	const deferredSearchQuery = React.useDeferredValue(searchQuery);
 	const [activeCategory, setActiveCategory] = React.useState<string>(
 		categories[0]?.name || "その他",
 	);
@@ -39,8 +40,10 @@ export default function IngredientSelector({
 		severity: ToastSeverity;
 	}>({ open: false, message: "", severity: "info" });
 
-	const handleCloseSnackbar = () =>
-		setSnackbar((prev) => ({ ...prev, open: false }));
+	const handleCloseSnackbar = React.useCallback(
+		() => setSnackbar((prev) => ({ ...prev, open: false })),
+		[],
+	);
 
 	// Use custom hook for logic
 	const { toggleGroup, toggleDetail } = useIngredientSelection({
@@ -57,47 +60,58 @@ export default function IngredientSelector({
 	);
 
 	// Wrapper handlers to manage toast feedback
-	const handleGroupToggle = (ingredient: Ingredient) => {
-		if (disabled) return;
-		const result = toggleGroup(ingredient);
-		if (!result.success && result.reason === "LIMIT_REACHED") {
-			setSnackbar({
-				open: true,
-				message: "材料は5つまでです",
-				severity: "warning",
-			});
-		} else if (result.success && result.message) {
-			setSnackbar({
-				open: true,
-				message: result.message,
-				severity: "success",
-			});
-		}
-	};
+	const handleGroupToggle = React.useCallback(
+		(ingredient: Ingredient) => {
+			if (disabled) return;
+			const result = toggleGroup(ingredient);
+			if (!result.success && result.reason === "LIMIT_REACHED") {
+				setSnackbar({
+					open: true,
+					message: "材料は5つまでです",
+					severity: "warning",
+				});
+			} else if (result.success && result.message) {
+				setSnackbar({
+					open: true,
+					message: result.message,
+					severity: "success",
+				});
+			}
+		},
+		[disabled, toggleGroup],
+	);
 
-	const handleDetailToggle = (ingredient: Ingredient, detailName: string) => {
-		if (disabled) return;
-		const result = toggleDetail(ingredient, detailName);
-		if (!result.success && result.reason === "LIMIT_REACHED") {
-			setSnackbar({
-				open: true,
-				message: "材料は5つまでです",
-				severity: "warning",
-			});
-		} else if (result.success && result.message) {
-			setSnackbar({
-				open: true,
-				message: result.message,
-				severity: "success",
-			});
-		}
-	};
+	const handleDetailToggle = React.useCallback(
+		(ingredient: Ingredient, detailName: string) => {
+			if (disabled) return;
+			const result = toggleDetail(ingredient, detailName);
+			if (!result.success && result.reason === "LIMIT_REACHED") {
+				setSnackbar({
+					open: true,
+					message: "材料は5つまでです",
+					severity: "warning",
+				});
+			} else if (result.success && result.message) {
+				setSnackbar({
+					open: true,
+					message: result.message,
+					severity: "success",
+				});
+			}
+		},
+		[disabled, toggleDetail],
+	);
+
+	const handleSelectCategory = React.useCallback((cat: string) => {
+		setSearchQuery("");
+		setActiveCategory(cat);
+	}, []);
 
 	// Filtering
 	const filteredIngredients = React.useMemo(() => {
 		let result = ingredients;
-		if (searchQuery) {
-			const q = searchQuery.toLowerCase();
+		if (deferredSearchQuery) {
+			const q = deferredSearchQuery.toLowerCase();
 			result = result.filter(
 				(ing) =>
 					ing.name.toLowerCase().includes(q) ||
@@ -106,9 +120,11 @@ export default function IngredientSelector({
 		} else {
 			result = result.filter((ing) => ing.categoryName === activeCategory);
 		}
-		// Sort by order
-		return result.sort((a, b) => (a.sortOrder || 999) - (b.sortOrder || 999));
-	}, [ingredients, searchQuery, activeCategory]);
+		// Sort by order (using spread to avoid in-place mutation of props)
+		return [...result].sort(
+			(a, b) => (a.sortOrder || 999) - (b.sortOrder || 999),
+		);
+	}, [ingredients, deferredSearchQuery, activeCategory]);
 
 	if (isInitialLoading) {
 		return (
@@ -123,11 +139,8 @@ export default function IngredientSelector({
 			{/* Sidebar / Category Nav */}
 			<CategoryNav
 				categories={categories}
-				activeCategory={searchQuery ? "" : activeCategory}
-				onSelectCategory={(cat) => {
-					setSearchQuery("");
-					setActiveCategory(cat);
-				}}
+				activeCategory={deferredSearchQuery ? "" : activeCategory}
+				onSelectCategory={handleSelectCategory}
 			/>
 
 			{/* Main Content */}
@@ -173,8 +186,8 @@ export default function IngredientSelector({
 								ingredient={ingredient}
 								isSelected={isGroupSelectedWhole}
 								selectedDetailNames={displayedDetailNames}
-								onToggle={() => handleGroupToggle(ingredient)}
-								onDetailToggle={(name) => handleDetailToggle(ingredient, name)}
+								onToggle={handleGroupToggle}
+								onDetailToggle={handleDetailToggle}
 								disabled={disabled}
 							/>
 						);
