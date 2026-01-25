@@ -8,6 +8,7 @@ import type { BreadcrumbList, Recipe, WithContext } from "schema-dts";
 import CocktailDisplay from "../../_components/cocktail-display";
 import { initAuth } from "../../auth";
 import { getCocktailBySlug } from "../../lib/cocktail-data";
+import { safeJsonStringify } from "../../lib/security";
 import type { Cocktail } from "../../types/cocktail";
 
 const API_BASE_URL =
@@ -134,7 +135,7 @@ export default async function RecipeDetailPage({
 				type="application/ld+json"
 				// biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
 				dangerouslySetInnerHTML={{
-					__html: JSON.stringify([recipeJsonLd, breadcrumbJsonLd]),
+					__html: safeJsonStringify([recipeJsonLd, breadcrumbJsonLd]),
 				}}
 			/>
 

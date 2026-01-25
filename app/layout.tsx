@@ -6,6 +6,7 @@ import type { WebSite, WithContext } from "schema-dts";
 import AgeVerificationModal from "./_components/age-verification-modal";
 import Footer from "./_components/footer";
 import Header from "./_components/header";
+import { safeJsonStringify } from "./lib/security";
 import { Providers } from "./providers";
 
 const inter = Inter({
@@ -73,7 +74,7 @@ export default function RootLayout({
 				<script
 					type="application/ld+json"
 					// biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
-					dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+					dangerouslySetInnerHTML={{ __html: safeJsonStringify(jsonLd) }}
 				/>
 				<meta
 					name="google-site-verification"
