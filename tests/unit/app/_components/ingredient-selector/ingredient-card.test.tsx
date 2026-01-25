@@ -68,7 +68,7 @@ describe("IngredientCard", () => {
 		// The first button is the main card button
 		const mainButton = screen.getAllByRole("button")[0];
 		await user.click(mainButton);
-		expect(onToggle).toHaveBeenCalledTimes(1);
+		expect(onToggle).toHaveBeenCalledWith(mockIngredient);
 	});
 
 	it("does not expand details by default", () => {
@@ -99,7 +99,7 @@ describe("IngredientCard", () => {
 
 		// Click detail
 		await user.click(screen.getByRole("button", { name: "Detail 1" }));
-		expect(onDetailToggle).toHaveBeenCalledWith("Detail 1");
+		expect(onDetailToggle).toHaveBeenCalledWith(mockIngredient, "Detail 1");
 	});
 
 	it("displays number of selected details", () => {

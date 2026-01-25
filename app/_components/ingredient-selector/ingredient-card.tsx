@@ -10,19 +10,20 @@ interface IngredientCardProps {
 	ingredient: Ingredient;
 	isSelected: boolean;
 	selectedDetailNames: string[];
-	onToggle: () => void;
-	onDetailToggle: (name: string) => void;
+	onToggle: (ingredient: Ingredient) => void;
+	onDetailToggle: (ingredient: Ingredient, name: string) => void;
 	disabled?: boolean;
 }
 
-export default function IngredientCard({
-	ingredient,
-	isSelected,
-	selectedDetailNames,
-	onToggle,
-	onDetailToggle,
-	disabled,
-}: IngredientCardProps) {
+const IngredientCard = React.memo(
+	function IngredientCard({
+		ingredient,
+		isSelected,
+		selectedDetailNames,
+		onToggle,
+		onDetailToggle,
+		disabled,
+	}: IngredientCardProps) {
 	const [expanded, setExpanded] = React.useState(false);
 	const hasDetails =
 		ingredient.actualNames && ingredient.actualNames.length > 0;
@@ -52,7 +53,7 @@ export default function IngredientCard({
 				onClick={(e) => {
 					// Prevent toggle if clicking expand button (though expand button is outside this container now? No, below)
 					// Actually, the structure below had the expand button separate.
-					onToggle();
+					onToggle(ingredient);
 				}}
 			>
 				{/* Selection Indicator */}
@@ -142,7 +143,7 @@ export default function IngredientCard({
 										type="button"
 										onClick={(e) => {
 											e.stopPropagation();
-											onDetailToggle(name);
+											onDetailToggle(ingredient, name);
 										}}
 										className={`
                       px-2 py-1 text-xs rounded-md border transition-all
@@ -163,4 +164,17 @@ export default function IngredientCard({
 			)}
 		</div>
 	);
-}
+}, (prevProps, nextProps) => {
+	// Custom comparison to handle array reference changes from the parent loop
+	return (
+		prevProps.ingredient === nextProps.ingredient &&
+		prevProps.isSelected === nextProps.isSelected &&
+		prevProps.disabled === nextProps.disabled &&
+		prevProps.onToggle === nextProps.onToggle &&
+		prevProps.onDetailToggle === nextProps.onDetailToggle &&
+		prevProps.selectedDetailNames.length === nextProps.selectedDetailNames.length &&
+		prevProps.selectedDetailNames.every((v, i) => v === nextProps.selectedDetailNames[i])
+	);
+});
+
+export default IngredientCard;
