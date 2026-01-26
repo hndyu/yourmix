@@ -5,3 +5,7 @@
 ## 2025-05-20 - [React List Rendering Optimization]
 **Learning:** Even with `React.memo`, re-renders can still occur if array props are re-generated as new references in the parent's `map` loop. Also, in-place `.sort()` on filtered arrays can be risky if the array is not guaranteed to be a new reference.
 **Action:** Use custom comparison functions in `React.memo` for deep equality checks on array/object props. Always use `[...array].sort()` to ensure immutability when sorting derived data.
+
+## 2025-05-25 - [Parallel Implementation Anti-patterns]
+**Learning:** Performance anti-patterns (like O(G*N) loops) often recur in parallel implementations of similar logic across the repository (e.g., both API routes and utility libraries). Fixing it in one place doesn't guarantee it's fixed everywhere.
+**Action:** When identifying an optimization, always search the codebase for similar logic or patterns in other files to ensure consistency and maximize impact.

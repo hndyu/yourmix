@@ -68,17 +68,20 @@ export async function getIngredientsMasterData() {
 
 	// Mapの値を配列に変換 (挿入順が保持される)
 	const groupedIngredients = Array.from(groupedIngredientsMap.values());
-	// グループ情報のマッピングを作成（検索時の展開に使用）
-	const groupMapping = allIngredientsWithGroups.reduce<
-		Record<string, string[]>
-	>((acc, ing) => {
-		if (ing.groupDisplayName && !acc[ing.groupDisplayName]) {
-			acc[ing.groupDisplayName] = allIngredientsWithGroups
-				.filter((i) => i.groupDisplayName === ing.groupDisplayName)
-				.map((i) => i.name);
+
+	// ⚡ Bolt: Optimized group mapping creation
+	// Previously used O(G * N) complexity with repeated filters.
+	// Now uses O(N) complexity with a single pass over the data.
+	// Expected impact: ~10-100x faster for large ingredient lists.
+	const groupMapping: Record<string, string[]> = {};
+	for (const ing of allIngredientsWithGroups) {
+		if (ing.groupDisplayName) {
+			if (!groupMapping[ing.groupDisplayName]) {
+				groupMapping[ing.groupDisplayName] = [];
+			}
+			groupMapping[ing.groupDisplayName].push(ing.name);
 		}
-		return acc;
-	}, {});
+	}
 
 	return {
 		categories: allCategories as Category[],
