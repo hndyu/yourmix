@@ -33,37 +33,62 @@ export function useCocktailSearch(
 		return map;
 	}, [allIngredients, categories]);
 
+	// ⚡ Bolt: Optimized lookups for ingredient selection status
+	// Convert selectedIngredients to a Set for O(1) membership checks
+	const selectedSet = React.useMemo(
+		() => new Set(selectedIngredients),
+		[selectedIngredients],
+	);
+
+	// ⚡ Bolt: Map child names to parent group names for O(1) lookup
+	// Pre-calculated once when allIngredients changes, rather than searching in a loop
+	const actualNameToParentMap = React.useMemo(() => {
+		const map = new Map<string, string>();
+		for (const ing of allIngredients) {
+			if (ing.actualNames) {
+				for (const actualName of ing.actualNames) {
+					map.set(actualName, ing.name);
+				}
+			}
+		}
+		return map;
+	}, [allIngredients]);
+
 	const isIngredientSelected = React.useCallback(
 		(ingredientName: string) => {
-			const isDirectlySelected = selectedIngredients.includes(ingredientName);
-			if (isDirectlySelected) return true;
+			// O(1) lookup in Set
+			if (selectedSet.has(ingredientName)) return true;
 
-			const parentIngredient = allIngredients.find((ing) =>
-				ing.actualNames?.includes(ingredientName),
-			);
-			return parentIngredient
-				? selectedIngredients.includes(parentIngredient.name)
-				: false;
+			// O(1) lookup in parent map
+			const parentName = actualNameToParentMap.get(ingredientName);
+			// O(1) lookup in Set for parent
+			return parentName ? selectedSet.has(parentName) : false;
 		},
-		[selectedIngredients, allIngredients],
+		[selectedSet, actualNameToParentMap],
 	);
 
 	// カクテルを「ユーザーが選択しマッチした材料数 / カクテルを作るのに必要なすべての材料数」の割合が高い順に並び替える
 	const sortedCocktails = React.useMemo(() => {
+		// ⚡ Bolt: Pre-calculate match ratios once per cocktail to avoid redundant calculations during sort
+		// Reduces complexity from O(C log C) to O(C) for the match ratio calculation
+		const matchRatios = new Map<string, number>();
+
+		for (const cocktail of cocktails) {
+			if (cocktail.ingredients.length === 0) {
+				matchRatios.set(cocktail.id, 0);
+				continue;
+			}
+
+			const matchedCount = cocktail.ingredients.filter((ingredient) =>
+				isIngredientSelected(ingredient.name),
+			).length;
+
+			matchRatios.set(cocktail.id, matchedCount / cocktail.ingredients.length);
+		}
+
 		return [...cocktails].sort((a, b) => {
-			const calculateMatchRatio = (cocktail: Cocktail) => {
-				if (cocktail.ingredients.length === 0) {
-					return 0; // 材料がないカクテルは比率0とする
-				}
-				const matchedCount = cocktail.ingredients.filter((ingredient) =>
-					isIngredientSelected(ingredient.name),
-				).length;
-
-				return matchedCount / cocktail.ingredients.length;
-			};
-
-			const ratioA = calculateMatchRatio(a);
-			const ratioB = calculateMatchRatio(b);
+			const ratioA = matchRatios.get(a.id) ?? 0;
+			const ratioB = matchRatios.get(b.id) ?? 0;
 
 			// 比率が高い順にソート (降順)
 			// 比率が同じ場合は、元の順序を維持
