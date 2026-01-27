@@ -9,3 +9,7 @@
 ## 2025-05-20 - [React List Rendering Optimization]
 **Learning:** Even with `React.memo`, re-renders can still occur if array props are re-generated as new references in the parent's `map` loop. Also, in-place `.sort()` on filtered arrays can be risky if the array is not guaranteed to be a new reference.
 **Action:** Use custom comparison functions in `React.memo` for deep equality checks on array/object props. Always use `[...array].sort()` to ensure immutability when sorting derived data.
+
+## 2025-06-01 - [Optimizing Frequent Lookups and Schwartzian Transform]
+**Learning:** React hooks like `useMemo` and `useCallback` can be combined with efficient data structures like `Set` and `Map` to transform O(N) search operations into O(1). Additionally, when sorting an array based on expensive calculations, pre-calculating those values (Schwartzian Transform) once per item avoids redundant O(N log N) work.
+**Action:** Always check sort functions for expensive computations and move them outside the comparator using a pre-calculated Map. Use `Set` for membership checks in frequently called hooks.
