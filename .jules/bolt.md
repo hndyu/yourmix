@@ -9,3 +9,7 @@
 ## 2025-05-20 - [React List Rendering Optimization]
 **Learning:** Even with `React.memo`, re-renders can still occur if array props are re-generated as new references in the parent's `map` loop. Also, in-place `.sort()` on filtered arrays can be risky if the array is not guaranteed to be a new reference.
 **Action:** Use custom comparison functions in `React.memo` for deep equality checks on array/object props. Always use `[...array].sort()` to ensure immutability when sorting derived data.
+
+## 2026-01-27 - [Client-side Search and Sort Optimization]
+**Learning:** Heavy client-side operations like sorting hundreds of items based on derived properties (like match ratios) can become O(N^2) or worse if those properties are recalculated in the sort comparator. Using the Schwartzian Transform pattern (pre-calculating keys) and optimized data structures (Set/Map) for the underlying logic significantly improves responsiveness.
+**Action:** When sorting arrays in `useMemo`, pre-calculate comparison keys in a single pass if the calculation is more than a simple property access. Use `Set` for membership checks in frequently called helpers.
