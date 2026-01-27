@@ -16,6 +16,17 @@ vi.mock("@opennextjs/cloudflare", () => ({
 	getCloudflareContext: vi.fn(),
 }));
 
+const mockGetSession = vi.fn();
+vi.mock("@/app/auth", () => ({
+	initAuth: vi.fn(() =>
+		Promise.resolve({
+			api: {
+				getSession: mockGetSession,
+			},
+		}),
+	),
+}));
+
 const mockGenerateContent = vi.fn();
 vi.mock("@google/genai", () => ({
 	GoogleGenAI: vi.fn(() => ({
@@ -98,6 +109,11 @@ describe("POST /api/generate-cocktail", () => {
 			text: JSON.stringify([mockCocktailResponse]),
 		});
 
+		// デフォルトでログイン済みとする
+		mockGetSession.mockResolvedValue({
+			user: { id: "test-user-id" },
+		});
+
 		resetDrizzleMocks(); // 各テストの前にDrizzleモックをリセット
 	});
 
@@ -105,6 +121,29 @@ describe("POST /api/generate-cocktail", () => {
 		vi.clearAllMocks();
 		vi.unstubAllEnvs(); // スタブした環境変数をクリーンアップ
 		vi.resetModules(); // モジュールキャッシュをリセットし、異なる環境変数で再インポートできるようにする
+	});
+
+	it("ログインしていない場合、401エラーを返す", async () => {
+		vi.stubEnv("GEMINI_API_KEY", "test-api-key");
+		const { POST } = await import("@/app/api/generate-cocktail/route");
+		vi.mocked(NextResponse.json).mockClear();
+
+		mockGetSession.mockResolvedValueOnce(null); // 未ログイン
+
+		const requestBody = { ingredients: ["ジン"] };
+		const request = {
+			json: () => Promise.resolve(requestBody),
+			headers: new Headers(),
+		} as unknown as Request;
+
+		const response = await POST(request);
+		const data = await response.json();
+
+		expect(response.status).toBe(401);
+		expect(data).toEqual({
+			error: "オリジナルカクテルを生成するにはログインが必要です。",
+		});
+		expect(mockGenerateContent).not.toHaveBeenCalled();
 	});
 
 	it("正常なリクエストでカクテルレシピを返す", async () => {
@@ -272,6 +311,30 @@ describe("POST /api/generate-cocktail", () => {
 		expect(mockGenerateContent).not.toHaveBeenCalled();
 		expect(vi.mocked(NextResponse.json)).toHaveBeenCalledWith(
 			{ error: "材料が指定されていません。" },
+			{ status: 400 },
+		);
+	});
+
+	it("材料が10種類を超える場合、400エラーを返す", async () => {
+		vi.stubEnv("GEMINI_API_KEY", "test-api-key");
+		const { POST } = await import("@/app/api/generate-cocktail/route");
+		vi.mocked(NextResponse.json).mockClear();
+
+		const requestBody = {
+			ingredients: Array(11).fill("ジン"),
+		};
+		const request = {
+			json: () => Promise.resolve(requestBody),
+		} as Request;
+
+		const response = await POST(request);
+		const data = await response.json();
+
+		expect(response.status).toBe(400);
+		expect(data).toEqual({ error: "材料は一度に10種類まで指定可能です。" });
+		expect(mockGenerateContent).not.toHaveBeenCalled();
+		expect(vi.mocked(NextResponse.json)).toHaveBeenCalledWith(
+			{ error: "材料は一度に10種類まで指定可能です。" },
 			{ status: 400 },
 		);
 	});

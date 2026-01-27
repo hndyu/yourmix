@@ -1,3 +1,4 @@
+import { initAuth } from "@/app/auth";
 import { getDb } from "@/app/db/db";
 import {
 	categories,
@@ -45,6 +46,19 @@ export async function POST(request: Request) {
 		);
 	}
 
+	// 認証チェック: カクテル生成にはログインが必要
+	const auth = await initAuth();
+	const session = await auth.api.getSession({
+		headers: request.headers,
+	});
+
+	if (!session?.user) {
+		return NextResponse.json(
+			{ error: "オリジナルカクテルを生成するにはログインが必要です。" },
+			{ status: 401 },
+		);
+	}
+
 	let body: { ingredients?: unknown };
 	try {
 		body = await request.json();
@@ -68,6 +82,13 @@ export async function POST(request: Request) {
 		) {
 			return NextResponse.json(
 				{ error: "材料が指定されていません。" },
+				{ status: 400 },
+			);
+		}
+
+		if (selectedIngredients.length > 10) {
+			return NextResponse.json(
+				{ error: "材料は一度に10種類まで指定可能です。" },
 				{ status: 400 },
 			);
 		}
