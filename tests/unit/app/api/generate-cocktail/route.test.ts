@@ -16,6 +16,16 @@ vi.mock("@opennextjs/cloudflare", () => ({
 	getCloudflareContext: vi.fn(),
 }));
 
+vi.mock("@/app/auth", () => ({
+	initAuth: vi.fn(async () => ({
+		api: {
+			getSession: vi.fn(async () => ({
+				user: { id: "test-user" },
+			})),
+		},
+	})),
+}));
+
 const mockGenerateContent = vi.fn();
 vi.mock("@google/genai", () => ({
 	GoogleGenAI: vi.fn(() => ({
@@ -295,6 +305,59 @@ describe("POST /api/generate-cocktail", () => {
 		expect(vi.mocked(NextResponse.json)).toHaveBeenCalledWith(
 			{ error: "材料が指定されていません。" },
 			{ status: 400 },
+		);
+	});
+
+	it("材料が10種類を超える場合、400エラーを返す", async () => {
+		vi.stubEnv("GEMINI_API_KEY", "test-api-key");
+		const { POST } = await import("@/app/api/generate-cocktail/route");
+		vi.mocked(NextResponse.json).mockClear();
+
+		const requestBody = {
+			ingredients: Array(11).fill("ジン"),
+		};
+		const request = {
+			json: () => Promise.resolve(requestBody),
+		} as Request;
+
+		const response = await POST(request);
+		const data = await response.json();
+
+		expect(response.status).toBe(400);
+		expect(data).toEqual({ error: "材料は一度に10種類まで指定可能です。" });
+		expect(mockGenerateContent).not.toHaveBeenCalled();
+		expect(vi.mocked(NextResponse.json)).toHaveBeenCalledWith(
+			{ error: "材料は一度に10種類まで指定可能です。" },
+			{ status: 400 },
+		);
+	});
+
+	it("認証されていない場合、401エラーを返す", async () => {
+		const { initAuth } = await import("@/app/auth");
+		vi.mocked(initAuth).mockResolvedValueOnce({
+			api: {
+				getSession: vi.fn().mockResolvedValue(null), // セッションなし
+			},
+			// biome-ignore lint/suspicious/noExplicitAny: mocking initAuth
+		} as any);
+
+		vi.stubEnv("GEMINI_API_KEY", "test-api-key");
+		const { POST } = await import("@/app/api/generate-cocktail/route");
+		vi.mocked(NextResponse.json).mockClear();
+
+		const request = {
+			headers: new Headers(),
+		} as Request;
+
+		const response = await POST(request);
+		const data = await response.json();
+
+		expect(response.status).toBe(401);
+		expect(data).toEqual({ error: "AIカクテル生成にはログインが必要です。" });
+		expect(mockGenerateContent).not.toHaveBeenCalled();
+		expect(vi.mocked(NextResponse.json)).toHaveBeenCalledWith(
+			{ error: "AIカクテル生成にはログインが必要です。" },
+			{ status: 401 },
 		);
 	});
 

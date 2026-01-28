@@ -1,3 +1,4 @@
+import { initAuth } from "@/app/auth";
 import { getDb } from "@/app/db/db";
 import {
 	categories,
@@ -38,6 +39,18 @@ if (!apiKey) {
 const ai = new GoogleGenAI({});
 
 export async function POST(request: Request) {
+	const auth = await initAuth();
+	const session = await auth.api.getSession({
+		headers: request.headers,
+	});
+
+	if (!session) {
+		return NextResponse.json(
+			{ error: "AIカクテル生成にはログインが必要です。" },
+			{ status: 401 },
+		);
+	}
+
 	if (!apiKey) {
 		return NextResponse.json(
 			{ error: "APIキーが設定されていません。" },
@@ -68,6 +81,13 @@ export async function POST(request: Request) {
 		) {
 			return NextResponse.json(
 				{ error: "材料が指定されていません。" },
+				{ status: 400 },
+			);
+		}
+
+		if (selectedIngredients.length > 10) {
+			return NextResponse.json(
+				{ error: "材料は一度に10種類まで指定可能です。" },
 				{ status: 400 },
 			);
 		}

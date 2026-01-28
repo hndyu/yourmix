@@ -2,3 +2,8 @@
 **Vulnerability:** Potential Cross-Site Scripting (XSS) when embedding JSON-LD in `<script>` tags using `dangerouslySetInnerHTML`. An attacker-controlled string containing `</script>` could terminate the script block and execute arbitrary scripts.
 **Learning:** Standard `JSON.stringify` does not escape `<` characters, which are problematic inside HTML script tags.
 **Prevention:** Use the `safeJsonStringify` utility (in `app/lib/security.ts`) which escapes `<` as `\u003c`. This ensures the JSON is safe to embed directly in HTML while remaining valid JSON-LD.
+
+## 2025-03-02 - AI API Abuse Prevention
+**Vulnerability:** Unauthenticated AI API endpoint (`/api/generate-cocktail`) could be abused by malicious users to deplete API quotas and increase costs.
+**Learning:** External service proxies must always be authenticated and have strict input validation to prevent resource exhaustion.
+**Prevention:** Implement authentication checks using `initAuth` and enforce limits on input parameters (e.g., maximum number of ingredients) at the API layer.
