@@ -37,6 +37,9 @@ if (!apiKey) {
 // GoogleGenAIのインスタンスを初期化
 const ai = new GoogleGenAI({});
 
+// コア体験なので認証（ログイン）なしでもユーザーが使える状態を保つ
+// 無料枠のGemini APIを使用しているのでリクエストが多いとエラーになるが現時点では許容する
+// 将来的に無料枠の多いGemma APIをテストする予定
 export async function POST(request: Request) {
 	if (!apiKey) {
 		return NextResponse.json(
