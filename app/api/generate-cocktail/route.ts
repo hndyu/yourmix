@@ -1,3 +1,4 @@
+import { initAuth } from "@/app/auth";
 import { getDb } from "@/app/db/db";
 import {
 	categories,
@@ -37,15 +38,23 @@ if (!apiKey) {
 // GoogleGenAIのインスタンスを初期化
 const ai = new GoogleGenAI({});
 
-// コア体験なので認証（ログイン）なしでもユーザーが使える状態を保つ
-// 無料枠のGemini APIを使用しているのでリクエストが多いとエラーになるが現時点では許容する
-// 将来的に無料枠の多いGemma APIをテストする予定
+/**
+ * AIによるカクテルレシピ生成API
+ * 不正利用とリソース枯渇を防ぐため、認証を必須とし、材料数に制限を設けています。
+ */
 export async function POST(request: Request) {
 	if (!apiKey) {
 		return NextResponse.json(
 			{ error: "APIキーが設定されていません。" },
 			{ status: 500 },
 		);
+	}
+
+	// 認証チェック: ログインユーザーのみ許可
+	const auth = await initAuth();
+	const session = await auth.api.getSession({ headers: request.headers });
+	if (!session) {
+		return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 	}
 
 	let body: { ingredients?: unknown };
@@ -71,6 +80,14 @@ export async function POST(request: Request) {
 		) {
 			return NextResponse.json(
 				{ error: "材料が指定されていません。" },
+				{ status: 400 },
+			);
+		}
+
+		// セキュリティ強化: 材料数の上限を設定（リソース消費の抑制）
+		if (selectedIngredients.length > 10) {
+			return NextResponse.json(
+				{ error: "材料は10種類以内で指定してください。" },
 				{ status: 400 },
 			);
 		}

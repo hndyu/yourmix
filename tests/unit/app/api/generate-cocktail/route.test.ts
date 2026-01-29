@@ -16,6 +16,17 @@ vi.mock("@opennextjs/cloudflare", () => ({
 	getCloudflareContext: vi.fn(),
 }));
 
+const mockGetSession = vi.fn();
+vi.mock("@/app/auth", () => ({
+	initAuth: vi.fn(() =>
+		Promise.resolve({
+			api: {
+				getSession: mockGetSession,
+			},
+		}),
+	),
+}));
+
 const mockGenerateContent = vi.fn();
 vi.mock("@google/genai", () => ({
 	GoogleGenAI: vi.fn(() => ({
@@ -98,6 +109,9 @@ describe("POST /api/generate-cocktail", () => {
 			text: JSON.stringify([mockCocktailResponse]),
 		});
 
+		// デフォルトで認証済みとする
+		mockGetSession.mockResolvedValue({ user: { id: "test-user" } });
+
 		resetDrizzleMocks(); // 各テストの前にDrizzleモックをリセット
 	});
 
@@ -125,7 +139,8 @@ describe("POST /api/generate-cocktail", () => {
 		const requestBody = { ingredients: ["ジン", "トニックウォーター"] };
 		const request = {
 			json: () => Promise.resolve(requestBody),
-		} as Request;
+			headers: new Headers(),
+		} as unknown as Request;
 
 		const response = await POST(request);
 		const data = await response.json();
@@ -172,7 +187,8 @@ describe("POST /api/generate-cocktail", () => {
 		const requestBody = { ingredients: ["ジン", "ジンジャーエール"] };
 		const request = {
 			json: () => Promise.resolve(requestBody),
-		} as Request;
+			headers: new Headers(),
+		} as unknown as Request;
 
 		const response = await POST(request);
 		const data = await response.json();
@@ -208,7 +224,8 @@ describe("POST /api/generate-cocktail", () => {
 		const requestBody = { ingredients: ["ジン"] };
 		const request = {
 			json: () => Promise.resolve(requestBody),
-		} as Request;
+			headers: new Headers(),
+		} as unknown as Request;
 
 		const response = await POST(request);
 		const data = await response.json();
@@ -240,7 +257,8 @@ describe("POST /api/generate-cocktail", () => {
 		const requestBody = { ingredients: ["ジン"] };
 		const request = {
 			json: () => Promise.resolve(requestBody),
-		} as Request;
+			headers: new Headers(),
+		} as unknown as Request;
 
 		const response = await POST(request);
 		const data = await response.json();
@@ -262,7 +280,8 @@ describe("POST /api/generate-cocktail", () => {
 		const requestBody = { ingredients: [] };
 		const request = {
 			json: () => Promise.resolve(requestBody),
-		} as Request;
+			headers: new Headers(),
+		} as unknown as Request;
 
 		const response = await POST(request);
 		const data = await response.json();
@@ -284,7 +303,8 @@ describe("POST /api/generate-cocktail", () => {
 		const requestBody = {}; // 'ingredients'プロパティなし
 		const request = {
 			json: () => Promise.resolve(requestBody),
-		} as Request;
+			headers: new Headers(),
+		} as unknown as Request;
 
 		const response = await POST(request);
 		const data = await response.json();
@@ -315,7 +335,8 @@ describe("POST /api/generate-cocktail", () => {
 		const requestBody = { ingredients: ["ジン"] };
 		const request = {
 			json: () => Promise.resolve(requestBody),
-		} as Request;
+			headers: new Headers(),
+		} as unknown as Request;
 
 		const response = await POST(request);
 		const data = await response.json();
@@ -352,7 +373,8 @@ describe("POST /api/generate-cocktail", () => {
 		const requestBody = { ingredients: ["ジン"] };
 		const request = {
 			json: () => Promise.resolve(requestBody),
-		} as Request;
+			headers: new Headers(),
+		} as unknown as Request;
 
 		const response = await POST(request);
 		const data = await response.json();
@@ -386,7 +408,8 @@ describe("POST /api/generate-cocktail", () => {
 		const requestBody = { ingredients: ["ジン"] };
 		const request = {
 			json: () => Promise.resolve(requestBody),
-		} as Request;
+			headers: new Headers(),
+		} as unknown as Request;
 
 		const response = await POST(request);
 		const data = await response.json();
@@ -440,7 +463,8 @@ describe("POST /api/generate-cocktail", () => {
 		const requestBody = { ingredients: ["スピリッツ（その他）", "レモン"] };
 		const request = {
 			json: () => Promise.resolve(requestBody),
-		} as Request;
+			headers: new Headers(),
+		} as unknown as Request;
 
 		await POST(request);
 
@@ -462,5 +486,47 @@ describe("POST /api/generate-cocktail", () => {
 6. **言語**: 日本人向けに書いてください。基本的にはアルファベットではなくカタカナ表記が推奨されます。`,
 			}),
 		);
+	});
+
+	it("認証されていない場合、401エラーを返す", async () => {
+		vi.stubEnv("GEMINI_API_KEY", "test-api-key");
+		mockGetSession.mockResolvedValueOnce(null); // 認証なし
+
+		const { POST } = await import("@/app/api/generate-cocktail/route");
+		vi.mocked(NextResponse.json).mockClear();
+
+		const requestBody = { ingredients: ["ジン"] };
+		const request = {
+			json: () => Promise.resolve(requestBody),
+			headers: new Headers(),
+		} as unknown as Request;
+
+		const response = await POST(request);
+		const data = await response.json();
+
+		expect(response.status).toBe(401);
+		expect(data).toEqual({ error: "Unauthorized" });
+		expect(mockGenerateContent).not.toHaveBeenCalled();
+	});
+
+	it("材料が10種類を超える場合、400エラーを返す", async () => {
+		vi.stubEnv("GEMINI_API_KEY", "test-api-key");
+		const { POST } = await import("@/app/api/generate-cocktail/route");
+		vi.mocked(NextResponse.json).mockClear();
+
+		const requestBody = {
+			ingredients: Array.from({ length: 11 }, (_, i) => `材料${i + 1}`),
+		};
+		const request = {
+			json: () => Promise.resolve(requestBody),
+			headers: new Headers(),
+		} as unknown as Request;
+
+		const response = await POST(request);
+		const data = await response.json();
+
+		expect(response.status).toBe(400);
+		expect(data).toEqual({ error: "材料は10種類以内で指定してください。" });
+		expect(mockGenerateContent).not.toHaveBeenCalled();
 	});
 });
