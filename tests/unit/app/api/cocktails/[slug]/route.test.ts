@@ -58,7 +58,7 @@ describe("GET /api/cocktails/[slug]", () => {
 	const mockSlug = "gin-tonic";
 
 	const mockCocktailResult = {
-		id: 1,
+		id: "1",
 		name: "ジン・トニック",
 		slug: "gin-tonic",
 		description: "ジンの代表的なカクテル",
@@ -80,7 +80,7 @@ describe("GET /api/cocktails/[slug]", () => {
 			},
 			{
 				amount: "120ml",
-				option_group: "g1",
+				option_group: 1,
 				ingredient: {
 					id: 201,
 					name: "トニックウォーター",
@@ -144,7 +144,7 @@ describe("GET /api/cocktails/[slug]", () => {
 		const data = (await response.json()) as { cocktail: Cocktail };
 
 		expect(response.status).toBe(200);
-		expect(data.cocktail.id).toBe(1);
+		expect(data.cocktail.id).toBe("1");
 		expect(data.cocktail.name).toBe("ジン・トニック");
 		expect(data.cocktail.garnish).toBe("ライム");
 
@@ -163,7 +163,7 @@ describe("GET /api/cocktails/[slug]", () => {
 				name: "トニックウォーター",
 				category: "ソフトドリンク",
 				amount: "120ml",
-				option_group: "g1",
+				option_group: 1,
 			},
 		]);
 
