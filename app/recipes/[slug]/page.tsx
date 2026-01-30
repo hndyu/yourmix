@@ -64,19 +64,30 @@ export default async function RecipeDetailPage({
 	const userId = session?.user?.id;
 	const cocktail = await getCocktail(slug, userId);
 
-	// JSON-LD Generation
-	const displayIngredients = [];
+	// ⚡ Bolt: Optimized ingredient grouping for JSON-LD (O(N) instead of O(N^2))
+	const displayIngredients: string[] = [];
 	const processedOptionGroups = new Set<number>();
+
+	// Group ingredients by option_group first to avoid repeated filtering
+	const ingredientGroupsMap = new Map<number, typeof cocktail.ingredients>();
+	for (const ing of cocktail.ingredients) {
+		if (ing.option_group) {
+			const group = ingredientGroupsMap.get(ing.option_group) || [];
+			group.push(ing);
+			ingredientGroupsMap.set(ing.option_group, group);
+		}
+	}
+
 	for (const ingredient of cocktail.ingredients) {
 		if (ingredient.option_group) {
 			if (!processedOptionGroups.has(ingredient.option_group)) {
-				const groupIngredients = cocktail.ingredients.filter(
-					(i) => i.option_group === ingredient.option_group,
-				);
-				displayIngredients.push(
-					`${groupIngredients.map((i) => i.name).join(" または ")} ${ingredient.amount}`,
-				);
-				processedOptionGroups.add(ingredient.option_group);
+				const group = ingredientGroupsMap.get(ingredient.option_group);
+				if (group) {
+					displayIngredients.push(
+						`${group.map((i) => i.name).join(" または ")} ${ingredient.amount}`,
+					);
+					processedOptionGroups.add(ingredient.option_group);
+				}
 			}
 		} else {
 			displayIngredients.push(`${ingredient.name} ${ingredient.amount}`);

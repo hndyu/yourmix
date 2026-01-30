@@ -1,5 +1,5 @@
-import { getIngredientsMasterData } from "@/app/lib/ingredients";
 import type { DB } from "@/app/db/db";
+import { getIngredientsMasterData } from "@/app/lib/ingredients";
 import type { Category, Ingredient } from "@/app/types/cocktail";
 import { getCloudflareContext } from "@opennextjs/cloudflare";
 import {
@@ -120,11 +120,14 @@ describe("getIngredientsMasterData", () => {
 		}
 
 		// groupMappingが正しく生成されているか確認 (O(N)化されたロジックの検証)
+		// biome-ignore lint/complexity/useLiteralKeys: 日本語キーなので文字列リテラルを使う
 		expect(data.groupMapping["ウイスキー"]).toEqual([
 			"ライ・ウイスキー",
 			"バーボン・ウイスキー",
 		]);
+		// biome-ignore lint/complexity/useLiteralKeys: 日本語キーなので文字列リテラルを使う
 		expect(data.groupMapping["ジン"]).toEqual(["ジン"]);
+		// biome-ignore lint/complexity/useLiteralKeys: 日本語キーなので文字列リテラルを使う
 		expect(data.groupMapping["ウォッカ"]).toEqual(["ウォッカ"]);
 	});
 

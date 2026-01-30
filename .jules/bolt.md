@@ -13,3 +13,7 @@
 ## 2025-06-01 - [Optimizing Frequent Lookups and Schwartzian Transform]
 **Learning:** React hooks like `useMemo` and `useCallback` can be combined with efficient data structures like `Set` and `Map` to transform O(N) search operations into O(1). Additionally, when sorting an array based on expensive calculations, pre-calculating those values (Schwartzian Transform) once per item avoids redundant O(N log N) work.
 **Action:** Always check sort functions for expensive computations and move them outside the comparator using a pre-calculated Map. Use `Set` for membership checks in frequently called hooks.
+
+## 2025-10-15 - [Avoiding Cartesian Products and O(N^2) Data Transformation]
+**Learning:** Joining multiple one-to-many tables in a single SQL query creates a Cartesian product, leading to redundant data transfer and complex O(N^2) manual deduplication logic. Drizzle's Relational Query API (`db.query`) handles these relations more efficiently by executing separate, optimized queries.
+**Action:** For complex relational data, prefer `db.query.tableName.findFirst` or `findMany` over raw JOINs. When transforming list data, use `Map` for single-pass grouping to maintain O(N) complexity.

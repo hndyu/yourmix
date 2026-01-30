@@ -40,91 +40,67 @@ vi.mock("@/app/auth", async (importOriginal) => {
 	};
 });
 
-// Drizzle ORMのクエリチェーンをモック
-const mockOrderBy = vi.fn();
-const mockMainWhere = vi.fn();
-const mockCountWhere = vi.fn();
-const mockLikeWhere = vi.fn();
+// Drizzle ORMのモック
+const mockFindFirst = vi.fn();
 const mockSelect = vi.fn();
 
 const mockDb = {
+	query: {
+		cocktails: {
+			findFirst: mockFindFirst,
+		},
+	},
 	select: mockSelect,
 };
 
 describe("GET /api/cocktails/[slug]", () => {
 	// モックデータ
 	const mockSlug = "gin-tonic";
-	const mockDbResult = [
-		{
-			cocktails: {
-				id: 1,
-				name: "ジン・トニック",
-				slug: "gin-tonic",
-				description: "ジンの代表的なカクテル",
-				imageUrl: "https://example.com/gin-tonic.jpg",
-				garnish: "ライム",
-			},
-			cocktail_ingredients: {
-				cocktailId: 1,
-				ingredientId: 101,
+
+	const mockCocktailResult = {
+		id: "1",
+		name: "ジン・トニック",
+		slug: "gin-tonic",
+		description: "ジンの代表的なカクテル",
+		imageUrl: "https://example.com/gin-tonic.jpg",
+		garnish: "ライム",
+		cocktailIngredients: [
+			{
 				amount: "45ml",
 				option_group: null,
+				ingredient: {
+					id: 101,
+					name: "ジン",
+					group: {
+						category: {
+							name: "蒸留酒",
+						},
+					},
+				},
 			},
-			ingredients: {
-				id: 101,
-				name: "ジン",
-				categoryId: 1,
-				groupId: 20,
-			},
-			cocktail_tags: { cocktailId: 1, tagId: 1 },
-			tags: { id: 1, name: "定番", description: "説明1" },
-			instructions: {
-				cocktailId: 1,
-				step: 1,
-				text: "氷を入れたグラスにジンを注ぐ",
-			},
-			categories: { id: 1, name: "蒸留酒", sortOrder: 1 },
-			ingredient_groups: { id: 20, name: "ジン", sortOrder: 20 },
-		},
-		{
-			cocktails: {
-				id: 1,
-				name: "ジン・トニック",
-				slug: "gin-tonic",
-				description: "ジンの代表的なカクテル",
-				imageUrl: "https://example.com/gin-tonic.jpg",
-				garnish: "ライム",
-			},
-			cocktail_ingredients: {
-				cocktailId: 1,
-				ingredientId: 201,
+			{
 				amount: "120ml",
-				option_group: "g1",
+				option_group: 1,
+				ingredient: {
+					id: 201,
+					name: "トニックウォーター",
+					group: {
+						category: {
+							name: "ソフトドリンク",
+						},
+					},
+				},
 			},
-			ingredients: {
-				id: 201,
-				name: "トニックウォーター",
-				categoryId: 5,
-				groupId: 50,
-			},
-			cocktail_tags: { cocktailId: 1, tagId: 2 },
-			tags: { id: 2, name: "さっぱり", description: "説明2" },
-			instructions: {
-				cocktailId: 1,
-				step: 2,
-				text: "トニックウォーターで満たす",
-			},
-			categories: { id: 5, name: "ソフトドリンク", sortOrder: 5 },
-			ingredient_groups: { id: 50, name: "炭酸飲料", sortOrder: 50 },
-		},
-		// 同じタグや材料が複数行あっても重複しないことを確認するためのデータ
-		{
-			cocktails: { id: 1, name: "ジン・トニック", slug: "gin-tonic" },
-			tags: { id: 1, name: "定番", description: "説明1" }, // 重複タグ
-			ingredients: { id: 101, name: "ジン" }, // 重複材料
-			instructions: { text: "氷を入れたグラスにジンを注ぐ" }, // 重複手順
-		},
-	];
+		],
+		cocktailTags: [
+			{ tag: { name: "定番", description: "説明1" } },
+			{ tag: { name: "さっぱり", description: "説明2" } },
+		],
+		instructions: [
+			{ text: "氷を入れたグラスにジンを注ぐ" },
+			{ text: "トニックウォーターで満たす" },
+		],
+	};
 
 	beforeEach(() => {
 		// biome-ignore lint/suspicious/noExplicitAny: テストのために部分的なDBオブジェクトをモックする必要があります
@@ -135,52 +111,30 @@ describe("GET /api/cocktails/[slug]", () => {
 			},
 		});
 
-		// Drizzleのselectメソッドのモックを実装
-		const mainQueryChain = {
-			leftJoin: vi.fn().mockReturnThis(),
-			orderBy: mockOrderBy,
-		};
-		const countQueryChain = vi.fn();
-		const likeQueryChain = vi.fn();
+		mockFindFirst.mockResolvedValue(mockCocktailResult);
 
 		mockSelect.mockImplementation((fields) => {
-			// select() - Main or Like Query
-			if (!fields) {
-				// 1回目のselect()呼び出し (Main Query)
-				if (mockSelect.mock.calls.length === 1) {
-					return {
-						from: () => ({
-							where: () => mainQueryChain,
-						}),
-					};
-				}
-				// 2回目のselect()呼び出し (Like Query)
+			if (fields?.count) {
+				// Count query
 				return {
 					from: () => ({
-						where: () => likeQueryChain,
+						where: () => Promise.resolve([{ count: 10 }]),
 					}),
 				};
 			}
-
-			// select({ count: ... }) - Count Query
+			// Like query
 			return {
 				from: () => ({
-					where: () => countQueryChain,
+					where: () => Promise.resolve([{ userId: "test-user-id" }]),
 				}),
 			};
 		});
-
-		// 各where句の先のモックを設定
-		mockOrderBy.mockResolvedValue(mockDbResult);
-		countQueryChain.mockResolvedValue([{ count: 10 }]);
-		likeQueryChain.mockResolvedValue([{ userId: "test-user-id" }]);
 
 		mockGetSession.mockResolvedValue({ user: { id: "test-user-id" } });
 	});
 
 	afterEach(() => {
 		vi.clearAllMocks();
-		vi.resetAllMocks(); // モックをリセット
 	});
 
 	it("正常なリクエストで指定されたカクテルの詳細を整形して返す", async () => {
@@ -190,7 +144,7 @@ describe("GET /api/cocktails/[slug]", () => {
 		const data = (await response.json()) as { cocktail: Cocktail };
 
 		expect(response.status).toBe(200);
-		expect(data.cocktail.id).toBe(1);
+		expect(data.cocktail.id).toBe("1");
 		expect(data.cocktail.name).toBe("ジン・トニック");
 		expect(data.cocktail.garnish).toBe("ライム");
 
@@ -200,8 +154,6 @@ describe("GET /api/cocktails/[slug]", () => {
 			{
 				id: 101,
 				name: "ジン",
-				categoryId: 1,
-				groupId: 20,
 				category: "蒸留酒",
 				amount: "45ml",
 				option_group: undefined,
@@ -209,11 +161,9 @@ describe("GET /api/cocktails/[slug]", () => {
 			{
 				id: 201,
 				name: "トニックウォーター",
-				categoryId: 5,
-				groupId: 50,
 				category: "ソフトドリンク",
 				amount: "120ml",
-				option_group: "g1",
+				option_group: 1,
 			},
 		]);
 
@@ -247,7 +197,7 @@ describe("GET /api/cocktails/[slug]", () => {
 	});
 
 	it("指定されたslugのカクテルが見つからない場合、404エラーを返す", async () => {
-		mockOrderBy.mockResolvedValue([]); // DBからの応答を空にする
+		mockFindFirst.mockResolvedValue(null);
 		const response = await GET({} as Request, {
 			params: Promise.resolve({ slug: "invalid-slug" }),
 		});
@@ -281,7 +231,7 @@ describe("GET /api/cocktails/[slug]", () => {
 			.mockImplementation(() => {});
 
 		const dbError = new Error("DB query failed");
-		mockOrderBy.mockRejectedValue(dbError);
+		mockFindFirst.mockRejectedValue(dbError);
 
 		const response = await GET({} as Request, {
 			params: Promise.resolve({ slug: mockSlug }),
