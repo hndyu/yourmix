@@ -60,14 +60,23 @@ export default function CocktailDisplay({
 		}[] = [];
 		const processedOptionGroups = new Set<number>();
 
+		// ⚡ Bolt: Pre-group ingredients by option_group to avoid O(N^2) complexity
+		// This reduces the complexity of grouping from O(N^2) to O(N)
+		const groupMap = new Map<number, typeof cocktail.ingredients>();
+		for (const ingredient of cocktail.ingredients) {
+			if (ingredient.option_group) {
+				const group = groupMap.get(ingredient.option_group) || [];
+				group.push(ingredient);
+				groupMap.set(ingredient.option_group, group);
+			}
+		}
+
 		for (const ingredient of cocktail.ingredients) {
 			if (ingredient.option_group) {
 				if (!processedOptionGroups.has(ingredient.option_group)) {
-					const groupIngredients = cocktail.ingredients.filter(
-						(i) => i.option_group === ingredient.option_group,
-					);
+					const groupIngredients = groupMap.get(ingredient.option_group) || [];
 					result.push({
-						name: groupIngredients.map((i) => i.name).join(" または "),
+						name: groupIngredients.map((i) => i.name).join(" or "),
 						amount: ingredient.amount || "",
 						description: groupIngredients
 							.map((i) => i.description)
