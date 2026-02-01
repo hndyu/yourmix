@@ -179,4 +179,32 @@ describe("CocktailDisplay Component", () => {
 
 		expect(screen.queryByText("Garnish")).not.toBeInTheDocument();
 	});
+
+	it("renders grouped ingredients correctly", () => {
+		const cocktailWithGroups: Cocktail = {
+			...mockCocktail,
+			ingredients: [
+				{
+					id: 101,
+					category: "スピリッツ",
+					name: "ジン",
+					amount: "45ml",
+					option_group: 1,
+				},
+				{
+					id: 102,
+					category: "スピリッツ",
+					name: "ウォッカ",
+					amount: "45ml",
+					option_group: 1,
+				},
+			],
+		};
+		render(<CocktailDisplay cocktail={cocktailWithGroups} />);
+
+		expect(screen.getByText("ジン")).toBeInTheDocument();
+		expect(screen.getByText("or")).toBeInTheDocument();
+		expect(screen.getByText("ウォッカ")).toBeInTheDocument();
+		expect(screen.getByText("45ml")).toBeInTheDocument();
+	});
 });
