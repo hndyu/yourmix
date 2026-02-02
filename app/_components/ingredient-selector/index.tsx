@@ -163,21 +163,14 @@ export default function IngredientSelector({
 							groupIds.every((id) => selectedIdsSet.has(id));
 
 						// 2. 個別に選択されている詳細名を特定 (IDベースで判定)
+						// ⚡ Bolt: Optimized lookup from O(M^2) to O(M) by iterating over actualDetails directly
 						// グループ全体選択時は、詳細チップの個別表示はしない（カード全体の選択として見せる）
 						let displayedDetailNames: string[] = [];
 
-						if (!isGroupSelectedWhole) {
-							displayedDetailNames = detailNames.filter((name) => {
-								// 名前からIDを解決
-								const detail = ingredient.actualDetails?.find(
-									(d) => d.name === name,
-								);
-								const detailId = detail ? detail.id : -1;
-								// IDが含まれている、または（互換性のため）名前が含まれている場合
-								// 基本的にIDで判定するが、データ不整合に備えて名前もチェックするのはありだが、
-								// 今回はロジック整理のためID優先。
-								return detailId !== -1 && selectedIdsSet.has(detailId);
-							});
+						if (!isGroupSelectedWhole && ingredient.actualDetails) {
+							displayedDetailNames = ingredient.actualDetails
+								.filter((d) => selectedIdsSet.has(d.id))
+								.map((d) => d.name);
 						}
 
 						return (

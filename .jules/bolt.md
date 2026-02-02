@@ -17,3 +17,7 @@
 ## 2025-10-15 - [Avoiding Cartesian Products and O(N^2) Data Transformation]
 **Learning:** Joining multiple one-to-many tables in a single SQL query creates a Cartesian product, leading to redundant data transfer and complex O(N^2) manual deduplication logic. Drizzle's Relational Query API (`db.query`) handles these relations more efficiently by executing separate, optimized queries.
 **Action:** For complex relational data, prefer `db.query.tableName.findFirst` or `findMany` over raw JOINs. When transforming list data, use `Map` for single-pass grouping to maintain O(N) complexity.
+
+## 2025-11-20 - [Optimizing List Item Props Derivation]
+**Learning:** Calculating derived props for list items within a `map` loop can introduce hidden O(N * M^2) complexity if using patterns like `.filter` with a nested `.find`. This significantly increases the rendering time of large interactive lists.
+**Action:** Prefer iterating over the source of truth (e.g., `actualDetails`) once and using a `Set` for lookups to achieve O(N * M) complexity. Avoid redundant search operations in render loops.
