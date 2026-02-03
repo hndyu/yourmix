@@ -31,6 +31,7 @@ async function authBuilder() {
 	}
 
 	const dbInstance = await getDb(); // Get your D1 database instance
+	const debugLogsEnabled = process.env.AUTH_DEBUG_LOGS === "true";
 	return betterAuth(
 		withCloudflare(
 			{
@@ -41,7 +42,7 @@ async function authBuilder() {
 					db: dbInstance, // Async database instance
 					options: {
 						usePlural: true,
-						debugLogs: true,
+						debugLogs: debugLogsEnabled,
 					},
 				},
 			},
@@ -132,7 +133,7 @@ export const auth = betterAuth({
 		{
 			provider: "sqlite",
 			usePlural: true,
-			debugLogs: true,
+			debugLogs: process.env.AUTH_DEBUG_LOGS === "true",
 		},
 	),
 });

@@ -39,7 +39,7 @@ export async function POST(
 		}
 
 		console.log(
-			`[Delicious API] Request to toggle like for cocktailId: ${cocktailId} by user: ${session.user.id}`,
+			`[Delicious API] Request to toggle like for cocktailId: ${cocktailId}`,
 		);
 
 		const db = await getDb();
