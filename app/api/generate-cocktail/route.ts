@@ -75,19 +75,30 @@ export async function POST(request: Request) {
 			);
 		}
 
-		// DBから有効な材料グループ名を取得
-		const validGroups = await db
-			.select({ displayName: schema.ingredientGroups.displayName })
-			.from(schema.ingredientGroups);
+		// ⚡ Bolt: Parallelize independent DB calls to reduce total latency
+		// Expected impact: Saves one sequential DB round-trip.
+		const [validGroups, validIngredients] = await Promise.all([
+			// DBから有効な材料グループ名を取得 (descriptionも併せて取得して後のクエリを削減)
+			db
+				.select({
+					displayName: schema.ingredientGroups.displayName,
+					description: schema.ingredientGroups.description,
+				})
+				.from(schema.ingredientGroups),
+			// DBから有効な材料名を取得
+			db
+				.select({ name: schema.ingredients.name })
+				.from(schema.ingredients),
+		]);
 
-		// DBから有効な材料名を取得
-		const validIngredients = await db
-			.select({ name: schema.ingredients.name })
-			.from(schema.ingredients);
+		// ⚡ Bolt: Use a Map for O(1) lookup of group descriptions
+		// Expected impact: Eliminates sequential DB queries within the mapping loop.
+		const groupDescriptionMap = new Map(
+			validGroups.map((g) => [g.displayName, g.description]),
+		);
 
 		// ⚡ Bolt: Use a Set for O(1) ingredient validation
 		// Prevents O(N * M) complexity where N is total ingredients and M is selected ingredients.
-		// Expected impact: Faster validation for arbitrary number of selected ingredients.
 		const validIngredientNamesSet = new Set([
 			...validGroups.map((g) => g.displayName),
 			...validIngredients.map((i) => i.name),
@@ -104,24 +115,17 @@ export async function POST(request: Request) {
 		}
 
 		// 材料リストを処理して、特定の材料名をより具体的な指示に置き換える
-		const processedIngredients = await Promise.all(
-			selectedIngredients.map(async (ingredient) => {
-				if (ingredient === "スピリッツ（その他）") {
-					const group = await db
-						.select({ description: schema.ingredientGroups.description })
-						.from(schema.ingredientGroups)
-						.where(eq(schema.ingredientGroups.displayName, ingredient))
-						.limit(1);
-
-					if (group.length > 0 && group[0].description) {
-						return group[0].description;
-					}
+		// ⚡ Bolt: Optimized lookup using pre-calculated Map instead of sequential DB queries
+		// Expected impact: Reduces O(M) sequential queries to O(M) synchronous lookups.
+		const processedIngredients = selectedIngredients.map((ingredient) => {
+			if (ingredient === "スピリッツ（その他）") {
+				const description = groupDescriptionMap.get(ingredient);
+				if (description) {
+					return description;
 				}
-
-				// それ以外の場合は、元の材料名をそのまま使用
-				return ingredient;
-			}),
-		);
+			}
+			return ingredient;
+		});
 
 		const response = await ai.models.generateContent({
 			model: "gemini-2.5-flash",
