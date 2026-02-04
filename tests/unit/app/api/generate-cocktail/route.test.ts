@@ -115,7 +115,9 @@ describe("POST /api/generate-cocktail", () => {
 		// 材料検証用のDBクエリをモック
 		// 1. ingredientGroups
 		mockDb.select.mockReturnValueOnce({
-			from: vi.fn().mockResolvedValue([{ displayName: "ジン" }]),
+			from: vi
+				.fn()
+				.mockResolvedValue([{ displayName: "ジン", description: null }]),
 		});
 		// 2. ingredients
 		mockDb.select.mockReturnValueOnce({
@@ -162,7 +164,9 @@ describe("POST /api/generate-cocktail", () => {
 		// 材料検証用のDBクエリをモック
 		// 1. ingredientGroups (ジンジャーエールはここにはない)
 		mockDb.select.mockReturnValueOnce({
-			from: vi.fn().mockResolvedValue([{ displayName: "ジン" }]),
+			from: vi
+				.fn()
+				.mockResolvedValue([{ displayName: "ジン", description: null }]),
 		});
 		// 2. ingredients (ジンジャーエールはここにある)
 		mockDb.select.mockReturnValueOnce({
@@ -411,30 +415,19 @@ describe("POST /api/generate-cocktail", () => {
 
 		// DBクエリをモック
 		mockDb.select
-			// 1. 材料グループの検証 (displayNameの一覧取得)
+			// 1. 材料グループの検証 (displayNameとdescriptionの一覧取得)
 			.mockReturnValueOnce({
-				from: vi
-					.fn()
-					.mockResolvedValue([
-						{ displayName: "スピリッツ（その他）" },
-						{ displayName: "レモン" },
-					]),
+				from: vi.fn().mockResolvedValue([
+					{
+						displayName: "スピリッツ（その他）",
+						description: "ジン・ウォッカ・ウイスキー以外の蒸留酒",
+					},
+					{ displayName: "レモン", description: null },
+				]),
 			})
 			// 2. 個別材料の検証 (nameの一覧取得)
 			.mockReturnValueOnce({
 				from: vi.fn().mockResolvedValue([]),
-			})
-			// 3. "スピリッツ（その他）"のdescriptionを取得
-			.mockReturnValueOnce({
-				from: vi.fn().mockReturnValue({
-					where: vi.fn().mockReturnValue({
-						limit: vi
-							.fn()
-							.mockResolvedValue([
-								{ description: "ジン・ウォッカ・ウイスキー以外の蒸留酒" },
-							]),
-					}),
-				}),
 			});
 
 		const requestBody = { ingredients: ["スピリッツ（その他）", "レモン"] };

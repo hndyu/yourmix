@@ -21,3 +21,7 @@
 ## 2025-11-20 - [Optimizing List Item Props Derivation]
 **Learning:** Calculating derived props for list items within a `map` loop can introduce hidden O(N * M^2) complexity if using patterns like `.filter` with a nested `.find`. This significantly increases the rendering time of large interactive lists.
 **Action:** Prefer iterating over the source of truth (e.g., `actualDetails`) once and using a `Set` for lookups to achieve O(N * M) complexity. Avoid redundant search operations in render loops.
+
+## 2026-02-04 - [Optimizing API DB Round-trips]
+**Learning:** Sequential DB queries within an endpoint (especially those in loops) can significantly increase latency in serverless environments like Cloudflare Workers. Consolidating data fetching into parallelized queries at the start of the request and using in-memory data structures (like Maps) for lookups is a major performance win.
+**Action:** Always look for sequential 'await' calls that can be parallelized with Promise.all, and check for N+1 patterns where a simple join or merged fetch could provide all necessary data upfront.
