@@ -1,5 +1,5 @@
+import { type DB, getDb } from "@/app/db/db";
 import { getCocktailBySlug } from "@/app/lib/cocktail-data";
-import { getDb } from "@/app/db/db";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 vi.mock("@/app/db/db", () => ({
@@ -43,7 +43,7 @@ describe("getCocktailBySlug", () => {
 				}),
 			}),
 		};
-		vi.mocked(getDb).mockResolvedValue(mockDb as any);
+		vi.mocked(getDb).mockResolvedValue(mockDb as unknown as DB);
 
 		const result = await getCocktailBySlug("martini", "user-1");
 
@@ -68,7 +68,7 @@ describe("getCocktailBySlug", () => {
 				}),
 			}),
 		};
-		vi.mocked(getDb).mockResolvedValue(mockDb as any);
+		vi.mocked(getDb).mockResolvedValue(mockDb as unknown as DB);
 
 		const result = await getCocktailBySlug("martini");
 
@@ -85,7 +85,7 @@ describe("getCocktailBySlug", () => {
 				},
 			},
 		};
-		vi.mocked(getDb).mockResolvedValue(mockDb as any);
+		vi.mocked(getDb).mockResolvedValue(mockDb as unknown as DB);
 
 		const result = await getCocktailBySlug("unknown");
 
