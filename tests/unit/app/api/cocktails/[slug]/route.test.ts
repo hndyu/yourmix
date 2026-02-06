@@ -113,19 +113,10 @@ describe("GET /api/cocktails/[slug]", () => {
 
 		mockFindFirst.mockResolvedValue(mockCocktailResult);
 
-		mockSelect.mockImplementation((fields) => {
-			if (fields?.count) {
-				// Count query
-				return {
-					from: () => ({
-						where: () => Promise.resolve([{ count: 10 }]),
-					}),
-				};
-			}
-			// Like query
+		mockSelect.mockImplementation(() => {
 			return {
 				from: () => ({
-					where: () => Promise.resolve([{ userId: "test-user-id" }]),
+					where: () => Promise.resolve([{ count: 10, isLiked: 1 }]),
 				}),
 			};
 		});
