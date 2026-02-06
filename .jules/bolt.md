@@ -25,3 +25,7 @@
 ## 2026-02-04 - [Optimizing API DB Round-trips]
 **Learning:** Sequential DB queries within an endpoint (especially those in loops) can significantly increase latency in serverless environments like Cloudflare Workers. Consolidating data fetching into parallelized queries at the start of the request and using in-memory data structures (like Maps) for lookups is a major performance win.
 **Action:** Always look for sequential 'await' calls that can be parallelized with Promise.all, and check for N+1 patterns where a simple join or merged fetch could provide all necessary data upfront.
+
+## 2026-02-10 - [Consolidating Parallel Queries into Single SQL Call]
+**Learning:** Even when queries are parallelized with `Promise.all`, they still result in multiple database round-trips. In high-latency or serverless environments, consolidating these into a single SQL query using conditional aggregation (e.g., `COUNT(*)` and `MAX(CASE WHEN ... THEN 1 ELSE 0 END)`) further reduces overhead and latency.
+**Action:** When fetching multiple metrics from the same table based on the same filter, use SQL aggregation functions to retrieve them in one go.

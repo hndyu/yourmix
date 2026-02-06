@@ -42,27 +42,19 @@ export async function getCocktailBySlug(
 		return null;
 	}
 
-	// ⚡ Bolt: Parallelize independent DB calls to reduce total latency
-	const [countResult, likedResult] = await Promise.all([
-		db
-			.select({ count: sql<number>`count(*)` })
-			.from(deliciousLikes)
-			.where(eq(deliciousLikes.cocktailId, result.id)),
-		userId
-			? db
-					.select()
-					.from(deliciousLikes)
-					.where(
-						and(
-							eq(deliciousLikes.cocktailId, result.id),
-							eq(deliciousLikes.userId, userId),
-						),
-					)
-			: Promise.resolve([]),
-	]);
+	// ⚡ Bolt: Consolidate parallel DB calls into a single query to further reduce round-trips
+	const likeInfo = await db
+		.select({
+			count: sql<number>`COUNT(*)`,
+			isLiked: userId
+				? sql<number>`COALESCE(MAX(CASE WHEN ${deliciousLikes.userId} = ${userId} THEN 1 ELSE 0 END), 0)`
+				: sql<number>`0`,
+		})
+		.from(deliciousLikes)
+		.where(eq(deliciousLikes.cocktailId, result.id));
 
-	const deliciousCount = countResult[0]?.count ?? 0;
-	const isLiked = (likedResult?.length ?? 0) > 0;
+	const deliciousCount = likeInfo[0]?.count ?? 0;
+	const isLiked = (likeInfo[0]?.isLiked ?? 0) === 1;
 
 	// Structure the data to match the Cocktail interface
 	const cocktailData: Cocktail = {
