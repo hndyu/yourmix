@@ -29,3 +29,7 @@
 ## 2026-02-10 - [Consolidating Parallel Queries into Single SQL Call]
 **Learning:** Even when queries are parallelized with `Promise.all`, they still result in multiple database round-trips. In high-latency or serverless environments, consolidating these into a single SQL query using conditional aggregation (e.g., `COUNT(*)` and `MAX(CASE WHEN ... THEN 1 ELSE 0 END)`) further reduces overhead and latency.
 **Action:** When fetching multiple metrics from the same table based on the same filter, use SQL aggregation functions to retrieve them in one go.
+
+## 2026-02-10 - [Consolidating Queries and Iterations]
+**Learning:** Even with Promise.all, Drizzle on Cloudflare D1 results in multiple sequential round-trips. Using db.batch() is essential for true consolidation. Additionally, multiple passes over the same dataset (e.g., building separate maps/objects) can often be merged into a single reduce pass for better O(N) performance.
+**Action:** Always prefer db.batch() for concurrent queries on D1. Look for redundant loops over the same dataset and merge them into a single pass.
