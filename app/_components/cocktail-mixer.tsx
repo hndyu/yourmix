@@ -20,10 +20,9 @@ export default function CocktailMixer({
 }: CocktailMixerProps) {
 	// --- Hooks ---
 	// 材料とカテゴリのマスターデータ
-	const [ingredients, setIngredients] =
-		React.useState<Ingredient[]>(initialIngredients);
-	const [categories, setCategories] =
-		React.useState<Category[]>(initialCategories);
+	const ingredients = initialIngredients;
+	const categories = initialCategories;
+	const isInitialLoading = ingredients.length === 0 || categories.length === 0;
 
 	// 選択された材料の状態
 	const [selectedIngredientIds, setSelectedIngredientIds] = React.useState<
@@ -50,10 +49,6 @@ export default function CocktailMixer({
 	} = useAICocktailGenerator();
 
 	// 全体のローディング状態
-	// 初期データが渡されている場合はローディング完了とする
-	const [isInitialLoading, setIsInitialLoading] = React.useState(
-		initialIngredients.length === 0,
-	);
 	const isMixing = isSearching || isGenerating;
 
 	// 表示アニメーションとスクロールの状態
@@ -61,30 +56,6 @@ export default function CocktailMixer({
 	const [showSearchResults, setShowSearchResults] = React.useState(false);
 	const [hasScrolledAfterMix, setHasScrolledAfterMix] = React.useState(false);
 	const resultsRef = React.useRef<HTMLDivElement>(null);
-
-	// --- Effects ---
-	// 初期化時に材料関連のマスターデータを取得（propsがない場合のみ）
-	React.useEffect(() => {
-		if (ingredients.length > 0 && categories.length > 0) return;
-
-		const fetchMasterData = async () => {
-			setIsInitialLoading(true);
-			try {
-				const res = await fetch("/api/ingredients");
-				const data = (await res.json()) as {
-					ingredients: Ingredient[];
-					categories: Category[];
-				};
-				setIngredients(data.ingredients);
-				setCategories(data.categories);
-			} catch (error) {
-				console.error("材料マスターの取得に失敗しました:", error);
-			} finally {
-				setIsInitialLoading(false);
-			}
-		};
-		fetchMasterData();
-	}, [ingredients.length, categories.length]);
 
 	// Mixボタンクリック時の処理
 	const handleMixClick = async () => {

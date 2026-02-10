@@ -3,29 +3,22 @@ import { expect, test } from "@playwright/test";
 test("should navigate to the recipe details page after mixing a cocktail", async ({
 	page,
 }) => {
-	// Mock the cocktail generation API (not strictly needed if we only test search results, but good to have)
-	await page.route("/api/generate-cocktail", async (route) => {
-		await route.fulfill({ json: {} }); // Return empty or dummy, we focus on search results here
-	});
-
-	// Mock the search API to return a specific cocktail
-	await page.route("/api/cocktails?*", async (route) => {
-		const json = {
-			cocktails: [
-				{
-					id: 100,
-					name: "ジン・フィズ",
-					slug: "gin-fizz",
-					description: "Classic Gin Fizz",
-					ingredients: [
-						{ name: "ジン", amount: "45ml" },
-						{ name: "炭酸水", amount: "Full" },
-					],
-					instructions: ["Mix"],
-				},
-			],
-		};
-		await route.fulfill({ json });
+	// E2E用のモックモードを有効化
+	await page.addInitScript(() => {
+		window.__E2E__ = true;
+		window.__E2E_SEARCH_RESULTS__ = [
+			{
+				id: "100",
+				name: "ジン・フィズ",
+				slug: "gin-fizz",
+				description: "Classic Gin Fizz",
+				ingredients: [
+					{ id: 1, name: "ジン", category: "spirit", amount: "45ml" },
+					{ id: 2, name: "炭酸水", category: "mixer", amount: "Full" },
+				],
+				instructions: ["Mix"],
+			},
+		];
 	});
 
 	// 1. Navigate to the homepage
@@ -62,11 +55,8 @@ test("should navigate to the recipe details page after mixing a cocktail", async
 		await searchBox.clear();
 	}
 
-	// 3. Click the mix button and wait for the search API response simultaneously
-	await Promise.all([
-		page.waitForResponse((resp) => resp.url().includes("/api/cocktails")),
-		page.getByRole("button", { name: "Mix!" }).click(),
-	]);
+	// 3. Click the mix button
+	await page.getByRole("button", { name: "Mix!" }).click();
 
 	// 4. Wait for the result and click on the "Gin Fizz" cocktail card/link
 	// First, wait for a key element inside the card (like the heading) to be visible.

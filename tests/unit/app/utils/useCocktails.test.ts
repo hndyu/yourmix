@@ -1,10 +1,12 @@
+import { searchCocktailsAction } from "@/app/actions/search-cocktails";
 import type { Cocktail } from "@/app/types/cocktail";
 import { useCocktails } from "@/app/utils/useCocktails";
 import { act, renderHook } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-// fetchをグローバルにモック
-global.fetch = vi.fn();
+vi.mock("@/app/actions/search-cocktails", () => ({
+	searchCocktailsAction: vi.fn(),
+}));
 
 const mockCocktails: Cocktail[] = [
 	{
@@ -27,8 +29,7 @@ const mockCocktails: Cocktail[] = [
 
 describe("useCocktails", () => {
 	afterEach(() => {
-		// 各テストの後にモックをリセット
-		vi.mocked(fetch).mockClear();
+		vi.clearAllMocks();
 	});
 
 	it("初期状態で正しく初期化される", () => {
@@ -40,11 +41,7 @@ describe("useCocktails", () => {
 	});
 
 	it("searchCocktailsが成功した場合、カクテルリストを更新する", async () => {
-		const mockResponse = { cocktails: mockCocktails };
-		vi.mocked(fetch).mockResolvedValue({
-			ok: true,
-			json: () => Promise.resolve(mockResponse),
-		} as Response);
+		vi.mocked(searchCocktailsAction).mockResolvedValue(mockCocktails);
 
 		const { result } = renderHook(() => useCocktails());
 
@@ -56,14 +53,17 @@ describe("useCocktails", () => {
 		expect(result.current.isLoading).toBe(false);
 		expect(result.current.cocktails).toEqual(mockCocktails);
 		expect(result.current.error).toBe(null);
-		expect(fetch).toHaveBeenCalledTimes(1);
-		expect(fetch).toHaveBeenCalledWith("/api/cocktails?ingredients=1%2C2");
+		expect(searchCocktailsAction).toHaveBeenCalledTimes(1);
+		expect(searchCocktailsAction).toHaveBeenCalledWith([1, 2], {
+			mock: false,
+			mockData: undefined,
+		});
 	});
 
 	it("searchCocktailsが失敗した場合、エラー状態を更新する", async () => {
-		vi.mocked(fetch).mockResolvedValue({
-			ok: false,
-		} as Response);
+		vi.mocked(searchCocktailsAction).mockRejectedValue(
+			new Error("カクテルの検索に失敗しました。"),
+		);
 
 		const { result } = renderHook(() => useCocktails(mockCocktails));
 
@@ -77,9 +77,10 @@ describe("useCocktails", () => {
 		expect(result.current.cocktails).toEqual(mockCocktails);
 	});
 
-	it("searchCocktailsでネットワークエラーが発生した場合、エラー状態を更新する", async () => {
-		const mockError = new Error("Network error");
-		vi.mocked(fetch).mockRejectedValue(mockError);
+	it("searchCocktailsでエラーが発生した場合、エラー状態を更新する", async () => {
+		vi.mocked(searchCocktailsAction).mockRejectedValue(
+			new Error("Network error"),
+		);
 
 		const { result } = renderHook(() => useCocktails());
 
@@ -91,7 +92,7 @@ describe("useCocktails", () => {
 		expect(result.current.error).toBe("Network error");
 	});
 
-	it("searchCocktailsに空の配列が渡された場合、APIを呼ばずにカクテルリストを空にする", async () => {
+	it("searchCocktailsに空の配列が渡された場合、アクションを呼ばずにカクテルリストを空にする", async () => {
 		const { result } = renderHook(() => useCocktails(mockCocktails));
 
 		await act(async () => {
@@ -101,7 +102,7 @@ describe("useCocktails", () => {
 		expect(result.current.cocktails).toEqual([]);
 		expect(result.current.isLoading).toBe(false);
 		expect(result.current.error).toBe(null);
-		expect(fetch).not.toHaveBeenCalled();
+		expect(searchCocktailsAction).not.toHaveBeenCalled();
 	});
 
 	it("setCocktailsでカクテルリストを直接更新できる", () => {
@@ -115,11 +116,11 @@ describe("useCocktails", () => {
 	});
 
 	it("検索中にisLoadingがtrueになる", async () => {
-		let resolve: (value: Response) => void;
-		const promise = new Promise<Response>((r) => {
+		let resolve: (value: Cocktail[]) => void;
+		const promise = new Promise<Cocktail[]>((r) => {
 			resolve = r;
 		});
-		vi.mocked(fetch).mockReturnValue(promise);
+		vi.mocked(searchCocktailsAction).mockReturnValue(promise);
 
 		const { result } = renderHook(() => useCocktails());
 
@@ -128,15 +129,12 @@ describe("useCocktails", () => {
 			result.current.searchCocktails([1, 2]);
 		});
 
-		// API呼び出しが解決される前にisLoadingがtrueであることを確認
+		// アクション呼び出しが解決される前にisLoadingがtrueであることを確認
 		expect(result.current.isLoading).toBe(true);
 
-		// API呼び出しを解決
+		// アクション呼び出しを解決
 		await act(async () => {
-			resolve({
-				ok: true,
-				json: () => Promise.resolve({ cocktails: [] }),
-			} as Response);
+			resolve([]);
 			await promise; // promiseが解決されるのを待つ
 		});
 

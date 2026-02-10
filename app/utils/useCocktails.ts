@@ -1,7 +1,17 @@
 "use client";
 
 import { useCallback, useState } from "react";
+import { searchCocktailsAction } from "../actions/search-cocktails";
 import type { Cocktail } from "../types/cocktail";
+
+declare global {
+	interface Window {
+		__E2E__?: boolean;
+		__E2E_SEARCH_RESULTS__?: Cocktail[];
+	}
+}
+
+const isE2E = typeof window !== "undefined" && window.__E2E__ === true;
 
 /**
  * カクテルの検索と状態管理を行うカスタムフック
@@ -25,15 +35,12 @@ export function useCocktails(initialCocktails: Cocktail[] = []) {
 				setCocktails([]);
 				return;
 			}
-			const params = new URLSearchParams({
-				ingredients: ingredientIds.join(","),
+
+			const data = await searchCocktailsAction(ingredientIds, {
+				mock: isE2E,
+				mockData: isE2E ? window.__E2E_SEARCH_RESULTS__ : undefined,
 			});
-			const response = await fetch(`/api/cocktails?${params.toString()}`);
-			if (!response.ok) {
-				throw new Error("カクテルの検索に失敗しました。");
-			}
-			const data = (await response.json()) as { cocktails: Cocktail[] };
-			setCocktails(data.cocktails);
+			setCocktails(data);
 		} catch (err) {
 			const errorMessage =
 				err instanceof Error ? err.message : "不明なエラーが発生しました。";
