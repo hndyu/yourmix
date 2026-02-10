@@ -108,7 +108,7 @@ describe("POST /api/generate-cocktail", () => {
 	});
 
 	it("正常なリクエストでカクテルレシピを返す", async () => {
-		vi.stubEnv("GEMINI_API_KEY", "test-api-key");
+		vi.stubEnv("GEMMA_API_KEY", "test-api-key");
 		const { POST } = await import("@/app/api/generate-cocktail/route");
 		vi.mocked(NextResponse.json).mockClear();
 
@@ -136,11 +136,27 @@ describe("POST /api/generate-cocktail", () => {
 		expect(mockGenerateContent).toHaveBeenCalledTimes(1);
 		expect(mockGenerateContent).toHaveBeenCalledWith(
 			expect.objectContaining({
-				model: "gemini-2.5-flash",
+				model: "gemma-3-27b-it",
 				contents: `あなたは世界的に評価の高いプロのミクソロジストです。
 以下の材料をベースに、創造性に溢れ、かつ味のバランスが完璧に整ったオリジナルのカクテルレシピを1つ考案してください。
 
 材料: ジン、トニックウォーター
+
+## 出力形式:
+- 必ず**JSONのみ**を返してください（前後に説明文・コードフェンス・余計な文字列を付けない）
+- トップレベルは配列で、要素は1つだけ
+- JSONスキーマは以下に準拠
+[
+  {
+    "name": "string",
+    "description": "string",
+    "ingredients": [
+      { "name": "string", "amount": "string" }
+    ],
+    "instructions": ["string"],
+    "garnish": "string"
+  }
+]
 
 ## ガイドライン:
 1. **味の構成**: ベース、酸味、甘味、苦味、そして香りのレイヤーを深く考慮してください。
@@ -157,7 +173,7 @@ describe("POST /api/generate-cocktail", () => {
 	});
 
 	it("特定の材料名（グループ名以外）も正常に受け付ける", async () => {
-		vi.stubEnv("GEMINI_API_KEY", "test-api-key");
+		vi.stubEnv("GEMMA_API_KEY", "test-api-key");
 		const { POST } = await import("@/app/api/generate-cocktail/route");
 		vi.mocked(NextResponse.json).mockClear();
 
@@ -189,6 +205,22 @@ describe("POST /api/generate-cocktail", () => {
 
 材料: ジン、ジンジャーエール
 
+## 出力形式:
+- 必ず**JSONのみ**を返してください（前後に説明文・コードフェンス・余計な文字列を付けない）
+- トップレベルは配列で、要素は1つだけ
+- JSONスキーマは以下に準拠
+[
+  {
+    "name": "string",
+    "description": "string",
+    "ingredients": [
+      { "name": "string", "amount": "string" }
+    ],
+    "instructions": ["string"],
+    "garnish": "string"
+  }
+]
+
 ## ガイドライン:
 1. **味の構成**: ベース、酸味、甘味、苦味、そして香りのレイヤーを深く考慮してください。
 2. **ネーミング**: カクテルのコンセプトを象徴する、洗練された印象的な名前を付けてください。
@@ -205,7 +237,7 @@ describe("POST /api/generate-cocktail", () => {
 			.spyOn(console, "error")
 			.mockImplementation(() => {});
 
-		vi.stubEnv("GEMINI_API_KEY", undefined); // APIキーを未定義に設定
+		vi.stubEnv("GEMMA_API_KEY", undefined); // APIキーを未定義に設定
 		const { POST } = await import("@/app/api/generate-cocktail/route");
 		vi.mocked(NextResponse.json).mockClear();
 
@@ -224,13 +256,13 @@ describe("POST /api/generate-cocktail", () => {
 			{ error: "APIキーが設定されていません。" },
 			{ status: 500 },
 		);
-		expect(consoleErrorSpy).toHaveBeenCalledWith("GEMINI_API_KEY is not set.");
+		expect(consoleErrorSpy).toHaveBeenCalledWith("GEMMA_API_KEY is not set.");
 
 		consoleErrorSpy.mockRestore();
 	});
 
 	it("DBバインディングが存在しない場合、500エラーを返す", async () => {
-		vi.stubEnv("GEMINI_API_KEY", "test-api-key");
+		vi.stubEnv("GEMMA_API_KEY", "test-api-key");
 		const { POST } = await import("@/app/api/generate-cocktail/route");
 		vi.mocked(NextResponse.json).mockClear();
 
@@ -259,7 +291,7 @@ describe("POST /api/generate-cocktail", () => {
 	});
 
 	it("材料が指定されていない場合、400エラーを返す (空配列)", async () => {
-		vi.stubEnv("GEMINI_API_KEY", "test-api-key");
+		vi.stubEnv("GEMMA_API_KEY", "test-api-key");
 		const { POST } = await import("@/app/api/generate-cocktail/route");
 		vi.mocked(NextResponse.json).mockClear();
 
@@ -281,7 +313,7 @@ describe("POST /api/generate-cocktail", () => {
 	});
 
 	it("材料が指定されていない場合、400エラーを返す (プロパティなし)", async () => {
-		vi.stubEnv("GEMINI_API_KEY", "test-api-key");
+		vi.stubEnv("GEMMA_API_KEY", "test-api-key");
 		const { POST } = await import("@/app/api/generate-cocktail/route");
 		vi.mocked(NextResponse.json).mockClear();
 
@@ -303,7 +335,7 @@ describe("POST /api/generate-cocktail", () => {
 	});
 
 	it("DBクエリ中にエラーが発生した場合、500エラーを返す", async () => {
-		vi.stubEnv("GEMINI_API_KEY", "test-api-key");
+		vi.stubEnv("GEMMA_API_KEY", "test-api-key");
 		const { POST } = await import("@/app/api/generate-cocktail/route");
 		vi.mocked(NextResponse.json).mockClear();
 
@@ -340,7 +372,7 @@ describe("POST /api/generate-cocktail", () => {
 	});
 
 	it("AIからの応答が空の場合、500エラーを返す", async () => {
-		vi.stubEnv("GEMINI_API_KEY", "test-api-key");
+		vi.stubEnv("GEMMA_API_KEY", "test-api-key");
 		const { POST } = await import("@/app/api/generate-cocktail/route");
 		vi.mocked(NextResponse.json).mockClear();
 
@@ -370,7 +402,7 @@ describe("POST /api/generate-cocktail", () => {
 	});
 
 	it("AIからの応答が不正なJSONの場合、500エラーを返す", async () => {
-		vi.stubEnv("GEMINI_API_KEY", "test-api-key");
+		vi.stubEnv("GEMMA_API_KEY", "test-api-key");
 		const { POST } = await import("@/app/api/generate-cocktail/route");
 		vi.mocked(NextResponse.json).mockClear();
 
@@ -398,7 +430,7 @@ describe("POST /api/generate-cocktail", () => {
 		expect(response.status).toBe(500);
 		expect(data).toEqual({ error: "AIからの応答を解析できませんでした。" });
 		expect(consoleErrorSpy).toHaveBeenCalledWith(
-			"Failed to parse Gemini response:",
+			"Failed to parse Gemma response:",
 			"this is not valid json",
 		);
 		expect(vi.mocked(NextResponse.json)).toHaveBeenCalledWith(
@@ -410,7 +442,7 @@ describe("POST /api/generate-cocktail", () => {
 	});
 
 	it("「スピリッツ（その他）」が正しく処理され、プロンプトに反映される", async () => {
-		vi.stubEnv("GEMINI_API_KEY", "test-api-key");
+		vi.stubEnv("GEMMA_API_KEY", "test-api-key");
 		const { POST } = await import("@/app/api/generate-cocktail/route");
 
 		// DBクエリをモック
@@ -440,11 +472,27 @@ describe("POST /api/generate-cocktail", () => {
 		expect(mockGenerateContent).toHaveBeenCalledTimes(1);
 		expect(mockGenerateContent).toHaveBeenCalledWith(
 			expect.objectContaining({
-				model: "gemini-2.5-flash",
+				model: "gemma-3-27b-it",
 				contents: `あなたは世界的に評価の高いプロのミクソロジストです。
 以下の材料をベースに、創造性に溢れ、かつ味のバランスが完璧に整ったオリジナルのカクテルレシピを1つ考案してください。
 
 材料: ジン・ウォッカ・ウイスキー以外の蒸留酒、レモン
+
+## 出力形式:
+- 必ず**JSONのみ**を返してください（前後に説明文・コードフェンス・余計な文字列を付けない）
+- トップレベルは配列で、要素は1つだけ
+- JSONスキーマは以下に準拠
+[
+  {
+    "name": "string",
+    "description": "string",
+    "ingredients": [
+      { "name": "string", "amount": "string" }
+    ],
+    "instructions": ["string"],
+    "garnish": "string"
+  }
+]
 
 ## ガイドライン:
 1. **味の構成**: ベース、酸味、甘味、苦味、そして香りのレイヤーを深く考慮してください。

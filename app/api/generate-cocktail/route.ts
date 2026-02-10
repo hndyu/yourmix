@@ -10,8 +10,7 @@ import {
 	instructions,
 	tags,
 } from "@/app/db/schema";
-import { GoogleGenAI, Type } from "@google/genai";
-import { and, eq, ne } from "drizzle-orm";
+import { GoogleGenAI } from "@google/genai";
 import { NextResponse } from "next/server";
 
 const schema = {
@@ -27,19 +26,41 @@ const schema = {
 };
 
 // APIキーを環境変数から取得
-const apiKey = process.env.GEMINI_API_KEY;
+const apiKey = process.env.GEMMA_API_KEY;
 
 // apiKeyが未設定の場合はエラーを返す
 if (!apiKey) {
-	console.error("GEMINI_API_KEY is not set.");
+	console.error("GEMMA_API_KEY is not set.");
 }
 
 // GoogleGenAIのインスタンスを初期化
-const ai = new GoogleGenAI({});
+const ai = new GoogleGenAI({ apiKey: apiKey });
+
+// Gemmaの出力に混ざるコードフェンスや説明文を取り除いてJSON部分だけ抽出する
+const sanitizeGemmaResponse = (text: string) => {
+	let cleaned = text.trim();
+	cleaned = cleaned
+		.replace(/```(?:json)?\s*/gi, "")
+		.replace(/```/g, "")
+		.trim();
+
+	const firstBracket = cleaned.indexOf("[");
+	const lastBracket = cleaned.lastIndexOf("]");
+	if (firstBracket !== -1 && lastBracket !== -1 && lastBracket > firstBracket) {
+		return cleaned.slice(firstBracket, lastBracket + 1).trim();
+	}
+
+	const firstBrace = cleaned.indexOf("{");
+	const lastBrace = cleaned.lastIndexOf("}");
+	if (firstBrace !== -1 && lastBrace !== -1 && lastBrace > firstBrace) {
+		return cleaned.slice(firstBrace, lastBrace + 1).trim();
+	}
+
+	return cleaned;
+};
 
 // コア体験なので認証（ログイン）なしでもユーザーが使える状態を保つ
-// 無料枠のGemini APIを使用しているのでリクエストが多いとエラーになるが現時点では許容する
-// 将来的に無料枠の多いGemma APIをテストする予定
+// 無料枠の制限を避けるためGemmaモデルを利用する
 export async function POST(request: Request) {
 	if (!apiKey) {
 		return NextResponse.json(
@@ -128,11 +149,27 @@ export async function POST(request: Request) {
 		});
 
 		const response = await ai.models.generateContent({
-			model: "gemini-2.5-flash",
+			model: "gemma-3-27b-it",
 			contents: `あなたは世界的に評価の高いプロのミクソロジストです。
 以下の材料をベースに、創造性に溢れ、かつ味のバランスが完璧に整ったオリジナルのカクテルレシピを1つ考案してください。
 
 材料: ${processedIngredients.join("、")}
+
+## 出力形式:
+- 必ず**JSONのみ**を返してください（前後に説明文・コードフェンス・余計な文字列を付けない）
+- トップレベルは配列で、要素は1つだけ
+- JSONスキーマは以下に準拠
+[
+  {
+    "name": "string",
+    "description": "string",
+    "ingredients": [
+      { "name": "string", "amount": "string" }
+    ],
+    "instructions": ["string"],
+    "garnish": "string"
+  }
+]
 
 ## ガイドライン:
 1. **味の構成**: ベース、酸味、甘味、苦味、そして香りのレイヤーを深く考慮してください。
@@ -141,54 +178,10 @@ export async function POST(request: Request) {
 4. **手順**: プロの技術に基づいた、明確で再現性の高いステップを記述してください。
 5. **用語**: カジュアル層がターゲットのため、専門用語は避けてください。
 6. **言語**: 日本人向けに書いてください。基本的にはアルファベットではなくカタカナ表記が推奨されます。`,
-			config: {
-				responseMimeType: "application/json",
-				responseSchema: {
-					type: Type.ARRAY,
-					nullable: false,
-					items: {
-						type: Type.OBJECT,
-						properties: {
-							name: {
-								type: Type.STRING,
-							},
-							description: {
-								type: Type.STRING,
-							},
-							ingredients: {
-								type: Type.ARRAY,
-								items: {
-									type: Type.OBJECT,
-									properties: {
-										name: {
-											type: Type.STRING,
-										},
-										amount: {
-											type: Type.STRING,
-										},
-									},
-									required: ["name", "amount"],
-								},
-							},
-							instructions: {
-								type: Type.ARRAY,
-								items: {
-									type: Type.STRING,
-								},
-							},
-							garnish: {
-								type: Type.STRING,
-							},
-						},
-						required: ["name", "ingredients", "instructions"],
-						propertyOrdering: ["name", "ingredients"],
-					},
-				},
-			},
 		});
 
 		try {
-			const responseText = response.text;
+			const responseText = sanitizeGemmaResponse(response.text ?? "");
 			if (!responseText) {
 				throw new Error("AIからの応答が空です。");
 			}
@@ -196,7 +189,7 @@ export async function POST(request: Request) {
 			// AIが生成したデータはそのままクライアントに返す
 			return NextResponse.json(cocktailData);
 		} catch (e) {
-			console.error("Failed to parse Gemini response:", response.text);
+			console.error("Failed to parse Gemma response:", response.text);
 			return NextResponse.json(
 				{ error: "AIからの応答を解析できませんでした。" },
 				{ status: 500 },
