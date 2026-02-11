@@ -22,7 +22,6 @@ export default function CocktailMixer({
 	// 材料とカテゴリのマスターデータ
 	const ingredients = initialIngredients;
 	const categories = initialCategories;
-	const isInitialLoading = ingredients.length === 0 || categories.length === 0;
 
 	// 選択された材料の状態
 	const [selectedIngredientIds, setSelectedIngredientIds] = React.useState<
@@ -106,7 +105,6 @@ export default function CocktailMixer({
 				selectedIngredientNames={selectedIngredientNames}
 				onIngredientsChange={handleIngredientsChange}
 				isMixing={isMixing}
-				isInitialLoading={isInitialLoading}
 			/>
 
 			<div ref={resultsRef} className="w-full">
