@@ -4,6 +4,7 @@ import { ThumbsUp } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { createPortal } from "react-dom";
+import { toggleLikeAction } from "../actions/likes";
 import authClient from "../lib/authClient";
 import { Button } from "./ui/button";
 
@@ -35,20 +36,23 @@ export default function DeliciousButton({
 		setCount((prev) => (newIsLiked ? prev + 1 : prev - 1));
 
 		try {
-			const res = await fetch(`/api/likes/${cocktailId}`, { method: "POST" });
+			const result = await toggleLikeAction(cocktailId);
 
-			if (res.status === 401) {
-				setIsLiked(!newIsLiked);
-				setCount((prev) => (!newIsLiked ? prev + 1 : prev - 1));
-				setShowLoginModal(true);
-				return;
+			if (result.success) {
+				setIsLiked(result.data.isLiked);
+				setCount(result.data.count);
+			} else {
+				throw new Error(result.error);
 			}
-
-			if (!res.ok) throw new Error("Failed to update delicious status");
 		} catch (error) {
 			console.error(error);
+			// Revert on error
 			setIsLiked(!newIsLiked);
 			setCount((prev) => (!newIsLiked ? prev + 1 : prev - 1));
+
+			if (error instanceof Error && error.message.includes("ログイン")) {
+				setShowLoginModal(true);
+			}
 		}
 	};
 

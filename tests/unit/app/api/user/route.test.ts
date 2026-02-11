@@ -1,10 +1,10 @@
-import { DELETE, PATCH } from "@/app/api/user/route";
+import { deleteAccountAction, updateProfileAction } from "@/app/actions/user";
 import { initAuth } from "@/app/auth";
 import { type DB, getDb } from "@/app/db/db";
-import { NextRequest, NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
+import { headers } from "next/headers";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-// Mock dependencies
 vi.mock("@/app/auth", () => ({
 	initAuth: vi.fn(),
 }));
@@ -13,22 +13,25 @@ vi.mock("@/app/db/db", () => ({
 	getDb: vi.fn(),
 }));
 
-// Mock NextResponse.json
-type MockResponse = {
-	data: {
-		success?: boolean;
-		error?: string;
-	};
-	options: { status: number };
-};
-vi.mock("next/server", () => ({
-	NextRequest: Request,
-	NextResponse: {
-		json: vi.fn((data, options) => ({ data, options })),
-	},
+vi.mock("next/cache", () => ({
+	revalidatePath: vi.fn(),
 }));
 
-describe("/api/user", () => {
+vi.mock("next/headers", () => ({
+	headers: vi.fn(),
+}));
+
+vi.mock("drizzle-orm", async (importOriginal) => {
+	const actual = await importOriginal<typeof import("drizzle-orm")>();
+	return {
+		...actual,
+		and: vi.fn((...args) => ({ type: "and", args })),
+		eq: vi.fn((...args) => ({ type: "eq", args })),
+		ne: vi.fn((...args) => ({ type: "ne", args })),
+	};
+});
+
+describe("user actions", () => {
 	const mockUser = { id: "user-1", email: "test@example.com" };
 	const mockSession = { user: mockUser };
 
@@ -52,96 +55,94 @@ describe("/api/user", () => {
 
 	beforeEach(() => {
 		vi.clearAllMocks();
+		mockDb.delete.mockReturnThis();
+		mockDb.update.mockReturnThis();
+		mockDb.set.mockReturnThis();
+		mockDb.where.mockResolvedValue(undefined);
 		vi.mocked(initAuth).mockResolvedValue(
 			mockAuth as unknown as Awaited<ReturnType<typeof initAuth>>,
 		);
 		vi.mocked(getDb).mockResolvedValue(mockDb as unknown as DB);
+		vi.mocked(headers).mockResolvedValue(new Headers());
 	});
 
-	describe("DELETE", () => {
-		it("should delete the user successfully", async () => {
+	describe("deleteAccountAction", () => {
+		it("ユーザー削除に成功する", async () => {
 			mockAuth.api.getSession.mockResolvedValueOnce(mockSession);
-			mockDb.delete.mockReturnThis();
-
-			const req = new NextRequest("http://localhost/api/user", {
-				method: "DELETE",
-			});
-			const response = (await DELETE(req)) as unknown as MockResponse;
+			const response = await deleteAccountAction();
 
 			expect(mockDb.delete).toHaveBeenCalled();
-			expect(response.data).toEqual({ success: true });
+			expect(response).toEqual({ success: true, data: undefined });
 		});
 
-		it("should return 401 if not authenticated", async () => {
+		it("未認証の場合はエラーを返す", async () => {
 			mockAuth.api.getSession.mockResolvedValueOnce(null);
-
-			const req = new NextRequest("http://localhost/api/user", {
-				method: "DELETE",
+			const response = await deleteAccountAction();
+			expect(response).toEqual({
+				success: false,
+				error: "認証されていません。",
 			});
-			const response = (await DELETE(req)) as unknown as MockResponse;
-
-			expect(response.options.status).toBe(401);
-			expect(response.data.error).toBe("認証されていません。");
 		});
 	});
 
-	describe("PATCH", () => {
-		it("should update user profile successfully", async () => {
+	describe("updateProfileAction", () => {
+		it("プロフィール更新に成功する", async () => {
 			mockAuth.api.getSession.mockResolvedValueOnce(mockSession);
-			mockDb.query.users.findFirst.mockResolvedValueOnce(null); // No existing user with same email
+			mockDb.query.users.findFirst.mockResolvedValueOnce(null);
 
-			const req = new NextRequest("http://localhost/api/user", {
-				method: "PATCH",
-				body: JSON.stringify({ name: "New Name", email: "new@example.com" }),
+			const response = await updateProfileAction({
+				name: "  New Name  ",
+				email: "new@example.com",
 			});
-			const response = (await PATCH(req)) as unknown as MockResponse;
 
 			expect(mockDb.update).toHaveBeenCalled();
 			expect(mockDb.set).toHaveBeenCalledWith({
 				name: "New Name",
 				email: "new@example.com",
 			});
-			expect(response.data).toEqual({ success: true });
+			expect(vi.mocked(revalidatePath)).toHaveBeenCalledWith("/my-page");
+			expect(response).toEqual({ success: true, data: undefined });
 		});
 
-		it("should return 409 if email is already taken", async () => {
+		it("メールアドレス重複時はエラーを返す", async () => {
 			mockAuth.api.getSession.mockResolvedValueOnce(mockSession);
-			mockDb.query.users.findFirst.mockResolvedValueOnce({ id: "user-2" }); // Email taken by someone else
+			mockDb.query.users.findFirst.mockResolvedValueOnce({ id: "user-2" });
 
-			const req = new NextRequest("http://localhost/api/user", {
-				method: "PATCH",
-				body: JSON.stringify({ email: "taken@example.com" }),
+			const response = await updateProfileAction({
+				email: "taken@example.com",
 			});
-			const response = (await PATCH(req)) as unknown as MockResponse;
 
-			expect(response.options.status).toBe(409);
-			expect(response.data.error).toBe("使用できないメールアドレスです。");
+			expect(response).toEqual({
+				success: false,
+				error: "使用できないメールアドレスです。",
+			});
 		});
 
-		it("should return 400 for invalid email", async () => {
+		it("無効なメールアドレスはエラーを返す", async () => {
 			mockAuth.api.getSession.mockResolvedValueOnce(mockSession);
-
-			const req = new NextRequest("http://localhost/api/user", {
-				method: "PATCH",
-				body: JSON.stringify({ email: "invalid-email" }),
+			const response = await updateProfileAction({ email: "invalid-email" });
+			expect(response).toEqual({
+				success: false,
+				error: "無効なメールアドレスです。",
 			});
-			const response = (await PATCH(req)) as unknown as MockResponse;
-
-			expect(response.options.status).toBe(400);
-			expect(response.data.error).toBe("無効なメールアドレスです。");
 		});
 
-		it("should return 400 if no data provided", async () => {
+		it("更新内容が空の場合はエラーを返す", async () => {
 			mockAuth.api.getSession.mockResolvedValueOnce(mockSession);
-
-			const req = new NextRequest("http://localhost/api/user", {
-				method: "PATCH",
-				body: JSON.stringify({}),
+			const response = await updateProfileAction({});
+			expect(response).toEqual({
+				success: false,
+				error: "変更内容がありません。",
 			});
-			const response = (await PATCH(req)) as unknown as MockResponse;
+		});
 
-			expect(response.options.status).toBe(400);
-			expect(response.data.error).toBe("変更内容がありません。");
+		it("未認証の場合はエラーを返す", async () => {
+			mockAuth.api.getSession.mockResolvedValueOnce(null);
+			const response = await updateProfileAction({ name: "New Name" });
+			expect(response).toEqual({
+				success: false,
+				error: "認証されていません。",
+			});
 		});
 	});
 });
