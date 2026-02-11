@@ -1,38 +1,10 @@
 import { expect, test } from "@playwright/test";
 
 test("should be able to mix a gin-fizz", async ({ page }) => {
-	// Mock the ingredients API
-	await page.route("**/api/ingredients", async (route) => {
-		console.log("Mocking /api/ingredients hit");
-		const json = {
-			ingredients: [
-				{ id: 1, name: "ジン", categoryId: 1, groupId: 1 },
-				{ id: 2, name: "リキュール", categoryId: 1, groupId: 2 },
-			],
-			categories: [{ id: 1, name: "スピリッツ", sortOrder: 1 }],
-		};
-		await route.fulfill({ json });
-	});
-
-	// Mock the cocktail generation API
-	await page.route("/api/generate-cocktail", async (route) => {
-		const json = {
-			name: "ジン・フィズ",
-			description: "さっぱりとした味わいのカクテルです。",
-			ingredients: [
-				{ name: "ジン", amount: "45ml" },
-				{ name: "レモンジュース", amount: "30ml" },
-				{ name: "砂糖", amount: "2tsp" },
-				{ name: "ソーダ", amount: "適量" },
-			],
-			instructions: ["シェイクしてグラスに注ぐ", "ソーダで満たす"],
-		};
-		await route.fulfill({ json });
-	});
-
-	// Mock the search API (to return empty or specific results if needed, here empty to focus on generation)
-	await page.route("/api/cocktails?*", async (route) => {
-		await route.fulfill({ json: { cocktails: [] } });
+	// E2E用のモックモードを有効化
+	await page.addInitScript(() => {
+		window.__E2E__ = true;
+		window.__E2E_SEARCH_RESULTS__ = [];
 	});
 
 	// 1. Navigate to the homepage
@@ -61,13 +33,8 @@ test("should be able to mix a gin-fizz", async ({ page }) => {
 		.first()
 		.click();
 
-	// 4. Click the mix button and wait for the cocktail generation API response
-	await Promise.all([
-		page.waitForResponse((resp) =>
-			resp.url().includes("/api/generate-cocktail"),
-		),
-		page.getByRole("button", { name: "Mix!" }).click(),
-	]);
+	// 4. Click the mix button and wait for the result
+	await page.getByRole("button", { name: "Mix!" }).click();
 
 	// 5. Assert that the result is displayed
 	// We check for the cocktail name in the heading

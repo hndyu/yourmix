@@ -104,8 +104,23 @@ vi.mock("@/app/_components/cocktail-display-skeleton", () => ({
 // --- Tests ---
 
 describe("CocktailMixer", () => {
-	const mockIngredients = [{ id: 1, name: "ジン", categoryName: "スピリッツ" }];
-	const mockCategories = [{ id: 1, name: "スピリッツ" }];
+	const mockIngredients = [
+		{
+			id: 1,
+			name: "ジン",
+			category: "spirit",
+			categoryName: "スピリッツ",
+		},
+	];
+	const mockCategories = [
+		{
+			id: 1,
+			name: "スピリッツ",
+			sortOrder: 1,
+			assetKey: null,
+			description: null,
+		},
+	];
 	const mockGeneratedCocktail = {
 		id: "101",
 		name: "AIジンソニック",
@@ -124,18 +139,12 @@ describe("CocktailMixer", () => {
 			instructions: [],
 		},
 	];
+	const defaultProps = {
+		initialIngredients: mockIngredients,
+		initialCategories: mockCategories,
+	};
 
 	beforeEach(() => {
-		// fetchのモック
-		global.fetch = vi.fn().mockResolvedValue({
-			ok: true,
-			json: () =>
-				Promise.resolve({
-					ingredients: mockIngredients,
-					categories: mockCategories,
-				}),
-		});
-
 		// スクロールのモック
 		window.HTMLElement.prototype.scrollIntoView = vi.fn();
 
@@ -150,26 +159,8 @@ describe("CocktailMixer", () => {
 		vi.clearAllMocks();
 	});
 
-	it("初期表示時に材料データをフェッチし、ローディング状態を表示する", async () => {
-		render(<CocktailMixer />);
-
-		// 初期ローディングUIが表示されていることを確認
-		expect(screen.getByText("Initial Loading...")).toBeInTheDocument();
-
-		// fetchが呼ばれ、ローディングが解除されるのを待つ
-		await waitFor(() => {
-			expect(global.fetch).toHaveBeenCalledWith("/api/ingredients");
-			expect(screen.queryByText("Initial Loading...")).not.toBeInTheDocument();
-		});
-	});
-
-	it("材料を選択しMixボタンを押すと、カクテル生成と検索が実行される", async () => {
-		render(<CocktailMixer />);
-
-		// ローディング完了を待つ
-		await waitFor(() => {
-			expect(screen.queryByText("Initial Loading...")).not.toBeInTheDocument();
-		});
+	it("材料を選択しMixボタンを押すと、カクテル生成と検索が実行される", () => {
+		render(<CocktailMixer {...defaultProps} />);
 
 		// 材料を選択
 		fireEvent.click(screen.getByTestId("select-ingredient"));
@@ -187,7 +178,7 @@ describe("CocktailMixer", () => {
 	it("検索中(isSearching=true)にスケルトンを表示する", async () => {
 		// isSearchingをtrueに設定してレンダリング
 		mockUseCocktails.isLoading = true;
-		render(<CocktailMixer />);
+		render(<CocktailMixer {...defaultProps} />);
 
 		await waitFor(() => {
 			// isMixingがtrueになり、スケルトンが表示されることを確認
@@ -198,7 +189,7 @@ describe("CocktailMixer", () => {
 	it("AI生成中(isGenerating=true)にスケルトンを表示する", async () => {
 		// isGeneratingをtrueに設定してレンダリング
 		mockUseAICocktailGenerator.isGenerating = true;
-		render(<CocktailMixer />);
+		render(<CocktailMixer {...defaultProps} />);
 
 		await waitFor(() => {
 			// isMixingがtrueになり、スケルトンが表示されることを確認
@@ -207,7 +198,7 @@ describe("CocktailMixer", () => {
 	});
 
 	it("カクテル生成と検索が完了したら結果を表示する", async () => {
-		const { rerender } = render(<CocktailMixer />);
+		const { rerender } = render(<CocktailMixer {...defaultProps} />);
 
 		// 材料を選択してMix
 		fireEvent.click(screen.getByTestId("select-ingredient"));
@@ -218,7 +209,7 @@ describe("CocktailMixer", () => {
 		mockUseCocktails.cocktails = mockSearchResults;
 
 		// モックの値を反映させるために再レンダリング
-		rerender(<CocktailMixer />);
+		rerender(<CocktailMixer {...defaultProps} />);
 
 		// 結果が表示されていることを確認
 		await waitFor(() => {

@@ -2,6 +2,7 @@
 
 import { Button } from "@/app/_components/ui/button";
 import { Toast, type ToastSeverity } from "@/app/_components/ui/toast";
+import { deleteAccountAction, updateProfileAction } from "@/app/actions/user";
 import authClient from "@/app/lib/authClient";
 import { redirect, useRouter } from "next/navigation";
 import { QRCodeSVG } from "qrcode.react";
@@ -232,17 +233,12 @@ export default function MyPage() {
 	const executeDelete = async () => {
 		setConfirmDialogOpen(false);
 		try {
-			const res = await fetch("/api/user", {
-				method: "DELETE",
-			});
-			if (res.ok) {
+			const res = await deleteAccountAction();
+			if (res.success) {
 				// Also sign out on the client
 				showResult("アカウントが削除されました。", "signOut");
 			} else {
-				const data = (await res.json().catch(() => ({}))) as ErrorResponse;
-				showResult(
-					`エラー: ${data?.error || "アカウントの削除に失敗しました。"}`,
-				);
+				showResult(`エラー: ${res.error}`);
 			}
 		} catch (error) {
 			console.error("Account deletion failed:", error);
@@ -274,23 +270,14 @@ export default function MyPage() {
 		if (!newName.trim() || !newEmail.trim()) return;
 		setIsSaving(true);
 		try {
-			const res = await fetch("/api/user", {
-				method: "PATCH",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({ name: newName, email: newEmail }),
-			});
+			const res = await updateProfileAction({ name: newName, email: newEmail });
 
-			if (res.ok) {
+			if (res.success) {
 				await refetch();
 				setEditDialogOpen(false);
 				showResult("プロフィールが更新されました。", "refresh");
 			} else {
-				const data = (await res.json().catch(() => ({}))) as ErrorResponse;
-				showResult(
-					`エラー: ${data?.error || "プロフィールの更新に失敗しました。"}`,
-				);
+				showResult(`エラー: ${res.error}`);
 			}
 		} catch (error) {
 			console.error("Profile update failed:", error);

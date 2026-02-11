@@ -1,4 +1,13 @@
+import { generateCocktailAction } from "../actions/generate-cocktail";
 import type { Cocktail } from "../types/cocktail";
+
+declare global {
+	interface Window {
+		__E2E__?: boolean;
+	}
+}
+
+const isE2E = typeof window !== "undefined" && window.__E2E__ === true;
 
 /**
  * 生成AIによるオリジナルカクテルを生成する関数
@@ -9,22 +18,9 @@ export async function generateOriginalCocktail(
 	selectedIngredients: string[],
 ): Promise<Cocktail> {
 	try {
-		const response = await fetch("/api/generate-cocktail", {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-			},
-			body: JSON.stringify({ ingredients: selectedIngredients }),
+		const cocktailData = await generateCocktailAction(selectedIngredients, {
+			mock: isE2E,
 		});
-
-		if (!response.ok) {
-			const errorData = (await response.json().catch(() => ({}))) as {
-				error?: string;
-			};
-			throw new Error(errorData?.error || "カクテルの生成に失敗しました。");
-		}
-
-		const cocktailData = (await response.json()) as Cocktail;
 
 		// APIからのデータがCocktail型に準拠していることを確認
 		// ここでは簡単なチェックのみ

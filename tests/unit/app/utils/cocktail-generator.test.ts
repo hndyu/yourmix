@@ -1,9 +1,11 @@
+import { generateCocktailAction } from "@/app/actions/generate-cocktail";
 import type { Cocktail } from "@/app/types/cocktail";
 import { generateOriginalCocktail } from "@/app/utils/cocktail-generator";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-// fetchをグローバルにモック
-global.fetch = vi.fn();
+vi.mock("@/app/actions/generate-cocktail", () => ({
+	generateCocktailAction: vi.fn(),
+}));
 
 const mockCocktail: Cocktail = {
 	id: "ai-1",
@@ -16,68 +18,35 @@ const mockCocktail: Cocktail = {
 
 describe("cocktail-generator", () => {
 	afterEach(() => {
-		vi.mocked(fetch).mockClear();
+		vi.clearAllMocks();
 	});
 
-	it("API呼び出しが成功し、有効なカクテルデータを返す", async () => {
-		vi.mocked(fetch).mockResolvedValue({
-			ok: true,
-			json: () => Promise.resolve(mockCocktail),
-		} as Response);
+	it("サーバーアクションが成功し、有効なカクテルデータを返す", async () => {
+		vi.mocked(generateCocktailAction).mockResolvedValue(mockCocktail);
 
 		const ingredients = ["ジン", "トニックウォーター"];
 		const result = await generateOriginalCocktail(ingredients);
 
 		expect(result).toEqual(mockCocktail);
-		expect(fetch).toHaveBeenCalledTimes(1);
-		expect(fetch).toHaveBeenCalledWith("/api/generate-cocktail", {
-			method: "POST",
-			headers: { "Content-Type": "application/json" },
-			body: JSON.stringify({ ingredients }),
+		expect(generateCocktailAction).toHaveBeenCalledTimes(1);
+		expect(generateCocktailAction).toHaveBeenCalledWith(ingredients, {
+			mock: false,
 		});
 	});
 
-	it("APIがエラーレスポンスを返した場合、エラーをスローする", async () => {
-		const errorResponse = { error: "APIエラーが発生しました" };
-		vi.mocked(fetch).mockResolvedValue({
-			ok: false,
-			json: () => Promise.resolve(errorResponse),
-		} as Response);
+	it("サーバーアクションがエラーを返した場合、エラーをスローする", async () => {
+		const error = new Error("APIエラーが発生しました");
+		vi.mocked(generateCocktailAction).mockRejectedValue(error);
 
-		await expect(generateOriginalCocktail(["ウォッカ"])).rejects.toThrow(
-			errorResponse.error,
-		);
+		await expect(generateOriginalCocktail(["ウォッカ"])).rejects.toThrow(error);
 	});
 
-	it("APIがエラーレスポンスを返したが、エラーメッセージがない場合、デフォルトのエラーをスローする", async () => {
-		vi.mocked(fetch).mockResolvedValue({
-			ok: false,
-			json: () => Promise.resolve({}), // エラーメッセージなし
-		} as Response);
-
-		await expect(generateOriginalCocktail(["ラム"])).rejects.toThrow(
-			"カクテルの生成に失敗しました。",
-		);
-	});
-
-	it("APIが成功したが、不正な形式のデータを返した場合、エラーをスローする", async () => {
-		const invalidData = { name: "不完全なカクテル" }; // ingredientsがない
-		vi.mocked(fetch).mockResolvedValue({
-			ok: true,
-			json: () => Promise.resolve(invalidData),
-		} as Response);
+	it("不正な形式のデータを返した場合、エラーをスローする", async () => {
+		const invalidData = { name: "不完全なカクテル" } as Cocktail;
+		vi.mocked(generateCocktailAction).mockResolvedValue(invalidData);
 
 		await expect(generateOriginalCocktail(["テキーラ"])).rejects.toThrow(
 			"受信したカクテルデータの形式が正しくありません。",
-		);
-	});
-
-	it("fetchでネットワークエラーが発生した場合、そのエラーをスローする", async () => {
-		const networkError = new Error("Network Failure");
-		vi.mocked(fetch).mockRejectedValue(networkError);
-
-		await expect(generateOriginalCocktail(["ウイスキー"])).rejects.toThrow(
-			networkError,
 		);
 	});
 });

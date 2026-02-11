@@ -1,3 +1,4 @@
+import { deleteAccountAction, updateProfileAction } from "@/app/actions/user";
 import authClient from "@/app/lib/authClient";
 import MyPage from "@/app/my-page/page";
 import type { BetterFetchError } from "@better-fetch/fetch";
@@ -43,6 +44,12 @@ vi.mock("@/app/lib/authClient", () => ({
 		lastLoginMethodClient: vi.fn(),
 		twoFactorClient: vi.fn(),
 	},
+}));
+
+// Mock server actions
+vi.mock("@/app/actions/user", () => ({
+	updateProfileAction: vi.fn(),
+	deleteAccountAction: vi.fn(),
 }));
 
 // Mock qrcode.react
@@ -116,6 +123,14 @@ describe("MyPage", () => {
 
 	beforeEach(() => {
 		vi.clearAllMocks();
+		vi.mocked(updateProfileAction).mockResolvedValue({
+			success: true,
+			data: undefined,
+		});
+		vi.mocked(deleteAccountAction).mockResolvedValue({
+			success: true,
+			data: undefined,
+		});
 		vi.mocked(authClient.useSession).mockReturnValue(
 			mockSession as unknown as UseSessionReturn,
 		);
@@ -153,8 +168,6 @@ describe("MyPage", () => {
 	});
 
 	it("handles profile update", async () => {
-		vi.mocked(fetch).mockResolvedValueOnce({ ok: true } as Response);
-
 		render(<MyPage />);
 
 		fireEvent.click(screen.getByText("編集"));
@@ -168,16 +181,10 @@ describe("MyPage", () => {
 		fireEvent.click(screen.getByText("保存する"));
 
 		await waitFor(() => {
-			expect(fetch).toHaveBeenCalledWith(
-				"/api/user",
-				expect.objectContaining({
-					method: "PATCH",
-					body: JSON.stringify({
-						name: "Updated Name",
-						email: "updated@example.com",
-					}),
-				}),
-			);
+			expect(updateProfileAction).toHaveBeenCalledWith({
+				name: "Updated Name",
+				email: "updated@example.com",
+			});
 			expect(
 				screen.getByText("プロフィールが更新されました。"),
 			).toBeInTheDocument();
@@ -313,7 +320,6 @@ describe("MyPage", () => {
 	});
 
 	it("handles account deletion", async () => {
-		vi.mocked(fetch).mockResolvedValueOnce({ ok: true } as Response);
 		vi.mocked(authClient.signOut).mockResolvedValueOnce(
 			{} as AuthResponse<null>,
 		);
@@ -324,10 +330,7 @@ describe("MyPage", () => {
 		fireEvent.click(screen.getByText("削除する"));
 
 		await waitFor(() => {
-			expect(fetch).toHaveBeenCalledWith(
-				"/api/user",
-				expect.objectContaining({ method: "DELETE" }),
-			);
+			expect(deleteAccountAction).toHaveBeenCalled();
 			expect(
 				screen.getByText("アカウントが削除されました。"),
 			).toBeInTheDocument();

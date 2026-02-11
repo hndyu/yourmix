@@ -5,15 +5,15 @@ const nextConfig: NextConfig = {
 		unoptimized: true,
 		remotePatterns: [
 			{
-				protocol: 'https',
-				hostname: 'yourmix.hndyu.workers.dev',
+				protocol: "https",
+				hostname: "yourmix.hndyu.workers.dev",
 			},
 		],
 		localPatterns: [
 			{
-				pathname: '/**',
+				pathname: "/**",
 			},
-		]
+		],
 	},
 	/* config options here */
 };
