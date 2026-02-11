@@ -66,7 +66,7 @@ const IngredientCard = React.memo(
 								? "bg-primary text-black scale-100"
 								: isPartiallySelected
 									? "bg-stone-200 dark:bg-stone-700 text-primary scale-100 ring-1 ring-primary/20"
-									: "bg-stone-100 dark:bg-stone-800 text-stone-400 dark:text-stone-600 scale-90 opacity-0 group-hover:opacity-100 group-hover:scale-100"
+									: "bg-stone-100 dark:bg-stone-800 text-stone-400 dark:text-stone-600 scale-100 opacity-40"
 						}
           `}
 						>

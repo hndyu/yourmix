@@ -162,7 +162,7 @@ describe("CocktailDisplay Component", () => {
 	});
 
 	it("renders affiliate links correctly", () => {
-		render(<CocktailDisplay cocktail={mockCocktail} />);
+		render(<CocktailDisplay cocktail={mockCocktail} isDetailPage />);
 
 		const links = screen.getAllByRole("link", { name: /買う/i });
 		expect(links).toHaveLength(2);
@@ -171,6 +171,13 @@ describe("CocktailDisplay Component", () => {
 			"href",
 			"https://example.com/shop/トニックウォーター",
 		);
+	});
+
+	it("does not render affiliate links when isDetailPage is false", () => {
+		render(<CocktailDisplay cocktail={mockCocktail} />);
+		expect(
+			screen.queryByRole("link", { name: /買う/i }),
+		).not.toBeInTheDocument();
 	});
 
 	it("does not render garnish section if garnish is undefined", () => {

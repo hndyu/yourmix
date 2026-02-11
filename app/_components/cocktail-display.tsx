@@ -247,26 +247,28 @@ export default function CocktailDisplay({
 												</div>
 											</div>
 
-											{/* Affiliate Links */}
-											<div className="flex flex-col gap-2 shrink-0">
-												{item.originalIngredients.map((ing) => {
-													const keyword = extractIngredientKeyword(ing.name);
-													const link = getAffiliateLink(keyword);
-													if (!link) return null;
-													return (
-														<a
-															key={`link-${ing.name}`}
-															href={link}
-															target="_blank"
-															rel="noopener noreferrer"
-															className="inline-flex items-center gap-1 px-2 py-1 bg-secondary hover:bg-orange-100 dark:hover:bg-orange-900/30 text-orange-600 dark:text-orange-400 hover:text-orange-700 dark:hover:text-orange-300 rounded text-sm font-bold transition-colors"
-														>
-															<ShoppingCart size={12} />
-															買う
-														</a>
-													);
-												})}
-											</div>
+											{/* DetailPage以外では購入導線を出さない */}
+											{isDetailPage && (
+												<div className="flex flex-col gap-2 shrink-0">
+													{item.originalIngredients.map((ing) => {
+														const keyword = extractIngredientKeyword(ing.name);
+														const link = getAffiliateLink(keyword);
+														if (!link) return null;
+														return (
+															<a
+																key={`link-${ing.name}`}
+																href={link}
+																target="_blank"
+																rel="noopener noreferrer"
+																className="inline-flex items-center gap-1 px-2 py-1 bg-secondary hover:bg-orange-100 dark:hover:bg-orange-900/30 text-orange-600 dark:text-orange-400 hover:text-orange-700 dark:hover:text-orange-300 rounded text-sm font-bold transition-colors"
+															>
+																<ShoppingCart size={12} />
+																買う
+															</a>
+														);
+													})}
+												</div>
+											)}
 										</div>
 									</li>
 								))}
