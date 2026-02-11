@@ -156,7 +156,14 @@ export async function generateCocktailFromIngredients(
 	}
 
 	try {
-		const cocktailData = JSON.parse(responseText)[0] as Cocktail;
+		const parsed = JSON.parse(responseText);
+		// 配列か単一オブジェクトかを判定し、どちらでも安全に取り扱う
+		const cocktailData = Array.isArray(parsed)
+			? (parsed[0] as Cocktail | undefined)
+			: (parsed as Cocktail | null);
+		if (!cocktailData) {
+			throw new Error("AIからの応答が配列でもオブジェクトでもありません。");
+		}
 		return cocktailData;
 	} catch (error) {
 		console.error("Failed to parse Gemma response:", response.text);
