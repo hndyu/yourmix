@@ -14,6 +14,8 @@ interface MixSectionProps {
 	onIngredientsChange: (ids: number[], names: string[]) => void;
 	isMixing?: boolean;
 	isInitialLoading?: boolean;
+	/** 通知バーが表示されているかどうか（表示時は下部余白を追加） */
+	showCompletionBar?: boolean;
 }
 
 export default function MixSection({
@@ -25,6 +27,7 @@ export default function MixSection({
 	onIngredientsChange,
 	isMixing = false,
 	isInitialLoading = false,
+	showCompletionBar = false,
 }: MixSectionProps) {
 	const selectedCount = selectedIngredientNames.length;
 
@@ -53,7 +56,11 @@ export default function MixSection({
 				/>
 			</div>
 
-			<div className="flex flex-col items-center gap-4 mt-8 sticky bottom-4 z-40">
+			<div
+				className={`flex flex-col items-center gap-4 mt-8 sticky z-40 transition-all duration-300 ${
+					showCompletionBar ? "bottom-24" : "bottom-4"
+				}`}
+			>
 				<div className="relative">
 					{/* Backdrop for button when sticky? Maybe simpler to just elevate it. */}
 					<div className="absolute inset-0 bg-background/80 blur-xl rounded-full -z-10" />

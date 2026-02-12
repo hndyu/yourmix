@@ -49,11 +49,13 @@ vi.mock("@/app/_components/mix-section", () => ({
 		onIngredientsChange,
 		isMixing,
 		isInitialLoading,
+		showCompletionBar,
 	}: {
 		onMixClick: () => void;
 		onIngredientsChange: (ids: number[], names: string[]) => void;
 		isMixing: boolean;
 		isInitialLoading: boolean;
+		showCompletionBar?: boolean;
 	}) => (
 		<div>
 			<h2>MixSection</h2>
@@ -74,19 +76,7 @@ vi.mock("@/app/_components/mix-section", () => ({
 			</button>
 			{isInitialLoading && <span>Initial Loading...</span>}
 			{isMixing && <span>Mixing...</span>}
-		</div>
-	),
-}));
-vi.mock("@/app/_components/cocktail-display", () => ({
-	default: ({
-		cocktail,
-		onRemove,
-	}: { cocktail: Cocktail; onRemove: () => void }) => (
-		<div>
-			<h2>Generated Cocktail: {cocktail.name}</h2>
-			<button type="button" data-testid="remove-cocktail" onClick={onRemove}>
-				Remove
-			</button>
+			{showCompletionBar && <span>Completion Bar Visible</span>}
 		</div>
 	),
 }));
@@ -97,8 +87,43 @@ vi.mock("@/app/_components/cocktail-search-results", () => ({
 		</div>
 	),
 }));
-vi.mock("@/app/_components/cocktail-display-skeleton", () => ({
-	default: () => <div>Cocktail Skeleton</div>,
+vi.mock("@/app/_components/completion-bar", () => ({
+	default: ({
+		isGenerating,
+		onViewClick,
+	}: { isGenerating: boolean; onViewClick: () => void }) => (
+		<div data-testid="completion-bar">
+			{isGenerating ? (
+				<span>バーテンダーがカクテルを考案中…</span>
+			) : (
+				<>
+					<span>オリジナルカクテルが完成しました！</span>
+					<button
+						type="button"
+						data-testid="view-cocktail"
+						onClick={onViewClick}
+					>
+						見る
+					</button>
+				</>
+			)}
+		</div>
+	),
+}));
+vi.mock("@/app/_components/cocktail-dialog", () => ({
+	default: ({
+		cocktail,
+		open,
+		onClose,
+	}: { cocktail: Cocktail | null; open: boolean; onClose: () => void }) =>
+		open && cocktail ? (
+			<div data-testid="cocktail-dialog">
+				<h2>Generated Cocktail: {cocktail.name}</h2>
+				<button type="button" data-testid="close-dialog" onClick={onClose}>
+					閉じる
+				</button>
+			</div>
+		) : null,
 }));
 
 // --- Tests ---
@@ -175,37 +200,68 @@ describe("CocktailMixer", () => {
 		]);
 	});
 
-	it("検索中(isSearching=true)にスケルトンを表示する", async () => {
-		// isSearchingをtrueに設定してレンダリング
-		mockUseCocktails.isLoading = true;
-		render(<CocktailMixer {...defaultProps} />);
-
-		await waitFor(() => {
-			// isMixingがtrueになり、スケルトンが表示されることを確認
-			expect(screen.getByText("Cocktail Skeleton")).toBeInTheDocument();
-		});
-	});
-
-	it("AI生成中(isGenerating=true)にスケルトンを表示する", async () => {
+	it("AI生成中に通知バーで実況メッセージを表示する", async () => {
 		// isGeneratingをtrueに設定してレンダリング
 		mockUseAICocktailGenerator.isGenerating = true;
 		render(<CocktailMixer {...defaultProps} />);
 
 		await waitFor(() => {
-			// isMixingがtrueになり、スケルトンが表示されることを確認
-			expect(screen.getByText("Cocktail Skeleton")).toBeInTheDocument();
+			// 通知バーが表示されることを確認
+			expect(screen.getByTestId("completion-bar")).toBeInTheDocument();
+			expect(
+				screen.getByText("バーテンダーがカクテルを考案中…"),
+			).toBeInTheDocument();
 		});
 	});
 
-	it("カクテル生成と検索が完了したら結果を表示する", async () => {
+	it("AI生成完了後に完成メッセージと「見る」ボタンを表示する", async () => {
+		// 生成完了状態をシミュレート
+		mockUseAICocktailGenerator.generatedCocktail = mockGeneratedCocktail;
+		mockUseAICocktailGenerator.isGenerating = false;
+		render(<CocktailMixer {...defaultProps} />);
+
+		await waitFor(() => {
+			expect(
+				screen.getByText("オリジナルカクテルが完成しました！"),
+			).toBeInTheDocument();
+			expect(screen.getByTestId("view-cocktail")).toBeInTheDocument();
+		});
+	});
+
+	it("「見る」ボタンでモーダルを開き、閉じるボタンで閉じられる", async () => {
+		// 生成完了状態をシミュレート
+		mockUseAICocktailGenerator.generatedCocktail = mockGeneratedCocktail;
+		mockUseAICocktailGenerator.isGenerating = false;
+		render(<CocktailMixer {...defaultProps} />);
+
+		// 「見る」ボタンをクリック
+		fireEvent.click(screen.getByTestId("view-cocktail"));
+
+		// モーダルが開くことを確認
+		await waitFor(() => {
+			expect(screen.getByTestId("cocktail-dialog")).toBeInTheDocument();
+			expect(
+				screen.getByText(`Generated Cocktail: ${mockGeneratedCocktail.name}`),
+			).toBeInTheDocument();
+		});
+
+		// 閉じるボタンをクリック
+		fireEvent.click(screen.getByTestId("close-dialog"));
+
+		// モーダルが閉じることを確認
+		await waitFor(() => {
+			expect(screen.queryByTestId("cocktail-dialog")).not.toBeInTheDocument();
+		});
+	});
+
+	it("検索結果が表示されたらスクロールする", async () => {
 		const { rerender } = render(<CocktailMixer {...defaultProps} />);
 
 		// 材料を選択してMix
 		fireEvent.click(screen.getByTestId("select-ingredient"));
 		fireEvent.click(screen.getByTestId("mix-button"));
 
-		// 結果が返ってきた状態をシミュレート
-		mockUseAICocktailGenerator.generatedCocktail = mockGeneratedCocktail;
+		// 検索結果が返ってきた状態をシミュレート
 		mockUseCocktails.cocktails = mockSearchResults;
 
 		// モックの値を反映させるために再レンダリング
@@ -213,9 +269,6 @@ describe("CocktailMixer", () => {
 
 		// 結果が表示されていることを確認
 		await waitFor(() => {
-			expect(
-				screen.getByText(`Generated Cocktail: ${mockGeneratedCocktail.name}`),
-			).toBeInTheDocument();
 			expect(
 				screen.getByText(`Search Results: ${mockSearchResults.length}`),
 			).toBeInTheDocument();
