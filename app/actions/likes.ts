@@ -29,44 +29,43 @@ export async function toggleLikeAction(
 		const db = await getDb();
 		const userId = session.user.id;
 
-		// Check if already liked
-		const [existingLike] = await db
-			.select()
+		// ⚡ Bolt: Consolidate check and initial count into a single query
+		// Expected impact: Reduces initial DB round-trips from 2 (or sequential calls) to 1.
+		const likeStatus = await db
+			.select({
+				isLiked: sql<number>`MAX(CASE WHEN ${deliciousLikes.userId} = ${userId} THEN 1 ELSE 0 END)`,
+				currentCount: sql<number>`COUNT(*)`,
+			})
 			.from(deliciousLikes)
-			.where(
-				and(
-					eq(deliciousLikes.cocktailId, cocktailId),
-					eq(deliciousLikes.userId, userId),
-				),
-			);
+			.where(eq(deliciousLikes.cocktailId, cocktailId));
+
+		const wasLiked = (likeStatus[0]?.isLiked ?? 0) === 1;
 
 		let isLiked = false;
 
-		if (existingLike) {
-			// Unlike
-			await db
-				.delete(deliciousLikes)
-				.where(
-					and(
-						eq(deliciousLikes.cocktailId, cocktailId),
-						eq(deliciousLikes.userId, userId),
-					),
-				);
-			isLiked = false;
-		} else {
-			// Like
-			await db.insert(deliciousLikes).values({
-				cocktailId,
-				userId,
-			});
-			isLiked = true;
-		}
+		// ⚡ Bolt: Combine toggle operation and final count retrieval into a single database round-trip using db.batch
+		// Overall, this reduces the total round-trips for the toggle action from 3 to 2.
+		const [_, finalCountResult] = await db.batch([
+			wasLiked
+				? db
+						.delete(deliciousLikes)
+						.where(
+							and(
+								eq(deliciousLikes.cocktailId, cocktailId),
+								eq(deliciousLikes.userId, userId),
+							),
+						)
+				: db.insert(deliciousLikes).values({
+						cocktailId,
+						userId,
+					}),
+			db
+				.select({ count: sql<number>`COUNT(*)` })
+				.from(deliciousLikes)
+				.where(eq(deliciousLikes.cocktailId, cocktailId)),
+		]);
 
-		// Get updated count
-		const [countResult] = await db
-			.select({ count: sql<number>`count(*)` })
-			.from(deliciousLikes)
-			.where(eq(deliciousLikes.cocktailId, cocktailId));
+		isLiked = !wasLiked;
 
 		// Revalidate to update UI
 		revalidatePath(`/recipes/${cocktailId}`);
@@ -74,7 +73,7 @@ export async function toggleLikeAction(
 
 		return {
 			isLiked,
-			count: countResult?.count ?? 0,
+			count: finalCountResult[0]?.count ?? 0,
 		};
 	});
 }

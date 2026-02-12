@@ -29,3 +29,7 @@
 ## 2026-02-10 - [Consolidating Parallel Queries into Single SQL Call]
 **Learning:** Even when queries are parallelized with `Promise.all`, they still result in multiple database round-trips. In high-latency or serverless environments, consolidating these into a single SQL query using conditional aggregation (e.g., `COUNT(*)` and `MAX(CASE WHEN ... THEN 1 ELSE 0 END)`) further reduces overhead and latency.
 **Action:** When fetching multiple metrics from the same table based on the same filter, use SQL aggregation functions to retrieve them in one go.
+
+## 2026-02-15 - [Consolidating DB Actions with batch and Aggregation]
+**Learning:** Sequential database operations in server actions (like checking status before toggling and then re-fetching count) can be reduced by using conditional aggregation for the initial check and `db.batch` for subsequent mutations. Reducing round-trips from 3 to 2 significantly improves perceived performance in interactive features.
+**Action:** Always look for opportunities to use `db.batch` to group mutations with follow-up select queries, and use conditional aggregation to fetch multiple state flags in one pass.
