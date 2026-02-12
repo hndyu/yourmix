@@ -4,9 +4,9 @@ import * as React from "react";
 import type { Category, Ingredient } from "../types/cocktail";
 import { useAICocktailGenerator } from "../utils/useAICocktailGenerator";
 import { useCocktails } from "../utils/useCocktails";
-import CocktailDisplay from "./cocktail-display";
-import CocktailDisplaySkeleton from "./cocktail-display-skeleton";
+import CocktailDialog from "./cocktail-dialog";
 import CocktailSearchResults from "./cocktail-search-results";
+import CompletionBar from "./completion-bar";
 import MixSection from "./mix-section";
 
 type CocktailMixerProps = {
@@ -47,20 +47,24 @@ export default function CocktailMixer({
 		clearGeneratedCocktail,
 	} = useAICocktailGenerator();
 
-	// 全体のローディング状態
+	// 全体のローディング状態（Mixボタンの無効化に使用）
 	const isMixing = isSearching || isGenerating;
 
 	// 表示アニメーションとスクロールの状態
-	const [showOriginalCocktail, setShowOriginalCocktail] = React.useState(false);
 	const [showSearchResults, setShowSearchResults] = React.useState(false);
 	const [hasScrolledAfterMix, setHasScrolledAfterMix] = React.useState(false);
 	const resultsRef = React.useRef<HTMLDivElement>(null);
 
+	// 通知バーとモーダルダイアログの状態
+	const [showCompletionBar, setShowCompletionBar] = React.useState(false);
+	const [dialogOpen, setDialogOpen] = React.useState(false);
+
 	// Mixボタンクリック時の処理
 	const handleMixClick = async () => {
 		// 表示をリセット
-		setShowOriginalCocktail(false);
 		setShowSearchResults(false);
+		setShowCompletionBar(false);
+		setDialogOpen(false);
 		clearGeneratedCocktail();
 		searchCocktails([]); // 既存の検索結果をクリア
 		setHasScrolledAfterMix(false);
@@ -69,6 +73,7 @@ export default function CocktailMixer({
 		setLastSearchedIngredientNames([...selectedIngredientNames]);
 
 		// 検索と生成を並行して実行
+		// 検索は高速で完了し、生成はバックグラウンドで継続
 		await Promise.all([
 			searchCocktails(selectedIngredientIds),
 			generateCocktail(selectedIngredientNames),
@@ -81,19 +86,29 @@ export default function CocktailMixer({
 		setSelectedIngredientNames(names);
 	};
 
-	// 結果が表示されたらスクロール
+	// 検索結果が表示されたら即座にスクロール
 	React.useEffect(() => {
-		if (generatedCocktail) setShowOriginalCocktail(true);
 		if (searchResults.length > 0) setShowSearchResults(true);
 
-		if (
-			(generatedCocktail || searchResults.length > 0) &&
-			!hasScrolledAfterMix
-		) {
+		if (searchResults.length > 0 && !hasScrolledAfterMix) {
 			resultsRef.current?.scrollIntoView({ behavior: "smooth" });
 			setHasScrolledAfterMix(true);
 		}
-	}, [generatedCocktail, searchResults, hasScrolledAfterMix]);
+	}, [searchResults, hasScrolledAfterMix]);
+
+	// AI 生成完了時に通知バーを表示
+	React.useEffect(() => {
+		if (generatedCocktail) {
+			setShowCompletionBar(true);
+		}
+	}, [generatedCocktail]);
+
+	// AI 生成中に通知バーを表示（実況メッセージ用）
+	React.useEffect(() => {
+		if (isGenerating) {
+			setShowCompletionBar(true);
+		}
+	}, [isGenerating]);
 
 	return (
 		<>
@@ -105,18 +120,14 @@ export default function CocktailMixer({
 				selectedIngredientNames={selectedIngredientNames}
 				onIngredientsChange={handleIngredientsChange}
 				isMixing={isMixing}
+				showCompletionBar={showCompletionBar}
 			/>
 
-			<div ref={resultsRef} className="w-full">
-				{isMixing && <CocktailDisplaySkeleton />}
-
-				{!isMixing && generatedCocktail && (
-					<CocktailDisplay
-						cocktail={generatedCocktail}
-						show={showOriginalCocktail}
-					/>
-				)}
-
+			{/* 検索結果エリア（通知バーの高さ分の余白を追加） */}
+			<div
+				ref={resultsRef}
+				className={`w-full ${showCompletionBar ? "pb-20" : ""}`}
+			>
 				{searchResults.length > 0 && (
 					<CocktailSearchResults
 						cocktails={searchResults}
@@ -127,6 +138,21 @@ export default function CocktailMixer({
 					/>
 				)}
 			</div>
+
+			{/* 画面下部の固定バー（AI 生成中の実況メッセージ / 完成通知） */}
+			{showCompletionBar && (
+				<CompletionBar
+					isGenerating={isGenerating}
+					onViewClick={() => setDialogOpen(true)}
+				/>
+			)}
+
+			{/* AI 生成カクテルのモーダルダイアログ */}
+			<CocktailDialog
+				cocktail={generatedCocktail}
+				open={dialogOpen}
+				onClose={() => setDialogOpen(false)}
+			/>
 		</>
 	);
 }
