@@ -16,7 +16,10 @@ interface CocktailSearchResultsProps {
 	allIngredients: Ingredient[];
 }
 
-export default function CocktailSearchResults({
+// ⚡ Bolt: Memoize CocktailSearchResults to prevent redundant re-renders
+// This is especially beneficial when selecting ingredients in the parent component (CocktailMixer),
+// as it avoids re-calculating and re-rendering the entire search results list on every checkbox toggle.
+const CocktailSearchResults = React.memo(function CocktailSearchResults({
 	cocktails,
 	selectedIngredients,
 	categories,
@@ -129,4 +132,6 @@ export default function CocktailSearchResults({
 			</div>
 		</div>
 	);
-}
+});
+
+export default CocktailSearchResults;
