@@ -29,44 +29,43 @@ export async function toggleLikeAction(
 		const db = await getDb();
 		const userId = session.user.id;
 
-		// Check if already liked
-		const [existingLike] = await db
-			.select()
-			.from(deliciousLikes)
-			.where(
-				and(
-					eq(deliciousLikes.cocktailId, cocktailId),
-					eq(deliciousLikes.userId, userId),
-				),
-			);
-
-		let isLiked = false;
-
-		if (existingLike) {
-			// Unlike
-			await db
-				.delete(deliciousLikes)
-				.where(
-					and(
-						eq(deliciousLikes.cocktailId, cocktailId),
-						eq(deliciousLikes.userId, userId),
-					),
-				);
-			isLiked = false;
-		} else {
-			// Like
-			await db.insert(deliciousLikes).values({
-				cocktailId,
-				userId,
-			});
-			isLiked = true;
-		}
-
-		// Get updated count
-		const [countResult] = await db
-			.select({ count: sql<number>`count(*)` })
+		// ⚡ Bolt: Use conditional aggregation to fetch like status and total count in one query
+		// Reduces round-trips from 3 to 2 by combining the initial check and current count fetch
+		const [statusInfo] = await db
+			.select({
+				isLiked: sql<number>`COALESCE(MAX(CASE WHEN ${deliciousLikes.userId} = ${userId} THEN 1 ELSE 0 END), 0)`,
+				totalCount: sql<number>`COUNT(*)`,
+			})
 			.from(deliciousLikes)
 			.where(eq(deliciousLikes.cocktailId, cocktailId));
+
+		const currentlyLiked = statusInfo?.isLiked === 1;
+
+		// ⚡ Bolt: Use db.batch to perform toggle and re-fetch count in a single round-trip
+		// This ensures atomicity for the response and further minimizes round-trips to Cloudflare D1
+		const results = await db.batch([
+			currentlyLiked
+				? db
+						.delete(deliciousLikes)
+						.where(
+							and(
+								eq(deliciousLikes.cocktailId, cocktailId),
+								eq(deliciousLikes.userId, userId),
+							),
+						)
+				: db.insert(deliciousLikes).values({
+						cocktailId,
+						userId,
+					}),
+			db
+				.select({ count: sql<number>`count(*)` })
+				.from(deliciousLikes)
+				.where(eq(deliciousLikes.cocktailId, cocktailId)),
+		]);
+
+		// The second query in the batch returns the updated count
+		const countResult = results[1] as { count: number }[];
+		const isLiked = !currentlyLiked;
 
 		// Revalidate to update UI
 		revalidatePath(`/recipes/${cocktailId}`);
@@ -74,7 +73,7 @@ export async function toggleLikeAction(
 
 		return {
 			isLiked,
-			count: countResult?.count ?? 0,
+			count: countResult[0]?.count ?? 0,
 		};
 	});
 }
