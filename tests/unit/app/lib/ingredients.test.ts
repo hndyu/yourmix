@@ -93,6 +93,7 @@ describe("getIngredientsMasterData", () => {
 			from: vi.fn().mockReturnThis(),
 			orderBy: orderByMock,
 			leftJoin: vi.fn().mockReturnThis(),
+			batch: vi.fn().mockImplementation((queries) => Promise.all(queries)),
 		} as unknown as DB);
 	});
 
@@ -142,6 +143,7 @@ describe("getIngredientsMasterData", () => {
 			from: vi.fn().mockReturnThis(),
 			orderBy: orderByMock,
 			leftJoin: vi.fn().mockReturnThis(),
+			batch: vi.fn().mockImplementation((queries) => Promise.all(queries)),
 		} as unknown as DB);
 
 		const data = await getIngredientsMasterData();

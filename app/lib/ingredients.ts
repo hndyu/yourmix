@@ -10,7 +10,8 @@ import { asc, eq } from "drizzle-orm";
 export async function getIngredientsMasterData() {
 	const db = await getDb();
 
-	const [allCategories, allIngredientsWithGroups] = await Promise.all([
+	// ⚡ Bolt: Use db.batch to reduce round-trips to Cloudflare D1 from 2 to 1
+	const batchResults = await db.batch([
 		// カテゴリを並び順で取得
 		db
 			.select()
@@ -36,10 +37,24 @@ export async function getIngredientsMasterData() {
 			.orderBy(asc(ingredientGroups.sortOrder), asc(ingredients.sortOrder)),
 	]);
 
-	// 表示用に材料をグループ化
+	const allCategories = batchResults[0];
+	const allIngredientsWithGroups = batchResults[1];
+
+	// ⚡ Bolt: Optimized data transformation with a single-pass reduce loop
+	// Simultaneously builds groupedIngredientsMap and groupMapping to avoid a redundant second iteration (O(N) instead of O(2N)).
+	const groupMapping: Record<string, string[]> = {};
 	const groupedIngredientsMap = allIngredientsWithGroups.reduce(
 		(acc, ing) => {
 			const displayName = ing.groupDisplayName || ing.name;
+
+			// Build groupMapping in the same pass
+			if (ing.groupDisplayName) {
+				if (!groupMapping[ing.groupDisplayName]) {
+					groupMapping[ing.groupDisplayName] = [];
+				}
+				groupMapping[ing.groupDisplayName].push(ing.name);
+			}
+
 			let group = acc.get(displayName);
 
 			if (group) {
@@ -68,18 +83,6 @@ export async function getIngredientsMasterData() {
 
 	// Mapの値を配列に変換 (挿入順が保持される)
 	const groupedIngredients = Array.from(groupedIngredientsMap.values());
-	// ⚡ Bolt: Optimized group mapping creation
-	// Previously used O(G * N) complexity with repeated filters.
-	// Now uses O(N) complexity with a single pass over the data.
-	const groupMapping: Record<string, string[]> = {};
-	for (const ing of allIngredientsWithGroups) {
-		if (ing.groupDisplayName) {
-			if (!groupMapping[ing.groupDisplayName]) {
-				groupMapping[ing.groupDisplayName] = [];
-			}
-			groupMapping[ing.groupDisplayName].push(ing.name);
-		}
-	}
 
 	return {
 		categories: allCategories as Category[],
