@@ -37,3 +37,7 @@
 ## 2026-06-20 - [Batching Parallel Selects and Single-Pass Transformation]
 **Learning:** `db.batch` is not only for mutations; it's also highly effective for consolidating multiple independent `select` queries (previously using `Promise.all`) into a single round-trip to Cloudflare D1. Additionally, when transforming relational data, combining multiple iterations over the same set (e.g., building a Map and a grouping object) into a single `reduce` pass further minimizes overhead.
 **Action:** Use `db.batch` for any independent queries that can be executed together. Always look for opportunities to merge multiple O(N) loops into a single-pass transformation.
+
+## 2027-04-10 - [Request Caching and Subquery Consolidation]
+**Learning:** In Next.js App Router, `React.cache` is essential for deduplicating expensive database calls between `generateMetadata` and page components. Additionally, Drizzle's `extras` field allows consolidating aggregate metadata (like counts or existence checks) into the primary relational query, reducing coordination overhead and round-trips.
+**Action:** Wrap library data-fetchers in `React.cache`. Use `extras` with subqueries to merge related metadata into relational queries.
