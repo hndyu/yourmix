@@ -26,7 +26,15 @@ export async function generateMetadata({
 	params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
 	const { slug } = await params;
-	const cocktail = await getCocktail(slug);
+
+	// ⚡ Bolt: Fetch session and pass userId to getCocktail to enable React.cache deduplication
+	// with the subsequent call in the main page component.
+	const session = await (await initAuth()).api.getSession({
+		headers: await headers(),
+	});
+	const userId = session?.user?.id;
+
+	const cocktail = await getCocktail(slug, userId);
 	const title = `${cocktail.name}のレシピ`;
 	const description = `${cocktail.name}の作り方と材料を紹介します。${cocktail.description}`;
 

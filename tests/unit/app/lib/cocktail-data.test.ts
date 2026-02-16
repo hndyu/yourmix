@@ -34,14 +34,13 @@ describe("getCocktailBySlug", () => {
 		const mockDb = {
 			query: {
 				cocktails: {
-					findFirst: vi.fn().mockResolvedValue(mockCocktail),
+					findFirst: vi.fn().mockResolvedValue({
+						...mockCocktail,
+						deliciousCount: 5,
+						isLiked: 1,
+					}),
 				},
 			},
-			select: vi.fn().mockReturnValue({
-				from: vi.fn().mockReturnValue({
-					where: vi.fn().mockResolvedValue([{ count: 5, isLiked: 1 }]),
-				}),
-			}),
 		};
 		vi.mocked(getDb).mockResolvedValue(mockDb as unknown as DB);
 
@@ -52,21 +51,19 @@ describe("getCocktailBySlug", () => {
 		expect(result?.deliciousCount).toBe(5);
 		expect(result?.isLiked).toBe(true);
 		expect(mockDb.query.cocktails.findFirst).toHaveBeenCalled();
-		expect(mockDb.select).toHaveBeenCalled();
 	});
 
 	it("should return cocktail data for unauthenticated user", async () => {
 		const mockDb = {
 			query: {
 				cocktails: {
-					findFirst: vi.fn().mockResolvedValue(mockCocktail),
+					findFirst: vi.fn().mockResolvedValue({
+						...mockCocktail,
+						deliciousCount: 3,
+						isLiked: 0,
+					}),
 				},
 			},
-			select: vi.fn().mockReturnValue({
-				from: vi.fn().mockReturnValue({
-					where: vi.fn().mockResolvedValue([{ count: 3, isLiked: 0 }]),
-				}),
-			}),
 		};
 		vi.mocked(getDb).mockResolvedValue(mockDb as unknown as DB);
 
