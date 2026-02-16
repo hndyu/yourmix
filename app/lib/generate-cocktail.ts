@@ -68,9 +68,9 @@ export async function generateCocktailFromIngredients(
 
 	const db = await getDb();
 
-	// ⚡ Bolt: Use db.batch to consolidate parallel queries into a single round-trip to Cloudflare D1
-	// Reduces total latency by eliminating the overhead of multiple HTTP requests.
-	const batchResults = await db.batch([
+	// ⚡ Bolt: Parallelize independent DB calls to reduce total latency
+	// Expected impact: Saves one sequential DB round-trip.
+	const [validGroups, validIngredients] = await Promise.all([
 		// DBから有効な材料グループ名を取得 (descriptionも併せて取得して後のクエリを削減)
 		db
 			.select({
@@ -83,9 +83,6 @@ export async function generateCocktailFromIngredients(
 			.select({ name: schema.ingredients.name })
 			.from(schema.ingredients),
 	]);
-
-	const validGroups = batchResults[0];
-	const validIngredients = batchResults[1];
 
 	// ⚡ Bolt: Use a Map for O(1) lookup of group descriptions
 	// Expected impact: Eliminates sequential DB queries within the mapping loop.
