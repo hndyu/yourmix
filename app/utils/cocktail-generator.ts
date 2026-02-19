@@ -27,7 +27,6 @@ export async function generateOriginalCocktail(
 		if (
 			!cocktailData ||
 			!cocktailData.name ||
-			!cocktailData.ingredients ||
 			!Array.isArray(cocktailData.ingredients)
 		) {
 			throw new Error("受信したカクテルデータの形式が正しくありません。");

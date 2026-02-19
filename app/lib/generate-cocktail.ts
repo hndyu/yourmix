@@ -72,20 +72,26 @@ const createTimeoutError = (message: string) => {
 	return error;
 };
 
-// Gemini SDK 呼び出しが長時間ブロックするケースに備えたタイムアウトラッパー
-const withTimeout = async <T>(
-	promise: Promise<T>,
+// Gemini SDK 呼び出しをAbortControllerで中断可能にし、タイムアウト時の待ち残りを抑える
+const withAbortTimeout = async <T>(
+	task: (abortSignal: AbortSignal) => Promise<T>,
 	timeoutMs: number,
 	message: string,
 ): Promise<T> => {
+	const abortController = new AbortController();
 	let timeoutId: ReturnType<typeof setTimeout> | undefined;
+	let didTimeout = false;
 	try {
-		const timeoutPromise = new Promise<T>((_, reject) => {
-			timeoutId = setTimeout(() => {
-				reject(createTimeoutError(message));
-			}, timeoutMs);
-		});
-		return await Promise.race([promise, timeoutPromise]);
+		timeoutId = setTimeout(() => {
+			didTimeout = true;
+			abortController.abort();
+		}, timeoutMs);
+		return await task(abortController.signal);
+	} catch (error) {
+		if (didTimeout || abortController.signal.aborted) {
+			throw createTimeoutError(message);
+		}
+		throw error;
 	} finally {
 		if (timeoutId) {
 			clearTimeout(timeoutId);
@@ -121,14 +127,11 @@ const isTimeoutError = (error: unknown) => {
 		"name" in error && typeof error.name === "string" ? error.name : "";
 	const code =
 		"code" in error && typeof error.code === "string" ? error.code : "";
-	const message =
-		"message" in error && typeof error.message === "string"
-			? error.message
-			: "";
 	return (
 		name === "TimeoutError" ||
+		name === "AbortError" ||
 		code === "ETIMEDOUT" ||
-		/timed?\s*out|timeout/i.test(message)
+		code === "ABORT_ERR"
 	);
 };
 
@@ -278,12 +281,16 @@ export async function generateCocktailFromIngredients(
 		const attemptTimeoutMs = Math.min(MODEL_TIMEOUT_MS, remainingTotalMs);
 
 		try {
-			response = await withTimeout(
-				ai.models.generateContent({
-					model,
-					contents,
-					config,
-				}),
+			response = await withAbortTimeout(
+				(abortSignal) =>
+					ai.models.generateContent({
+						model,
+						contents,
+						config: {
+							...config,
+							abortSignal,
+						},
+					}),
 				attemptTimeoutMs,
 				`Gemini model "${model}" timed out after ${attemptTimeoutMs}ms.`,
 			);

@@ -38,7 +38,13 @@ export default function CocktailDisplay({
 }: CocktailDisplayProps) {
 	const persistedCocktail =
 		isDetailPage && isPersistedCocktail(cocktail) ? cocktail : null;
-	const cocktailIngredients = cocktail.ingredients as DisplayIngredient[];
+	// 予期しないデータ破損時でも表示処理が落ちないように配列を保証する
+	const cocktailIngredients = Array.isArray(cocktail.ingredients)
+		? (cocktail.ingredients as DisplayIngredient[])
+		: [];
+	const cocktailInstructions = Array.isArray(cocktail.instructions)
+		? cocktail.instructions
+		: [];
 	const [isWebShareSupported, setIsWebShareSupported] = React.useState(false);
 	const [imageError, setImageError] = React.useState(false);
 	const [toastState, setToastState] = React.useState<{
@@ -302,14 +308,14 @@ export default function CocktailDisplay({
 							</h3>
 
 							<div className="space-y-6">
-								{cocktail.instructions.map((step, index) => (
+								{cocktailInstructions.map((step, index) => (
 									// biome-ignore lint/suspicious/noArrayIndexKey: Order is static
 									<div key={`step-${index}`} className="group flex gap-4">
 										<div className="flex flex-col items-center">
 											<div className="w-8 h-8 rounded-full bg-background border border-border flex items-center justify-center text-muted-foreground font-bold text-sm shrink-0 group-hover:border-primary/50 group-hover:text-primary transition-colors">
 												{index + 1}
 											</div>
-											{index < cocktail.instructions.length - 1 && (
+											{index < cocktailInstructions.length - 1 && (
 												<div className="w-px h-full bg-border mt-2" />
 											)}
 										</div>

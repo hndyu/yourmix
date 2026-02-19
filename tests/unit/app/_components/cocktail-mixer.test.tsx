@@ -153,8 +153,8 @@ describe("CocktailMixer", () => {
 	const mockGeneratedCocktail = {
 		name: "AIジンソニック",
 		description: "AIによって生成された特別なカクテルです。",
-		ingredients: [],
-		instructions: [],
+		ingredients: [{ name: "Gin", amount: "45ml" }],
+		instructions: ["Mix ingredients"],
 	};
 	const mockSearchResults = [
 		{
