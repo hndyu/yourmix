@@ -1,5 +1,5 @@
 import CocktailMixer from "@/app/_components/cocktail-mixer";
-import type { Cocktail } from "@/app/types/cocktail";
+import type { Cocktail, GeneratedCocktail } from "@/app/types/cocktail";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import * as React from "react";
 import {
@@ -24,7 +24,7 @@ const mockUseCocktails: {
 };
 
 const mockUseAICocktailGenerator: {
-	generatedCocktail: Cocktail | null;
+	generatedCocktail: GeneratedCocktail | null;
 	isGenerating: boolean;
 	generateCocktail: Mock;
 	clearGeneratedCocktail: Mock;
@@ -115,7 +115,11 @@ vi.mock("@/app/_components/cocktail-dialog", () => ({
 		cocktail,
 		open,
 		onClose,
-	}: { cocktail: Cocktail | null; open: boolean; onClose: () => void }) =>
+	}: {
+		cocktail: GeneratedCocktail | null;
+		open: boolean;
+		onClose: () => void;
+	}) =>
 		open && cocktail ? (
 			<div data-testid="cocktail-dialog">
 				<h2>Generated Cocktail: {cocktail.name}</h2>
@@ -147,12 +151,10 @@ describe("CocktailMixer", () => {
 		},
 	];
 	const mockGeneratedCocktail = {
-		id: "101",
 		name: "AIジンソニック",
-		slug: "ai-gin-sonic",
 		description: "AIによって生成された特別なカクテルです。",
-		ingredients: [],
-		instructions: [],
+		ingredients: [{ name: "Gin", amount: "45ml" }],
+		instructions: ["Mix ingredients"],
 	};
 	const mockSearchResults = [
 		{

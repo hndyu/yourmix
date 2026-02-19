@@ -1,16 +1,14 @@
-import type { Cocktail } from "@/app/types/cocktail";
+import type { GeneratedCocktail } from "@/app/types/cocktail";
 import * as cocktailGenerator from "@/app/utils/cocktail-generator";
 import { useAICocktailGenerator } from "@/app/utils/useAICocktailGenerator";
 import { act, renderHook } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-const mockCocktail: Cocktail = {
-	id: "ai-1",
+const mockCocktail: GeneratedCocktail = {
 	name: "AIカクテル",
 	description: "AIによって生成された特別なカクテルです。",
-	ingredients: [{ id: 1, name: "ジン", category: "spirit", amount: "45ml" }],
+	ingredients: [{ name: "ジン", amount: "45ml" }],
 	instructions: ["すべての材料をシェイクし、グラスに注ぐ。"],
-	slug: "ai-cocktail",
 };
 
 // cocktail-generatorモジュール全体をモック
@@ -67,8 +65,8 @@ describe("useAICocktailGenerator", () => {
 	});
 
 	it("生成中にisGeneratingがtrueになる", async () => {
-		let resolve: (value: Cocktail) => void;
-		const promise = new Promise<Cocktail>((r) => {
+		let resolve: (value: GeneratedCocktail) => void;
+		const promise = new Promise<GeneratedCocktail>((r) => {
 			resolve = r;
 		});
 		vi.mocked(cocktailGenerator.generateOriginalCocktail).mockReturnValue(

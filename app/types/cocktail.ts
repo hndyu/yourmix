@@ -41,6 +41,25 @@ export interface Tag {
 	description?: string | null;
 }
 
+// AI生成カクテルの材料型
+export interface GeneratedIngredient {
+	name: string;
+	amount: string;
+	description?: string | null;
+	option_group?: number;
+}
+
+// AI生成カクテルの型定義
+export interface GeneratedCocktail {
+	name: string;
+	description: string;
+	ingredients: GeneratedIngredient[];
+	instructions: string[];
+	garnish?: string;
+	tags?: Tag[];
+	imageUrl?: string;
+}
+
 // カクテルの型定義
 export interface Cocktail {
 	id: string;
