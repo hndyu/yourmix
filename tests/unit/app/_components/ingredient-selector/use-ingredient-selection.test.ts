@@ -1,7 +1,7 @@
+import { useIngredientSelection } from "@/app/_components/ingredient-selector/use-ingredient-selection";
 import type { Ingredient } from "@/app/types/cocktail";
 import { renderHook } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-import { useIngredientSelection } from "./use-ingredient-selection";
 
 // Mock Ingredient Data
 const mockIngredients: Ingredient[] = [
