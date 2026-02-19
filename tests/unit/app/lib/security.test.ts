@@ -1,5 +1,5 @@
+import { safeJsonStringify } from "@/app/lib/security";
 import { describe, expect, it } from "vitest";
-import { safeJsonStringify } from "./security";
 
 describe("safeJsonStringify", () => {
 	it("should stringify a simple object", () => {

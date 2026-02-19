@@ -1,5 +1,5 @@
+import { isValidCallbackUrl } from "@/app/lib/url";
 import { describe, expect, it } from "vitest";
-import { isValidCallbackUrl } from "./url";
 
 describe("isValidCallbackUrl", () => {
 	it("should return true for relative paths", () => {
