@@ -41,9 +41,57 @@ const MODEL_FALLBACK_ORDER = [
 	"gemini-2.5-flash-lite",
 ] as const;
 
+const DEFAULT_MODEL_TIMEOUT_MS = 10_000;
+const DEFAULT_TOTAL_TIMEOUT_MS = 60_000;
+
+const parseTimeoutMs = (value: string | undefined, fallbackMs: number) => {
+	if (!value) {
+		return fallbackMs;
+	}
+	const parsed = Number.parseInt(value, 10);
+	return Number.isFinite(parsed) && parsed > 0 ? parsed : fallbackMs;
+};
+
+const MODEL_TIMEOUT_MS = parseTimeoutMs(
+	process.env.GEMINI_MODEL_TIMEOUT_MS,
+	DEFAULT_MODEL_TIMEOUT_MS,
+);
+const TOTAL_TIMEOUT_MS = parseTimeoutMs(
+	process.env.GEMINI_TOTAL_TIMEOUT_MS,
+	DEFAULT_TOTAL_TIMEOUT_MS,
+);
+
 // ログ肥大化を避けるため、応答テキストは先頭のみを記録する
 const truncateForLog = (text: string, maxLength = 1200) =>
 	text.length > maxLength ? `${text.slice(0, maxLength)}...(truncated)` : text;
+
+const createTimeoutError = (message: string) => {
+	const error = new Error(message) as Error & { code?: string };
+	error.name = "TimeoutError";
+	error.code = "ETIMEDOUT";
+	return error;
+};
+
+// Gemini SDK 呼び出しが長時間ブロックするケースに備えたタイムアウトラッパー
+const withTimeout = async <T>(
+	promise: Promise<T>,
+	timeoutMs: number,
+	message: string,
+): Promise<T> => {
+	let timeoutId: ReturnType<typeof setTimeout> | undefined;
+	try {
+		const timeoutPromise = new Promise<T>((_, reject) => {
+			timeoutId = setTimeout(() => {
+				reject(createTimeoutError(message));
+			}, timeoutMs);
+		});
+		return await Promise.race([promise, timeoutPromise]);
+	} finally {
+		if (timeoutId) {
+			clearTimeout(timeoutId);
+		}
+	}
+};
 
 const extractStatusCode = (error: unknown): number | undefined => {
 	if (!error || typeof error !== "object") {
@@ -65,7 +113,29 @@ const extractStatusCode = (error: unknown): number | undefined => {
 	return undefined;
 };
 
+const isTimeoutError = (error: unknown) => {
+	if (!error || typeof error !== "object") {
+		return false;
+	}
+	const name =
+		"name" in error && typeof error.name === "string" ? error.name : "";
+	const code =
+		"code" in error && typeof error.code === "string" ? error.code : "";
+	const message =
+		"message" in error && typeof error.message === "string"
+			? error.message
+			: "";
+	return (
+		name === "TimeoutError" ||
+		code === "ETIMEDOUT" ||
+		/timed?\s*out|timeout/i.test(message)
+	);
+};
+
 const isRetryableGeminiError = (error: unknown) => {
+	if (isTimeoutError(error)) {
+		return true;
+	}
 	const status = extractStatusCode(error);
 	return status === 429 || status === 503;
 };
@@ -194,14 +264,29 @@ export async function generateCocktailFromIngredients(
 		| Awaited<ReturnType<typeof ai.models.generateContent>>
 		| undefined;
 	let lastRetryableError: unknown;
+	const startedAt = Date.now();
 
 	for (const model of MODEL_FALLBACK_ORDER) {
+		const elapsedMs = Date.now() - startedAt;
+		const remainingTotalMs = TOTAL_TIMEOUT_MS - elapsedMs;
+		if (remainingTotalMs <= 0) {
+			lastRetryableError = createTimeoutError(
+				`Gemini request exceeded total timeout (${TOTAL_TIMEOUT_MS}ms).`,
+			);
+			break;
+		}
+		const attemptTimeoutMs = Math.min(MODEL_TIMEOUT_MS, remainingTotalMs);
+
 		try {
-			response = await ai.models.generateContent({
-				model,
-				contents,
-				config,
-			});
+			response = await withTimeout(
+				ai.models.generateContent({
+					model,
+					contents,
+					config,
+				}),
+				attemptTimeoutMs,
+				`Gemini model "${model}" timed out after ${attemptTimeoutMs}ms.`,
+			);
 			break;
 		} catch (error) {
 			if (!isRetryableGeminiError(error)) {
@@ -209,22 +294,33 @@ export async function generateCocktailFromIngredients(
 			}
 			lastRetryableError = error;
 			console.warn(
-				"Gemini request failed with retryable status. Trying next model.",
+				"Gemini request failed with retryable reason. Trying next model.",
 				{
 					model,
 					status: extractStatusCode(error),
+					isTimeout: isTimeoutError(error),
+					attemptTimeoutMs,
+					elapsedMs: Date.now() - startedAt,
 				},
 			);
 		}
 	}
 
 	if (!response) {
-		console.error("All fallback Gemini models failed with retryable status.", {
+		console.error("All fallback Gemini models failed with retryable reason.", {
 			models: MODEL_FALLBACK_ORDER,
 			lastStatus: extractStatusCode(lastRetryableError),
+			lastErrorName:
+				lastRetryableError &&
+				typeof lastRetryableError === "object" &&
+				"name" in lastRetryableError &&
+				typeof lastRetryableError.name === "string"
+					? lastRetryableError.name
+					: undefined,
+			totalTimeoutMs: TOTAL_TIMEOUT_MS,
 		});
 		throw new Error(
-			"AIモデルが混雑しています。時間をおいて再度お試しください。",
+			"AIモデルが混雑、または応答遅延しています。時間をおいて再度お試しください。",
 		);
 	}
 
