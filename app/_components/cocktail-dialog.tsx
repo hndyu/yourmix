@@ -2,12 +2,12 @@
 
 import { X } from "lucide-react";
 import * as React from "react";
-import type { Cocktail } from "../types/cocktail";
+import type { GeneratedCocktail } from "../types/cocktail";
 import CocktailDisplay from "./cocktail-display";
 
 interface CocktailDialogProps {
 	/** 表示するカクテルデータ */
-	cocktail: Cocktail | null;
+	cocktail: GeneratedCocktail | null;
 	/** ダイアログの開閉状態 */
 	open: boolean;
 	/** ダイアログを閉じるときのコールバック */

@@ -1,5 +1,5 @@
 import { generateCocktailAction } from "@/app/actions/generate-cocktail";
-import type { Cocktail } from "@/app/types/cocktail";
+import type { GeneratedCocktail } from "@/app/types/cocktail";
 import { generateOriginalCocktail } from "@/app/utils/cocktail-generator";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
@@ -7,13 +7,11 @@ vi.mock("@/app/actions/generate-cocktail", () => ({
 	generateCocktailAction: vi.fn(),
 }));
 
-const mockCocktail: Cocktail = {
-	id: "ai-1",
+const mockCocktail: GeneratedCocktail = {
 	name: "AIカクテル",
 	description: "AIによって生成された特別なカクテルです。",
-	ingredients: [{ id: 1, name: "ジン", category: "spirit", amount: "45ml" }],
+	ingredients: [{ name: "ジン", amount: "45ml" }],
 	instructions: ["すべての材料をシェイクし、グラスに注ぐ。"],
-	slug: "ai-cocktail",
 };
 
 describe("cocktail-generator", () => {
@@ -42,7 +40,7 @@ describe("cocktail-generator", () => {
 	});
 
 	it("不正な形式のデータを返した場合、エラーをスローする", async () => {
-		const invalidData = { name: "不完全なカクテル" } as Cocktail;
+		const invalidData = { name: "不完全なカクテル" } as GeneratedCocktail;
 		vi.mocked(generateCocktailAction).mockResolvedValue(invalidData);
 
 		await expect(generateOriginalCocktail(["テキーラ"])).rejects.toThrow(

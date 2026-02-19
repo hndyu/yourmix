@@ -1,5 +1,5 @@
 import { generateCocktailAction } from "../actions/generate-cocktail";
-import type { Cocktail } from "../types/cocktail";
+import type { GeneratedCocktail } from "../types/cocktail";
 
 declare global {
 	interface Window {
@@ -16,19 +16,24 @@ const isE2E = typeof window !== "undefined" && window.__E2E__ === true;
  */
 export async function generateOriginalCocktail(
 	selectedIngredients: string[],
-): Promise<Cocktail> {
+): Promise<GeneratedCocktail> {
 	try {
 		const cocktailData = await generateCocktailAction(selectedIngredients, {
 			mock: isE2E,
 		});
 
-		// APIからのデータがCocktail型に準拠していることを確認
+		// APIからのデータがGeneratedCocktail型に準拠していることを確認
 		// ここでは簡単なチェックのみ
-		if (!cocktailData || !cocktailData.name || !cocktailData.ingredients) {
+		if (
+			!cocktailData ||
+			!cocktailData.name ||
+			!cocktailData.ingredients ||
+			!Array.isArray(cocktailData.ingredients)
+		) {
 			throw new Error("受信したカクテルデータの形式が正しくありません。");
 		}
 
-		return cocktailData as Cocktail;
+		return cocktailData;
 	} catch (error) {
 		console.error("オリジナルカクテルの生成に失敗しました:", error);
 		throw error;

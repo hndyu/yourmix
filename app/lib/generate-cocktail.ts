@@ -10,7 +10,7 @@ import {
 	instructions,
 	tags,
 } from "@/app/db/schema";
-import type { Cocktail } from "@/app/types/cocktail";
+import type { GeneratedCocktail } from "@/app/types/cocktail";
 import { GoogleGenAI } from "@google/genai";
 
 const schema = {
@@ -25,43 +25,24 @@ const schema = {
 	ingredientGroups,
 };
 
-// Gemmaの出力に混ざるコードフェンスや説明文を取り除いてJSON部分だけ抽出する
-const sanitizeGemmaResponse = (text: string) => {
-	let cleaned = text.trim();
-	cleaned = cleaned
-		.replace(/```(?:json)?\s*/gi, "")
-		.replace(/```/g, "")
-		.trim();
-
-	const firstBracket = cleaned.indexOf("[");
-	const lastBracket = cleaned.lastIndexOf("]");
-	if (firstBracket !== -1 && lastBracket !== -1 && lastBracket > firstBracket) {
-		return cleaned.slice(firstBracket, lastBracket + 1).trim();
-	}
-
-	const firstBrace = cleaned.indexOf("{");
-	const lastBrace = cleaned.lastIndexOf("}");
-	if (firstBrace !== -1 && lastBrace !== -1 && lastBrace > firstBrace) {
-		return cleaned.slice(firstBrace, lastBrace + 1).trim();
-	}
-
-	return cleaned;
-};
-
 const getAiClient = () => {
-	const apiKey = process.env.GEMMA_API_KEY;
+	const apiKey = process.env.GEMINI_API_KEY;
 	if (!apiKey) {
 		throw new Error("APIキーが設定されていません。");
 	}
 	return new GoogleGenAI({ apiKey });
 };
 
+// ログ肥大化を避けるため、応答テキストは先頭のみを記録する
+const truncateForLog = (text: string, maxLength = 1200) =>
+	text.length > maxLength ? `${text.slice(0, maxLength)}...(truncated)` : text;
+
 /**
  * 生成AIによるオリジナルカクテルを生成する
  */
 export async function generateCocktailFromIngredients(
 	selectedIngredients: string[],
-): Promise<Cocktail> {
+): Promise<GeneratedCocktail> {
 	if (!Array.isArray(selectedIngredients) || selectedIngredients.length === 0) {
 		throw new Error("材料が指定されていません。");
 	}
@@ -119,27 +100,10 @@ export async function generateCocktailFromIngredients(
 
 	const ai = getAiClient();
 	const response = await ai.models.generateContent({
-		model: "gemma-3-27b-it",
-		contents: `あなたは世界的に評価の高いプロのミクソロジストです。
-以下の材料をベースに、創造性に溢れ、かつ味のバランスが完璧に整ったオリジナルのカクテルレシピを1つ考案してください。
+		model: "gemini-3-flash-preview",
+		contents: `以下の材料をベースに、創造性に溢れ、かつ味のバランスが完璧に整ったオリジナルのカクテルレシピを1つ考案してください。
 
 材料: ${processedIngredients.join("、")}
-
-## 出力形式:
-- 必ず**JSONのみ**を返してください（前後に説明文・コードフェンス・余計な文字列を付けない）
-- トップレベルは配列で、要素は1つだけ
-- JSONスキーマは以下に準拠
-[
-  {
-    "name": "string",
-    "description": "string",
-    "ingredients": [
-      { "name": "string", "amount": "string" }
-    ],
-    "instructions": ["string"],
-    "garnish": "string"
-  }
-]
 
 ## ガイドライン:
 1. **味の構成**: ベース、酸味、甘味、苦味、そして香りのレイヤーを深く考慮してください。
@@ -148,25 +112,78 @@ export async function generateCocktailFromIngredients(
 4. **手順**: プロの技術に基づいた、明確で再現性の高いステップを記述してください。
 5. **用語**: カジュアル層がターゲットのため、専門用語は避けてください。
 6. **言語**: 日本人向けに書いてください。基本的にはアルファベットではなくカタカナ表記が推奨されます。`,
+		config: {
+			responseMimeType: "application/json",
+			responseJsonSchema: {
+				type: "object",
+				properties: {
+					name: {
+						type: "string",
+						description: "カクテルの名前",
+					},
+					description: {
+						type: "string",
+						description: "カクテルの説明文",
+					},
+					ingredients: {
+						type: "array",
+						items: {
+							type: "object",
+							properties: {
+								name: {
+									type: "string",
+									description: "材料の名前",
+								},
+								amount: {
+									type: "string",
+									description: "材料の分量",
+								},
+							},
+							required: ["name", "amount"],
+						},
+					},
+					instructions: {
+						type: "array",
+						items: {
+							type: "string",
+							description: "カクテルの作り方の手順",
+						},
+					},
+					garnish: {
+						type: "string",
+						description: "カクテルの飾り",
+					},
+				},
+				required: ["name", "description", "ingredients", "instructions"],
+			},
+		},
 	});
 
-	const responseText = sanitizeGemmaResponse(response.text ?? "");
+	const responseText = response.text;
 	if (!responseText) {
+		console.error("Gemini response text is empty", {
+			candidateCount: response.candidates?.length ?? 0,
+			finishReasons: response.candidates?.map(
+				(candidate) => candidate.finishReason,
+			),
+			promptFeedback: response.promptFeedback,
+		});
 		throw new Error("AIからの応答が空です。");
 	}
 
 	try {
-		const parsed = JSON.parse(responseText);
-		// 配列か単一オブジェクトかを判定し、どちらでも安全に取り扱う
-		const cocktailData = Array.isArray(parsed)
-			? (parsed[0] as Cocktail | undefined)
-			: (parsed as Cocktail | null);
-		if (!cocktailData) {
-			throw new Error("AIからの応答が配列でもオブジェクトでもありません。");
-		}
-		return cocktailData;
+		const parsed = JSON.parse(responseText) as GeneratedCocktail;
+		return parsed;
 	} catch (error) {
-		console.error("Failed to parse Gemma response:", response.text);
-		throw new Error("AIからの応答を解析できませんでした。");
+		console.error("Failed to process Gemini response:", {
+			error,
+			responseText: truncateForLog(responseText),
+			candidateCount: response.candidates?.length ?? 0,
+			finishReasons: response.candidates?.map(
+				(candidate) => candidate.finishReason,
+			),
+			promptFeedback: response.promptFeedback,
+		});
+		throw new Error("AIからの応答を処理できませんでした。");
 	}
 }

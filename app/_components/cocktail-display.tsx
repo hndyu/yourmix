@@ -3,7 +3,7 @@
 import { Copy, HelpCircle, Share2, ShoppingCart, Tag } from "lucide-react";
 import Image from "next/image";
 import * as React from "react";
-import type { Cocktail } from "../types/cocktail";
+import type { Cocktail, GeneratedCocktail } from "../types/cocktail";
 import {
 	extractIngredientKeyword,
 	getAffiliateLink,
@@ -13,16 +13,32 @@ import DeliciousButton from "./delicious-button";
 import { Toast, type ToastSeverity } from "./ui/toast";
 
 interface CocktailDisplayProps {
-	cocktail: Cocktail;
+	cocktail: Cocktail | GeneratedCocktail;
 	show?: boolean;
 	isDetailPage?: boolean;
 }
+
+type DisplayIngredient = {
+	name: string;
+	amount?: string;
+	description?: string | null;
+	option_group?: number;
+};
+
+const isPersistedCocktail = (
+	cocktail: Cocktail | GeneratedCocktail,
+): cocktail is Cocktail => {
+	return "id" in cocktail;
+};
 
 export default function CocktailDisplay({
 	cocktail,
 	show = true,
 	isDetailPage = false,
 }: CocktailDisplayProps) {
+	const persistedCocktail =
+		isDetailPage && isPersistedCocktail(cocktail) ? cocktail : null;
+	const cocktailIngredients = cocktail.ingredients as DisplayIngredient[];
 	const [isWebShareSupported, setIsWebShareSupported] = React.useState(false);
 	const [imageError, setImageError] = React.useState(false);
 	const [toastState, setToastState] = React.useState<{
@@ -40,7 +56,8 @@ export default function CocktailDisplay({
 	}, []);
 
 	const handleShare = async () => {
-		const success = await shareCocktail(cocktail);
+		if (!persistedCocktail) return;
+		const success = await shareCocktail(persistedCocktail);
 		if (success && !isWebShareSupported) {
 			setToastState({
 				open: true,
@@ -56,14 +73,14 @@ export default function CocktailDisplay({
 			name: string;
 			amount: string;
 			description?: string;
-			originalIngredients: typeof cocktail.ingredients;
+			originalIngredients: DisplayIngredient[];
 		}[] = [];
 		const processedOptionGroups = new Set<number>();
 
 		// ⚡ Bolt: Pre-group ingredients by option_group to avoid O(N^2) complexity
 		// This reduces the complexity of grouping from O(N^2) to O(N)
-		const groupMap = new Map<number, typeof cocktail.ingredients>();
-		for (const ingredient of cocktail.ingredients) {
+		const groupMap = new Map<number, DisplayIngredient[]>();
+		for (const ingredient of cocktailIngredients) {
 			if (ingredient.option_group) {
 				const group = groupMap.get(ingredient.option_group) || [];
 				group.push(ingredient);
@@ -71,7 +88,7 @@ export default function CocktailDisplay({
 			}
 		}
 
-		for (const ingredient of cocktail.ingredients) {
+		for (const ingredient of cocktailIngredients) {
 			if (ingredient.option_group) {
 				if (!processedOptionGroups.has(ingredient.option_group)) {
 					const groupIngredients = groupMap.get(ingredient.option_group) || [];
@@ -96,7 +113,7 @@ export default function CocktailDisplay({
 			}
 		}
 		return result;
-	}, [cocktail.ingredients]);
+	}, [cocktailIngredients]);
 
 	if (!show) return null;
 
@@ -185,12 +202,12 @@ export default function CocktailDisplay({
 						</div>
 
 						{/* Action Buttons */}
-						{isDetailPage && (
+						{persistedCocktail && (
 							<div className="flex flex-wrap md:flex-col items-end gap-3 shrink-0">
 								<DeliciousButton
-									cocktailId={cocktail.id}
-									initialCount={cocktail.deliciousCount ?? 0}
-									initialIsLiked={cocktail.isLiked ?? false}
+									cocktailId={persistedCocktail.id}
+									initialCount={persistedCocktail.deliciousCount ?? 0}
+									initialIsLiked={persistedCocktail.isLiked ?? false}
 								/>
 								<button
 									type="button"

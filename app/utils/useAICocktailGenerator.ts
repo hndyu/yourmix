@@ -1,16 +1,15 @@
 "use client";
 
 import { useCallback, useState } from "react";
-import type { Cocktail } from "../types/cocktail";
+import type { GeneratedCocktail } from "../types/cocktail";
 import { generateOriginalCocktail } from "./cocktail-generator";
 
 /**
  * AIによるオリジナルカクテル生成のロジックを管理するカスタムフック
  */
 export function useAICocktailGenerator() {
-	const [generatedCocktail, setGeneratedCocktail] = useState<Cocktail | null>(
-		null,
-	);
+	const [generatedCocktail, setGeneratedCocktail] =
+		useState<GeneratedCocktail | null>(null);
 	const [isGenerating, setIsGenerating] = useState(false);
 	const [error, setError] = useState<string | null>(null);
 
