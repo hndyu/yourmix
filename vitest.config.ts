@@ -15,7 +15,9 @@ export default defineConfig({
 		// カバレッジの設定
 		coverage: {
 			provider: "v8",
-			reporter: ["text", "json", "html"],
+			reporter: ["json", "text"],
+			reportsDirectory: "coverage",
+			clean: true,
 			exclude: [
 				"node_modules/",
 				"**/*.d.ts",

@@ -101,9 +101,7 @@ export async function initAuth() {
 	return authInstance;
 }
 
-// This simplified configuration is used by the Better Auth CLI for schema generation.
-// It's necessary because the main `authBuilder` performs async operations like `getDb()`
-// which use `getCloudflareContext` (not available in CLI context).
+/** @public */
 export const auth = betterAuth({
 	...withCloudflare(
 		{

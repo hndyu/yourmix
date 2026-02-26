@@ -46,6 +46,10 @@ pre-push:
   commands:
     packages-audit:
       run: npm audit
+    test:
+      run: npm run test:run
+    build:
+      run: npm run build
 
 pre-commit:
   commands:
@@ -58,6 +62,9 @@ pre-commit:
     type-check:
       glob: "**/*.{ts,tsx}"
       run: npx tsc --noEmit
+    knip:
+      run: npm run knip
+
 
 commit-msg:
   skip: merge
