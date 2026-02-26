@@ -16,6 +16,8 @@
 		"test": "vitest",
 		"test:ui": "vitest --ui",
 		"test:run": "vitest run",
+		"bench": "vitest bench",
+		"bench:run": "vitest bench --run",
 		"db:generate": "drizzle-kit generate",
 		"seed": "echo '⚠️  Please use seed:local or seed:remote instead' && exit 1",
 		"seed:local": "tsx scripts/seed-worker.ts local",
