@@ -46,6 +46,10 @@ pre-push:
   commands:
     packages-audit:
       run: npm audit
+    test:
+      run: npm run test:run
+    build:
+      run: npm run build
 
 pre-commit:
   commands:
