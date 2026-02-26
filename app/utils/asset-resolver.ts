@@ -27,7 +27,7 @@ export const DefaultIcon = HelpCircle;
 /**
  * 解決されたアセットの型
  */
-export type ResolvedAsset =
+type ResolvedAsset =
 	| {
 			type: "icon";
 			value: ComponentType<{ size?: number | string; className?: string }>;
