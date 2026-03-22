@@ -8,7 +8,9 @@ export async function searchCocktailsByIngredients(
 ): Promise<Cocktail[]> {
 	const db = await getDb();
 
-	// DrizzleのRelational Queriesを使用してデータを取得
+	// ⚡ Bolt: Prune unnecessary relations and fields for search results.
+	// Search results only require basic cocktail info and ingredient names for match ratio/badges.
+	// Pruning 'instructions', 'tags', and deep-nested 'category' reduces query complexity and payload size.
 	const allCocktails = await db.query.cocktails.findMany({
 		where:
 			selectedIngredientIds.length > 0
@@ -28,26 +30,26 @@ export async function searchCocktailsByIngredients(
 								),
 						)
 				: undefined,
+		columns: {
+			id: true,
+			name: true,
+			slug: true,
+			description: true,
+			imageUrl: true,
+			garnish: true,
+		},
 		with: {
 			cocktailIngredients: {
+				columns: {
+					amount: true,
+				},
 				with: {
 					ingredient: {
-						with: {
-							group: {
-								with: {
-									category: true,
-								},
-							},
+						columns: {
+							id: true,
+							name: true,
 						},
 					},
-				},
-			},
-			instructions: {
-				orderBy: (instructions, { asc }) => [asc(instructions.step)],
-			},
-			cocktailTags: {
-				with: {
-					tag: true,
 				},
 			},
 		},
@@ -55,20 +57,19 @@ export async function searchCocktailsByIngredients(
 
 	// APIレスポンスの型に変換
 	return allCocktails.map((cocktail) => ({
-		...cocktail,
-		imageUrl: cocktail.imageUrl ?? undefined,
+		id: cocktail.id,
+		name: cocktail.name,
+		slug: cocktail.slug,
 		description: cocktail.description ?? "",
+		imageUrl: cocktail.imageUrl ?? undefined,
 		garnish: cocktail.garnish ?? undefined,
 		ingredients: cocktail.cocktailIngredients.map((ci) => ({
 			id: ci.ingredient.id,
 			name: ci.ingredient.name,
 			amount: ci.amount,
-			category: ci.ingredient.group.category.name,
+			category: "", // Search results don't need category per ingredient
 		})),
-		tags: cocktail.cocktailTags.map((ct) => ({
-			name: ct.tag.name,
-			description: ct.tag.description,
-		})),
-		instructions: cocktail.instructions.map((inst) => inst.text),
+		tags: [], // Not needed for search results summary
+		instructions: [], // Not needed for search results summary
 	}));
 }
