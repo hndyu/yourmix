@@ -83,15 +83,13 @@ describe("getIngredientsMasterData", () => {
 			},
 		});
 
-		const orderByMock = vi
-			.fn()
-			.mockResolvedValueOnce(mockCategories) // categoriesクエリ
-			.mockResolvedValueOnce(mockIngredientsWithGroups); // ingredientsクエリ
-
 		vi.mocked(getDb).mockResolvedValue({
+			batch: vi
+				.fn()
+				.mockResolvedValue([mockCategories, mockIngredientsWithGroups]),
 			select: vi.fn().mockReturnThis(),
 			from: vi.fn().mockReturnThis(),
-			orderBy: orderByMock,
+			orderBy: vi.fn().mockReturnThis(),
 			leftJoin: vi.fn().mockReturnThis(),
 		} as unknown as DB);
 	});
@@ -132,15 +130,11 @@ describe("getIngredientsMasterData", () => {
 	});
 
 	it("データが空の場合でも正常に動作することを確認する", async () => {
-		const orderByMock = vi
-			.fn()
-			.mockResolvedValueOnce([])
-			.mockResolvedValueOnce([]);
-
 		vi.mocked(getDb).mockResolvedValue({
+			batch: vi.fn().mockResolvedValue([[], []]),
 			select: vi.fn().mockReturnThis(),
 			from: vi.fn().mockReturnThis(),
-			orderBy: orderByMock,
+			orderBy: vi.fn().mockReturnThis(),
 			leftJoin: vi.fn().mockReturnThis(),
 		} as unknown as DB);
 
