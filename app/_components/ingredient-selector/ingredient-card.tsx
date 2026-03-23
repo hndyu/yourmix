@@ -49,6 +49,7 @@ const IngredientCard = React.memo(
 				{/* Main Card Area - Converted to Button for A11y */}
 				<button
 					type="button"
+					aria-pressed={isSelected}
 					className="flex flex-col p-4 flex-grow text-left w-full focus:outline-none focus:ring-2 focus:ring-primary/50 rounded-t-2xl"
 					onClick={(e) => {
 						// Prevent toggle if clicking expand button (though expand button is outside this container now? No, below)
@@ -112,6 +113,8 @@ const IngredientCard = React.memo(
 					<div className="border-t border-stone-200 dark:border-stone-800/50">
 						<button
 							type="button"
+							aria-expanded={expanded}
+							aria-label="銘柄・詳細を表示"
 							className="expand-btn w-full px-4 py-2 flex items-center justify-between text-xs text-stone-600 dark:text-stone-500 hover:text-stone-800 dark:hover:text-stone-300 transition-colors focus:outline-none focus:bg-stone-100 dark:focus:bg-stone-800/50 rounded-b-2xl"
 							onClick={(e) => {
 								e.stopPropagation();
