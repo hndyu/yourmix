@@ -37,3 +37,7 @@
 ## 2027-04-10 - [Request Caching and Subquery Consolidation]
 **Learning:** In Next.js App Router, `React.cache` is essential for deduplicating expensive database calls between `generateMetadata` and page components. Additionally, Drizzle's `extras` field allows consolidating aggregate metadata (like counts or existence checks) into the primary relational query, reducing coordination overhead and round-trips.
 **Action:** Wrap library data-fetchers in `React.cache`. Use `extras` with subqueries to merge related metadata into relational queries.
+
+## 2027-04-20 - [Optimizing List Data Retrieval via Query Pruning]
+**Learning:** Relational queries that fetch deep-nested objects or entire related tables (like `instructions` or `tags`) can introduce significant overhead in database JOINs and data transfer size, especially for list views that only display summaries. Pruning these relations and selecting only required columns reduces JOIN complexity and payload size.
+**Action:** For list/search operations, always prune unnecessary relations and columns from the query. Use placeholder empty arrays or strings in the mapping logic to maintain compatibility with shared data types if those fields aren't needed for the specific view.
