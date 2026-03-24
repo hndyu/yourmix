@@ -7,6 +7,7 @@ const mockDbClient = {
 	insert: vi.fn().mockReturnThis(),
 	values: vi.fn().mockReturnThis(),
 	returning: vi.fn().mockResolvedValue([{ id: 1 }]),
+	batch: vi.fn().mockImplementation((queries) => Promise.all(queries)),
 };
 
 vi.mock("drizzle-orm/d1", () => ({
@@ -46,7 +47,8 @@ describe("scripts/seed.ts", () => {
 			const { seed } = await import("@/scripts/seed");
 			await seed(mockDbClient);
 
-			// 1. 既存データの削除が呼ばれるか
+			// 1. 既存データの削除がバッチで呼ばれるか
+			expect(mockDbClient.batch).toHaveBeenCalled();
 			expect(mockDbClient.delete).toHaveBeenCalledWith(schema.cocktailTags);
 			expect(mockDbClient.delete).toHaveBeenCalledWith(schema.tags);
 			expect(mockDbClient.delete).toHaveBeenCalledWith(schema.instructions);

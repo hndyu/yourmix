@@ -115,7 +115,6 @@ describe("POST /api/admin/seed", () => {
 		expect(NextResponse.json).toHaveBeenCalledWith(
 			{
 				error: "シードデータの投入中にエラーが発生しました。",
-				details: errorMessage,
 			},
 			{ status: 500 },
 		);

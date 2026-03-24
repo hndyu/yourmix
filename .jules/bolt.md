@@ -41,3 +41,7 @@
 ## 2027-04-20 - [Optimizing List Data Retrieval via Query Pruning]
 **Learning:** Relational queries that fetch deep-nested objects or entire related tables (like `instructions` or `tags`) can introduce significant overhead in database JOINs and data transfer size, especially for list views that only display summaries. Pruning these relations and selecting only required columns reduces JOIN complexity and payload size.
 **Action:** For list/search operations, always prune unnecessary relations and columns from the query. Use placeholder empty arrays or strings in the mapping logic to maintain compatibility with shared data types if those fields aren't needed for the specific view.
+
+## 2027-04-25 - [Consolidating Bulk Deletes with Drizzle Batch]
+**Learning:** Sequential `db.delete()` calls in a seed or maintenance script can create significant latency overhead due to multiple network round-trips to the database (especially on Cloudflare D1).
+**Action:** Group sequential deletion operations into a single `db.batch()` call to minimize round-trips and improve script performance.

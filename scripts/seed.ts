@@ -35,16 +35,19 @@ export async function seed(
 ) {
 	console.log("🌱 Seeding database...");
 
-	// 既存のデータをクリア
-	await db.delete(schema.deliciousLikes);
-	await db.delete(schema.cocktailTags);
-	await db.delete(schema.tags);
-	await db.delete(schema.instructions);
-	await db.delete(schema.cocktailIngredients);
-	await db.delete(schema.ingredients);
-	await db.delete(schema.cocktails);
-	await db.delete(schema.ingredientGroups);
-	await db.delete(schema.categories);
+	// ⚡ Bolt: Use db.batch to group cleanup operations into a single round-trip.
+	// Expected impact: Reduces network round-trips from 9 to 1, significantly speeding up the reset phase on Cloudflare D1.
+	await db.batch([
+		db.delete(schema.deliciousLikes),
+		db.delete(schema.cocktailTags),
+		db.delete(schema.tags),
+		db.delete(schema.instructions),
+		db.delete(schema.cocktailIngredients),
+		db.delete(schema.ingredients),
+		db.delete(schema.cocktails),
+		db.delete(schema.ingredientGroups),
+		db.delete(schema.categories),
+	]);
 	console.log("🗑️ Cleared existing data.");
 
 	const usedUnforgettables = overrides?.unforgettables ?? unforgettables;

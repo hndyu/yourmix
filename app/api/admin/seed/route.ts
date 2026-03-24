@@ -69,10 +69,10 @@ export async function POST(request: Request) {
 		);
 	} catch (error) {
 		console.error("Error seeding database:", error);
+		// 🛡️ Sentinel: Do not leak internal error details to the client for security reasons.
 		return NextResponse.json(
 			{
 				error: "シードデータの投入中にエラーが発生しました。",
-				details: error instanceof Error ? error.message : String(error),
 			},
 			{ status: 500 },
 		);
