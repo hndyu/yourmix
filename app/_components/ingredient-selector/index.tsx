@@ -186,8 +186,17 @@ export default function IngredientSelector({
 						);
 					})}
 					{filteredIngredients.length === 0 && (
-						<div className="col-span-full text-center py-12 text-stone-500">
-							該当する材料が見つかりません
+						<div className="col-span-full text-center py-12 text-stone-500 flex flex-col items-center gap-4">
+							<p>該当する材料が見つかりません</p>
+							{deferredSearchQuery && (
+								<button
+									type="button"
+									onClick={() => setSearchQuery("")}
+									className="px-4 py-2 text-sm font-medium text-primary hover:text-primary/80 transition-colors border border-primary/20 hover:border-primary/40 rounded-full"
+								>
+									検索をクリア
+								</button>
+							)}
 						</div>
 					)}
 				</div>
