@@ -14,6 +14,7 @@ interface CocktailSearchResultsProps {
 	show?: boolean;
 	categories: Category[];
 	allIngredients: Ingredient[];
+	onReset?: () => void;
 }
 
 // ⚡ Bolt: Memoize CocktailSearchResults to prevent redundant re-renders
@@ -25,6 +26,7 @@ const CocktailSearchResults = React.memo(function CocktailSearchResults({
 	categories,
 	show = true,
 	allIngredients,
+	onReset,
 }: CocktailSearchResultsProps) {
 	const { sortedCocktails, isIngredientSelected } = useCocktailSearch(
 		cocktails,
@@ -34,7 +36,7 @@ const CocktailSearchResults = React.memo(function CocktailSearchResults({
 	);
 
 	if (cocktails.length === 0) {
-		return <NoResults show={show} />;
+		return <NoResults show={show} onReset={onReset} />;
 	}
 
 	if (!show) return null;

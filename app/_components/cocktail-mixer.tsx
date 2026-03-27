@@ -61,6 +61,8 @@ export default function CocktailMixer({
 
 	// Mixボタンクリック時の処理
 	const handleMixClick = async () => {
+		if (selectedIngredientIds.length === 0) return;
+
 		// 表示をリセット
 		setShowSearchResults(false);
 		setShowCompletionBar(false);
@@ -86,9 +88,16 @@ export default function CocktailMixer({
 		setSelectedIngredientNames(names);
 	};
 
+	// 選択をすべてクリア
+	const handleReset = () => {
+		setSelectedIngredientIds([]);
+		setSelectedIngredientNames([]);
+		setShowSearchResults(false);
+	};
+
 	// 検索結果が表示されたら即座にスクロール
 	React.useEffect(() => {
-		if (searchResults.length > 0) setShowSearchResults(true);
+		if (lastSearchedIngredientNames.length > 0) setShowSearchResults(true);
 
 		if (searchResults.length > 0 && !hasScrolledAfterMix) {
 			resultsRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -128,13 +137,14 @@ export default function CocktailMixer({
 				ref={resultsRef}
 				className={`w-full ${showCompletionBar ? "pb-20" : ""}`}
 			>
-				{searchResults.length > 0 && (
+				{(showSearchResults || searchResults.length > 0) && (
 					<CocktailSearchResults
 						cocktails={searchResults}
 						selectedIngredients={lastSearchedIngredientNames}
 						show={showSearchResults}
 						allIngredients={ingredients}
 						categories={categories}
+						onReset={handleReset}
 					/>
 				)}
 			</div>
