@@ -1,12 +1,14 @@
 "use client";
 
 import { SearchX } from "lucide-react";
+import { Button } from "./ui/button";
 
 interface NoResultsProps {
 	show: boolean;
+	onReset?: () => void;
 }
 
-export function NoResults({ show }: NoResultsProps) {
+export function NoResults({ show, onReset }: NoResultsProps) {
 	if (!show) return null;
 
 	return (
@@ -18,11 +20,21 @@ export function NoResults({ show }: NoResultsProps) {
 			<h3 className="text-xl font-bold text-foreground mb-2">
 				レシピが見つかりませんでした
 			</h3>
-			<p className="text-stone-600 dark:text-stone-400">
+			<p className="text-stone-600 dark:text-stone-400 mb-6">
 				選択された材料の組み合わせではレシピが見つかりませんでした。
 				<br />
 				材料を減らすか、別の組み合わせを試してみてください。
 			</p>
+			{onReset && (
+				<Button
+					variant="outline"
+					size="sm"
+					onClick={onReset}
+					aria-label="選択をすべてクリア"
+				>
+					選択をすべてクリア
+				</Button>
+			)}
 		</div>
 	);
 }
