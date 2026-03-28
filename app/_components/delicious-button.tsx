@@ -1,8 +1,8 @@
 "use client";
 
-import { ThumbsUp } from "lucide-react";
+import { ThumbsUp, X } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { toggleLikeAction } from "../actions/likes";
 import authClient from "../lib/authClient";
@@ -24,6 +24,20 @@ export default function DeliciousButton({
 	const [showLoginModal, setShowLoginModal] = useState(false);
 	const router = useRouter();
 	const { data: session } = authClient.useSession();
+
+	// Handle Escape key to close modal
+	useEffect(() => {
+		const handleEscape = (e: KeyboardEvent) => {
+			if (e.key === "Escape") {
+				setShowLoginModal(false);
+			}
+		};
+
+		if (showLoginModal) {
+			window.addEventListener("keydown", handleEscape);
+		}
+		return () => window.removeEventListener("keydown", handleEscape);
+	}, [showLoginModal]);
 
 	const handleClick = async () => {
 		if (!session) {
@@ -66,6 +80,8 @@ export default function DeliciousButton({
 			<button
 				type="button"
 				onClick={handleClick}
+				aria-label={`おいしい！ ${count > 0 ? `現在の数: ${count}` : ""}`}
+				aria-pressed={isLiked}
 				className={`
           flex items-center gap-2 px-4 py-2 rounded-full font-bold transition-all
           ${
@@ -84,12 +100,40 @@ export default function DeliciousButton({
 			{showLoginModal &&
 				typeof document !== "undefined" &&
 				createPortal(
-					<div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in">
-						<div className="w-full max-w-sm bg-background border border-border rounded-2xl p-6 shadow-2xl animate-in zoom-in-95">
-							<h3 className="text-lg font-bold text-foreground mb-2">
+					<div
+						className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in"
+						onClick={() => setShowLoginModal(false)}
+						onKeyDown={(e) => e.key === "Enter" && setShowLoginModal(false)}
+					>
+						{/* biome-ignore lint/a11y/useKeyWithClickEvents: stopPropagation doesn't need key event */}
+						<div
+							className="relative w-full max-w-sm bg-background border border-border rounded-2xl p-6 shadow-2xl animate-in zoom-in-95"
+							// biome-ignore lint/a11y/useSemanticElements: using div for custom modal styling with portal
+							role="dialog"
+							aria-modal="true"
+							aria-labelledby="login-modal-title"
+							aria-describedby="login-modal-description"
+							onClick={(e) => e.stopPropagation()}
+						>
+							<button
+								type="button"
+								onClick={() => setShowLoginModal(false)}
+								className="absolute top-4 right-4 text-muted-foreground hover:text-foreground transition-colors p-1"
+								aria-label="閉じる"
+							>
+								<X size={20} />
+							</button>
+
+							<h3
+								id="login-modal-title"
+								className="text-lg font-bold text-foreground mb-2"
+							>
 								ログインが必要です
 							</h3>
-							<p className="text-muted-foreground mb-6 text-sm">
+							<p
+								id="login-modal-description"
+								className="text-muted-foreground mb-6 text-sm"
+							>
 								「おいしい！」を送るにはログインが必要です。ログインページに移動しますか？
 							</p>
 							<div className="flex justify-end gap-3">
