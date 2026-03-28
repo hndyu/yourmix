@@ -53,6 +53,8 @@ export default function CocktailMixer({
 	// 表示アニメーションとスクロールの状態
 	const [showSearchResults, setShowSearchResults] = React.useState(false);
 	const [hasScrolledAfterMix, setHasScrolledAfterMix] = React.useState(false);
+	// 最新の検索リクエストのみを有効にするためのトークン
+	const searchRequestIdRef = React.useRef(0);
 	const resultsRef = React.useRef<HTMLDivElement>(null);
 
 	// 通知バーとモーダルダイアログの状態
@@ -70,16 +72,29 @@ export default function CocktailMixer({
 		clearGeneratedCocktail();
 		searchCocktails([]); // 既存の検索結果をクリア
 		setHasScrolledAfterMix(false);
+		// 検索完了前に空状態が出ないよう、完了時に表示する
+		const currentSearchRequestId = ++searchRequestIdRef.current;
 
 		// 現在選択されている材料を検索実行時の材料として保存
 		setLastSearchedIngredientNames([...selectedIngredientNames]);
 
 		// 検索と生成を並行して実行
 		// 検索は高速で完了し、生成はバックグラウンドで継続
-		await Promise.all([
+		// テストでモックが非Promiseを返しても壊れないように包む
+		const searchPromise = Promise.resolve(
 			searchCocktails(selectedIngredientIds),
+		);
+		const generatePromise = Promise.resolve(
 			generateCocktail(selectedIngredientNames),
-		]);
+		);
+
+		searchPromise.finally(() => {
+			// 直近の検索以外は無視（リセットや再検索での表示ちらつきを防止）
+			if (searchRequestIdRef.current !== currentSearchRequestId) return;
+			setShowSearchResults(true);
+		});
+
+		await Promise.all([searchPromise, generatePromise]);
 	};
 
 	// 材料選択の変更をハンドル
@@ -93,12 +108,12 @@ export default function CocktailMixer({
 		setSelectedIngredientIds([]);
 		setSelectedIngredientNames([]);
 		setShowSearchResults(false);
+		// 進行中の検索を無効化して空状態の誤表示を防止
+		searchRequestIdRef.current += 1;
 	};
 
 	// 検索結果が表示されたら即座にスクロール
 	React.useEffect(() => {
-		if (lastSearchedIngredientNames.length > 0) setShowSearchResults(true);
-
 		if (searchResults.length > 0 && !hasScrolledAfterMix) {
 			resultsRef.current?.scrollIntoView({ behavior: "smooth" });
 			setHasScrolledAfterMix(true);
