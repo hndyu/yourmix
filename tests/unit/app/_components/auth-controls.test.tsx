@@ -93,8 +93,10 @@ describe("AuthControls", () => {
 		render(<AuthControls />);
 
 		// Avatar button (User menu)
-		const userButton = screen.getByLabelText("User menu");
+		const userButton = screen.getByLabelText("ユーザーメニュー");
 		expect(userButton).toBeInTheDocument();
+		expect(userButton).toHaveAttribute("aria-haspopup", "true");
+		expect(userButton).toHaveAttribute("aria-expanded", "false");
 
 		// Image inside
 		const img = screen.getByAltText("Test User");
@@ -134,8 +136,11 @@ describe("AuthControls", () => {
 		const user = userEvent.setup();
 		render(<AuthControls />);
 
-		const userButton = screen.getByLabelText("User menu");
+		const userButton = screen.getByLabelText("ユーザーメニュー");
+		expect(userButton).toHaveAttribute("aria-expanded", "false");
+
 		await user.click(userButton);
+		expect(userButton).toHaveAttribute("aria-expanded", "true");
 
 		expect(screen.getByText("Test User")).toBeInTheDocument();
 		expect(screen.getByText("test@example.com")).toBeInTheDocument();
@@ -181,7 +186,7 @@ describe("AuthControls", () => {
 		render(<AuthControls />);
 
 		// Open menu
-		await user.click(screen.getByLabelText("User menu"));
+		await user.click(screen.getByLabelText("ユーザーメニュー"));
 
 		// Click logout
 		await user.click(screen.getByRole("button", { name: "ログアウト" }));

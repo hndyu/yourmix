@@ -51,7 +51,9 @@ export default function AuthControls() {
 					type="button"
 					onClick={() => setIsOpen(!isOpen)}
 					className="flex items-center gap-2 focus:outline-none group"
-					aria-label="User menu"
+					aria-label="ユーザーメニュー"
+					aria-haspopup="true"
+					aria-expanded={isOpen}
 				>
 					<div className="w-9 h-9 rounded-full bg-stone-900 border border-stone-800 flex items-center justify-center text-stone-300 group-hover:border-primary/50 group-hover:text-primary transition-colors overflow-hidden">
 						{session.user.image ? (

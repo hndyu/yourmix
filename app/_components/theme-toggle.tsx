@@ -16,12 +16,18 @@ export function ThemeToggle() {
 		);
 	}
 
+	const themeLabel =
+		resolvedTheme === "dark"
+			? "ライトモードに切り替え"
+			: "ダークモードに切り替え";
+
 	return (
 		<button
 			type="button"
 			onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
 			className="w-9 h-9 rounded-full flex items-center justify-center transition-colors hover:bg-stone-500/10 text-stone-500 hover:text-stone-900 dark:text-stone-400 dark:hover:text-stone-100"
-			aria-label="Toggle theme"
+			aria-label={themeLabel}
+			title={themeLabel}
 		>
 			{resolvedTheme === "dark" ? <Sun size={20} /> : <Moon size={20} />}
 		</button>
