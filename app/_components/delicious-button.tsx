@@ -103,7 +103,13 @@ export default function DeliciousButton({
 					<div
 						className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in"
 						onClick={() => setShowLoginModal(false)}
-						onKeyDown={(e) => e.key === "Enter" && setShowLoginModal(false)}
+						onKeyDown={(e) => {
+							// 子要素からの Enter 伝播では閉じない（ボタンの発火を妨げない）
+							if (e.currentTarget !== e.target) return;
+							if (e.key === "Enter" || e.key === " ") {
+								setShowLoginModal(false);
+							}
+						}}
 					>
 						{/* biome-ignore lint/a11y/useKeyWithClickEvents: stopPropagation doesn't need key event */}
 						<div
