@@ -58,6 +58,8 @@ export default function CocktailDialog({
 				className="absolute inset-0 bg-black/60 backdrop-blur-sm"
 				onClick={onClose}
 				onKeyDown={(e) => {
+					// 子要素からの Enter 伝播では閉じない（内部操作を阻害しない）
+					if (e.currentTarget !== e.target) return;
 					if (e.key === "Enter" || e.key === " ") onClose();
 				}}
 				role="button"

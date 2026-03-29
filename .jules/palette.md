@@ -7,3 +7,7 @@
 ## 2025-05-15 - Actionable Empty States
 **Learning:** When a search or filter operation yields no results, simply informing the user is insufficient. Providing a clear, immediate action (like a "Clear Selection" button) directly within the "No Results" component significantly reduces friction and prevents the user from feeling stuck.
 **Action:** In all "no results" or empty state components, include at least one actionable next step or a way to reset the current state.
+
+## 2025-05-16 - Dismissible Modals in Portals
+**Learning:** Modals rendered via `createPortal` often bypass default browser behaviors for accessibility. Implementing an explicit `useEffect` for the `Escape` key and providing a clear, visible close button (X) is essential for ensuring that users can easily dismiss the modal, preventing them from feeling trapped in the interface.
+**Action:** Always include keyboard listeners for `Escape` and a visible close action when implementing custom overlay components.
