@@ -21,8 +21,11 @@ describe("ThemeToggle", () => {
 		render(<ThemeToggle />);
 
 		// After mounting
-		const button = screen.getByRole("button", { name: /toggle theme/i });
+		const button = screen.getByRole("button", {
+			name: "ダークモードに切り替え",
+		});
 		expect(button).toBeInTheDocument();
+		expect(button).toHaveAttribute("title", "ダークモードに切り替え");
 
 		// light theme should show moon icon (to switch to dark)
 		// but the code says: {resolvedTheme === "dark" ? <Sun size={20} /> : <Moon size={20} />}
@@ -44,7 +47,12 @@ describe("ThemeToggle", () => {
 
 		render(<ThemeToggle />);
 
-		const button = screen.getByRole("button", { name: /toggle theme/i });
+		const button = screen.getByRole("button", {
+			name: "ライトモードに切り替え",
+		});
+		expect(button).toBeInTheDocument();
+		expect(button).toHaveAttribute("title", "ライトモードに切り替え");
+
 		fireEvent.click(button);
 		expect(setTheme).toHaveBeenCalledWith("light");
 	});
