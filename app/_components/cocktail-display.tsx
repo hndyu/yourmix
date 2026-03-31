@@ -1,6 +1,13 @@
 "use client";
 
-import { Copy, HelpCircle, Share2, ShoppingCart, Tag } from "lucide-react";
+import {
+	Check,
+	Copy,
+	HelpCircle,
+	Share2,
+	ShoppingCart,
+	Tag,
+} from "lucide-react";
 import Image from "next/image";
 import * as React from "react";
 import type { Cocktail, GeneratedCocktail } from "../types/cocktail";
@@ -46,6 +53,7 @@ export default function CocktailDisplay({
 		? cocktail.instructions
 		: [];
 	const [isWebShareSupported, setIsWebShareSupported] = React.useState(false);
+	const [isCopied, setIsCopied] = React.useState(false);
 	const [imageError, setImageError] = React.useState(false);
 	const [toastState, setToastState] = React.useState<{
 		open: boolean;
@@ -61,10 +69,26 @@ export default function CocktailDisplay({
 		setIsWebShareSupported(canUseWebShare());
 	}, []);
 
+	const copyTimeoutRef = React.useRef<NodeJS.Timeout | null>(null);
+
+	// Cleanup timeout on unmount
+	React.useEffect(() => {
+		return () => {
+			if (copyTimeoutRef.current) {
+				clearTimeout(copyTimeoutRef.current);
+			}
+		};
+	}, []);
+
 	const handleShare = async () => {
 		if (!persistedCocktail) return;
 		const success = await shareCocktail(persistedCocktail);
 		if (success && !isWebShareSupported) {
+			setIsCopied(true);
+			if (copyTimeoutRef.current) {
+				clearTimeout(copyTimeoutRef.current);
+			}
+			copyTimeoutRef.current = setTimeout(() => setIsCopied(false), 2000);
 			setToastState({
 				open: true,
 				message: "コピーしました!",
@@ -218,14 +242,20 @@ export default function CocktailDisplay({
 								<button
 									type="button"
 									onClick={handleShare}
-									className="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold bg-secondary text-foreground hover:bg-secondary/80 transition-colors"
+									className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold transition-all duration-200 active:scale-95 min-w-[100px] justify-center ${
+										isCopied
+											? "bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 border border-green-200 dark:border-green-800"
+											: "bg-secondary text-foreground hover:bg-secondary/80"
+									}`}
 								>
 									{isWebShareSupported ? (
 										<Share2 size={18} />
+									) : isCopied ? (
+										<Check size={18} />
 									) : (
 										<Copy size={18} />
 									)}
-									{isWebShareSupported ? "共有" : "コピー"}
+									{isWebShareSupported ? "共有" : isCopied ? "完了" : "コピー"}
 								</button>
 							</div>
 						)}

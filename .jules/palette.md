@@ -11,3 +11,11 @@
 ## 2025-05-16 - Dismissible Modals in Portals
 **Learning:** Modals rendered via `createPortal` often bypass default browser behaviors for accessibility. Implementing an explicit `useEffect` for the `Escape` key and providing a clear, visible close button (X) is essential for ensuring that users can easily dismiss the modal, preventing them from feeling trapped in the interface.
 **Action:** Always include keyboard listeners for `Escape` and a visible close action when implementing custom overlay components.
+
+## 2025-05-17 - Action Confirmation Feedback
+**Learning:** Providing immediate, temporary visual feedback for "invisible" actions like "Copy to Clipboard" (e.g., changing a button's icon to a checkmark and text to "Done") significantly reduces user uncertainty. Managing this with a local state and a `setTimeout` (with proper cleanup on unmount) ensures a smooth, leak-free experience.
+**Action:** Implement temporary "Success" states for all non-navigational action buttons that provide no other immediate visual change.
+
+## 2025-05-18 - Semantic Toasts for Screen Readers
+**Learning:** Using a generic `div` with `role="status"` for toast notifications is often less reliable than using the semantic `<output>` element. The `<output>` element is naturally mapped to a live region and provides better cross-browser accessibility for dynamic status updates.
+**Action:** Prefer the `<output>` element for component-level status messages and toast notifications.
