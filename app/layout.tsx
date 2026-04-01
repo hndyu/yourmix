@@ -82,9 +82,19 @@ export default function RootLayout({
 				/>
 			</head>
 			<body className="font-sans antialiased min-h-screen flex flex-col">
+				<a
+					href="#main-content"
+					className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-primary focus:text-white focus:rounded-lg focus:shadow-lg focus:font-bold focus:outline-none"
+				>
+					メインコンテンツへスキップ
+				</a>
 				<Providers>
 					<Header />
-					<main className="flex-grow container mx-auto px-4 py-8">
+					<main
+						id="main-content"
+						tabIndex={-1}
+						className="flex-grow container mx-auto px-4 py-8 outline-none"
+					>
 						{children}
 					</main>
 					<Footer />
