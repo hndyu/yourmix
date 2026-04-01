@@ -398,14 +398,14 @@ export default function MyPage() {
 
 	if (isPending || !session?.user) {
 		return (
-			<main className="container mx-auto my-8 max-w-lg px-4">
+			<div className="container mx-auto my-8 max-w-lg px-4">
 				<p>読み込み中...</p>
-			</main>
+			</div>
 		);
 	}
 
 	return (
-		<main className="container mx-auto my-8 max-w-lg px-4 pb-12">
+		<div className="container mx-auto my-8 max-w-lg px-4 pb-12">
 			<div className="bg-white dark:bg-stone-900 rounded-xl border border-stone-200 dark:border-stone-800 shadow-sm overflow-hidden mb-8">
 				<div className="p-6 border-b border-stone-200 dark:border-stone-800 flex justify-between items-center">
 					<div>
@@ -1015,6 +1015,6 @@ export default function MyPage() {
 				severity={toastState.severity}
 				onClose={() => setToastState((prev) => ({ ...prev, open: false }))}
 			/>
-		</main>
+		</div>
 	);
 }

@@ -50,6 +50,7 @@ const IngredientCard = React.memo(
 				<button
 					type="button"
 					aria-pressed={isSelected}
+					aria-label={`${ingredient.name} を${isSelected ? "解除" : "選択"}`}
 					className="flex flex-col p-4 flex-grow text-left w-full focus:outline-none focus:ring-2 focus:ring-primary/50 rounded-t-2xl"
 					onClick={(e) => {
 						// Prevent toggle if clicking expand button (though expand button is outside this container now? No, below)

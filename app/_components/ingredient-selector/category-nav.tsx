@@ -32,6 +32,7 @@ const CategoryNav = React.memo(function CategoryNav({
 								key={category.id}
 								type="button"
 								onClick={() => onSelectCategory(category.name)}
+								aria-current={isActive ? "location" : undefined}
 								className={`
               flex items-center gap-3 px-4 py-3 rounded-xl transition-all text-sm font-medium whitespace-nowrap
               ${
