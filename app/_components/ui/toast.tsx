@@ -47,9 +47,8 @@ export function Toast({
 	};
 
 	return (
-		<div
+		<output
 			className="fixed bottom-20 left-1/2 -translate-x-1/2 z-[60] animate-in slide-in-from-bottom-5 fade-in duration-300"
-			role="status"
 			aria-live="polite"
 		>
 			<div
@@ -61,6 +60,6 @@ export function Toast({
 				{icons[severity]}
 				<span className="font-medium">{message}</span>
 			</div>
-		</div>
+		</output>
 	);
 }
