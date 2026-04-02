@@ -19,3 +19,7 @@
 ## 2025-05-18 - Semantic Toasts for Screen Readers
 **Learning:** Using a generic `div` with `role="status"` for toast notifications is often less reliable than using the semantic `<output>` element. The `<output>` element is naturally mapped to a live region and provides better cross-browser accessibility for dynamic status updates.
 **Action:** Prefer the `<output>` element for component-level status messages and toast notifications.
+
+## 2025-05-20 - Enhanced Dialog Accessibility with Portals
+**Learning:** Using `createPortal` to render dialogs at the root of the DOM avoids stacking context issues and ensures better screen reader compatibility. Linking the dialog with its title and description via `aria-labelledby` and `aria-describedby` provides immediate context to assistive technology users. Additionally, making close buttons `sticky` within a scrolling container ensures they are always reachable, improving usability for long content.
+**Action:** Always prefer portals for global UI elements like dialogs and tooltips, and ensure they are properly labeled using ARIA attributes linked to their content.
