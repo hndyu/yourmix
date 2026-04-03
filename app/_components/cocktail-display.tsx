@@ -23,6 +23,8 @@ interface CocktailDisplayProps {
 	cocktail: Cocktail | GeneratedCocktail;
 	show?: boolean;
 	isDetailPage?: boolean;
+	titleId?: string;
+	descriptionId?: string;
 }
 
 type DisplayIngredient = {
@@ -42,6 +44,8 @@ export default function CocktailDisplay({
 	cocktail,
 	show = true,
 	isDetailPage = false,
+	titleId,
+	descriptionId,
 }: CocktailDisplayProps) {
 	const persistedCocktail =
 		isDetailPage && isPersistedCocktail(cocktail) ? cocktail : null;
@@ -172,15 +176,24 @@ export default function CocktailDisplay({
 					<div className="flex flex-col md:flex-row md:items-start justify-between gap-6 mb-8 border-b border-border pb-8">
 						<div className="space-y-4 flex-1">
 							{isDetailPage ? (
-								<h1 className="text-3xl md:text-5xl font-display font-bold text-foreground leading-tight">
+								<h1
+									id={titleId}
+									className="text-3xl md:text-5xl font-display font-bold text-foreground leading-tight"
+								>
 									{cocktail.name}
 								</h1>
 							) : (
-								<h2 className="text-3xl md:text-5xl font-display font-bold text-foreground leading-tight">
+								<h2
+									id={titleId}
+									className="text-3xl md:text-5xl font-display font-bold text-foreground leading-tight"
+								>
 									{cocktail.name}
 								</h2>
 							)}
-							<p className="text-muted-foreground text-lg leading-relaxed italic">
+							<p
+								id={descriptionId}
+								className="text-muted-foreground text-lg leading-relaxed italic"
+							>
 								{cocktail.description}
 							</p>
 

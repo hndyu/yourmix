@@ -2,6 +2,7 @@
 
 import { X } from "lucide-react";
 import * as React from "react";
+import { createPortal } from "react-dom";
 import type { GeneratedCocktail } from "../types/cocktail";
 import CocktailDisplay from "./cocktail-display";
 
@@ -49,38 +50,47 @@ export default function CocktailDialog({
 		};
 	}, [open]);
 
-	if (!open || !cocktail) return null;
+	if (!open || !cocktail || typeof document === "undefined") return null;
 
-	return (
-		<div className="fixed inset-0 z-[60] flex items-start justify-center animate-in fade-in duration-300">
-			{/* オーバーレイ（背景の暗転） */}
-			<div
-				className="absolute inset-0 bg-black/60 backdrop-blur-sm"
-				onClick={onClose}
-				onKeyDown={(e) => {
-					// 子要素からの Enter 伝播では閉じない（内部操作を阻害しない）
-					if (e.currentTarget !== e.target) return;
-					if (e.key === "Enter" || e.key === " ") onClose();
-				}}
-				role="button"
-				tabIndex={0}
-				aria-label="ダイアログを閉じる"
-			/>
-
+	return createPortal(
+		<div
+			className="fixed inset-0 z-[60] flex items-start justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300"
+			onClick={onClose}
+			onKeyDown={(e) => {
+				if (e.target !== e.currentTarget) return;
+				if (e.key === "Enter" || e.key === " ") onClose();
+			}}
+			tabIndex={-1}
+			role="presentation"
+		>
 			{/* モーダルコンテナ */}
-			<div className="relative z-10 w-full max-h-[90vh] overflow-y-auto mt-[5vh] mx-4 animate-in slide-in-from-bottom-8 duration-500">
-				{/* 閉じるボタン */}
+			{/* biome-ignore lint/a11y/useKeyWithClickEvents: stopPropagation doesn't need key event */}
+			<div
+				// biome-ignore lint/a11y/useSemanticElements: using div for custom modal styling with portal
+				className="relative w-full max-w-5xl max-h-[90vh] overflow-y-auto mt-[5vh] animate-in slide-in-from-bottom-8 duration-500"
+				role="dialog"
+				aria-modal="true"
+				aria-labelledby="dialog-title"
+				aria-describedby="dialog-description"
+				onClick={(e) => e.stopPropagation()}
+			>
+				{/* 閉じるボタン (Sticky to stay visible during scroll) */}
 				<button
 					type="button"
 					onClick={onClose}
-					className="sticky top-4 float-right mr-2 z-20 p-2 rounded-full bg-background/80 backdrop-blur-sm border border-border text-muted-foreground hover:text-foreground hover:bg-background transition-colors shadow-lg"
+					className="sticky top-4 float-right mr-4 z-20 p-2 rounded-full bg-background/80 backdrop-blur-sm border border-border text-muted-foreground hover:text-foreground hover:bg-background transition-colors shadow-lg"
 					aria-label="閉じる"
 				>
 					<X size={20} />
 				</button>
 
-				<CocktailDisplay cocktail={cocktail} />
+				<CocktailDisplay
+					cocktail={cocktail}
+					titleId="dialog-title"
+					descriptionId="dialog-description"
+				/>
 			</div>
-		</div>
+		</div>,
+		document.body,
 	);
 }
