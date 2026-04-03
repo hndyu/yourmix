@@ -53,7 +53,16 @@ export default function CocktailDialog({
 	if (!open || !cocktail || typeof document === "undefined") return null;
 
 	return createPortal(
-		<div className="fixed inset-0 z-[60] flex items-start justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300">
+		<div
+			className="fixed inset-0 z-[60] flex items-start justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300"
+			onClick={onClose}
+			onKeyDown={(e) => {
+				if (e.target !== e.currentTarget) return;
+				if (e.key === "Enter" || e.key === " ") onClose();
+			}}
+			tabIndex={-1}
+			role="presentation"
+		>
 			{/* モーダルコンテナ */}
 			{/* biome-ignore lint/a11y/useKeyWithClickEvents: stopPropagation doesn't need key event */}
 			<div
@@ -81,16 +90,6 @@ export default function CocktailDialog({
 					descriptionId="dialog-description"
 				/>
 			</div>
-
-			{/* 背景クリックで閉じるためのオーバーレイ（モーダルコンテナの外側） */}
-			<div
-				className="absolute inset-0 -z-10"
-				onClick={onClose}
-				onKeyDown={(e) => {
-					if (e.key === "Enter" || e.key === " ") onClose();
-				}}
-				aria-hidden="true"
-			/>
 		</div>,
 		document.body,
 	);
