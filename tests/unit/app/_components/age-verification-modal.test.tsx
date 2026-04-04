@@ -47,4 +47,14 @@ describe("AgeVerificationModal", () => {
 
 		// window.location.href mock is tricky in jsdom but we can check the button exists
 	});
+
+	it("should trigger denial when Escape key is pressed", () => {
+		render(<AgeVerificationModal />);
+
+		expect(screen.getByTestId("age-verification-content")).toBeInTheDocument();
+
+		fireEvent.keyDown(window, { key: "Escape" });
+
+		expect(screen.getByTestId("age-denied-content")).toBeInTheDocument();
+	});
 });
