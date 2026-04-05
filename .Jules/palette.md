@@ -1,3 +1,0 @@
-## 2025-04-04 - Search Keyboard Shortcuts & Visual Hints
-**Learning:** Modern web users expect quick navigation. A '/' keyboard shortcut for search is a powerful power-user feature. Discoverability is key; a subtle `<kbd>` hint that disappears on focus/input provides an intuitive way to teach users about the shortcut without cluttering the UI. Setting `type="search"` and `aria-keyshortcuts="/"` ensures standard behavior and accessibility.
-**Action:** When implementing a primary search input, always include a global keyboard shortcut (usually '/') and a conditional visual hint to improve efficiency and discoverability.

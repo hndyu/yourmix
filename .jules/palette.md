@@ -1,25 +1,3 @@
-# Palette's Journal - UX & Accessibility
-
-## 2025-05-14 - Interactive State Consistency
-**Learning:** For multi-state interactive components (like a toggleable card), using `aria-pressed` for the main selection state and `aria-expanded` for detail expansion significantly improves the mental model for screen reader users. Combining these with descriptive labels (like "銘柄・詳細を表示") ensures that users understand exactly what each action does, especially when components are grouped in a grid.
-**Action:** Always verify that both the selection and the "view details" paths of an interactive card have appropriate ARIA attributes.
-
-## 2025-05-15 - Actionable Empty States
-**Learning:** When a search or filter operation yields no results, simply informing the user is insufficient. Providing a clear, immediate action (like a "Clear Selection" button) directly within the "No Results" component significantly reduces friction and prevents the user from feeling stuck.
-**Action:** In all "no results" or empty state components, include at least one actionable next step or a way to reset the current state.
-
-## 2025-05-16 - Dismissible Modals in Portals
-**Learning:** Modals rendered via `createPortal` often bypass default browser behaviors for accessibility. Implementing an explicit `useEffect` for the `Escape` key and providing a clear, visible close button (X) is essential for ensuring that users can easily dismiss the modal, preventing them from feeling trapped in the interface.
-**Action:** Always include keyboard listeners for `Escape` and a visible close action when implementing custom overlay components.
-
-## 2025-05-17 - Action Confirmation Feedback
-**Learning:** Providing immediate, temporary visual feedback for "invisible" actions like "Copy to Clipboard" (e.g., changing a button's icon to a checkmark and text to "Done") significantly reduces user uncertainty. Managing this with a local state and a `setTimeout` (with proper cleanup on unmount) ensures a smooth, leak-free experience.
-**Action:** Implement temporary "Success" states for all non-navigational action buttons that provide no other immediate visual change.
-
-## 2025-05-18 - Semantic Toasts for Screen Readers
-**Learning:** Using a generic `div` with `role="status"` for toast notifications is often less reliable than using the semantic `<output>` element. The `<output>` element is naturally mapped to a live region and provides better cross-browser accessibility for dynamic status updates.
-**Action:** Prefer the `<output>` element for component-level status messages and toast notifications.
-
-## 2025-05-20 - Enhanced Dialog Accessibility with Portals
-**Learning:** Using `createPortal` to render dialogs at the root of the DOM avoids stacking context issues and ensures better screen reader compatibility. Linking the dialog with its title and description via `aria-labelledby` and `aria-describedby` provides immediate context to assistive technology users. Additionally, making close buttons `sticky` within a scrolling container ensures they are always reachable, improving usability for long content.
-**Action:** Always prefer portals for global UI elements like dialogs and tooltips, and ensure they are properly labeled using ARIA attributes linked to their content.
+## 2025-04-04 - Search Keyboard Shortcuts & Visual Hints
+**Learning:** Modern web users expect quick navigation. A '/' keyboard shortcut for search is a powerful power-user feature. Discoverability is key; a subtle `<kbd>` hint that disappears on focus/input provides an intuitive way to teach users about the shortcut without cluttering the UI. Setting `type="search"` and `aria-keyshortcuts="/"` ensures standard behavior and accessibility.
+**Action:** When implementing a primary search input, always include a global keyboard shortcut (usually '/') and a conditional visual hint to improve efficiency and discoverability.
