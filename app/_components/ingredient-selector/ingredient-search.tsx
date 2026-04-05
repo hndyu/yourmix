@@ -20,6 +20,10 @@ export default function IngredientSearch({
 			// Press '/' to focus search input if no other input is active
 			if (
 				e.key === "/" &&
+				// 修飾キー付きショートカット（Ctrl/Cmd/Alt）では横取りしない
+				!e.ctrlKey &&
+				!e.metaKey &&
+				!e.altKey &&
 				document.activeElement?.tagName !== "INPUT" &&
 				document.activeElement?.tagName !== "TEXTAREA" &&
 				!(document.activeElement as HTMLElement)?.isContentEditable
