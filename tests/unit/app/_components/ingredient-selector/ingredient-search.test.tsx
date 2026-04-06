@@ -12,9 +12,7 @@ describe("IngredientSearch", () => {
 
 	it("renders correctly", () => {
 		render(<IngredientSearch {...defaultProps} />);
-		expect(
-			screen.getByPlaceholderText("材料名で検索..."),
-		).toBeInTheDocument();
+		expect(screen.getByPlaceholderText("材料名で検索...")).toBeInTheDocument();
 	});
 
 	it("calls onChange when typing", async () => {
@@ -91,7 +89,9 @@ describe("IngredientSearch", () => {
 	it("calls onChange with empty string when clear button is clicked", async () => {
 		const onChange = vi.fn();
 		const user = userEvent.setup();
-		render(<IngredientSearch {...defaultProps} value="gin" onChange={onChange} />);
+		render(
+			<IngredientSearch {...defaultProps} value="gin" onChange={onChange} />,
+		);
 
 		const clearButton = screen.getByRole("button", { name: "検索をクリア" });
 		await user.click(clearButton);
