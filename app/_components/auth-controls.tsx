@@ -19,16 +19,25 @@ export default function AuthControls() {
 			? "/"
 			: pathname;
 
-	// Close menu when clicking outside
+	// Close menu when clicking outside or pressing Escape
 	useEffect(() => {
 		function handleClickOutside(event: MouseEvent) {
 			if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
 				setIsOpen(false);
 			}
 		}
+
+		function handleKeyDown(event: KeyboardEvent) {
+			if (event.key === "Escape") {
+				setIsOpen(false);
+			}
+		}
+
 		document.addEventListener("mousedown", handleClickOutside);
+		document.addEventListener("keydown", handleKeyDown);
 		return () => {
 			document.removeEventListener("mousedown", handleClickOutside);
+			document.removeEventListener("keydown", handleKeyDown);
 		};
 	}, []);
 
@@ -40,7 +49,12 @@ export default function AuthControls() {
 
 	if (isPending) {
 		return (
-			<div className="w-8 h-8 rounded-full border-2 border-stone-800 border-t-primary animate-spin" />
+			<div
+				className="w-8 h-8 rounded-full border-2 border-stone-800 border-t-primary animate-spin"
+				role="status"
+			>
+				<span className="sr-only">読み込み中...</span>
+			</div>
 		);
 	}
 
