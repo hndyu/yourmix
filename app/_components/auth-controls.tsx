@@ -51,6 +51,7 @@ export default function AuthControls() {
 		return (
 			<div
 				className="w-8 h-8 rounded-full border-2 border-stone-800 border-t-primary animate-spin"
+				// biome-ignore lint/a11y/useSemanticElements: using div with role="status" for non-transient loading indicator as per project pattern
 				role="status"
 			>
 				<span className="sr-only">読み込み中...</span>

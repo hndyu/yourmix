@@ -48,9 +48,16 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 				<Link
 					href={href}
 					className={combinedClassName}
+					aria-busy={isLoading}
 					{...(props as React.AnchorHTMLAttributes<HTMLAnchorElement>)}
 				>
-					{isLoading && <span className="mr-2 animate-spin">⏳</span>}
+					{isLoading && (
+						<span
+							className="mr-2 w-4 h-4 rounded-full border-2 border-current border-t-transparent animate-spin inline-block"
+							role="status"
+							aria-hidden="true"
+						/>
+					)}
 					{children}
 				</Link>
 			);
@@ -59,11 +66,19 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 		return (
 			<button
 				ref={ref}
+				type={props.type || "button"}
 				className={combinedClassName}
 				disabled={disabled || isLoading}
+				aria-busy={isLoading}
 				{...props}
 			>
-				{isLoading && <span className="mr-2 animate-spin">⏳</span>}
+				{isLoading && (
+					<span
+						className="mr-2 w-4 h-4 rounded-full border-2 border-current border-t-transparent animate-spin inline-block"
+						role="status"
+						aria-hidden="true"
+					/>
+				)}
 				{children}
 			</button>
 		);
