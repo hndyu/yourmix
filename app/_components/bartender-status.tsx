@@ -31,12 +31,14 @@ export default function BartenderStatus() {
 	}, []);
 
 	return (
-		<p
+		<div
 			className="text-sm font-medium text-foreground animate-in fade-in duration-500"
 			// メッセージが変わるたびにアニメーションを再発火させるための key
 			key={messageIndex}
+			// biome-ignore lint/a11y/useSemanticElements: using div with role="status" for non-transient loading indicator as per project pattern
+			role="status"
 		>
 			{BARTENDER_MESSAGES[messageIndex]}
-		</p>
+		</div>
 	);
 }
