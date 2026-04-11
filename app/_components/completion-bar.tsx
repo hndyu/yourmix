@@ -43,6 +43,7 @@ export default function CompletionBar({
 							type="button"
 							onClick={onViewClick}
 							className="shrink-0 px-5 py-2 rounded-full text-sm font-bold bg-primary text-primary-foreground hover:bg-primary/90 active:scale-95 transition-all duration-200 shadow-lg shadow-primary/20"
+							aria-label="完成したオリジナルカクテルを見る"
 						>
 							見る
 						</button>

@@ -9,3 +9,7 @@
 ## 2025-05-15 - [Button Component A11y & Robustness]
 **Learning:** Shared UI components like `Button` should proactively manage accessibility and common pitfalls. Adding `aria-busy` when in a loading state provides immediate feedback to assistive technologies. Setting a default `type="button"` is critical in React/Next.js to prevent unintended form submissions, as the browser default is `submit`.
 **Action:** Always include `aria-busy` for loading states and ensure `type="button"` is the default for generic button components unless explicitly overridden.
+
+## 2025-05-20 - [Modal Focus Management & Contextual ARIA Labels]
+**Learning:** For a truly accessible modal experience, focus management must handle two phases: 1) shifting focus to a sensible default (like the close button) when the modal opens to avoid leaving the keyboard focus on the background, and 2) restoring focus to the triggering element when the modal closes. Additionally, using contextual ARIA labels (e.g., "完成したオリジナルカクテルを見る" instead of just "見る") significantly improves navigation for screen reader users by providing clear intent.
+**Action:** Implement focus trapping and restoration for all modals using `useRef` to store the previous active element. Use descriptive, action-oriented ARIA labels for buttons that carry specific context.

@@ -8,7 +8,7 @@ describe("MixButton", () => {
 		const handleClick = vi.fn();
 		render(<MixButton onClick={handleClick} />);
 
-		const button = screen.getByRole("button", { name: /mix!/i });
+		const button = screen.getByRole("button", { name: /オリジナルレシピを生成/i });
 		expect(button).toBeInTheDocument();
 		expect(button).not.toBeDisabled();
 	});
@@ -17,7 +17,7 @@ describe("MixButton", () => {
 		const handleClick = vi.fn();
 		render(<MixButton onClick={handleClick} />);
 
-		const button = screen.getByRole("button", { name: /mix!/i });
+		const button = screen.getByRole("button", { name: /オリジナルレシピを生成/i });
 		fireEvent.click(button);
 
 		expect(handleClick).toHaveBeenCalledTimes(1);
@@ -27,7 +27,7 @@ describe("MixButton", () => {
 		const handleClick = vi.fn();
 		render(<MixButton onClick={handleClick} disabled />);
 
-		const button = screen.getByRole("button", { name: /mix!/i });
+		const button = screen.getByRole("button", { name: /オリジナルレシピを生成/i });
 		expect(button).toBeDisabled();
 	});
 
@@ -35,7 +35,7 @@ describe("MixButton", () => {
 		const handleClick = vi.fn();
 		render(<MixButton onClick={handleClick} disabled />);
 
-		const button = screen.getByRole("button", { name: /mix!/i });
+		const button = screen.getByRole("button", { name: /オリジナルレシピを生成/i });
 		fireEvent.click(button);
 
 		expect(handleClick).not.toHaveBeenCalled();
@@ -45,16 +45,17 @@ describe("MixButton", () => {
 		const handleClick = vi.fn();
 		render(<MixButton onClick={handleClick} isLoading />);
 
-		const button = screen.getByRole("button", { name: /mixing.../i });
+		const button = screen.getByRole("button", { name: /レシピを生成中.../i });
 		expect(button).toBeInTheDocument();
 		expect(button).toBeDisabled();
+		expect(button).toHaveAttribute("aria-busy", "true");
 	});
 
 	it("should not call onClick handler when loading", () => {
 		const handleClick = vi.fn();
 		render(<MixButton onClick={handleClick} isLoading />);
 
-		const button = screen.getByRole("button", { name: /mixing.../i });
+		const button = screen.getByRole("button", { name: /レシピを生成中.../i });
 		fireEvent.click(button);
 
 		expect(handleClick).not.toHaveBeenCalled();
@@ -64,7 +65,7 @@ describe("MixButton", () => {
 		const handleClick = vi.fn();
 		render(<MixButton onClick={handleClick} disabled isLoading />);
 
-		const button = screen.getByRole("button", { name: /mixing.../i });
+		const button = screen.getByRole("button", { name: /レシピを生成中.../i });
 		expect(button).toBeDisabled();
 
 		fireEvent.click(button);

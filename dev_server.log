@@ -1,0 +1,196 @@
+
+> yourmix@0.1.0 dev /app
+> next dev --turbopack
+
+   ▲ Next.js 15.5.15 (Turbopack)
+   - Local:        http://localhost:3000
+   - Network:      http://192.168.0.2:3000
+
+ ✓ Starting...
+Attention: Next.js now collects completely anonymous telemetry regarding usage.
+This information is used to shape Next.js' roadmap and prioritize features.
+You can learn more, including how to opt-out if you'd not like to participate in this anonymous program, by visiting the following URL:
+https://nextjs.org/telemetry
+
+ ✓ Ready in 5.2s
+ ○ Compiling / ...
+ ✓ Compiled / in 12.3s
+ ⨯ ./app/auth/index.ts:4:1
+Module not found: Can't resolve 'better-auth'
+[0m [90m 2 |[39m [36mimport[39m { passkey } [36mfrom[39m [32m"@better-auth/passkey"[39m[33m;[39m
+ [90m 3 |[39m [36mimport[39m { getCloudflareContext } [36mfrom[39m [32m"@opennextjs/cloudflare"[39m[33m;[39m
+[31m[1m>[22m[39m[90m 4 |[39m [36mimport[39m { betterAuth } [36mfrom[39m [32m"better-auth"[39m[33m;[39m
+ [90m   |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 5 |[39m [36mimport[39m { withCloudflare } [36mfrom[39m [32m"better-auth-cloudflare"[39m[33m;[39m
+ [90m 6 |[39m [36mimport[39m { drizzleAdapter } [36mfrom[39m [32m"better-auth/adapters/drizzle"[39m[33m;[39m
+ [90m 7 |[39m [36mimport[39m {[0m
+
+
+
+Import trace:
+  Server Component:
+    ./app/auth/index.ts
+    ./app/actions/likes.ts
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+
+./app/auth/index.ts:6:1
+Module not found: Can't resolve 'better-auth/adapters/drizzle'
+[0m [90m 4 |[39m [36mimport[39m { betterAuth } [36mfrom[39m [32m"better-auth"[39m[33m;[39m
+ [90m 5 |[39m [36mimport[39m { withCloudflare } [36mfrom[39m [32m"better-auth-cloudflare"[39m[33m;[39m
+[31m[1m>[22m[39m[90m 6 |[39m [36mimport[39m { drizzleAdapter } [36mfrom[39m [32m"better-auth/adapters/drizzle"[39m[33m;[39m
+ [90m   |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 7 |[39m [36mimport[39m {
+ [90m 8 |[39m 	captcha[33m,[39m
+ [90m 9 |[39m 	lastLoginMethod[33m,[39m[0m
+
+
+
+Import trace:
+  Server Component:
+    ./app/auth/index.ts
+    ./app/actions/likes.ts
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+
+./app/lib/authClient.ts:5:1
+Module not found: Can't resolve 'better-auth/client/plugins'
+[0m [90m  3 |[39m [36mimport[39m { passkeyClient } [36mfrom[39m [32m"@better-auth/passkey/client"[39m[33m;[39m
+ [90m  4 |[39m [36mimport[39m { cloudflareClient } [36mfrom[39m [32m"better-auth-cloudflare/client"[39m[33m;[39m
+[31m[1m>[22m[39m[90m  5 |[39m [36mimport[39m {
+ [90m    |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+[31m[1m>[22m[39m[90m  6 |[39m 	lastLoginMethodClient[33m,[39m
+ [90m    |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+[31m[1m>[22m[39m[90m  7 |[39m 	twoFactorClient[33m,[39m
+ [90m    |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+[31m[1m>[22m[39m[90m  8 |[39m } [36mfrom[39m [32m"better-auth/client/plugins"[39m[33m;[39m
+ [90m    |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m  9 |[39m [36mimport[39m { createAuthClient } [36mfrom[39m [32m"better-auth/react"[39m[33m;[39m
+ [90m 10 |[39m
+ [90m 11 |[39m [36mconst[39m authClient [33m=[39m createAuthClient({[0m
+
+
+
+Import traces:
+  #1 [Client Component Browser]:
+    ./app/lib/authClient.ts [Client Component Browser]
+    ./app/_components/auth-controls.tsx [Client Component Browser]
+    ./app/_components/header.tsx [Client Component Browser]
+    ./app/_components/header.tsx [Server Component]
+    ./app/layout.tsx [Server Component]
+
+  #2 [Client Component SSR]:
+    ./app/lib/authClient.ts [Client Component SSR]
+    ./app/_components/auth-controls.tsx [Client Component SSR]
+    ./app/_components/header.tsx [Client Component SSR]
+    ./app/_components/header.tsx [Server Component]
+    ./app/layout.tsx [Server Component]
+
+  #3 [Client Component Browser]:
+    ./app/lib/authClient.ts [Client Component Browser]
+    ./app/_components/delicious-button.tsx [Client Component Browser]
+    ./app/_components/cocktail-display.tsx [Client Component Browser]
+    ./app/_components/cocktail-dialog.tsx [Client Component Browser]
+    ./app/_components/cocktail-mixer.tsx [Client Component Browser]
+    ./app/_components/cocktail-mixer.tsx [Server Component]
+    ./app/page.tsx [Server Component]
+
+  #4 [Client Component SSR]:
+    ./app/lib/authClient.ts [Client Component SSR]
+    ./app/_components/delicious-button.tsx [Client Component SSR]
+    ./app/_components/cocktail-display.tsx [Client Component SSR]
+    ./app/_components/cocktail-dialog.tsx [Client Component SSR]
+    ./app/_components/cocktail-mixer.tsx [Client Component SSR]
+    ./app/_components/cocktail-mixer.tsx [Server Component]
+    ./app/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+
+./app/auth/index.ts:7:1
+Module not found: Can't resolve 'better-auth/plugins'
+[0m [90m  5 |[39m [36mimport[39m { withCloudflare } [36mfrom[39m [32m"better-auth-cloudflare"[39m[33m;[39m
+ [90m  6 |[39m [36mimport[39m { drizzleAdapter } [36mfrom[39m [32m"better-auth/adapters/drizzle"[39m[33m;[39m
+[31m[1m>[22m[39m[90m  7 |[39m [36mimport[39m {
+ [90m    |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+[31m[1m>[22m[39m[90m  8 |[39m 	captcha[33m,[39m
+ [90m    |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+[31m[1m>[22m[39m[90m  9 |[39m 	lastLoginMethod[33m,[39m
+ [90m    |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+[31m[1m>[22m[39m[90m 10 |[39m 	openAPI[33m,[39m
+ [90m    |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+[31m[1m>[22m[39m[90m 11 |[39m 	twoFactor[33m,[39m
+ [90m    |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+[31m[1m>[22m[39m[90m 12 |[39m } [36mfrom[39m [32m"better-auth/plugins"[39m[33m;[39m
+ [90m    |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 13 |[39m [36mimport[39m type { [33mDrizzleD1Database[39m } [36mfrom[39m [32m"drizzle-orm/d1"[39m[33m;[39m
+ [90m 14 |[39m
+ [90m 15 |[39m [90m// Define an asynchronous function to build your auth configuration[39m[0m
+
+
+
+Import trace:
+  Server Component:
+    ./app/auth/index.ts
+    ./app/actions/likes.ts
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+
+./app/lib/authClient.ts:9:1
+Module not found: Can't resolve 'better-auth/react'
+[0m [90m  7 |[39m 	twoFactorClient[33m,[39m
+ [90m  8 |[39m } [36mfrom[39m [32m"better-auth/client/plugins"[39m[33m;[39m
+[31m[1m>[22m[39m[90m  9 |[39m [36mimport[39m { createAuthClient } [36mfrom[39m [32m"better-auth/react"[39m[33m;[39m
+ [90m    |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 10 |[39m
+ [90m 11 |[39m [36mconst[39m authClient [33m=[39m createAuthClient({
+ [90m 12 |[39m 	plugins[33m:[39m [[0m
+
+
+
+Import traces:
+  #1 [Client Component Browser]:
+    ./app/lib/authClient.ts [Client Component Browser]
+    ./app/_components/auth-controls.tsx [Client Component Browser]
+    ./app/_components/header.tsx [Client Component Browser]
+    ./app/_components/header.tsx [Server Component]
+    ./app/layout.tsx [Server Component]
+
+  #2 [Client Component SSR]:
+    ./app/lib/authClient.ts [Client Component SSR]
+    ./app/_components/auth-controls.tsx [Client Component SSR]
+    ./app/_components/header.tsx [Client Component SSR]
+    ./app/_components/header.tsx [Server Component]
+    ./app/layout.tsx [Server Component]
+
+  #3 [Client Component Browser]:
+    ./app/lib/authClient.ts [Client Component Browser]
+    ./app/_components/delicious-button.tsx [Client Component Browser]
+    ./app/_components/cocktail-display.tsx [Client Component Browser]
+    ./app/_components/cocktail-dialog.tsx [Client Component Browser]
+    ./app/_components/cocktail-mixer.tsx [Client Component Browser]
+    ./app/_components/cocktail-mixer.tsx [Server Component]
+    ./app/page.tsx [Server Component]
+
+  #4 [Client Component SSR]:
+    ./app/lib/authClient.ts [Client Component SSR]
+    ./app/_components/delicious-button.tsx [Client Component SSR]
+    ./app/_components/cocktail-display.tsx [Client Component SSR]
+    ./app/_components/cocktail-dialog.tsx [Client Component SSR]
+    ./app/_components/cocktail-mixer.tsx [Client Component SSR]
+    ./app/_components/cocktail-mixer.tsx [Server Component]
+    ./app/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+ ○ Compiling /_error ...
+ ✓ Compiled /_error in 3.3s
+ GET / 500 in 16073ms

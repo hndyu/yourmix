@@ -19,6 +19,8 @@ export default function MixButton({
 			type="button"
 			onClick={!disabled && !isLoading ? onClick : undefined}
 			disabled={disabled || isLoading}
+			aria-busy={isLoading}
+			aria-label={isLoading ? "レシピを生成中..." : "オリジナルレシピを生成"}
 			className={`
         relative group overflow-hidden rounded-full w-48 h-16 flex items-center justify-center
         transition-all duration-300 ease-out transform
