@@ -24,6 +24,9 @@ export default function CocktailDialog({
 	open,
 	onClose,
 }: CocktailDialogProps) {
+	const closeButtonRef = React.useRef<HTMLButtonElement>(null);
+	const previousActiveElement = React.useRef<HTMLElement | null>(null);
+
 	// ESC キーで閉じる
 	React.useEffect(() => {
 		if (!open) return;
@@ -37,6 +40,21 @@ export default function CocktailDialog({
 		document.addEventListener("keydown", handleKeyDown);
 		return () => document.removeEventListener("keydown", handleKeyDown);
 	}, [open, onClose]);
+
+	// フォーカス管理
+	React.useEffect(() => {
+		if (open) {
+			previousActiveElement.current = document.activeElement as HTMLElement;
+			// ダイアログが開いた直後に閉じるボタンにフォーカスを当てる
+			// setTimeout を使用してレンダリング完了を確実にする
+			const timer = setTimeout(() => {
+				closeButtonRef.current?.focus();
+			}, 0);
+			return () => clearTimeout(timer);
+		}
+		// ダイアログが閉じるときにフォーカスを戻す
+		previousActiveElement.current?.focus();
+	}, [open]);
 
 	// ダイアログが開いている間はスクロールを無効化
 	React.useEffect(() => {
@@ -76,6 +94,7 @@ export default function CocktailDialog({
 			>
 				{/* 閉じるボタン (Sticky to stay visible during scroll) */}
 				<button
+					ref={closeButtonRef}
 					type="button"
 					onClick={onClose}
 					className="sticky top-4 float-right mr-4 z-20 p-2 rounded-full bg-background/80 backdrop-blur-sm border border-border text-muted-foreground hover:text-foreground hover:bg-background transition-colors shadow-lg"
