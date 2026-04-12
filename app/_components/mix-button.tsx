@@ -20,7 +20,11 @@ export default function MixButton({
 			onClick={!disabled && !isLoading ? onClick : undefined}
 			disabled={disabled || isLoading}
 			aria-busy={isLoading}
-			aria-label={isLoading ? "レシピを生成中..." : "オリジナルレシピを生成"}
+			aria-label={
+				isLoading
+					? "ミックス中...（レシピを生成中）"
+					: "ミックス！：オリジナルレシピを生成"
+			}
 			className={`
         relative group overflow-hidden rounded-full w-48 h-16 flex items-center justify-center
         transition-all duration-300 ease-out transform
@@ -34,16 +38,20 @@ export default function MixButton({
 			<div className="flex items-center gap-2 text-white font-bold text-xl z-10">
 				{isLoading ? (
 					<>
-						<div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-						<span>Mixing...</span>
+						<div
+							className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"
+							aria-hidden="true"
+						/>
+						<span>ミックス中...</span>
 					</>
 				) : (
 					<>
 						<GlassWater
 							className={"transition-transform group-hover:rotate-12"}
 							size={24}
+							aria-hidden="true"
 						/>
-						<span>Mix!</span>
+						<span>ミックス！</span>
 					</>
 				)}
 			</div>
