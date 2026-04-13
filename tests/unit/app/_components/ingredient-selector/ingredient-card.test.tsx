@@ -98,7 +98,7 @@ describe("IngredientCard", () => {
 		await user.click(screen.getByText(/銘柄・詳細/));
 
 		// Click detail
-		await user.click(screen.getByRole("button", { name: "Detail 1" }));
+		await user.click(screen.getByRole("button", { name: /Detail 1/ }));
 		expect(onDetailToggle).toHaveBeenCalledWith(mockIngredient, "Detail 1");
 	});
 

@@ -145,12 +145,14 @@ const IngredientCard = React.memo(
 										<button
 											key={name}
 											type="button"
+											aria-pressed={isDetailSelected}
+											aria-label={`${name}を${isDetailSelected ? "解除" : "選択"}`}
 											onClick={(e) => {
 												e.stopPropagation();
 												onDetailToggle(ingredient, name);
 											}}
 											className={`
-                      px-2 py-1 text-xs rounded-md border transition-all
+                      px-2 py-1 text-xs rounded-md border transition-all active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50
                       ${
 												isDetailSelected
 													? "bg-primary/20 border-primary text-foreground"
