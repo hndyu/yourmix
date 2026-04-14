@@ -4,6 +4,7 @@ import { X } from "lucide-react";
 import * as React from "react";
 import { createPortal } from "react-dom";
 import type { GeneratedCocktail } from "../types/cocktail";
+import { lockBodyScroll } from "../utils/body-scroll-lock";
 import CocktailDisplay from "./cocktail-display";
 
 interface CocktailDialogProps {
@@ -58,14 +59,11 @@ export default function CocktailDialog({
 
 	// ダイアログが開いている間はスクロールを無効化
 	React.useEffect(() => {
-		if (open) {
-			document.body.style.overflow = "hidden";
-		} else {
-			document.body.style.overflow = "";
-		}
-		return () => {
-			document.body.style.overflow = "";
-		};
+		if (!open) return;
+
+		// 入れ子モーダルでも背後のスクロールロックを壊さないようにする
+		const unlock = lockBodyScroll();
+		return unlock;
 	}, [open]);
 
 	if (!open || !cocktail || typeof document === "undefined") return null;
