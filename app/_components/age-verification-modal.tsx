@@ -3,6 +3,7 @@
 import { AlertTriangle, Wine } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import { lockBodyScroll } from "../utils/body-scroll-lock";
 import { Button } from "./ui/button";
 
 export default function AgeVerificationModal() {
@@ -32,14 +33,11 @@ export default function AgeVerificationModal() {
 
 	// Lock body scroll
 	useEffect(() => {
-		if (isOpen) {
-			document.body.style.overflow = "hidden";
-		} else {
-			document.body.style.overflow = "";
-		}
-		return () => {
-			document.body.style.overflow = "";
-		};
+		if (!isOpen) return;
+
+		// 他のモーダルと入れ子になってもスクロールロックを壊さない
+		const unlock = lockBodyScroll();
+		return unlock;
 	}, [isOpen]);
 
 	// Focus management

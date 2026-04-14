@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { toggleLikeAction } from "../actions/likes";
 import authClient from "../lib/authClient";
+import { lockBodyScroll } from "../utils/body-scroll-lock";
 import { Button } from "./ui/button";
 
 interface DeliciousButtonProps {
@@ -57,14 +58,11 @@ export default function DeliciousButton({
 
 	// Lock body scroll
 	useEffect(() => {
-		if (showLoginModal) {
-			document.body.style.overflow = "hidden";
-		} else {
-			document.body.style.overflow = "";
-		}
-		return () => {
-			document.body.style.overflow = "";
-		};
+		if (!showLoginModal) return;
+
+		// 入れ子モーダルでも背後のスクロールロックを壊さないようにする
+		const unlock = lockBodyScroll();
+		return unlock;
 	}, [showLoginModal]);
 
 	const handleClick = async () => {
