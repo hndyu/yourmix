@@ -2,7 +2,7 @@
 
 import { ThumbsUp, X } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { toggleLikeAction } from "../actions/likes";
 import authClient from "../lib/authClient";
@@ -24,6 +24,8 @@ export default function DeliciousButton({
 	const [showLoginModal, setShowLoginModal] = useState(false);
 	const router = useRouter();
 	const { data: session } = authClient.useSession();
+	const loginButtonRef = useRef<HTMLButtonElement>(null);
+	const previousActiveElement = useRef<HTMLElement | null>(null);
 
 	// Handle Escape key to close modal
 	useEffect(() => {
@@ -37,6 +39,32 @@ export default function DeliciousButton({
 			window.addEventListener("keydown", handleEscape);
 		}
 		return () => window.removeEventListener("keydown", handleEscape);
+	}, [showLoginModal]);
+
+	// Focus management
+	useEffect(() => {
+		if (showLoginModal) {
+			previousActiveElement.current = document.activeElement as HTMLElement;
+			// Focus the login button when modal opens
+			const timer = setTimeout(() => {
+				loginButtonRef.current?.focus();
+			}, 0);
+			return () => clearTimeout(timer);
+		}
+		// Restore focus when modal closes
+		previousActiveElement.current?.focus();
+	}, [showLoginModal]);
+
+	// Lock body scroll
+	useEffect(() => {
+		if (showLoginModal) {
+			document.body.style.overflow = "hidden";
+		} else {
+			document.body.style.overflow = "";
+		}
+		return () => {
+			document.body.style.overflow = "";
+		};
 	}, [showLoginModal]);
 
 	const handleClick = async () => {
@@ -83,7 +111,7 @@ export default function DeliciousButton({
 				aria-label={`おいしい！ ${count > 0 ? `現在の数: ${count}` : ""}`}
 				aria-pressed={isLiked}
 				className={`
-          flex items-center gap-2 px-4 py-2 rounded-full font-bold transition-all
+          flex items-center gap-2 px-4 py-2 rounded-full font-bold transition-all active:scale-95
           ${
 						isLiked
 							? "bg-amber-500 text-white shadow-lg shadow-amber-500/30 hover:bg-amber-600"
@@ -149,7 +177,9 @@ export default function DeliciousButton({
 								>
 									キャンセル
 								</Button>
-								<Button onClick={handleLoginRedirect}>ログインする</Button>
+								<Button ref={loginButtonRef} onClick={handleLoginRedirect}>
+									ログインする
+								</Button>
 							</div>
 						</div>
 					</div>,
