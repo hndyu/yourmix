@@ -27,11 +27,13 @@
 	},
 	"dependencies": {
 		"@better-auth/passkey": "^1.4.9",
+		"@better-fetch/fetch": "^1.1.21",
 		"@google/genai": "^1.27.0",
 		"@marsidev/react-turnstile": "^1.4.1",
 		"@next/third-parties": "^16.1.1",
 		"@opennextjs/cloudflare": "^1.14.0",
 		"@testing-library/user-event": "^14.6.1",
+		"better-auth": "^1.6.5",
 		"better-auth-cloudflare": "^0.2.8",
 		"dotenv": "^17.2.3",
 		"drizzle-orm": "^0.44.7",
