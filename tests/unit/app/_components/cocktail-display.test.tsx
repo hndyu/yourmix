@@ -164,7 +164,7 @@ describe("CocktailDisplay Component", () => {
 	it("renders affiliate links correctly", () => {
 		render(<CocktailDisplay cocktail={mockCocktail} isDetailPage />);
 
-		const links = screen.getAllByRole("link", { name: /買う/i });
+		const links = screen.getAllByRole("link", { name: /Amazonで検索/i });
 		expect(links).toHaveLength(2);
 		expect(links[0]).toHaveAttribute("href", "https://example.com/shop/ジン");
 		expect(links[1]).toHaveAttribute(

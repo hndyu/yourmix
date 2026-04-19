@@ -68,7 +68,7 @@ const CocktailSearchResults = React.memo(function CocktailSearchResults({
 							{cocktail.imageUrl ? (
 								<Image
 									src={`/cocktails/${cocktail.imageUrl}`}
-									alt={cocktail.name}
+									alt=""
 									fill
 									sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
 									className="object-contain p-4 group-hover:scale-105 transition-transform duration-500"
@@ -90,6 +90,7 @@ const CocktailSearchResults = React.memo(function CocktailSearchResults({
 						<div className="p-6 relative">
 							<h3 className="text-xl font-bold text-foreground mb-2 font-display group-hover:text-primary transition-colors">
 								{cocktail.name}
+								<span className="sr-only">（新しいタブで開く）</span>
 							</h3>
 
 							<p className="text-sm text-stone-600 dark:text-stone-400 line-clamp-2 mb-4">

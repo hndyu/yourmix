@@ -3,6 +3,7 @@
 import {
 	Check,
 	Copy,
+	ExternalLink,
 	HelpCircle,
 	Share2,
 	ShoppingCart,
@@ -161,7 +162,7 @@ export default function CocktailDisplay({
 						<div className="relative w-full h-full mx-auto">
 							<Image
 								src={`/cocktails/${cocktail.imageUrl}`}
-								alt={cocktail.name}
+								alt=""
 								fill
 								className="object-contain drop-shadow-2xl"
 								onError={() => setImageError(true)}
@@ -327,9 +328,11 @@ export default function CocktailDisplay({
 																target="_blank"
 																rel="noopener noreferrer"
 																className="inline-flex items-center gap-1 px-2 py-1 bg-secondary hover:bg-orange-100 dark:hover:bg-orange-900/30 text-orange-600 dark:text-orange-400 hover:text-orange-700 dark:hover:text-orange-300 rounded text-sm font-bold transition-colors"
+																aria-label={`${ing.name}をAmazonで検索（新しいタブで開く）`}
 															>
 																<ShoppingCart size={12} />
-																買う
+																<span>買う</span>
+																<ExternalLink size={10} className="ml-0.5" />
 															</a>
 														);
 													})}

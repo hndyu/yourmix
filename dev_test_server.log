@@ -1,0 +1,104 @@
+
+> yourmix@0.1.0 dev:test /app
+> opennextjs-cloudflare build && wrangler dev --local --port 3000 -- next dev
+
+
+┌─────────────────────────────┐
+│ OpenNext — Cloudflare build │
+└─────────────────────────────┘
+
+App directory: /app
+Next.js version : 15.5.15
+@opennextjs/cloudflare version: 1.19.1
+@opennextjs/aws version: 3.10.1
+
+┌─────────────────────────────────┐
+│ OpenNext — Building Next.js app │
+└─────────────────────────────────┘
+
+npm warn Unknown env config "verify-deps-before-run". This will stop working in the next major version of npm. See `npm help npmrc` for supported config options.
+npm warn Unknown env config "npm-globalconfig". This will stop working in the next major version of npm. See `npm help npmrc` for supported config options.
+npm warn Unknown env config "_jsr-registry". This will stop working in the next major version of npm. See `npm help npmrc` for supported config options.
+
+> yourmix@0.1.0 build
+> next build
+
+   ▲ Next.js 15.5.15
+   - Environments: .env.local
+
+   Creating an optimized production build ...
+ ✓ Compiled successfully in 41s
+   Linting and checking validity of types ...
+   Collecting page data ...
+[2m2026-04-19T16:50:07.594Z[0m [33mWARN[0m [1m[Better Auth]:[0m [better-auth] Base URL could not be determined. Please set a valid base URL using the baseURL config option or the BETTER_AUTH_URL environment variable. Without this, callbacks and redirects may not work correctly.
+[Error [BetterAuthError]: You are using the default secret. Please set `BETTER_AUTH_SECRET` in your environment variables or pass `secret` in your auth config.]
+[2m2026-04-19T16:50:07.684Z[0m [33mWARN[0m [1m[Better Auth]:[0m [better-auth] Base URL could not be determined. Please set a valid base URL using the baseURL config option or the BETTER_AUTH_URL environment variable. Without this, callbacks and redirects may not work correctly.
+[Error [BetterAuthError]: You are using the default secret. Please set `BETTER_AUTH_SECRET` in your environment variables or pass `secret` in your auth config.]
+   Generating static pages (0/13) ...
+   Generating static pages (3/13)
+   Generating static pages (6/13)
+   Generating static pages (9/13)
+ ✓ Generating static pages (13/13)
+   Finalizing page optimization ...
+   Collecting build traces ...
+
+Route (app)                                 Size  First Load JS
+┌ ○ /                                    9.44 kB         141 kB
+├ ○ /_not-found                            136 B         102 kB
+├ ƒ /api/admin/seed                        136 B         102 kB
+├ ƒ /api/auth/[...all]                     136 B         102 kB
+├ ○ /auth/sign-in                         3.4 kB         127 kB
+├ ○ /auth/sign-up                        1.85 kB         125 kB
+├ ○ /icon.png                                0 B            0 B
+├ ○ /my-page                             13.1 kB         132 kB
+├ ○ /privacy-policy                        136 B         102 kB
+├ ƒ /recipes/[slug]                        178 B         132 kB
+├ ○ /terms-of-service                      136 B         102 kB
+└ ○ /test-error                          1.15 kB         106 kB
++ First Load JS shared by all             102 kB
+  ├ chunks/393-1ce5b25dfcf419dc.js       45.4 kB
+  ├ chunks/946d37cc-604b7d3dd6ed9cf0.js  54.2 kB
+  └ other shared chunks (total)          1.94 kB
+
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+
+
+┌──────────────────────────────┐
+│ OpenNext — Generating bundle │
+└──────────────────────────────┘
+
+(node:196992) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+Bundling middleware function...
+Bundling static assets...
+Bundling cache assets...
+Building server function: default...
+Applying code patches: 10.078s
+# copyPackageTemplateFiles
+[35m⚙️ Bundling the OpenNext server...
+[0m
+[35mWorker saved in `.open-next/worker.js` 🚀
+[0m
+OpenNext build complete.
+
+ ⛅️ wrangler 4.81.1 (update available 4.83.0)
+─────────────────────────────────────────────
+
+Cloudflare collects anonymous telemetry about your usage of Wrangler. Learn more at https://github.com/cloudflare/workers-sdk/tree/main/packages/wrangler/telemetry.md
+Using secrets defined in .env.local
+Your Worker has access to the following bindings:
+Binding                           Resource                  Mode
+env.DB (yourmix-db)               D1 Database               local
+env.ASSETS                        Assets                    local
+env.SEED_SECRET ("(hidden)")      Environment Variable      local
+
+*** Fatal uncaught kj::Exception: kj/async-io-unix.c++:945: failed: ::bind(sockfd, &addr.generic, addrlen): Address already in use; toString() = 127.0.0.1:3000
+stack: /app/node_modules/.pnpm/@cloudflare+workerd-linux-64@1.20260409.1/node_modules/@cloudflare/workerd-linux-64/bin/workerd@5146ac6 /app/node_modules/.pnpm/@cloudflare+workerd-linux-64@1.20260409.1/node_modules/@cloudflare/workerd-linux-64/bin/workerd@5146899 /app/node_modules/.pnpm/@cloudflare+workerd-linux-64@1.20260409.1/node_modules/@cloudflare/workerd-linux-64/bin/workerd@5144d8d /app/node_modules/.pnpm/@cloudflare+workerd-linux-64@1.20260409.1/node_modules/@cloudflare/workerd-linux-64/bin/workerd@200eb9c /app/node_modules/.pnpm/@cloudflare+workerd-linux-64@1.20260409.1/node_modules/@cloudflare/workerd-linux-64/bin/workerd@200f501 /app/node_modules/.pnpm/@cloudflare+workerd-linux-64@1.20260409.1/node_modules/@cloudflare/workerd-linux-64/bin/workerd@201002d /app/node_modules/.pnpm/@cloudflare+workerd-linux-64@1.20260409.1/node_modules/@cloudflare/workerd-linux-64/bin/workerd@20116aa /app/node_modules/.pnpm/@cloudflare+workerd-linux-64@1.20260409.1/node_modules/@cloudflare/workerd-linux-64/bin/workerd@1f65289 /app/node_modules/.pnpm/@cloudflare+workerd-linux-64@1.20260409.1/node_modules/@cloudflare/workerd-linux-64/bin/workerd@517a775 /app/node_modules/.pnpm/@cloudflare+workerd-linux-64@1.20260409.1/node_modules/@cloudflare/workerd-linux-64/bin/workerd@517ac98 /app/node_modules/.pnpm/@cloudflare+workerd-linux-64@1.20260409.1/node_modules/@cloudflare/workerd-linux-64/bin/workerd@517875e /app/node_modules/.pnpm/@cloudflare+workerd-linux-64@1.20260409.1/node_modules/@cloudflare/workerd-linux-64/bin/workerd@517855e /app/node_modules/.pnpm/@cloudflare+workerd-linux-64@1.20260409.1/node_modules/@cloudflare/workerd-linux-64/bin/workerd@1f4cd15 /lib/x86_64-linux-gnu/libc.so.6@2a1c9 /lib/x86_64-linux-gnu/libc.so.6@2a28a /app/node_modules/.pnpm/@cloudflare+workerd-linux-64@1.20260409.1/node_modules/@cloudflare/workerd-linux-64/bin/workerd@1f4c024
+
+[31m✘ [41;31m[[41;97mERROR[41;31m][0m [1mAddress already in use (127.0.0.1:3000). Please check that you are not already running a server on this address or specify a different port with --port.[0m
+
+
+🪵  Logs were written to "/home/jules/.config/.wrangler/logs/wrangler-2026-04-19_16-51-16_831.log"
+ ELIFECYCLE  Command failed with exit code 1.

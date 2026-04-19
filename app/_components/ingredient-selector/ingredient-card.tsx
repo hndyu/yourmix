@@ -88,13 +88,13 @@ const IngredientCard = React.memo(
 						{asset.type === "image" ? (
 							<Image
 								src={asset.value}
-								alt={ingredient.name}
+								alt=""
 								width={48}
 								height={48}
 								className="w-full h-full object-contain"
 							/>
 						) : (
-							<asset.value size={24} />
+							<asset.value size={24} aria-hidden="true" />
 						)}
 					</div>
 

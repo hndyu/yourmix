@@ -224,7 +224,10 @@ describe("CocktailSearchResults", () => {
 		const firstCardName = within(cards[0]).getByRole("heading", {
 			level: 3,
 		}).textContent;
-		expect(["ギムレット", "スクリュードライバー"]).toContain(firstCardName);
+		expect([
+			"ギムレット（新しいタブで開く）",
+			"スクリュードライバー（新しいタブで開く）",
+		]).toContain(firstCardName);
 	});
 
 	it("displays selected ingredients with distinct style (filled)", () => {
