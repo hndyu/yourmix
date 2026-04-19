@@ -51,7 +51,9 @@ const IngredientCard = React.memo(
 					type="button"
 					aria-pressed={isSelected}
 					aria-label={`${ingredient.name} を${isSelected ? "解除" : "選択"}`}
-					className="flex flex-col p-4 flex-grow text-left w-full focus:outline-none focus:ring-2 focus:ring-primary/50 rounded-t-2xl"
+					className={`flex flex-col p-4 flex-grow text-left w-full focus:outline-none focus:ring-2 focus:ring-primary/50 transition-transform active:scale-[0.98] ${
+						hasDetails ? "rounded-t-2xl" : "rounded-2xl"
+					}`}
 					onClick={(e) => {
 						// Prevent toggle if clicking expand button (though expand button is outside this container now? No, below)
 						// Actually, the structure below had the expand button separate.
@@ -115,7 +117,7 @@ const IngredientCard = React.memo(
 						<button
 							type="button"
 							aria-expanded={expanded}
-							aria-label="銘柄・詳細を表示"
+							aria-label={`${ingredient.name}の銘柄・詳細を${expanded ? "閉じる" : "表示"}`}
 							className="expand-btn w-full px-4 py-2 flex items-center justify-between text-xs text-stone-600 dark:text-stone-500 hover:text-stone-800 dark:hover:text-stone-300 transition-colors focus:outline-none focus:bg-stone-100 dark:focus:bg-stone-800/50 rounded-b-2xl"
 							onClick={(e) => {
 								e.stopPropagation();
