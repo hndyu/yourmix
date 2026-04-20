@@ -7,6 +7,7 @@ import * as React from "react";
 import type { Category, Cocktail, Ingredient } from "../types/cocktail";
 import { useCocktailSearch } from "../utils/useCocktailSearch";
 import { NoResults } from "./no-results";
+import { Button } from "./ui/button";
 
 interface CocktailSearchResultsProps {
 	cocktails: Cocktail[];
@@ -48,9 +49,20 @@ const CocktailSearchResults = React.memo(function CocktailSearchResults({
 					🔍 検索結果 ({cocktails.length}件)
 				</h2>
 
-				<p className="text-stone-600 dark:text-stone-400">
+				<p className="text-stone-600 dark:text-stone-400 mb-6">
 					選択された材料にマッチするレシピを表示しています
 				</p>
+
+				{onReset && (
+					<Button
+						variant="outline"
+						size="sm"
+						onClick={onReset}
+						aria-label="選択をすべてクリア"
+					>
+						選択をすべてクリア
+					</Button>
+				)}
 			</div>
 
 			<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
