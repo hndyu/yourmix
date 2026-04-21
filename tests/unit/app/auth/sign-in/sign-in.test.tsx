@@ -33,6 +33,8 @@ vi.mock("@/app/lib/authClient", () => ({
 // Mock Lucide icons
 vi.mock("lucide-react", () => ({
 	KeyRound: () => <div data-testid="key-icon">Key Icon</div>,
+	Eye: () => <div data-testid="eye-icon">Eye Icon</div>,
+	EyeOff: () => <div data-testid="eye-off-icon">Eye Off Icon</div>,
 }));
 
 vi.mock("@marsidev/react-turnstile", () => ({
@@ -63,6 +65,22 @@ describe("SignInPage", () => {
 		expect(screen.getByTestId("password-input")).toBeInTheDocument();
 		expect(screen.getByTestId("sign-in-button")).toBeInTheDocument();
 		expect(screen.getByText("パスキーでログイン")).toBeInTheDocument();
+		expect(screen.getByLabelText("パスワードを表示する")).toBeInTheDocument();
+	});
+
+	it("toggles password visibility", () => {
+		render(<SignInPage />);
+		const passwordInput = screen.getByTestId("password-input");
+		const toggleButton = screen.getByLabelText("パスワードを表示する");
+
+		expect(passwordInput).toHaveAttribute("type", "password");
+
+		fireEvent.click(toggleButton);
+		expect(passwordInput).toHaveAttribute("type", "text");
+		expect(screen.getByLabelText("パスワードを非表示にする")).toBeInTheDocument();
+
+		fireEvent.click(screen.getByLabelText("パスワードを非表示にする"));
+		expect(passwordInput).toHaveAttribute("type", "password");
 	});
 
 	it("handles successful sign in", async () => {
