@@ -3,6 +3,7 @@
 import authClient from "@/app/lib/authClient";
 import { isValidCallbackUrl } from "@/app/lib/url";
 import { Turnstile } from "@marsidev/react-turnstile";
+import { Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
@@ -14,6 +15,7 @@ export default function SignUpForm({
 }: { googleClientId?: string }) {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
+	const [showPassword, setShowPassword] = useState(false);
 	const [name, setName] = useState("");
 	const [termsAgreed, setTermsAgreed] = useState(false);
 	const [error, setError] = useState<string | null>(null);
@@ -133,15 +135,29 @@ export default function SignUpForm({
 						>
 							パスワード
 						</label>
-						<input
-							id="password"
-							type="password"
-							required
-							className="w-full bg-white dark:bg-stone-950 border border-stone-300 dark:border-stone-800 rounded-lg px-4 py-2 text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
-							value={password}
-							onChange={(e) => setPassword(e.target.value)}
-							data-testid="password-input"
-						/>
+						<div className="relative">
+							<input
+								id="password"
+								type={showPassword ? "text" : "password"}
+								required
+								className="w-full bg-white dark:bg-stone-950 border border-stone-300 dark:border-stone-800 rounded-lg pl-4 pr-10 py-2 text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+								value={password}
+								onChange={(e) => setPassword(e.target.value)}
+								data-testid="password-input"
+							/>
+							<button
+								type="button"
+								onClick={() => setShowPassword(!showPassword)}
+								className="absolute inset-y-0 right-0 pr-3 flex items-center text-stone-400 hover:text-stone-600 dark:text-stone-500 dark:hover:text-stone-300 transition-colors focus-visible:outline-none focus-visible:text-primary"
+								aria-label={
+									showPassword
+										? "パスワードを非表示にする"
+										: "パスワードを表示する"
+								}
+							>
+								{showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+							</button>
+						</div>
 					</div>
 
 					{/* Terms Agreement */}
