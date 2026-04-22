@@ -145,10 +145,10 @@ describe("AuthControls", () => {
 		expect(screen.getByText("Test User")).toBeInTheDocument();
 		expect(screen.getByText("test@example.com")).toBeInTheDocument();
 		expect(
-			screen.getByRole("link", { name: "マイページ" }),
+			screen.getByRole("menuitem", { name: "マイページ" }),
 		).toBeInTheDocument();
 		expect(
-			screen.getByRole("button", { name: "ログアウト" }),
+			screen.getByRole("menuitem", { name: "ログアウト" }),
 		).toBeInTheDocument();
 	});
 
@@ -189,7 +189,7 @@ describe("AuthControls", () => {
 		await user.click(screen.getByLabelText("ユーザーメニュー"));
 
 		// Click logout
-		await user.click(screen.getByRole("button", { name: "ログアウト" }));
+		await user.click(screen.getByRole("menuitem", { name: "ログアウト" }));
 
 		expect(authClient.signOut).toHaveBeenCalled();
 		expect(mockRefresh).toHaveBeenCalled();

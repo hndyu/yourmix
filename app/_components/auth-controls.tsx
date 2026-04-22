@@ -63,9 +63,10 @@ export default function AuthControls() {
 		return (
 			<div className="relative" ref={menuRef}>
 				<button
+					id="user-menu-button"
 					type="button"
 					onClick={() => setIsOpen(!isOpen)}
-					className="flex items-center gap-2 focus:outline-none group"
+					className="flex items-center gap-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 dark:focus-visible:ring-offset-stone-950 rounded-full group"
 					aria-label="ユーザーメニュー"
 					aria-haspopup="true"
 					aria-expanded={isOpen}
@@ -88,7 +89,12 @@ export default function AuthControls() {
 				</button>
 
 				{isOpen && (
-					<div className="absolute right-0 mt-2 w-56 bg-stone-900 border border-stone-800 rounded-xl shadow-xl shadow-black/50 overflow-hidden z-50 animate-in fade-in zoom-in-95 duration-200">
+					<div
+						role="menu"
+						aria-orientation="vertical"
+						aria-labelledby="user-menu-button"
+						className="absolute right-0 mt-2 w-56 bg-stone-900 border border-stone-800 rounded-xl shadow-xl shadow-black/50 overflow-hidden z-50 animate-in fade-in zoom-in-95 duration-200"
+					>
 						<div className="px-4 py-3 border-b border-stone-800">
 							<p className="text-sm font-medium text-white max-w-full truncate">
 								{session.user.name}
@@ -100,7 +106,8 @@ export default function AuthControls() {
 						<div className="p-1">
 							<Link
 								href="/my-page"
-								className="flex items-center gap-2 px-3 py-2 text-sm text-stone-300 hover:bg-stone-800 hover:text-white rounded-lg transition-colors"
+								role="menuitem"
+								className="flex items-center gap-2 px-3 py-2 text-sm text-stone-300 hover:bg-stone-800 hover:text-white focus:bg-stone-800 focus:text-white focus:outline-none rounded-lg transition-colors"
 								onClick={() => setIsOpen(false)}
 							>
 								<User size={18} className="text-stone-500" />
@@ -108,8 +115,9 @@ export default function AuthControls() {
 							</Link>
 							<button
 								type="button"
+								role="menuitem"
 								onClick={handleSignOut}
-								className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-400 hover:bg-red-500/10 hover:text-red-300 rounded-lg transition-colors text-left"
+								className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-400 hover:bg-red-500/10 hover:text-red-300 focus:bg-red-500/10 focus:text-red-300 focus:outline-none rounded-lg transition-colors text-left"
 							>
 								<LogOut size={18} />
 								ログアウト

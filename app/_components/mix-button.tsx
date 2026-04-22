@@ -27,7 +27,7 @@ export default function MixButton({
 			}
 			className={`
         relative group overflow-hidden rounded-full w-48 h-16 flex items-center justify-center
-        transition-all duration-300 ease-out transform
+        transition-all duration-300 ease-out transform focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 dark:focus-visible:ring-offset-stone-950
         ${
 					disabled || isLoading
 						? "bg-stone-800 cursor-not-allowed opacity-70"
