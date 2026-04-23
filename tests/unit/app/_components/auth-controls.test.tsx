@@ -95,7 +95,7 @@ describe("AuthControls", () => {
 		// Avatar button (User menu)
 		const userButton = screen.getByLabelText("ユーザーメニュー");
 		expect(userButton).toBeInTheDocument();
-		expect(userButton).toHaveAttribute("aria-haspopup", "true");
+		expect(userButton).toHaveAttribute("aria-controls", "user-menu");
 		expect(userButton).toHaveAttribute("aria-expanded", "false");
 
 		// Image inside
@@ -145,10 +145,10 @@ describe("AuthControls", () => {
 		expect(screen.getByText("Test User")).toBeInTheDocument();
 		expect(screen.getByText("test@example.com")).toBeInTheDocument();
 		expect(
-			screen.getByRole("menuitem", { name: "マイページ" }),
+			screen.getByRole("link", { name: "マイページ" }),
 		).toBeInTheDocument();
 		expect(
-			screen.getByRole("menuitem", { name: "ログアウト" }),
+			screen.getByRole("button", { name: "ログアウト" }),
 		).toBeInTheDocument();
 	});
 
@@ -189,7 +189,7 @@ describe("AuthControls", () => {
 		await user.click(screen.getByLabelText("ユーザーメニュー"));
 
 		// Click logout
-		await user.click(screen.getByRole("menuitem", { name: "ログアウト" }));
+		await user.click(screen.getByRole("button", { name: "ログアウト" }));
 
 		expect(authClient.signOut).toHaveBeenCalled();
 		expect(mockRefresh).toHaveBeenCalled();
