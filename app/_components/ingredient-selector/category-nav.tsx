@@ -34,7 +34,7 @@ const CategoryNav = React.memo(function CategoryNav({
 								onClick={() => onSelectCategory(category.name)}
 								aria-current={isActive ? "location" : undefined}
 								className={`
-              flex items-center gap-3 px-4 py-3 rounded-xl transition-all text-sm font-medium whitespace-nowrap
+              flex items-center gap-3 px-4 py-3 rounded-xl transition-all text-sm font-medium whitespace-nowrap focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 dark:focus-visible:ring-offset-stone-950
               ${
 								isActive
 									? "bg-white dark:bg-stone-800 text-primary shadow-lg shadow-black/5 dark:shadow-black/20 ring-1 ring-stone-200 dark:ring-0"

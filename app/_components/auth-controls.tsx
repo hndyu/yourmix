@@ -13,12 +13,15 @@ export default function AuthControls() {
 	const pathname = usePathname();
 	const [isOpen, setIsOpen] = useState(false);
 	const menuRef = useRef<HTMLDivElement>(null);
+	const triggerRef = useRef<HTMLButtonElement>(null);
 
 	const callbackUrl =
 		pathname === "/auth/sign-in" || pathname === "/auth/sign-up"
 			? "/"
 			: pathname;
 
+	// メニューはポップオーバーとして提供し、ARIA menu パターン(role="menu"/"menuitem")は使わない。
+	// ※矢印キー移動・roving focus・typeahead 等のフル挙動を実装していないため、ネイティブ要素のセマンティクスを優先する。
 	// Close menu when clicking outside or pressing Escape
 	useEffect(() => {
 		function handleClickOutside(event: MouseEvent) {
@@ -28,8 +31,10 @@ export default function AuthControls() {
 		}
 
 		function handleKeyDown(event: KeyboardEvent) {
-			if (event.key === "Escape") {
+			if (event.key === "Escape" && isOpen) {
 				setIsOpen(false);
+				// Escape で閉じた場合はトリガーへフォーカスを戻す（キーボード利用時の迷子防止）
+				requestAnimationFrame(() => triggerRef.current?.focus());
 			}
 		}
 
@@ -39,7 +44,7 @@ export default function AuthControls() {
 			document.removeEventListener("mousedown", handleClickOutside);
 			document.removeEventListener("keydown", handleKeyDown);
 		};
-	}, []);
+	}, [isOpen]);
 
 	const handleSignOut = async () => {
 		setIsOpen(false);
@@ -64,10 +69,11 @@ export default function AuthControls() {
 			<div className="relative" ref={menuRef}>
 				<button
 					type="button"
+					ref={triggerRef}
 					onClick={() => setIsOpen(!isOpen)}
-					className="flex items-center gap-2 focus:outline-none group"
+					className="flex items-center gap-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 dark:focus-visible:ring-offset-stone-950 rounded-full group"
 					aria-label="ユーザーメニュー"
-					aria-haspopup="true"
+					aria-controls="user-menu"
 					aria-expanded={isOpen}
 				>
 					<div className="w-9 h-9 rounded-full bg-stone-900 border border-stone-800 flex items-center justify-center text-stone-300 group-hover:border-primary/50 group-hover:text-primary transition-colors overflow-hidden">
@@ -88,7 +94,10 @@ export default function AuthControls() {
 				</button>
 
 				{isOpen && (
-					<div className="absolute right-0 mt-2 w-56 bg-stone-900 border border-stone-800 rounded-xl shadow-xl shadow-black/50 overflow-hidden z-50 animate-in fade-in zoom-in-95 duration-200">
+					<div
+						id="user-menu"
+						className="absolute right-0 mt-2 w-56 bg-stone-900 border border-stone-800 rounded-xl shadow-xl shadow-black/50 overflow-hidden z-50 animate-in fade-in zoom-in-95 duration-200"
+					>
 						<div className="px-4 py-3 border-b border-stone-800">
 							<p className="text-sm font-medium text-white max-w-full truncate">
 								{session.user.name}
@@ -100,7 +109,7 @@ export default function AuthControls() {
 						<div className="p-1">
 							<Link
 								href="/my-page"
-								className="flex items-center gap-2 px-3 py-2 text-sm text-stone-300 hover:bg-stone-800 hover:text-white rounded-lg transition-colors"
+								className="flex items-center gap-2 px-3 py-2 text-sm text-stone-300 hover:bg-stone-800 hover:text-white focus:bg-stone-800 focus:text-white focus:outline-none rounded-lg transition-colors"
 								onClick={() => setIsOpen(false)}
 							>
 								<User size={18} className="text-stone-500" />
@@ -109,7 +118,7 @@ export default function AuthControls() {
 							<button
 								type="button"
 								onClick={handleSignOut}
-								className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-400 hover:bg-red-500/10 hover:text-red-300 rounded-lg transition-colors text-left"
+								className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-400 hover:bg-red-500/10 hover:text-red-300 focus:bg-red-500/10 focus:text-red-300 focus:outline-none rounded-lg transition-colors text-left"
 							>
 								<LogOut size={18} />
 								ログアウト
