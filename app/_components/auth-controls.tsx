@@ -65,7 +65,7 @@ export default function AuthControls() {
 				<button
 					type="button"
 					onClick={() => setIsOpen(!isOpen)}
-					className="flex items-center gap-2 focus:outline-none group"
+					className="flex items-center gap-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-full group"
 					aria-label="ユーザーメニュー"
 					aria-haspopup="true"
 					aria-expanded={isOpen}
@@ -100,7 +100,7 @@ export default function AuthControls() {
 						<div className="p-1">
 							<Link
 								href="/my-page"
-								className="flex items-center gap-2 px-3 py-2 text-sm text-stone-300 hover:bg-stone-800 hover:text-white rounded-lg transition-colors"
+								className="flex items-center gap-2 px-3 py-2 text-sm text-stone-300 hover:bg-stone-800 hover:text-white rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-inset"
 								onClick={() => setIsOpen(false)}
 							>
 								<User size={18} className="text-stone-500" />
@@ -109,7 +109,7 @@ export default function AuthControls() {
 							<button
 								type="button"
 								onClick={handleSignOut}
-								className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-400 hover:bg-red-500/10 hover:text-red-300 rounded-lg transition-colors text-left"
+								className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-400 hover:bg-red-500/10 hover:text-red-300 rounded-lg transition-colors text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-inset"
 							>
 								<LogOut size={18} />
 								ログアウト

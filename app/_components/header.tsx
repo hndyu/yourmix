@@ -16,7 +16,7 @@ export default function Header() {
 				{/* Logo / Brand */}
 				<Link
 					href="/"
-					className="flex items-center gap-2 text-foreground hover:opacity-80 transition-opacity"
+					className="flex items-center gap-2 text-foreground hover:opacity-80 transition-opacity focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-lg"
 				>
 					<div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-primary-foreground shadow-lg shadow-primary/40">
 						<Martini size={18} />
