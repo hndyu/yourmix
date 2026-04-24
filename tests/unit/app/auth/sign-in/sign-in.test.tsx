@@ -77,7 +77,9 @@ describe("SignInPage", () => {
 
 		fireEvent.click(toggleButton);
 		expect(passwordInput).toHaveAttribute("type", "text");
-		expect(screen.getByLabelText("パスワードを非表示にする")).toBeInTheDocument();
+		expect(
+			screen.getByLabelText("パスワードを非表示にする"),
+		).toBeInTheDocument();
 
 		fireEvent.click(screen.getByLabelText("パスワードを非表示にする"));
 		expect(passwordInput).toHaveAttribute("type", "password");

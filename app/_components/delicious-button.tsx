@@ -109,7 +109,7 @@ export default function DeliciousButton({
 				aria-label={`おいしい！ ${count > 0 ? `現在の数: ${count}` : ""}`}
 				aria-pressed={isLiked}
 				className={`
-          flex items-center gap-2 px-4 py-2 rounded-full font-bold transition-all active:scale-95
+          flex items-center gap-2 px-4 py-2 rounded-full font-bold transition-all active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-stone-950
           ${
 						isLiked
 							? "bg-amber-500 text-white shadow-lg shadow-amber-500/30 hover:bg-amber-600"

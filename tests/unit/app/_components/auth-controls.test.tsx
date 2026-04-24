@@ -95,7 +95,7 @@ describe("AuthControls", () => {
 		// Avatar button (User menu)
 		const userButton = screen.getByLabelText("ユーザーメニュー");
 		expect(userButton).toBeInTheDocument();
-		expect(userButton).toHaveAttribute("aria-haspopup", "true");
+		expect(userButton).toHaveAttribute("aria-controls", "user-menu");
 		expect(userButton).toHaveAttribute("aria-expanded", "false");
 
 		// Image inside
