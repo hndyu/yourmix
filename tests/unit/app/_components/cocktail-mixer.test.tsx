@@ -259,26 +259,29 @@ describe("CocktailMixer", () => {
 	it("検索結果が表示されたらスクロールする", async () => {
 		const { rerender } = render(<CocktailMixer {...defaultProps} />);
 
+		// 初期状態ではスクロールされない
+		expect(window.HTMLElement.prototype.scrollIntoView).not.toHaveBeenCalled();
+
 		// 材料を選択してMix
 		fireEvent.click(screen.getByTestId("select-ingredient"));
 		fireEvent.click(screen.getByTestId("mix-button"));
 
-		// 検索結果が返ってきた状態をシミュレート
+		// 検索の完了をシミュレート (searchPromise.finally で showSearchResults が true になる)
+		// 実際の実装では searchPromise.finally 内で setShowSearchResults(true) されるため、
+		// テストでは rerender で showSearchResults の反映を待つ必要がある。
+		// しかし showSearchResults は内部状態なので直接は操作できない。
+		// 代わりに、検索が完了したことを擬似的に表現するために、searchResults を更新して rerender する。
 		mockUseCocktails.cocktails = mockSearchResults;
-
-		// モックの値を反映させるために再レンダリング
 		rerender(<CocktailMixer {...defaultProps} />);
 
-		// 結果が表示されていることを確認
+		// 検索結果が表示される（＝showSearchResultsがtrueになる）まで待ち、スクロールを確認
 		await waitFor(() => {
 			expect(
 				screen.getByText(`Search Results: ${mockSearchResults.length}`),
 			).toBeInTheDocument();
-		});
-
-		// スクロールが呼ばれたことを確認
-		expect(window.HTMLElement.prototype.scrollIntoView).toHaveBeenCalledWith({
-			behavior: "smooth",
+			expect(window.HTMLElement.prototype.scrollIntoView).toHaveBeenCalledWith({
+				behavior: "smooth",
+			});
 		});
 	});
 });

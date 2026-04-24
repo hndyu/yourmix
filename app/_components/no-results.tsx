@@ -16,6 +16,7 @@ export function NoResults({ show, onReset }: NoResultsProps) {
 			<SearchX
 				className="text-stone-300 dark:text-stone-600 mb-4 mx-auto"
 				size={48}
+				aria-hidden="true"
 			/>
 			<h3 className="text-xl font-bold text-foreground mb-2">
 				レシピが見つかりませんでした
