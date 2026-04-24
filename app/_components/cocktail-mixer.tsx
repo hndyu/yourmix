@@ -110,15 +110,16 @@ export default function CocktailMixer({
 		setShowSearchResults(false);
 		// 進行中の検索を無効化して空状態の誤表示を防止
 		searchRequestIdRef.current += 1;
+		window.scrollTo({ top: 0, behavior: "smooth" });
 	};
 
 	// 検索結果が表示されたら即座にスクロール
 	React.useEffect(() => {
-		if (searchResults.length > 0 && !hasScrolledAfterMix) {
+		if (showSearchResults && !hasScrolledAfterMix) {
 			resultsRef.current?.scrollIntoView({ behavior: "smooth" });
 			setHasScrolledAfterMix(true);
 		}
-	}, [searchResults, hasScrolledAfterMix]);
+	}, [showSearchResults, hasScrolledAfterMix]);
 
 	// AI 生成完了時に通知バーを表示
 	React.useEffect(() => {
@@ -150,7 +151,7 @@ export default function CocktailMixer({
 			{/* 検索結果エリア（通知バーの高さ分の余白を追加） */}
 			<div
 				ref={resultsRef}
-				className={`w-full ${showCompletionBar ? "pb-20" : ""}`}
+				className={`w-full scroll-mt-24 ${showCompletionBar ? "pb-20" : ""}`}
 			>
 				{(showSearchResults || searchResults.length > 0) && (
 					<CocktailSearchResults

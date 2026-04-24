@@ -202,10 +202,14 @@ export default function CocktailDisplay({
 								{cocktail.tags?.map((tag) => {
 									const content = (
 										<>
-											<Tag size={16} className="shrink-0" />
+											<Tag size={16} className="shrink-0" aria-hidden="true" />
 											{tag.name}
 											{tag.description && (
-												<HelpCircle size={16} className="shrink-0" />
+												<HelpCircle
+													size={16}
+													className="shrink-0"
+													aria-hidden="true"
+												/>
 											)}
 										</>
 									);
@@ -262,11 +266,11 @@ export default function CocktailDisplay({
 									}`}
 								>
 									{isWebShareSupported ? (
-										<Share2 size={18} />
+										<Share2 size={18} aria-hidden="true" />
 									) : isCopied ? (
-										<Check size={18} />
+										<Check size={18} aria-hidden="true" />
 									) : (
-										<Copy size={18} />
+										<Copy size={18} aria-hidden="true" />
 									)}
 									{isWebShareSupported ? "共有" : isCopied ? "完了" : "コピー"}
 								</button>
@@ -328,7 +332,7 @@ export default function CocktailDisplay({
 																rel="noopener noreferrer"
 																className="inline-flex items-center gap-1 px-2 py-1 bg-secondary hover:bg-orange-100 dark:hover:bg-orange-900/30 text-orange-600 dark:text-orange-400 hover:text-orange-700 dark:hover:text-orange-300 rounded text-sm font-bold transition-colors"
 															>
-																<ShoppingCart size={12} />
+																<ShoppingCart size={12} aria-hidden="true" />
 																買う
 															</a>
 														);

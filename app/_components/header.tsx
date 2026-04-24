@@ -18,7 +18,10 @@ export default function Header() {
 					href="/"
 					className="flex items-center gap-2 text-foreground hover:opacity-80 transition-opacity"
 				>
-					<div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-primary-foreground shadow-lg shadow-primary/40">
+					<div
+						className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-primary-foreground shadow-lg shadow-primary/40"
+						aria-hidden="true"
+					>
 						<Martini size={18} />
 					</div>
 					{isHomePage ? (

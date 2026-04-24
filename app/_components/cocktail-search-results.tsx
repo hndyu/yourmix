@@ -46,7 +46,7 @@ const CocktailSearchResults = React.memo(function CocktailSearchResults({
 		<div className="w-full max-w-7xl mx-auto px-4 py-8 animate-in fade-in slide-in-from-bottom-8 duration-1000">
 			<div className="text-center mb-12">
 				<h2 className="text-2xl md:text-3xl font-display font-bold text-foreground mb-2">
-					🔍 検索結果 ({cocktails.length}件)
+					<span aria-hidden="true">🔍</span> 検索結果 ({cocktails.length}件)
 				</h2>
 
 				<p className="text-stone-600 dark:text-stone-400 mb-6">
