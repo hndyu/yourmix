@@ -283,7 +283,10 @@ export default function CocktailDisplay({
 						{/* Ingredients */}
 						<div>
 							<h3 className="text-2xl font-bold text-foreground mb-6 flex items-center gap-3">
-								<span className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-primary text-sm">
+								<span
+									className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-primary text-sm"
+									aria-hidden="true"
+								>
 									A
 								</span>
 								材料
@@ -334,6 +337,9 @@ export default function CocktailDisplay({
 															>
 																<ShoppingCart size={12} aria-hidden="true" />
 																買う
+																<span className="sr-only">
+																	（新しいウィンドウで開きます）
+																</span>
 															</a>
 														);
 													})}
@@ -348,18 +354,24 @@ export default function CocktailDisplay({
 						{/* Instructions */}
 						<div>
 							<h3 className="text-2xl font-bold text-foreground mb-6 flex items-center gap-3">
-								<span className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-primary text-sm">
+								<span
+									className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-primary text-sm"
+									aria-hidden="true"
+								>
 									B
 								</span>
 								作り方
 							</h3>
 
-							<div className="space-y-6">
+							<ol className="space-y-6">
 								{cocktailInstructions.map((step, index) => (
 									// biome-ignore lint/suspicious/noArrayIndexKey: Order is static
-									<div key={`step-${index}`} className="group flex gap-4">
+									<li key={`step-${index}`} className="group flex gap-4">
 										<div className="flex flex-col items-center">
-											<div className="w-8 h-8 rounded-full bg-background border border-border flex items-center justify-center text-muted-foreground font-bold text-sm shrink-0 group-hover:border-primary/50 group-hover:text-primary transition-colors">
+											<div
+												className="w-8 h-8 rounded-full bg-background border border-border flex items-center justify-center text-muted-foreground font-bold text-sm shrink-0 group-hover:border-primary/50 group-hover:text-primary transition-colors"
+												aria-hidden="true"
+											>
 												{index + 1}
 											</div>
 											{index < cocktailInstructions.length - 1 && (
@@ -369,9 +381,9 @@ export default function CocktailDisplay({
 										<p className="pt-1 text-foreground leading-relaxed">
 											{step}
 										</p>
-									</div>
+									</li>
 								))}
-							</div>
+							</ol>
 
 							{cocktail.garnish && (
 								<div className="mt-8 p-4 bg-muted/30 rounded-xl border border-border border-dashed">

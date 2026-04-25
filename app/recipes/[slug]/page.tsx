@@ -140,14 +140,26 @@ export default async function RecipeDetailPage({
 	return (
 		<div className="container mx-auto px-4 py-8">
 			{/* Breadcrumbs */}
-			<nav className="flex items-center text-sm text-stone-600 dark:text-stone-400 mb-6 animate-in fade-in duration-500">
-				<Link href="/" className="hover:text-primary transition-colors">
-					ホーム
-				</Link>
-				<ChevronRight size={16} className="mx-1" />
-				<span className="text-stone-900 dark:text-stone-100 font-medium">
-					{cocktail.name}
-				</span>
+			<nav
+				aria-label="パンくずリスト"
+				className="flex items-center text-sm text-stone-600 dark:text-stone-400 mb-6 animate-in fade-in duration-500"
+			>
+				<ol className="flex items-center">
+					<li className="flex items-center">
+						<Link href="/" className="hover:text-primary transition-colors">
+							ホーム
+						</Link>
+						<ChevronRight size={16} className="mx-1" aria-hidden="true" />
+					</li>
+					<li className="flex items-center">
+						<span
+							className="text-stone-900 dark:text-stone-100 font-medium"
+							aria-current="page"
+						>
+							{cocktail.name}
+						</span>
+					</li>
+				</ol>
 			</nav>
 
 			<script
