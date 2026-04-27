@@ -48,13 +48,13 @@ const CategoryNav = React.memo(function CategoryNav({
 									{asset.type === "image" ? (
 										<Image
 											src={asset.value}
-											alt={category.name}
+											alt=""
 											width={20}
 											height={20}
 											className="w-full h-full object-cover"
 										/>
 									) : (
-										<asset.value size={20} />
+										<asset.value size={20} aria-hidden="true" />
 									)}
 								</span>
 								{category.name}

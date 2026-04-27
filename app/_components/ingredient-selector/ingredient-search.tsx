@@ -48,7 +48,11 @@ export default function IngredientSearch({
 				材料名で検索
 			</label>
 			<div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-				<Search className="text-stone-400 dark:text-stone-500" size={18} />
+				<Search
+					className="text-stone-400 dark:text-stone-500"
+					size={18}
+					aria-hidden="true"
+				/>
 			</div>
 			<input
 				ref={inputRef}
@@ -69,7 +73,7 @@ export default function IngredientSearch({
 					className="absolute inset-y-0 right-0 pr-3 flex items-center text-stone-400 hover:text-stone-600 dark:text-stone-500 dark:hover:text-stone-300 transition-colors"
 					aria-label="検索をクリア"
 				>
-					<XCircle size={18} />
+					<XCircle size={18} aria-hidden="true" />
 				</button>
 			) : (
 				!isFocused && (

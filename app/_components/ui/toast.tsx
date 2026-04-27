@@ -1,6 +1,6 @@
 "use client";
 
-import { CheckCircle, Info, XCircle } from "lucide-react";
+import { AlertTriangle, CheckCircle, Info, XCircle } from "lucide-react";
 import * as React from "react";
 import { useEffect } from "react";
 
@@ -40,10 +40,10 @@ export function Toast({
 	};
 
 	const icons = {
-		success: <CheckCircle size={20} />,
-		warning: <Info size={20} />, // Lucide doesn't have Warning icon, use Info or AlertTriangle
-		info: <Info size={20} />,
-		error: <XCircle size={20} />,
+		success: <CheckCircle size={20} aria-hidden="true" />,
+		warning: <AlertTriangle size={20} aria-hidden="true" />,
+		info: <Info size={20} aria-hidden="true" />,
+		error: <XCircle size={20} aria-hidden="true" />,
 	};
 
 	return (
