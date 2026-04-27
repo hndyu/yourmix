@@ -1,6 +1,6 @@
 "use client";
 
-import { SearchX } from "lucide-react";
+import { RotateCcw, SearchX } from "lucide-react";
 import { Button } from "./ui/button";
 
 interface NoResultsProps {
@@ -32,7 +32,9 @@ export function NoResults({ show, onReset }: NoResultsProps) {
 					size="sm"
 					onClick={onReset}
 					aria-label="選択をすべてクリア"
+					className="gap-2"
 				>
+					<RotateCcw size={16} aria-hidden="true" />
 					選択をすべてクリア
 				</Button>
 			)}

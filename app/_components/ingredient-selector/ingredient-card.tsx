@@ -74,7 +74,7 @@ const IngredientCard = React.memo(
 						}
           `}
 						>
-							<CheckCircle size={16} />
+							<CheckCircle size={16} aria-hidden="true" />
 						</div>
 					</div>
 
@@ -135,6 +135,7 @@ const IngredientCard = React.memo(
 							<ChevronDown
 								className={`transition-transform duration-300 ${expanded ? "rotate-180" : ""}`}
 								size={16}
+								aria-hidden="true"
 							/>
 						</button>
 

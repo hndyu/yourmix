@@ -112,7 +112,7 @@ export default function AuthControls() {
 								className="flex items-center gap-2 px-3 py-2 text-sm text-stone-300 hover:bg-stone-800 hover:text-white focus:bg-stone-800 focus:text-white focus:outline-none rounded-lg transition-colors"
 								onClick={() => setIsOpen(false)}
 							>
-								<User size={18} className="text-stone-500" />
+								<User size={18} className="text-stone-500" aria-hidden="true" />
 								マイページ
 							</Link>
 							<button
@@ -120,7 +120,7 @@ export default function AuthControls() {
 								onClick={handleSignOut}
 								className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-400 hover:bg-red-500/10 hover:text-red-300 focus:bg-red-500/10 focus:text-red-300 focus:outline-none rounded-lg transition-colors text-left"
 							>
-								<LogOut size={18} />
+								<LogOut size={18} aria-hidden="true" />
 								ログアウト
 							</button>
 						</div>
@@ -139,7 +139,7 @@ export default function AuthControls() {
 				className="px-2 sm:px-3 text-stone-600 dark:text-stone-400"
 				aria-label="ログイン"
 			>
-				<LogIn size={20} className="sm:mr-2" />
+				<LogIn size={20} className="sm:mr-2" aria-hidden="true" />
 				<span className="hidden sm:inline">ログイン</span>
 			</Button>
 			<Button
