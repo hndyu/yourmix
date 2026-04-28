@@ -191,6 +191,8 @@ export default function SignInForm({
 									id="backup-code"
 									type="text"
 									required
+									// biome-ignore lint/a11y/noAutofocus: 2FA inputs should be focused for better UX
+									autoFocus
 									className="w-full bg-white dark:bg-stone-950 border border-stone-300 dark:border-stone-800 rounded-lg px-4 py-3 text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-primary text-center tracking-widest text-xl font-mono uppercase"
 									placeholder="XXXXXXXX"
 									value={backupCode}
@@ -209,6 +211,11 @@ export default function SignInForm({
 									<input
 										id="2fa-code"
 										type="text"
+										inputMode="numeric"
+										pattern="[0-9]*"
+										autoComplete="one-time-code"
+										// biome-ignore lint/a11y/noAutofocus: 2FA inputs should be focused for better UX
+										autoFocus
 										required
 										className="w-full bg-white dark:bg-stone-950 border border-stone-300 dark:border-stone-800 rounded-lg px-4 py-3 text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-primary text-center tracking-[0.5em] text-2xl font-mono"
 										placeholder="000000"
