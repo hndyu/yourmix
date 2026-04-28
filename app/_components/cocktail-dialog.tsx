@@ -95,7 +95,7 @@ export default function CocktailDialog({
 					ref={closeButtonRef}
 					type="button"
 					onClick={onClose}
-					className="sticky top-4 float-right mr-4 z-20 p-2 rounded-full bg-background/80 backdrop-blur-sm border border-border text-muted-foreground hover:text-foreground hover:bg-background transition-colors shadow-lg"
+					className="sticky top-4 float-right mr-4 z-20 p-2 rounded-full bg-background/80 backdrop-blur-sm border border-border text-muted-foreground hover:text-foreground hover:bg-background transition-colors shadow-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 dark:focus-visible:ring-offset-stone-950"
 					aria-label="閉じる"
 				>
 					<X size={20} />

@@ -835,6 +835,11 @@ export default function MyPage() {
 								<input
 									type="text"
 									id="2fa-code"
+									inputMode="numeric"
+									pattern="[0-9]*"
+									autoComplete="one-time-code"
+									// biome-ignore lint/a11y/noAutofocus: 2FA inputs should be focused for better UX
+									autoFocus
 									value={twoFactorCode}
 									onChange={(e) => setTwoFactorCode(e.target.value)}
 									className="w-full px-3 py-2 bg-white dark:bg-stone-800 border border-stone-300 dark:border-stone-700 rounded-lg text-stone-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary text-center tracking-[0.5em] text-xl font-mono"
