@@ -215,7 +215,7 @@ export default function CocktailDisplay({
 									);
 									const className = `flex items-center gap-1.5 px-3 py-1 bg-secondary border border-border rounded-full text-xs text-muted-foreground ${
 										tag.description
-											? "cursor-pointer hover:bg-secondary/80 hover:text-foreground transition-colors"
+											? "cursor-pointer hover:bg-secondary/80 hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 dark:focus-visible:ring-offset-stone-950"
 											: ""
 									}`;
 
@@ -333,7 +333,7 @@ export default function CocktailDisplay({
 																href={link}
 																target="_blank"
 																rel="noopener noreferrer"
-																className="inline-flex items-center gap-1 px-2 py-1 bg-secondary hover:bg-orange-100 dark:hover:bg-orange-900/30 text-orange-600 dark:text-orange-400 hover:text-orange-700 dark:hover:text-orange-300 rounded text-sm font-bold transition-colors"
+																className="inline-flex items-center gap-1 px-2 py-1 bg-secondary hover:bg-orange-100 dark:hover:bg-orange-900/30 text-orange-600 dark:text-orange-400 hover:text-orange-700 dark:hover:text-orange-300 rounded text-sm font-bold transition-all active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 dark:focus-visible:ring-offset-stone-950"
 															>
 																<ShoppingCart size={12} aria-hidden="true" />
 																買う
