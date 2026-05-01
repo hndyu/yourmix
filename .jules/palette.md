@@ -21,3 +21,7 @@
 ## 2025-04-25 - [Semantic Lists & External Link Hints]
 **Learning:** Semantic HTML is the foundation of accessibility. Using `<ol>` and `<li>` for breadcrumbs and instructions provides a clear structure for screen readers. Decorative markers (like "A", "B", or step numbers) should be hidden with `aria-hidden="true"` to avoid redundant announcements. For links opening in new windows (`target="_blank"`), a visually hidden hint like `（新しいウィンドウで開きます）` is essential for informing screen reader users of the change in context.
 **Action:** Use semantic lists for ordered content, hide decorative markers, and always provide visually hidden hints for external links.
+
+## 2026-05-01 - [Required Field Visual Indicators & Testing Patterns]
+**Learning:** Adding visual indicators (like a red asterisk) to required fields significantly improves form usability by reducing cognitive load. When implementing this within a `<label>`, it's critical to use `aria-hidden="true"` on the indicator to prevent screen reader noise, as the underlying `required` attribute already provides the semantic state. Additionally, this change requires updating Testing Library `getByLabelText` queries to use regular expressions to maintain robust test selection.
+**Action:** Always include visual "required" indicators in mandatory forms and use regex-based label matching in associated tests to accommodate the extra markup.

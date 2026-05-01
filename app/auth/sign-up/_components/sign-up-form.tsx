@@ -98,6 +98,10 @@ export default function SignUpForm({
 							className="block text-sm font-medium text-stone-600 dark:text-stone-400 mb-1"
 						>
 							名前
+							<span className="text-red-500" aria-hidden="true">
+								{" "}
+								*
+							</span>
 						</label>
 						<input
 							id="name"
@@ -116,6 +120,10 @@ export default function SignUpForm({
 							className="block text-sm font-medium text-stone-600 dark:text-stone-400 mb-1"
 						>
 							メールアドレス
+							<span className="text-red-500" aria-hidden="true">
+								{" "}
+								*
+							</span>
 						</label>
 						<input
 							id="email"
@@ -134,6 +142,10 @@ export default function SignUpForm({
 							className="block text-sm font-medium text-stone-600 dark:text-stone-400 mb-1"
 						>
 							パスワード
+							<span className="text-red-500" aria-hidden="true">
+								{" "}
+								*
+							</span>
 						</label>
 						<div className="relative">
 							<input
