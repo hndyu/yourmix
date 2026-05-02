@@ -250,11 +250,11 @@ describe("SignInPage", () => {
 		// Should show 2FA form
 		await waitFor(() => {
 			expect(screen.getByText("2要素認証")).toBeInTheDocument();
-			expect(screen.getByLabelText("認証コード")).toBeInTheDocument();
+			expect(screen.getByLabelText(/認証コード/)).toBeInTheDocument();
 		});
 
 		// Submit 2FA code
-		fireEvent.change(screen.getByLabelText("認証コード"), {
+		fireEvent.change(screen.getByLabelText(/認証コード/), {
 			target: { value: "123456" },
 		});
 		fireEvent.click(screen.getByText("認証してログイン"));
@@ -335,10 +335,10 @@ describe("SignInPage", () => {
 		// Switch to backup code mode
 		fireEvent.click(screen.getByText("バックアップコードを使用する"));
 
-		expect(screen.getByLabelText("バックアップコード")).toBeInTheDocument();
+		expect(screen.getByLabelText(/バックアップコード/)).toBeInTheDocument();
 
 		// Submit backup code
-		fireEvent.change(screen.getByLabelText("バックアップコード"), {
+		fireEvent.change(screen.getByLabelText(/バックアップコード/), {
 			target: { value: "ABCDEFGH" },
 		});
 		fireEvent.click(screen.getByText("認証してログイン"));
