@@ -60,26 +60,8 @@ vi.mock("qrcode.react", () => ({
 // Mock fetch
 global.fetch = vi.fn();
 
-type Session = {
-	user: {
-		id: string;
-		name: string;
-		email: string;
-		twoFactorEnabled: boolean | null | undefined;
-		createdAt: Date;
-		updatedAt: Date;
-		emailVerified: boolean;
-		image?: string | null;
-	};
-	session: {
-		id: string;
-		userId: string;
-		expiresAt: Date;
-		token: string;
-		createdAt: Date;
-		updatedAt: Date;
-	};
-};
+type Session = typeof authClient.$Infer.Session;
+type User = typeof authClient.$Infer.Session.user;
 
 type UseSessionReturn = {
 	data: Session | null;
@@ -105,7 +87,7 @@ describe("MyPage", () => {
 				createdAt: new Date(),
 				updatedAt: new Date(),
 				emailVerified: true,
-			},
+			} as unknown as User,
 			session: {
 				id: "session-1",
 				userId: "user-1",
@@ -149,6 +131,11 @@ describe("MyPage", () => {
 		expect(screen.getByText("マイページ")).toBeInTheDocument();
 		expect(screen.getByText("Test User")).toBeInTheDocument();
 		expect(screen.getByText("test@example.com")).toBeInTheDocument();
+
+		// Wait for useEffect data fetching to complete to avoid act() warnings
+		await waitFor(() => {
+			expect(screen.queryByText("読み込み中...")).not.toBeInTheDocument();
+		});
 	});
 
 	it("redirects to sign-in if no session", async () => {
@@ -255,7 +242,10 @@ describe("MyPage", () => {
 			...mockSession,
 			data: {
 				...mockSession.data,
-				user: { ...mockSession.data.user, twoFactorEnabled: true },
+				user: {
+					...mockSession.data.user,
+					twoFactorEnabled: true,
+				} as unknown as User,
 			},
 		};
 		vi.mocked(authClient.useSession).mockReturnValue(
