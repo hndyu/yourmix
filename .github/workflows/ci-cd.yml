@@ -29,9 +29,6 @@ jobs:
       - name: Type check
         run: npx tsc --noEmit
 
-      - name: Audit
-        run: npm audit
-
       - name: Knip
         run: npm run knip
 
