@@ -11,6 +11,10 @@ on:
 jobs:
   check:
     runs-on: ubuntu-latest
+    env:
+      CLOUDFLARE_ACCOUNT_ID: dummy
+      CLOUDFLARE_DATABASE_ID: dummy
+      CLOUDFLARE_D1_TOKEN: dummy
     steps:
       - uses: actions/checkout@v4
 
