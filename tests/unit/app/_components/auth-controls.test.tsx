@@ -13,6 +13,8 @@ vi.mock("@/app/lib/authClient", () => ({
 	},
 }));
 
+type User = typeof authClient.$Infer.Session.user;
+
 // Mock next/navigation
 const mockPush = vi.fn();
 const mockRefresh = vi.fn();
@@ -72,7 +74,7 @@ describe("AuthControls", () => {
 					createdAt: new Date(),
 					updatedAt: new Date(),
 					twoFactorEnabled: false,
-				},
+				} as unknown as User,
 				session: {
 					id: "session-1",
 					userId: "1",
@@ -115,7 +117,7 @@ describe("AuthControls", () => {
 					updatedAt: new Date(),
 					twoFactorEnabled: false,
 					image: null,
-				},
+				} as unknown as User,
 				session: {
 					id: "session-1",
 					userId: "1",
@@ -164,7 +166,7 @@ describe("AuthControls", () => {
 					updatedAt: new Date(),
 					twoFactorEnabled: false,
 					image: null,
-				},
+				} as unknown as User,
 				session: {
 					id: "session-1",
 					userId: "1",
