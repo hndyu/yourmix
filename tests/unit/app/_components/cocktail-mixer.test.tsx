@@ -186,7 +186,7 @@ describe("CocktailMixer", () => {
 		vi.clearAllMocks();
 	});
 
-	it("材料を選択しMixボタンを押すと、カクテル生成と検索が実行される", () => {
+	it("材料を選択しMixボタンを押すと、カクテル生成と検索が実行される", async () => {
 		render(<CocktailMixer {...defaultProps} />);
 
 		// 材料を選択
@@ -196,10 +196,12 @@ describe("CocktailMixer", () => {
 		fireEvent.click(screen.getByTestId("mix-button"));
 
 		// カスタムフックの関数が正しい引数で呼ばれたか確認
-		expect(mockUseCocktails.searchCocktails).toHaveBeenCalledWith([1]);
-		expect(mockUseAICocktailGenerator.generateCocktail).toHaveBeenCalledWith([
-			"ジン",
-		]);
+		await waitFor(() => {
+			expect(mockUseCocktails.searchCocktails).toHaveBeenCalledWith([1]);
+			expect(mockUseAICocktailGenerator.generateCocktail).toHaveBeenCalledWith([
+				"ジン",
+			]);
+		});
 	});
 
 	it("AI生成中に通知バーで実況メッセージを表示する", async () => {

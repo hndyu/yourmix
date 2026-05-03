@@ -2,5 +2,5 @@
 	"$schema": "https://unpkg.com/knip@5/schema.json",
 	"tags": ["-lintignore"],
 	"ignore": ["open-next.config.ts", "tests/bench/**/*.bench.ts"],
-	"ignoreDependencies": ["postcss", "better-auth", "@better-fetch/fetch"]
+	"ignoreDependencies": ["postcss"]
 }

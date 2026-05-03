@@ -149,6 +149,11 @@ describe("MyPage", () => {
 		expect(screen.getByText("マイページ")).toBeInTheDocument();
 		expect(screen.getByText("Test User")).toBeInTheDocument();
 		expect(screen.getByText("test@example.com")).toBeInTheDocument();
+
+		// Wait for useEffect data fetching to complete to avoid act() warnings
+		await waitFor(() => {
+			expect(screen.queryByText("読み込み中...")).not.toBeInTheDocument();
+		});
 	});
 
 	it("redirects to sign-in if no session", async () => {

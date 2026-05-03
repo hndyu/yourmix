@@ -20,14 +20,13 @@ describe("scripts/seed-worker.ts", () => {
 	beforeEach(() => {
 		// 各テストの前にモックの状態をリセット
 		vi.resetAllMocks();
-		process.env = { ...originalEnv };
-		process.env.SEED_SECRET = "test-secret"; // デフォルトでシークレットを設定
+		vi.stubEnv("SEED_SECRET", "test-secret"); // デフォルトでシークレットを設定
 	});
 
 	afterEach(() => {
 		// テスト後に元の実装に戻す
 		process.argv = originalArgv;
-		process.env = originalEnv;
+		vi.unstubAllEnvs();
 	});
 
 	const runScript = async () => {
@@ -153,7 +152,7 @@ describe("scripts/seed-worker.ts", () => {
 
 	it("SEED_SECRETが設定されていない場合、エラーを出力してexit(1)で終了すること", async () => {
 		process.argv = ["node", "seed-worker.ts", "local"];
-		process.env.SEED_SECRET = undefined; // シークレットを未設定にする
+		vi.stubEnv("SEED_SECRET", ""); // シークレットを空にする
 
 		const code = await runScript();
 
