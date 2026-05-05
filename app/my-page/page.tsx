@@ -612,13 +612,18 @@ export default function MyPage() {
 							<div>
 								<label
 									htmlFor="passkey-name"
-									className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1"
+									className="block text-sm font-medium text-stone-600 dark:text-stone-400 mb-1"
 								>
 									パスキー名
+									<span className="text-red-500" aria-hidden="true">
+										{" "}
+										*
+									</span>
 								</label>
 								<input
 									type="text"
 									id="passkey-name"
+									required
 									value={passkeyName}
 									onChange={(e) => setPasskeyName(e.target.value)}
 									className="w-full px-3 py-2 bg-white dark:bg-stone-800 border border-stone-300 dark:border-stone-700 rounded-lg text-stone-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary"
@@ -669,13 +674,18 @@ export default function MyPage() {
 							<div>
 								<label
 									htmlFor="current-password"
-									className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1"
+									className="block text-sm font-medium text-stone-600 dark:text-stone-400 mb-1"
 								>
 									現在のパスワード
+									<span className="text-red-500" aria-hidden="true">
+										{" "}
+										*
+									</span>
 								</label>
 								<input
 									type="password"
 									id="current-password"
+									required
 									value={currentPassword}
 									onChange={(e) => setCurrentPassword(e.target.value)}
 									className="w-full px-3 py-2 bg-white dark:bg-stone-800 border border-stone-300 dark:border-stone-700 rounded-lg text-stone-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary"
@@ -685,13 +695,18 @@ export default function MyPage() {
 							<div>
 								<label
 									htmlFor="new-password"
-									className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1"
+									className="block text-sm font-medium text-stone-600 dark:text-stone-400 mb-1"
 								>
 									新しいパスワード
+									<span className="text-red-500" aria-hidden="true">
+										{" "}
+										*
+									</span>
 								</label>
 								<input
 									type="password"
 									id="new-password"
+									required
 									value={newPassword}
 									onChange={(e) => setNewPassword(e.target.value)}
 									className="w-full px-3 py-2 bg-white dark:bg-stone-800 border border-stone-300 dark:border-stone-700 rounded-lg text-stone-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary"
@@ -701,13 +716,18 @@ export default function MyPage() {
 							<div>
 								<label
 									htmlFor="confirm-new-password"
-									className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1"
+									className="block text-sm font-medium text-stone-600 dark:text-stone-400 mb-1"
 								>
-									新しいパスワード（確認）
+									新しいパスワード(確認)
+									<span className="text-red-500" aria-hidden="true">
+										{" "}
+										*
+									</span>
 								</label>
 								<input
 									type="password"
 									id="confirm-new-password"
+									required
 									value={confirmNewPassword}
 									onChange={(e) => setConfirmNewPassword(e.target.value)}
 									className="w-full px-3 py-2 bg-white dark:bg-stone-800 border border-stone-300 dark:border-stone-700 rounded-lg text-stone-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary"
@@ -765,13 +785,18 @@ export default function MyPage() {
 							<div>
 								<label
 									htmlFor="confirm-password"
-									className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1"
+									className="block text-sm font-medium text-stone-600 dark:text-stone-400 mb-1"
 								>
 									パスワード
+									<span className="text-red-500" aria-hidden="true">
+										{" "}
+										*
+									</span>
 								</label>
 								<input
 									type="password"
 									id="confirm-password"
+									required
 									value={password}
 									onChange={(e) => setPassword(e.target.value)}
 									className="w-full px-3 py-2 bg-white dark:bg-stone-800 border border-stone-300 dark:border-stone-700 rounded-lg text-stone-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary"
@@ -828,13 +853,18 @@ export default function MyPage() {
 							<div>
 								<label
 									htmlFor="2fa-code"
-									className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1"
+									className="block text-sm font-medium text-stone-600 dark:text-stone-400 mb-1"
 								>
 									認証コード
+									<span className="text-red-500" aria-hidden="true">
+										{" "}
+										*
+									</span>
 								</label>
 								<input
 									type="text"
 									id="2fa-code"
+									required
 									inputMode="numeric"
 									pattern="[0-9]*"
 									autoComplete="one-time-code"
@@ -912,13 +942,18 @@ export default function MyPage() {
 							<div>
 								<label
 									htmlFor="name"
-									className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1"
+									className="block text-sm font-medium text-stone-600 dark:text-stone-400 mb-1"
 								>
 									お名前
+									<span className="text-red-500" aria-hidden="true">
+										{" "}
+										*
+									</span>
 								</label>
 								<input
 									type="text"
 									id="name"
+									required
 									value={newName}
 									onChange={(e) => setNewName(e.target.value)}
 									className="w-full px-3 py-2 bg-white dark:bg-stone-800 border border-stone-300 dark:border-stone-700 rounded-lg text-stone-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary"
@@ -928,13 +963,18 @@ export default function MyPage() {
 							<div>
 								<label
 									htmlFor="email"
-									className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1"
+									className="block text-sm font-medium text-stone-600 dark:text-stone-400 mb-1"
 								>
 									メールアドレス
+									<span className="text-red-500" aria-hidden="true">
+										{" "}
+										*
+									</span>
 								</label>
 								<input
 									type="email"
 									id="email"
+									required
 									value={newEmail}
 									onChange={(e) => setNewEmail(e.target.value)}
 									className="w-full px-3 py-2 bg-white dark:bg-stone-800 border border-stone-300 dark:border-stone-700 rounded-lg text-stone-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary"

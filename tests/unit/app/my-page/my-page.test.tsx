@@ -159,8 +159,8 @@ describe("MyPage", () => {
 
 		fireEvent.click(screen.getByText("編集"));
 
-		const nameInput = screen.getByPlaceholderText("お名前");
-		const emailInput = screen.getByPlaceholderText("メールアドレス");
+		const nameInput = screen.getByLabelText(/お名前/);
+		const emailInput = screen.getByLabelText(/メールアドレス/);
 
 		fireEvent.change(nameInput, { target: { value: "Updated Name" } });
 		fireEvent.change(emailInput, { target: { value: "updated@example.com" } });
@@ -199,7 +199,7 @@ describe("MyPage", () => {
 		fireEvent.click(enableButtons[0]);
 
 		// 2. Enter password
-		const passwordInput = screen.getByPlaceholderText("パスワード");
+		const passwordInput = screen.getByLabelText(/パスワード/);
 		fireEvent.change(passwordInput, { target: { value: "password123" } });
 		fireEvent.click(screen.getByText("確認"));
 
@@ -260,7 +260,7 @@ describe("MyPage", () => {
 		const disableButton = await screen.findByText("無効にする");
 		fireEvent.click(disableButton);
 
-		const passwordInput = screen.getByPlaceholderText("パスワード");
+		const passwordInput = screen.getByLabelText(/パスワード/);
 		fireEvent.change(passwordInput, { target: { value: "password123" } });
 		fireEvent.click(screen.getByText("確認"));
 
@@ -284,14 +284,16 @@ describe("MyPage", () => {
 		const changePasswordButton = await screen.findByText("パスワードを変更");
 		fireEvent.click(changePasswordButton);
 
-		fireEvent.change(screen.getByPlaceholderText("現在のパスワード"), {
+		fireEvent.change(screen.getByLabelText(/現在のパスワード/), {
 			target: { value: "old-pass" },
 		});
 		fireEvent.change(
-			screen.getByPlaceholderText("新しいパスワード（8文字以上）"),
-			{ target: { value: "new-password" } },
+			screen.getByLabelText(/新しいパスワード/, { selector: "#new-password" }),
+			{
+				target: { value: "new-password" },
+			},
 		);
-		fireEvent.change(screen.getByPlaceholderText("新しいパスワード（確認）"), {
+		fireEvent.change(screen.getByLabelText(/新しいパスワード\(確認\)/), {
 			target: { value: "new-password" },
 		});
 
@@ -381,10 +383,10 @@ describe("MyPage", () => {
 		const addPasskeyButton = await screen.findByText("パスキーを追加");
 		fireEvent.click(addPasskeyButton);
 
-		expect(screen.getByText("パスキー名")).toBeInTheDocument();
+		expect(screen.getByLabelText(/パスキー名/)).toBeInTheDocument();
 
 		// 2. Submit new passkey
-		const nameInput = screen.getByPlaceholderText("デバイス名など");
+		const nameInput = screen.getByLabelText(/パスキー名/);
 		fireEvent.change(nameInput, { target: { value: "My Passkey" } });
 		fireEvent.click(screen.getByText("追加する"));
 

@@ -71,7 +71,7 @@ export default function AuthControls() {
 					type="button"
 					ref={triggerRef}
 					onClick={() => setIsOpen(!isOpen)}
-					className="flex items-center gap-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 dark:focus-visible:ring-offset-stone-950 rounded-full group"
+					className="flex items-center gap-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 dark:focus-visible:ring-offset-stone-950 rounded-full group transition-all active:scale-95"
 					aria-label="ユーザーメニュー"
 					aria-controls="user-menu"
 					aria-expanded={isOpen}
