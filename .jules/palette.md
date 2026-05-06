@@ -25,3 +25,7 @@
 ## 2026-05-01 - [Required Field Visual Indicators & Testing Patterns]
 **Learning:** Adding visual indicators (like a red asterisk) to required fields significantly improves form usability by reducing cognitive load. When implementing this within a `<label>`, it's critical to use `aria-hidden="true"` on the indicator to prevent screen reader noise, as the underlying `required` attribute already provides the semantic state. Additionally, this change requires updating Testing Library `getByLabelText` queries to use regular expressions to maintain robust test selection.
 **Action:** Always include visual "required" indicators in mandatory forms and use regex-based label matching in associated tests to accommodate the extra markup.
+
+## 2026-05-06 - [Dialog Keyboard Navigation & Body Scroll Locking]
+**Learning:** Manual dialog implementations often forget standard UX expectations: closing with the 'Escape' key and preventing the background content from scrolling. Managing these via centralized `useEffect` hooks linked to an aggregate 'open' state (e.g., `anyDialogOpen`) ensures consistent behavior across multiple modals within the same component and prevents common accessibility regressions.
+**Action:** For components with multiple dialogs/modals, implement a centralized Escape key listener and body scroll locking effect to ensure standard accessible behavior.
