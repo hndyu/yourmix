@@ -6,7 +6,7 @@ import { deleteAccountAction, updateProfileAction } from "@/app/actions/user";
 import authClient from "@/app/lib/authClient";
 import { redirect, useRouter } from "next/navigation";
 import { QRCodeSVG } from "qrcode.react";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { lockBodyScroll } from "../utils/body-scroll-lock";
 
 interface ErrorResponse {
@@ -247,7 +247,7 @@ export default function MyPage() {
 		}
 	};
 
-	const handleResultDialogClose = async () => {
+	const handleResultDialogClose = useCallback(async () => {
 		setResultDialogOpen(false);
 		setShowBackupCodes(false);
 		if (resultDialogAction === "signOut") {
@@ -257,7 +257,7 @@ export default function MyPage() {
 		} else if (resultDialogAction === "refresh") {
 			router.refresh(); // Refresh to show new name or state
 		}
-	};
+	}, [resultDialogAction, router]);
 
 	const handleEditProfile = () => {
 		if (session?.user) {
@@ -405,7 +405,9 @@ export default function MyPage() {
 		const handleKeyDown = (e: KeyboardEvent) => {
 			if (e.key === "Escape") {
 				setConfirmDialogOpen(false);
-				setResultDialogOpen(false);
+				if (resultDialogOpen) {
+					handleResultDialogClose();
+				}
 				setEditDialogOpen(false);
 				setIsTwoFactorDialogOpen(false);
 				setIsPasswordDialogOpen(false);
@@ -418,7 +420,7 @@ export default function MyPage() {
 			window.addEventListener("keydown", handleKeyDown);
 		}
 		return () => window.removeEventListener("keydown", handleKeyDown);
-	}, [anyDialogOpen]);
+	}, [anyDialogOpen, resultDialogOpen, handleResultDialogClose]);
 
 	// Lock body scroll
 	useEffect(() => {
