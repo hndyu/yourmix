@@ -123,6 +123,8 @@ describe("MyPage", () => {
 			data: [],
 			error: null,
 		});
+		// Reset body style
+		document.body.style.overflow = "";
 	});
 
 	it("renders user information correctly", async () => {
@@ -415,6 +417,39 @@ describe("MyPage", () => {
 			expect(
 				screen.getByText("パスキーが削除されました。"),
 			).toBeInTheDocument();
+		});
+	});
+
+	it("closes dialog on Escape key press", async () => {
+		render(<MyPage />);
+
+		// Open Edit Profile Dialog
+		fireEvent.click(screen.getByText("編集"));
+		expect(screen.getByText("プロフィールの編集")).toBeInTheDocument();
+
+		// Press Escape
+		fireEvent.keyDown(window, { key: "Escape", code: "Escape" });
+
+		await waitFor(() => {
+			expect(screen.queryByText("プロフィールの編集")).not.toBeInTheDocument();
+		});
+	});
+
+	it("locks and unlocks body scroll when dialog is toggled", async () => {
+		render(<MyPage />);
+
+		// Open Edit Profile Dialog
+		fireEvent.click(screen.getByText("編集"));
+		expect(screen.getByText("プロフィールの編集")).toBeInTheDocument();
+
+		expect(document.body.style.overflow).toBe("hidden");
+
+		// Press Escape to close
+		fireEvent.keyDown(window, { key: "Escape", code: "Escape" });
+
+		await waitFor(() => {
+			expect(screen.queryByText("プロフィールの編集")).not.toBeInTheDocument();
+			expect(document.body.style.overflow).not.toBe("hidden");
 		});
 	});
 });
