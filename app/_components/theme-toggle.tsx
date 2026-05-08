@@ -29,7 +29,11 @@ export function ThemeToggle() {
 			aria-label={themeLabel}
 			title={themeLabel}
 		>
-			{resolvedTheme === "dark" ? <Sun size={20} /> : <Moon size={20} />}
+			{resolvedTheme === "dark" ? (
+				<Sun size={20} aria-hidden="true" />
+			) : (
+				<Moon size={20} aria-hidden="true" />
+			)}
 		</button>
 	);
 }

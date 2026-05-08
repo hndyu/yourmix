@@ -118,7 +118,7 @@ const IngredientCard = React.memo(
 							type="button"
 							aria-expanded={expanded}
 							aria-label={`${ingredient.name}の銘柄・詳細を${expanded ? "閉じる" : "表示"}`}
-							className="expand-btn w-full px-4 py-2 flex items-center justify-between text-xs text-stone-600 dark:text-stone-500 hover:text-stone-800 dark:hover:text-stone-300 transition-colors focus:outline-none focus:bg-stone-100 dark:focus:bg-stone-800/50 rounded-b-2xl"
+							className="expand-btn w-full px-4 py-2 flex items-center justify-between text-xs text-stone-600 dark:text-stone-500 hover:text-stone-800 dark:hover:text-stone-300 transition-colors focus:outline-none focus:bg-stone-100 dark:focus:bg-stone-800/50 active:bg-stone-100 dark:active:bg-stone-800 rounded-b-2xl"
 							onClick={(e) => {
 								e.stopPropagation();
 								setExpanded(!expanded);
