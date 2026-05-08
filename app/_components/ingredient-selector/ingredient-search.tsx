@@ -64,6 +64,16 @@ export default function IngredientSearch({
 				onChange={(e) => onChange(e.target.value)}
 				onFocus={() => setIsFocused(true)}
 				onBlur={() => setIsFocused(false)}
+				onKeyDown={(e) => {
+					if (e.key === "Escape") {
+						e.stopPropagation();
+						if (value) {
+							onChange("");
+						} else {
+							inputRef.current?.blur();
+						}
+					}
+				}}
 				aria-keyshortcuts="/"
 			/>
 			{value ? (
@@ -78,7 +88,11 @@ export default function IngredientSearch({
 			) : (
 				!isFocused && (
 					<div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-						<kbd className="hidden sm:inline-flex h-5 select-none items-center gap-1 rounded border border-stone-200 bg-stone-50 px-1.5 font-mono text-[10px] font-medium text-stone-400 opacity-100 dark:border-stone-800 dark:bg-stone-950 dark:text-stone-500">
+						{/* biome-ignore lint/a11y/noAriaHiddenOnFocusable: kbd is not focusable, this is a purely visual hint as the shortcut is announced by aria-keyshortcuts on the input */}
+						<kbd
+							className="hidden sm:inline-flex h-5 select-none items-center gap-1 rounded border border-stone-200 bg-stone-50 px-1.5 font-mono text-[10px] font-medium text-stone-400 opacity-100 dark:border-stone-800 dark:bg-stone-950 dark:text-stone-500"
+							aria-hidden="true"
+						>
 							/
 						</kbd>
 					</div>
