@@ -2,6 +2,7 @@
 
 import type { Category, Ingredient } from "@/app/types/cocktail";
 import * as React from "react";
+import { Button } from "../ui/button";
 import { Toast, type ToastSeverity } from "../ui/toast";
 import CategoryNav from "./category-nav";
 import IngredientCard from "./ingredient-card";
@@ -189,13 +190,14 @@ export default function IngredientSelector({
 						<div className="col-span-full text-center py-12 text-stone-500 flex flex-col items-center gap-4">
 							<p>該当する材料が見つかりません</p>
 							{deferredSearchQuery && (
-								<button
-									type="button"
+								<Button
+									variant="outline"
+									size="sm"
 									onClick={() => setSearchQuery("")}
-									className="px-4 py-2 text-sm font-medium text-primary hover:text-primary/80 transition-colors border border-primary/20 hover:border-primary/40 rounded-full"
+									className="rounded-full"
 								>
 									検索をクリア
-								</button>
+								</Button>
 							)}
 						</div>
 					)}

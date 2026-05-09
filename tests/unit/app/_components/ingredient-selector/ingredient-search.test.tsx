@@ -98,4 +98,30 @@ describe("IngredientSearch", () => {
 
 		expect(onChange).toHaveBeenCalledWith("");
 	});
+
+	it("clears search value when Escape is pressed", async () => {
+		const onChange = vi.fn();
+		const user = userEvent.setup();
+		render(
+			<IngredientSearch {...defaultProps} value="gin" onChange={onChange} />,
+		);
+
+		const input = screen.getByPlaceholderText("材料名で検索...");
+		await user.type(input, "{Escape}");
+
+		expect(onChange).toHaveBeenCalledWith("");
+	});
+
+	it("blurs input when Escape is pressed and value is empty", async () => {
+		const user = userEvent.setup();
+		render(<IngredientSearch {...defaultProps} />);
+
+		const input = screen.getByPlaceholderText("材料名で検索...");
+		input.focus();
+		expect(input).toHaveFocus();
+
+		await user.type(input, "{Escape}");
+
+		expect(input).not.toHaveFocus();
+	});
 });

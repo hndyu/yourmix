@@ -403,7 +403,7 @@ export default function MyPage() {
 	// Handle Escape key
 	useEffect(() => {
 		const handleKeyDown = (e: KeyboardEvent) => {
-			if (e.key === "Escape") {
+			if (e.key === "Escape" && !e.isComposing) {
 				setConfirmDialogOpen(false);
 				if (resultDialogOpen) {
 					handleResultDialogClose();
