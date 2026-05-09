@@ -65,7 +65,7 @@ export default function IngredientSearch({
 				onFocus={() => setIsFocused(true)}
 				onBlur={() => setIsFocused(false)}
 				onKeyDown={(e) => {
-					if (e.key === "Escape") {
+					if (e.key === "Escape" && !e.nativeEvent.isComposing) {
 						e.stopPropagation();
 						if (value) {
 							onChange("");
