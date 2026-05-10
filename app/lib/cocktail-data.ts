@@ -1,7 +1,7 @@
 import { getDb } from "@/app/db/db";
-import { cocktails, deliciousLikes } from "@/app/db/schema";
-import type { Cocktail } from "@/app/types/cocktail";
-import { sql } from "drizzle-orm";
+import { cocktailTags, deliciousLikes, tags } from "@/app/db/schema";
+import type { Cocktail, Tag } from "@/app/types/cocktail";
+import { and, eq } from "drizzle-orm";
 import { cache } from "react";
 
 // ⚡ Bolt: Use React.cache to deduplicate data fetching within a single request.
@@ -82,5 +82,99 @@ export const getCocktailBySlug = cache(
 		};
 
 		return cocktailData;
+	},
+);
+
+/**
+ * タグ名でタグ情報とそのタグを持つカクテル一覧を取得する。
+ * カクテルはサマリー情報のみ（詳細ページへのリンク用）。
+ * ⚡ Bolt: cache() により同一リクエスト内での重複DBクエリを排除
+ * （generateMetadata とページ本体が同じタグ名で呼んでも1回のみ実行）。
+ */
+export const getCocktailsByTag = cache(
+	async (
+		tagName: string,
+	): Promise<{ tag: Tag; cocktails: Cocktail[] } | null> => {
+		const db = await getDb();
+
+		// タグ名でタグを検索
+		const tag = await db.query.tags.findFirst({
+			where: eq(tags.name, tagName),
+		});
+
+		if (!tag) {
+			return null;
+		}
+
+		// そのタグを持つカクテル一覧をサマリー情報で取得
+		const cocktailsWithTag = await db.query.cocktails.findMany({
+			with: {
+				cocktailTags: {
+					where: eq(cocktailTags.tagId, tag.id),
+					with: {
+						tag: true,
+					},
+				},
+				cocktailIngredients: {
+					columns: {
+						amount: true,
+					},
+					with: {
+						ingredient: {
+							columns: {
+								id: true,
+								name: true,
+							},
+						},
+					},
+				},
+			},
+			columns: {
+				id: true,
+				name: true,
+				slug: true,
+				description: true,
+				imageUrl: true,
+				garnish: true,
+			},
+			// cockailTags が空（対象タグなし）のものを除外
+			where: (cocktails, { exists }) =>
+				exists(
+					db
+						.select()
+						.from(cocktailTags)
+						.where(
+							and(
+								eq(cocktailTags.cocktailId, cocktails.id),
+								eq(cocktailTags.tagId, tag.id),
+							),
+						),
+				),
+		});
+
+		const mappedCocktails: Cocktail[] = cocktailsWithTag.map((cocktail) => ({
+			id: cocktail.id,
+			name: cocktail.name,
+			slug: cocktail.slug,
+			description: cocktail.description ?? "",
+			imageUrl: cocktail.imageUrl ?? undefined,
+			garnish: cocktail.garnish ?? undefined,
+			ingredients: cocktail.cocktailIngredients.map((ci) => ({
+				id: ci.ingredient.id,
+				name: ci.ingredient.name,
+				amount: ci.amount,
+				category: "",
+			})),
+			tags: cocktail.cocktailTags.map((ct) => ({
+				name: ct.tag.name,
+				description: ct.tag.description,
+			})),
+			instructions: [],
+		}));
+
+		return {
+			tag: { name: tag.name, description: tag.description },
+			cocktails: mappedCocktails,
+		};
 	},
 );
