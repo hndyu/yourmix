@@ -9,6 +9,7 @@ import {
 	Tag,
 } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import * as React from "react";
 import type { Cocktail, GeneratedCocktail } from "../types/cocktail";
 import {
@@ -199,52 +200,42 @@ export default function CocktailDisplay({
 
 							{/* Tags */}
 							<div className="flex flex-wrap gap-2">
-								{cocktail.tags?.map((tag) => {
-									const content = (
-										<>
+								{cocktail.tags?.map((tag) => (
+									// <a> 内に <button> は HTML 仕様違反（interactive content の入れ子禁止）のため、
+									// タグ名 Link とはてな button を兄弟要素として div でラップする
+									<div
+										key={tag.name}
+										className="flex items-center bg-secondary border border-border rounded-full text-xs text-muted-foreground"
+									>
+										<Link
+											href={`/tags/${encodeURIComponent(tag.name)}`}
+											className="flex items-center gap-1.5 px-3 py-1 hover:bg-secondary/80 hover:text-foreground transition-colors rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 dark:focus-visible:ring-offset-stone-950"
+										>
 											<Tag size={16} className="shrink-0" aria-hidden="true" />
 											{tag.name}
-											{tag.description && (
+										</Link>
+										{tag.description && (
+											<button
+												type="button"
+												aria-label={`${tag.name}の説明を表示`}
+												className="pr-2 shrink-0 hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-full"
+												onClick={() => {
+													setToastState({
+														open: true,
+														message: tag.description ?? "",
+														severity: "info",
+													});
+												}}
+											>
 												<HelpCircle
 													size={16}
 													className="shrink-0"
 													aria-hidden="true"
 												/>
-											)}
-										</>
-									);
-									const className = `flex items-center gap-1.5 px-3 py-1 bg-secondary border border-border rounded-full text-xs text-muted-foreground ${
-										tag.description
-											? "cursor-pointer hover:bg-secondary/80 hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 dark:focus-visible:ring-offset-stone-950"
-											: ""
-									}`;
-
-									if (tag.description) {
-										const description = tag.description;
-										return (
-											<button
-												key={tag.name}
-												type="button"
-												className={className}
-												onClick={() =>
-													setToastState({
-														open: true,
-														message: description,
-														severity: "info",
-													})
-												}
-											>
-												{content}
 											</button>
-										);
-									}
-
-									return (
-										<div key={tag.name} className={className}>
-											{content}
-										</div>
-									);
-								})}
+										)}
+									</div>
+								))}
 							</div>
 						</div>
 
