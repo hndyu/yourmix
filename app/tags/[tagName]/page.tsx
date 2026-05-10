@@ -14,17 +14,17 @@ export async function generateMetadata({
 	params,
 }: TagPageProps): Promise<Metadata> {
 	const { tagName } = await params;
-	const decodedTagName = decodeURIComponent(tagName);
-	const result = await getCocktailsByTag(decodedTagName);
+	// App Router が動的セグメント値を既にデコード済みで提供するため、追加のデコードは不要
+	const result = await getCocktailsByTag(tagName);
 
 	if (!result) {
 		return { title: "タグが見つかりません" };
 	}
 
-	const title = `「${decodedTagName}」のカクテル一覧`;
+	const title = `「${tagName}」のカクテル一覧`;
 	const description =
 		result.tag.description ??
-		`「${decodedTagName}」タグが付いたカクテルのレシピ一覧です。`;
+		`「${tagName}」タグが付いたカクテルのレシピ一覧です。`;
 
 	return {
 		title,
@@ -43,8 +43,8 @@ export async function generateMetadata({
 
 export default async function TagPage({ params }: TagPageProps) {
 	const { tagName } = await params;
-	const decodedTagName = decodeURIComponent(tagName);
-	const result = await getCocktailsByTag(decodedTagName);
+	// App Router が動的セグメント値を既にデコード済みで提供するため、追加のデコードは不要
+	const result = await getCocktailsByTag(tagName);
 
 	if (!result) {
 		notFound();
