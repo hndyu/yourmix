@@ -1,6 +1,6 @@
 "use client";
 
-import { AlertTriangle, CheckCircle, Info, XCircle } from "lucide-react";
+import { AlertTriangle, CheckCircle, Info, X, XCircle } from "lucide-react";
 import * as React from "react";
 import { useEffect } from "react";
 
@@ -59,6 +59,14 @@ export function Toast({
 			>
 				{icons[severity]}
 				<span className="font-medium">{message}</span>
+				<button
+					type="button"
+					onClick={onClose}
+					className="ml-2 -mr-1 p-1 rounded-full hover:bg-white/20 transition-all active:scale-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
+					aria-label="閉じる"
+				>
+					<X size={18} aria-hidden="true" />
+				</button>
 			</div>
 		</output>
 	);
