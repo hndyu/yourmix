@@ -29,3 +29,7 @@
 ## 2026-05-06 - [Dialog Keyboard Navigation & Body Scroll Locking]
 **Learning:** Manual dialog implementations often forget standard UX expectations: closing with the 'Escape' key and preventing the background content from scrolling. Managing these via centralized `useEffect` hooks linked to an aggregate 'open' state (e.g., `anyDialogOpen`) ensures consistent behavior across multiple modals within the same component and prevents common accessibility regressions.
 **Action:** For components with multiple dialogs/modals, implement a centralized Escape key listener and body scroll locking effect to ensure standard accessible behavior.
+
+## 2026-05-11 - [Manual Toast Dismissal & A11y]
+**Learning:** While auto-dismissing toasts are standard for non-critical information, providing a manual "close" button significantly improves UX for users who read faster or find persistent overlays distracting. For accessibility, icon-only dismiss buttons must have a clear `aria-label` (e.g., "閉じる"), tactile feedback (`active:scale-90`), and high-contrast focus rings (`focus-visible:ring-white`) to ensure they are discoverable and easy to interact with via keyboard or touch.
+**Action:** Always include a manual dismiss button in Toast/Notification components, ensuring it follows the repository's standard for accessible icon-only buttons.
