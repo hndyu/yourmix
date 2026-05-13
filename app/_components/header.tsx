@@ -16,7 +16,7 @@ export default function Header() {
 				{/* Logo / Brand */}
 				<Link
 					href="/"
-					className="flex items-center gap-2 text-foreground hover:opacity-80 transition-all active:scale-95"
+					className="flex items-center gap-2 text-foreground hover:opacity-80 transition-all active:scale-95 rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-4 dark:focus-visible:ring-offset-stone-950"
 				>
 					<div
 						className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-primary-foreground shadow-lg shadow-primary/40"
