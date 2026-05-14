@@ -146,7 +146,10 @@ export default async function RecipeDetailPage({
 			>
 				<ol className="flex items-center">
 					<li className="flex items-center">
-						<Link href="/" className="hover:text-primary transition-colors">
+						<Link
+							href="/"
+							className="hover:text-primary transition-colors rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-4 dark:focus-visible:ring-offset-stone-950"
+						>
 							ホーム
 						</Link>
 						<ChevronRight size={16} className="mx-1" aria-hidden="true" />

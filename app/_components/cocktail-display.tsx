@@ -250,7 +250,7 @@ export default function CocktailDisplay({
 								<button
 									type="button"
 									onClick={handleShare}
-									className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold transition-all duration-200 active:scale-95 min-w-[100px] justify-center ${
+									className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold transition-all duration-200 active:scale-95 min-w-[100px] justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 dark:focus-visible:ring-offset-stone-950 ${
 										isCopied
 											? "bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 border border-green-200 dark:border-green-800"
 											: "bg-secondary text-foreground hover:bg-secondary/80"
