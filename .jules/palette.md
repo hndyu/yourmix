@@ -33,3 +33,7 @@
 ## 2026-05-11 - [Manual Toast Dismissal & A11y]
 **Learning:** While auto-dismissing toasts are standard for non-critical information, providing a manual "close" button significantly improves UX for users who read faster or find persistent overlays distracting. For accessibility, icon-only dismiss buttons must have a clear `aria-label` (e.g., "閉じる"), tactile feedback (`active:scale-90`), and high-contrast focus rings (`focus-visible:ring-white`) to ensure they are discoverable and easy to interact with via keyboard or touch.
 **Action:** Always include a manual dismiss button in Toast/Notification components, ensuring it follows the repository's standard for accessible icon-only buttons.
+
+## 2026-05-14 - Standardized High-Contrast Focus Rings
+**Learning:** Accessibility and visual consistency are improved by standardizing focus indicators across interactive components. Using `focus-visible` prevents rings from appearing on click for mouse users, while `ring-offset-2` (and `dark:ring-offset-stone-950`) ensures the focus indicator is always visible regardless of the component's background color or theme.
+**Action:** Always apply `focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 dark:focus-visible:ring-offset-stone-950` to primary interactive elements, and consider `ring-offset-1` for smaller elements like tags or chips to maintain visual balance.

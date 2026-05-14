@@ -51,7 +51,7 @@ const IngredientCard = React.memo(
 					type="button"
 					aria-pressed={isSelected}
 					aria-label={`${ingredient.name} を${isSelected ? "解除" : "選択"}`}
-					className={`flex flex-col p-4 flex-grow text-left w-full focus:outline-none focus:ring-2 focus:ring-primary/50 transition-transform active:scale-[0.98] ${
+					className={`flex flex-col p-4 flex-grow text-left w-full focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 dark:focus-visible:ring-offset-stone-950 transition-transform active:scale-[0.98] ${
 						hasDetails ? "rounded-t-2xl" : "rounded-2xl"
 					}`}
 					onClick={(e) => {
@@ -155,7 +155,7 @@ const IngredientCard = React.memo(
 												onDetailToggle(ingredient, name);
 											}}
 											className={`
-                      px-2 py-1 text-xs rounded-md border transition-all active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50
+                      px-2 py-1 text-xs rounded-md border transition-all active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1 dark:focus-visible:ring-offset-stone-950
                       ${
 												isDetailSelected
 													? "bg-primary/20 border-primary text-foreground"
