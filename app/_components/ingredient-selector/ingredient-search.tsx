@@ -58,7 +58,7 @@ export default function IngredientSearch({
 				ref={inputRef}
 				id="ingredient-search"
 				type="search"
-				className="block w-full pl-10 pr-10 py-3 bg-white dark:bg-stone-900 border border-stone-300 dark:border-stone-800 rounded-xl text-stone-900 dark:text-stone-200 placeholder-stone-400 dark:placeholder-stone-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all shadow-inner"
+				className="block w-full pl-10 pr-10 py-3 bg-white dark:bg-stone-900 border border-stone-300 dark:border-stone-800 rounded-xl text-stone-900 dark:text-stone-200 placeholder-stone-400 dark:placeholder-stone-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 dark:focus-visible:ring-offset-stone-950 transition-all shadow-inner"
 				placeholder="材料名で検索..."
 				value={value}
 				onChange={(e) => onChange(e.target.value)}
@@ -80,7 +80,7 @@ export default function IngredientSearch({
 				<button
 					type="button"
 					onClick={handleClear}
-					className="absolute inset-y-0 right-0 pr-3 flex items-center text-stone-400 hover:text-stone-600 dark:text-stone-500 dark:hover:text-stone-300 transition-all active:scale-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-full"
+					className="absolute inset-y-0 right-0 pr-3 flex items-center text-stone-400 hover:text-stone-600 dark:text-stone-500 dark:hover:text-stone-300 transition-all active:scale-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 dark:focus-visible:ring-offset-stone-950 rounded-full"
 					aria-label="検索をクリア"
 				>
 					<XCircle size={18} aria-hidden="true" />
