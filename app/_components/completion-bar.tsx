@@ -1,5 +1,6 @@
 "use client";
 
+import { Sparkles } from "lucide-react";
 import * as React from "react";
 import BartenderStatus from "./bartender-status";
 
@@ -43,9 +44,15 @@ export default function CompletionBar({
 						<button
 							type="button"
 							onClick={onViewClick}
-							className="shrink-0 px-5 py-2 rounded-full text-sm font-bold bg-primary text-primary-foreground hover:bg-primary/90 active:scale-95 transition-all duration-200 shadow-lg shadow-primary/20 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 dark:focus-visible:ring-offset-stone-950"
+							className="group shrink-0 px-5 py-2 rounded-full text-sm font-bold bg-primary text-primary-foreground hover:bg-primary/90 active:scale-95 transition-all duration-200 shadow-lg shadow-primary/20 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 dark:focus-visible:ring-offset-stone-950 flex items-center gap-2"
 							aria-label="完成したオリジナルカクテルを見る"
+							title="完成したオリジナルカクテルを見る"
 						>
+							<Sparkles
+								size={16}
+								className="transition-transform group-hover:rotate-12"
+								aria-hidden="true"
+							/>
 							見る
 						</button>
 					</>

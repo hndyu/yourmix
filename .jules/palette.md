@@ -37,3 +37,7 @@
 ## 2026-05-14 - Standardized High-Contrast Focus Rings
 **Learning:** Accessibility and visual consistency are improved by standardizing focus indicators across interactive components. Using `focus-visible` prevents rings from appearing on click for mouse users, while `ring-offset-2` (and `dark:ring-offset-stone-950`) ensures the focus indicator is always visible regardless of the component's background color or theme.
 **Action:** Always apply `focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 dark:focus-visible:ring-offset-stone-950` to primary interactive elements, and consider `ring-offset-1` for smaller elements like tags or chips to maintain visual balance.
+
+## 2026-05-16 - Completion Delight Pattern with Sparkles & Tooltips
+**Learning:** High-value actions (like viewing a custom AI-generated result) benefit from subtle celebratory cues. Adding a 'Sparkles' icon with a rotation animation on hover (`group-hover:rotate-12`) provides immediate positive feedback. Furthermore, including a native `title` attribute that matches the `aria-label` improves discoverability for desktop users while maintaining accessibility.
+**Action:** For primary action buttons in success/completion states, add celebratory icons with micro-animations and ensure `title` attributes are used alongside `aria-label` for consistency.
