@@ -1,6 +1,7 @@
 "use client";
 
 import { Search, XCircle } from "lucide-react";
+import * as React from "react";
 import { useEffect, useRef, useState } from "react";
 
 interface IngredientSearchProps {
@@ -8,12 +9,22 @@ interface IngredientSearchProps {
 	onChange: (value: string) => void;
 }
 
-export default function IngredientSearch({
-	value,
-	onChange,
-}: IngredientSearchProps) {
+export interface IngredientSearchHandle {
+	focus: () => void;
+}
+
+const IngredientSearch = React.forwardRef<
+	IngredientSearchHandle,
+	IngredientSearchProps
+>(({ value, onChange }, ref) => {
 	const inputRef = useRef<HTMLInputElement>(null);
 	const [isFocused, setIsFocused] = useState(false);
+
+	React.useImperativeHandle(ref, () => ({
+		focus: () => {
+			inputRef.current?.focus();
+		},
+	}));
 
 	useEffect(() => {
 		const handleKeyDown = (e: KeyboardEvent) => {
@@ -82,6 +93,7 @@ export default function IngredientSearch({
 					onClick={handleClear}
 					className="absolute inset-y-0 right-0 pr-3 flex items-center text-stone-400 hover:text-stone-600 dark:text-stone-500 dark:hover:text-stone-300 transition-all active:scale-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 dark:focus-visible:ring-offset-stone-950 rounded-full"
 					aria-label="検索をクリア"
+					title="検索をクリア"
 				>
 					<XCircle size={18} aria-hidden="true" />
 				</button>
@@ -100,4 +112,6 @@ export default function IngredientSearch({
 			)}
 		</div>
 	);
-}
+});
+
+export default IngredientSearch;

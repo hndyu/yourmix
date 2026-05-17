@@ -1,12 +1,15 @@
 "use client";
 
 import type { Category, Ingredient } from "@/app/types/cocktail";
+import { RotateCcw, SearchX } from "lucide-react";
 import * as React from "react";
 import { Button } from "../ui/button";
 import { Toast, type ToastSeverity } from "../ui/toast";
 import CategoryNav from "./category-nav";
 import IngredientCard from "./ingredient-card";
-import IngredientSearch from "./ingredient-search";
+import IngredientSearch, {
+	type IngredientSearchHandle,
+} from "./ingredient-search";
 import { useIngredientSelection } from "./use-ingredient-selection";
 
 interface IngredientSelectorProps {
@@ -33,6 +36,7 @@ export default function IngredientSelector({
 	const [activeCategory, setActiveCategory] = React.useState<string>(
 		categories[0]?.name || "その他",
 	);
+	const searchRef = React.useRef<IngredientSearchHandle>(null);
 
 	// Snackbar state
 	const [snackbar, setSnackbar] = React.useState<{
@@ -148,7 +152,11 @@ export default function IngredientSelector({
 			<div className="flex-1 min-w-0">
 				{/* Header Area */}
 				<div className="mb-6">
-					<IngredientSearch value={searchQuery} onChange={setSearchQuery} />
+					<IngredientSearch
+						ref={searchRef}
+						value={searchQuery}
+						onChange={setSearchQuery}
+					/>
 				</div>
 
 				{/* Grid */}
@@ -187,15 +195,24 @@ export default function IngredientSelector({
 						);
 					})}
 					{filteredIngredients.length === 0 && (
-						<div className="col-span-full text-center py-12 text-stone-500 flex flex-col items-center gap-4">
+						<div className="col-span-full text-center py-12 text-stone-500 flex flex-col items-center gap-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
+							<SearchX
+								size={48}
+								className="text-stone-300 mb-2"
+								aria-hidden="true"
+							/>
 							<p>該当する材料が見つかりません</p>
 							{deferredSearchQuery && (
 								<Button
 									variant="outline"
 									size="sm"
-									onClick={() => setSearchQuery("")}
-									className="rounded-full"
+									onClick={() => {
+										setSearchQuery("");
+										searchRef.current?.focus();
+									}}
+									className="rounded-full gap-2"
 								>
+									<RotateCcw size={16} aria-hidden="true" />
 									検索をクリア
 								</Button>
 							)}

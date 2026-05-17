@@ -41,3 +41,7 @@
 ## 2026-05-16 - Completion Delight Pattern with Sparkles & Tooltips
 **Learning:** High-value actions (like viewing a custom AI-generated result) benefit from subtle celebratory cues. Adding a 'Sparkles' icon with a rotation animation on hover (`group-hover:rotate-12`) provides immediate positive feedback. Furthermore, including a native `title` attribute that matches the `aria-label` improves discoverability for desktop users while maintaining accessibility.
 **Action:** For primary action buttons in success/completion states, add celebratory icons with micro-animations and ensure `title` attributes are used alongside `aria-label` for consistency.
+
+## 2026-05-17 - Empty Search State Focus Management
+**Learning:** An empty search result state is a dead-end if not handled carefully. Providing a clear "Reset" or "Clear Search" button that programmatically returns focus to the search input via `useImperativeHandle` creates a seamless loop, allowing users to immediately try a different query without losing their place or needing extra clicks. Visual consistency with other reset actions (using `RotateCcw` and `gap-2`) further reinforces the app's interaction patterns.
+**Action:** Implement focus return logic in empty states to maintain user flow, and use standardized icons/classes for reset actions to ensure visual consistency.
