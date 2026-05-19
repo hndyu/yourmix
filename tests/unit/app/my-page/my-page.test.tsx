@@ -452,4 +452,31 @@ describe("MyPage", () => {
 			expect(document.body.style.overflow).not.toBe("hidden");
 		});
 	});
+
+	it("restores focus to the triggering element when a dialog is closed", async () => {
+		render(<MyPage />);
+
+		const editButton = screen.getByText("編集");
+		editButton.focus();
+		expect(document.activeElement).toBe(editButton);
+
+		// Open Edit Profile Dialog
+		fireEvent.click(editButton);
+		expect(screen.getByText("プロフィールの編集")).toBeInTheDocument();
+
+		// Inside dialog, focus should move (at least it should leave the button)
+		// With autoFocus implemented, it should be on the name input
+		const nameInput = screen.getByLabelText(/お名前/);
+		expect(document.activeElement).toBe(nameInput);
+
+		// Press Escape to close
+		fireEvent.keyDown(window, { key: "Escape", code: "Escape" });
+
+		await waitFor(() => {
+			expect(screen.queryByText("プロフィールの編集")).not.toBeInTheDocument();
+		});
+
+		// Focus should return to the edit button
+		expect(document.activeElement).toBe(editButton);
+	});
 });

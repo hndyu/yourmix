@@ -6,7 +6,7 @@ import { deleteAccountAction, updateProfileAction } from "@/app/actions/user";
 import authClient from "@/app/lib/authClient";
 import { redirect, useRouter } from "next/navigation";
 import { QRCodeSVG } from "qrcode.react";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { lockBodyScroll } from "../utils/body-scroll-lock";
 
 interface ErrorResponse {
@@ -104,6 +104,7 @@ export default function MyPage() {
 	const [isAddingPasskey, setIsAddingPasskey] = useState(false);
 	const [passkeyName, setPasskeyName] = useState("");
 	const [isPasskeyDialogOpen, setIsPasskeyDialogOpen] = useState(false);
+	const previousActiveElement = useRef<HTMLElement | null>(null);
 
 	const [toastState, setToastState] = useState<{
 		open: boolean;
@@ -263,6 +264,8 @@ export default function MyPage() {
 		if (session?.user) {
 			setNewName(session.user.name || "");
 			setNewEmail(session.user.email || "");
+			// Capture current focus before state update to ensure reliability
+			previousActiveElement.current = document.activeElement as HTMLElement;
 			setEditDialogOpen(true);
 		}
 	};
@@ -327,6 +330,7 @@ export default function MyPage() {
 
 	const handleEnableTwoFactor = () => {
 		setPasswordAction("enable");
+		previousActiveElement.current = document.activeElement as HTMLElement;
 		setIsPasswordDialogOpen(true);
 		setPassword("");
 		setTwoFactorError("");
@@ -358,6 +362,7 @@ export default function MyPage() {
 
 	const handleDisableTwoFactor = () => {
 		setPasswordAction("disable");
+		previousActiveElement.current = document.activeElement as HTMLElement;
 		setIsPasswordDialogOpen(true);
 		setPassword("");
 		setTwoFactorError("");
@@ -399,6 +404,16 @@ export default function MyPage() {
 		isPasswordDialogOpen ||
 		isPasskeyDialogOpen ||
 		isChangePasswordDialogOpen;
+
+	// Focus management for dialogs
+	useEffect(() => {
+		if (!anyDialogOpen) {
+			if (previousActiveElement.current) {
+				previousActiveElement.current.focus();
+				previousActiveElement.current = null;
+			}
+		}
+	}, [anyDialogOpen]);
 
 	// Handle Escape key
 	useEffect(() => {
@@ -480,7 +495,10 @@ export default function MyPage() {
 					<div className="pt-4 border-t border-stone-200 dark:border-stone-800">
 						<Button
 							className="bg-red-600 hover:bg-red-700 text-white shadow-red-900/20"
-							onClick={handleDeleteAccount}
+							onClick={(e) => {
+								previousActiveElement.current = e.currentTarget;
+								handleDeleteAccount();
+							}}
 						>
 							アカウントを削除
 						</Button>
@@ -543,7 +561,10 @@ export default function MyPage() {
 								</div>
 								<Button
 									variant="outline"
-									onClick={() => setIsPasskeyDialogOpen(true)}
+									onClick={(e) => {
+										previousActiveElement.current = e.currentTarget;
+										setIsPasskeyDialogOpen(true);
+									}}
 								>
 									パスキーを追加
 								</Button>
@@ -620,7 +641,8 @@ export default function MyPage() {
 								</div>
 								<Button
 									variant="outline"
-									onClick={() => {
+									onClick={(e) => {
+										previousActiveElement.current = e.currentTarget;
 										setIsChangePasswordDialogOpen(true);
 										setPasswordUpdateError("");
 										setCurrentPassword("");
@@ -664,6 +686,8 @@ export default function MyPage() {
 									type="text"
 									id="passkey-name"
 									required
+									// biome-ignore lint/a11y/noAutofocus: 2FA inputs should be focused for better UX
+									autoFocus
 									value={passkeyName}
 									onChange={(e) => setPasskeyName(e.target.value)}
 									className="w-full px-3 py-2 bg-white dark:bg-stone-800 border border-stone-300 dark:border-stone-700 rounded-lg text-stone-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary"
@@ -726,6 +750,8 @@ export default function MyPage() {
 									type="password"
 									id="current-password"
 									required
+									// biome-ignore lint/a11y/noAutofocus: 2FA inputs should be focused for better UX
+									autoFocus
 									value={currentPassword}
 									onChange={(e) => setCurrentPassword(e.target.value)}
 									className="w-full px-3 py-2 bg-white dark:bg-stone-800 border border-stone-300 dark:border-stone-700 rounded-lg text-stone-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary"
@@ -837,6 +863,8 @@ export default function MyPage() {
 									type="password"
 									id="confirm-password"
 									required
+									// biome-ignore lint/a11y/noAutofocus: 2FA inputs should be focused for better UX
+									autoFocus
 									value={password}
 									onChange={(e) => setPassword(e.target.value)}
 									className="w-full px-3 py-2 bg-white dark:bg-stone-800 border border-stone-300 dark:border-stone-700 rounded-lg text-stone-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary"
@@ -994,6 +1022,8 @@ export default function MyPage() {
 									type="text"
 									id="name"
 									required
+									// biome-ignore lint/a11y/noAutofocus: 2FA inputs should be focused for better UX
+									autoFocus
 									value={newName}
 									onChange={(e) => setNewName(e.target.value)}
 									className="w-full px-3 py-2 bg-white dark:bg-stone-800 border border-stone-300 dark:border-stone-700 rounded-lg text-stone-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary"

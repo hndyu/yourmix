@@ -45,3 +45,7 @@
 ## 2026-05-17 - Empty Search State Focus Management
 **Learning:** An empty search result state is a dead-end if not handled carefully. Providing a clear "Reset" or "Clear Search" button that programmatically returns focus to the search input via `useImperativeHandle` creates a seamless loop, allowing users to immediately try a different query without losing their place or needing extra clicks. Visual consistency with other reset actions (using `RotateCcw` and `gap-2`) further reinforces the app's interaction patterns.
 **Action:** Implement focus return logic in empty states to maintain user flow, and use standardized icons/classes for reset actions to ensure visual consistency.
+
+## 2026-05-18 - Modal Focus Management in Multi-Dialog Pages
+**Learning:** In complex pages with multiple manual dialog implementations (like a profile management hub), relying solely on a global "any open" derived state for focus capture can be flaky if multiple state updates happen simultaneously. Explicitly capturing the `e.currentTarget` in the trigger button's `onClick` handler and storing it in a `useRef` ensures reliable focus restoration. Additionally, using `autoFocus` on the primary input field (with a Biome ignore comment) provides immediate context for keyboard users.
+**Action:** For complex multi-modal pages, explicitly capture the triggering element in a ref during the `onClick` event and use a `useEffect` on the open state to restore focus. Always provide an immediate focus target within the modal using `autoFocus` or a ref.
