@@ -260,12 +260,12 @@ export default function MyPage() {
 		}
 	}, [resultDialogAction, router]);
 
-	const handleEditProfile = () => {
+	const handleEditProfile = (e: React.MouseEvent<HTMLButtonElement>) => {
 		if (session?.user) {
 			setNewName(session.user.name || "");
 			setNewEmail(session.user.email || "");
 			// Capture current focus before state update to ensure reliability
-			previousActiveElement.current = document.activeElement as HTMLElement;
+			previousActiveElement.current = e.currentTarget;
 			setEditDialogOpen(true);
 		}
 	};
@@ -328,9 +328,9 @@ export default function MyPage() {
 		setIsEnablingTwoFactor(false);
 	};
 
-	const handleEnableTwoFactor = () => {
+	const handleEnableTwoFactor = (e: React.MouseEvent<HTMLButtonElement>) => {
 		setPasswordAction("enable");
-		previousActiveElement.current = document.activeElement as HTMLElement;
+		previousActiveElement.current = e.currentTarget;
 		setIsPasswordDialogOpen(true);
 		setPassword("");
 		setTwoFactorError("");
@@ -360,9 +360,9 @@ export default function MyPage() {
 		showResult("2要素認証が有効になりました。");
 	};
 
-	const handleDisableTwoFactor = () => {
+	const handleDisableTwoFactor = (e: React.MouseEvent<HTMLButtonElement>) => {
 		setPasswordAction("disable");
-		previousActiveElement.current = document.activeElement as HTMLElement;
+		previousActiveElement.current = e.currentTarget;
 		setIsPasswordDialogOpen(true);
 		setPassword("");
 		setTwoFactorError("");

@@ -60,6 +60,7 @@ export default function CocktailMixer({
 	// 通知バーとモーダルダイアログの状態
 	const [showCompletionBar, setShowCompletionBar] = React.useState(false);
 	const [dialogOpen, setDialogOpen] = React.useState(false);
+	const triggerElementRef = React.useRef<HTMLElement | null>(null);
 
 	// Mixボタンクリック時の処理
 	const handleMixClick = async () => {
@@ -169,7 +170,10 @@ export default function CocktailMixer({
 			{showCompletionBar && (
 				<CompletionBar
 					isGenerating={isGenerating}
-					onViewClick={() => setDialogOpen(true)}
+					onViewClick={(e) => {
+						triggerElementRef.current = e.currentTarget;
+						setDialogOpen(true);
+					}}
 				/>
 			)}
 
@@ -178,6 +182,7 @@ export default function CocktailMixer({
 				cocktail={generatedCocktail}
 				open={dialogOpen}
 				onClose={() => setDialogOpen(false)}
+				triggerElement={triggerElementRef.current}
 			/>
 		</>
 	);
