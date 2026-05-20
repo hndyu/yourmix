@@ -14,6 +14,8 @@ interface CocktailDialogProps {
 	open: boolean;
 	/** ダイアログを閉じるときのコールバック */
 	onClose: () => void;
+	/** フォーカスを戻す要素（オプション） */
+	triggerElement?: HTMLElement | null;
 }
 
 /**
@@ -24,6 +26,7 @@ export default function CocktailDialog({
 	cocktail,
 	open,
 	onClose,
+	triggerElement,
 }: CocktailDialogProps) {
 	const closeButtonRef = React.useRef<HTMLButtonElement>(null);
 	const previousActiveElement = React.useRef<HTMLElement | null>(null);
@@ -45,7 +48,8 @@ export default function CocktailDialog({
 	// フォーカス管理
 	React.useEffect(() => {
 		if (open) {
-			previousActiveElement.current = document.activeElement as HTMLElement;
+			previousActiveElement.current =
+				triggerElement ?? (document.activeElement as HTMLElement);
 			// ダイアログが開いた直後に閉じるボタンにフォーカスを当てる
 			// setTimeout を使用してレンダリング完了を確実にする
 			const timer = setTimeout(() => {
@@ -55,7 +59,7 @@ export default function CocktailDialog({
 		}
 		// ダイアログが閉じるときにフォーカスを戻す
 		previousActiveElement.current?.focus();
-	}, [open]);
+	}, [open, triggerElement]);
 
 	// ダイアログが開いている間はスクロールを無効化
 	React.useEffect(() => {

@@ -1,14 +1,14 @@
 "use client";
 
 import { Sparkles } from "lucide-react";
-import * as React from "react";
+import type * as React from "react";
 import BartenderStatus from "./bartender-status";
 
 interface CompletionBarProps {
 	/** AI 生成中かどうか */
 	isGenerating: boolean;
 	/** 「見る」ボタンがクリックされたときのコールバック */
-	onViewClick: () => void;
+	onViewClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
 /**

@@ -45,7 +45,6 @@ export default function DeliciousButton({
 	// Focus management
 	useEffect(() => {
 		if (showLoginModal) {
-			previousActiveElement.current = document.activeElement as HTMLElement;
 			// Set focus to the login button after the modal is rendered
 			const timer = setTimeout(() => {
 				loginButtonRef.current?.focus();
@@ -65,7 +64,9 @@ export default function DeliciousButton({
 		return unlock;
 	}, [showLoginModal]);
 
-	const handleClick = async () => {
+	const handleClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
+		previousActiveElement.current = e.currentTarget;
+
 		if (!session) {
 			setShowLoginModal(true);
 			return;
