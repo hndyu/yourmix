@@ -59,9 +59,14 @@ const CocktailSearchResults = React.memo(function CocktailSearchResults({
 						size="sm"
 						onClick={onReset}
 						aria-label="選択をすべてクリア"
-						className="gap-2"
+						title="選択をすべてクリア"
+						className="gap-2 group"
 					>
-						<RotateCcw size={16} aria-hidden="true" />
+						<RotateCcw
+							size={16}
+							aria-hidden="true"
+							className="group-hover:-rotate-45 transition-transform"
+						/>
 						選択をすべてクリア
 					</Button>
 				)}

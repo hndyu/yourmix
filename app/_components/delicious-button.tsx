@@ -108,9 +108,10 @@ export default function DeliciousButton({
 				type="button"
 				onClick={handleClick}
 				aria-label={`おいしい！ ${count > 0 ? `現在の数: ${count}` : ""}`}
+				title={`おいしい！ ${count > 0 ? `現在の数: ${count}` : ""}`}
 				aria-pressed={isLiked}
 				className={`
-          flex items-center gap-2 px-4 py-2 rounded-full font-bold transition-all active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-stone-950
+          group flex items-center gap-2 px-4 py-2 rounded-full font-bold transition-all active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-stone-950
           ${
 						isLiked
 							? "bg-amber-500 text-white shadow-lg shadow-amber-500/30 hover:bg-amber-600"
@@ -118,7 +119,11 @@ export default function DeliciousButton({
 					}
         `}
 			>
-				<ThumbsUp size={18} aria-hidden="true" />
+				<ThumbsUp
+					size={18}
+					aria-hidden="true"
+					className="transition-transform group-hover:rotate-12"
+				/>
 				<span>おいしい！</span>
 				{count > 0 && <span>{count}</span>}
 			</button>
@@ -153,6 +158,7 @@ export default function DeliciousButton({
 								onClick={() => setShowLoginModal(false)}
 								className="absolute top-4 right-4 text-muted-foreground hover:text-foreground transition-all active:scale-90 p-1 rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 dark:focus-visible:ring-offset-stone-950"
 								aria-label="閉じる"
+								title="閉じる"
 							>
 								<X size={20} aria-hidden="true" />
 							</button>
