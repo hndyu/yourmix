@@ -49,3 +49,7 @@
 ## 2026-05-18 - Modal Focus Management in Multi-Dialog Pages
 **Learning:** In complex pages with multiple manual dialog implementations (like a profile management hub), relying solely on a global "any open" derived state for focus capture can be flaky if multiple state updates happen simultaneously. Explicitly capturing the `e.currentTarget` in the trigger button's `onClick` handler and storing it in a `useRef` ensures reliable focus restoration. Additionally, using `autoFocus` on the primary input field (with a Biome ignore comment) provides immediate context for keyboard users.
 **Action:** For complex multi-modal pages, explicitly capture the triggering element in a ref during the `onClick` event and use a `useEffect` on the open state to restore focus. Always provide an immediate focus target within the modal using `autoFocus` or a ref.
+
+## 2026-05-23 - [Interactive Instruction Tracking & Accessible Button Labeling]
+**Learning:** Adding interactive elements like step-tracking to recipe instructions enhances the "cooking" UX. However, using `aria-label` on buttons that contain rich text (like instruction steps) is an anti-pattern because it causes screen readers to ignore the internal content. Instead, use `sr-only` text within the button to provide status context (e.g., "Step 1: Completed") while allowing the primary instruction text to remain discoverable.
+**Action:** When making text content interactive via buttons, use `sr-only` for additional status context instead of `aria-label` to preserve the accessibility of the original text.

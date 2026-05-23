@@ -59,6 +59,9 @@ export default function CocktailDisplay({
 		: [];
 	const [isWebShareSupported, setIsWebShareSupported] = React.useState(false);
 	const [isCopied, setIsCopied] = React.useState(false);
+	const [completedSteps, setCompletedSteps] = React.useState<Set<number>>(
+		new Set(),
+	);
 	const [imageError, setImageError] = React.useState(false);
 	const [toastState, setToastState] = React.useState<{
 		open: boolean;
@@ -84,6 +87,18 @@ export default function CocktailDisplay({
 			}
 		};
 	}, []);
+
+	const toggleStep = (index: number) => {
+		setCompletedSteps((prev) => {
+			const next = new Set(prev);
+			if (next.has(index)) {
+				next.delete(index);
+			} else {
+				next.add(index);
+			}
+			return next;
+		});
+	};
 
 	const handleShare = async () => {
 		if (!persistedCocktail) return;
@@ -354,26 +369,61 @@ export default function CocktailDisplay({
 								作り方
 							</h3>
 
-							<ol className="space-y-6">
-								{cocktailInstructions.map((step, index) => (
-									// biome-ignore lint/suspicious/noArrayIndexKey: Order is static
-									<li key={`step-${index}`} className="group flex gap-4">
-										<div className="flex flex-col items-center">
-											<div
-												className="w-8 h-8 rounded-full bg-background border border-border flex items-center justify-center text-muted-foreground font-bold text-sm shrink-0 group-hover:border-primary/50 group-hover:text-primary transition-colors"
-												aria-hidden="true"
+							<ol className="space-y-6 relative">
+								{/* Continuous connector line */}
+								{cocktailInstructions.length > 1 && (
+									<div
+										className="absolute left-4 top-4 bottom-4 w-px bg-border -translate-x-1/2 z-0"
+										aria-hidden="true"
+									/>
+								)}
+								{cocktailInstructions.map((step, index) => {
+									const isStepCompleted = completedSteps.has(index);
+									return (
+										// biome-ignore lint/suspicious/noArrayIndexKey: Order is static
+										<li key={`step-${index}`} className="group relative z-10">
+											<button
+												type="button"
+												onClick={() => toggleStep(index)}
+												aria-pressed={isStepCompleted}
+												className="flex gap-4 w-full text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-8 rounded-lg transition-all"
 											>
-												{index + 1}
-											</div>
-											{index < cocktailInstructions.length - 1 && (
-												<div className="w-px h-full bg-border mt-2" />
-											)}
-										</div>
-										<p className="pt-1 text-foreground leading-relaxed">
-											{step}
-										</p>
-									</li>
-								))}
+												<span className="sr-only">
+													ステップ {index + 1}
+													{isStepCompleted ? "（完了）" : "（未完了）"}
+												</span>
+												<div className="flex flex-col items-center shrink-0">
+													<div
+														className={`
+                              w-8 h-8 rounded-full border flex items-center justify-center font-bold text-sm transition-all duration-300
+                              ${
+																isStepCompleted
+																	? "bg-primary border-primary text-primary-foreground shadow-lg shadow-primary/20 scale-110"
+																	: "bg-background border-border text-muted-foreground group-hover:border-primary/50 group-hover:text-primary"
+															}
+                            `}
+														aria-hidden="true"
+													>
+														{isStepCompleted ? (
+															<Check size={16} strokeWidth={3} />
+														) : (
+															index + 1
+														)}
+													</div>
+												</div>
+												<p
+													className={`pt-1 leading-relaxed transition-all duration-300 ${
+														isStepCompleted
+															? "text-muted-foreground line-through opacity-60"
+															: "text-foreground"
+													}`}
+												>
+													{step}
+												</p>
+											</button>
+										</li>
+									);
+								})}
 							</ol>
 
 							{cocktail.garnish && (
