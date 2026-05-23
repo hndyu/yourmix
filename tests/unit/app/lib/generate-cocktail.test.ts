@@ -78,10 +78,10 @@ describe("generateCocktailFromIngredients", () => {
 		// モデルが最新の優先順で試行されているかを確認
 		expect(generateContentMock).toHaveBeenCalledTimes(2);
 		expect(generateContentMock.mock.calls[0]?.[0]?.model).toBe(
-			"gemini-3-flash-preview",
+			"gemini-3.5-flash",
 		);
 		expect(generateContentMock.mock.calls[1]?.[0]?.model).toBe(
-			"gemini-3.1-flash-lite-preview",
+			"gemini-3-flash-preview",
 		);
 	});
 
