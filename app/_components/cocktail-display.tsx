@@ -369,7 +369,8 @@ export default function CocktailDisplay({
 								作り方
 							</h3>
 
-							<ol className="space-y-6 relative">
+							{/* コネクターラインは ol の外でラップ div を基準に絶対配置する */}
+							<div className="relative">
 								{/* Continuous connector line */}
 								{cocktailInstructions.length > 1 && (
 									<div
@@ -377,24 +378,25 @@ export default function CocktailDisplay({
 										aria-hidden="true"
 									/>
 								)}
-								{cocktailInstructions.map((step, index) => {
-									const isStepCompleted = completedSteps.has(index);
-									return (
-										// biome-ignore lint/suspicious/noArrayIndexKey: Order is static
-										<li key={`step-${index}`} className="group relative z-10">
-											<button
-												type="button"
-												onClick={() => toggleStep(index)}
-												aria-pressed={isStepCompleted}
-												className="flex gap-4 w-full text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-8 rounded-lg transition-all"
-											>
-												<span className="sr-only">
-													ステップ {index + 1}
-													{isStepCompleted ? "（完了）" : "（未完了）"}
-												</span>
-												<div className="flex flex-col items-center shrink-0">
-													<div
-														className={`
+								<ol className="space-y-6">
+									{cocktailInstructions.map((step, index) => {
+										const isStepCompleted = completedSteps.has(index);
+										return (
+											// biome-ignore lint/suspicious/noArrayIndexKey: Order is static
+											<li key={`step-${index}`} className="group relative z-10">
+												<button
+													type="button"
+													onClick={() => toggleStep(index)}
+													aria-pressed={isStepCompleted}
+													className="flex gap-4 w-full text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-8 rounded-lg transition-all"
+												>
+													<span className="sr-only">
+														ステップ {index + 1}
+														{isStepCompleted ? "（完了）" : "（未完了）"}
+													</span>
+													<div className="flex flex-col items-center shrink-0">
+														<div
+															className={`
                               w-8 h-8 rounded-full border flex items-center justify-center font-bold text-sm transition-all duration-300
                               ${
 																isStepCompleted
@@ -402,29 +404,30 @@ export default function CocktailDisplay({
 																	: "bg-background border-border text-muted-foreground group-hover:border-primary/50 group-hover:text-primary"
 															}
                             `}
-														aria-hidden="true"
-													>
-														{isStepCompleted ? (
-															<Check size={16} strokeWidth={3} />
-														) : (
-															index + 1
-														)}
+															aria-hidden="true"
+														>
+															{isStepCompleted ? (
+																<Check size={16} strokeWidth={3} />
+															) : (
+																index + 1
+															)}
+														</div>
 													</div>
-												</div>
-												<p
-													className={`pt-1 leading-relaxed transition-all duration-300 ${
-														isStepCompleted
-															? "text-muted-foreground line-through opacity-60"
-															: "text-foreground"
-													}`}
-												>
-													{step}
-												</p>
-											</button>
-										</li>
-									);
-								})}
-							</ol>
+													<p
+														className={`pt-1 leading-relaxed transition-all duration-300 ${
+															isStepCompleted
+																? "text-muted-foreground line-through opacity-60"
+																: "text-foreground"
+														}`}
+													>
+														{step}
+													</p>
+												</button>
+											</li>
+										);
+									})}
+								</ol>
+							</div>
 
 							{cocktail.garnish && (
 								<div className="mt-8 p-4 bg-muted/30 rounded-xl border border-border border-dashed">
