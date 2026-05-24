@@ -14,7 +14,7 @@ export function NoResults({ show, onReset }: NoResultsProps) {
 	return (
 		<div className="w-full max-w-2xl mx-auto mt-8 p-8 text-center bg-card border border-border rounded-2xl animate-in fade-in slide-in-from-bottom-4 duration-700">
 			<SearchX
-				className="text-stone-300 dark:text-stone-600 mb-4 mx-auto"
+				className="text-stone-300 dark:text-stone-500 mb-4 mx-auto"
 				size={48}
 				aria-hidden="true"
 			/>
@@ -31,10 +31,14 @@ export function NoResults({ show, onReset }: NoResultsProps) {
 					variant="outline"
 					size="sm"
 					onClick={onReset}
-					aria-label="選択をすべてクリア"
-					className="gap-2"
+					title="選択をすべてクリア"
+					className="gap-2 group"
 				>
-					<RotateCcw size={16} aria-hidden="true" />
+					<RotateCcw
+						size={16}
+						aria-hidden="true"
+						className="group-hover:-rotate-45 transition-transform"
+					/>
 					選択をすべてクリア
 				</Button>
 			)}

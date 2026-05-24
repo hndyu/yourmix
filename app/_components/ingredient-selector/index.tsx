@@ -198,10 +198,12 @@ export default function IngredientSelector({
 						<div className="col-span-full text-center py-12 text-stone-500 flex flex-col items-center gap-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
 							<SearchX
 								size={48}
-								className="text-stone-300 mb-2"
+								className="text-stone-300 dark:text-stone-500 mb-2"
 								aria-hidden="true"
 							/>
-							<p>該当する材料が見つかりません</p>
+							<h3 className="text-xl font-bold text-foreground">
+								該当する材料が見つかりません
+							</h3>
 							{deferredSearchQuery && (
 								<Button
 									variant="outline"
@@ -210,9 +212,14 @@ export default function IngredientSelector({
 										setSearchQuery("");
 										searchRef.current?.focus();
 									}}
-									className="rounded-full gap-2"
+									title="検索をクリア"
+									className="rounded-full gap-2 group"
 								>
-									<RotateCcw size={16} aria-hidden="true" />
+									<RotateCcw
+										size={16}
+										aria-hidden="true"
+										className="group-hover:-rotate-45 transition-transform"
+									/>
 									検索をクリア
 								</Button>
 							)}
