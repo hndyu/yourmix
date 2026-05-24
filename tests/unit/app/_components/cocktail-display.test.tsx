@@ -214,4 +214,23 @@ describe("CocktailDisplay Component", () => {
 		expect(screen.getByText("ウォッカ")).toBeInTheDocument();
 		expect(screen.getByText("45ml")).toBeInTheDocument();
 	});
+
+	it("toggles step completion when clicked", async () => {
+		render(<CocktailDisplay cocktail={mockCocktail} />);
+
+		const firstStepButton = screen.getByRole("button", {
+			name: /ステップ 1/,
+		});
+		expect(firstStepButton).toHaveAttribute("aria-pressed", "false");
+
+		// Click to complete
+		await userEvent.click(firstStepButton);
+		expect(firstStepButton).toHaveAttribute("aria-pressed", "true");
+		expect(screen.getByText(/ステップ 1（完了）/)).toBeInTheDocument();
+
+		// Click to uncomplete
+		await userEvent.click(firstStepButton);
+		expect(firstStepButton).toHaveAttribute("aria-pressed", "false");
+		expect(screen.getByText(/ステップ 1（未完了）/)).toBeInTheDocument();
+	});
 });
