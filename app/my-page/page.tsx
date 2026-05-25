@@ -690,7 +690,7 @@ export default function MyPage() {
 									autoFocus
 									value={passkeyName}
 									onChange={(e) => setPasskeyName(e.target.value)}
-									className="w-full px-3 py-2 bg-white dark:bg-stone-800 border border-stone-300 dark:border-stone-700 rounded-lg text-stone-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary"
+									className="w-full px-3 py-2 bg-white dark:bg-stone-800 border border-stone-300 dark:border-stone-700 rounded-lg text-stone-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 dark:focus:ring-offset-stone-950 transition-all"
 									placeholder="デバイス名など"
 								/>
 							</div>
@@ -754,7 +754,7 @@ export default function MyPage() {
 									autoFocus
 									value={currentPassword}
 									onChange={(e) => setCurrentPassword(e.target.value)}
-									className="w-full px-3 py-2 bg-white dark:bg-stone-800 border border-stone-300 dark:border-stone-700 rounded-lg text-stone-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary"
+									className="w-full px-3 py-2 bg-white dark:bg-stone-800 border border-stone-300 dark:border-stone-700 rounded-lg text-stone-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 dark:focus:ring-offset-stone-950 transition-all"
 									placeholder="現在のパスワード"
 								/>
 							</div>
@@ -775,7 +775,7 @@ export default function MyPage() {
 									required
 									value={newPassword}
 									onChange={(e) => setNewPassword(e.target.value)}
-									className="w-full px-3 py-2 bg-white dark:bg-stone-800 border border-stone-300 dark:border-stone-700 rounded-lg text-stone-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary"
+									className="w-full px-3 py-2 bg-white dark:bg-stone-800 border border-stone-300 dark:border-stone-700 rounded-lg text-stone-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 dark:focus:ring-offset-stone-950 transition-all"
 									placeholder="新しいパスワード（8文字以上）"
 								/>
 							</div>
@@ -796,7 +796,7 @@ export default function MyPage() {
 									required
 									value={confirmNewPassword}
 									onChange={(e) => setConfirmNewPassword(e.target.value)}
-									className="w-full px-3 py-2 bg-white dark:bg-stone-800 border border-stone-300 dark:border-stone-700 rounded-lg text-stone-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary"
+									className="w-full px-3 py-2 bg-white dark:bg-stone-800 border border-stone-300 dark:border-stone-700 rounded-lg text-stone-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 dark:focus:ring-offset-stone-950 transition-all"
 									placeholder="新しいパスワード（確認）"
 								/>
 							</div>
@@ -867,7 +867,7 @@ export default function MyPage() {
 									autoFocus
 									value={password}
 									onChange={(e) => setPassword(e.target.value)}
-									className="w-full px-3 py-2 bg-white dark:bg-stone-800 border border-stone-300 dark:border-stone-700 rounded-lg text-stone-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary"
+									className="w-full px-3 py-2 bg-white dark:bg-stone-800 border border-stone-300 dark:border-stone-700 rounded-lg text-stone-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 dark:focus:ring-offset-stone-950 transition-all"
 									placeholder="パスワード"
 								/>
 							</div>
@@ -940,7 +940,7 @@ export default function MyPage() {
 									autoFocus
 									value={twoFactorCode}
 									onChange={(e) => setTwoFactorCode(e.target.value)}
-									className="w-full px-3 py-2 bg-white dark:bg-stone-800 border border-stone-300 dark:border-stone-700 rounded-lg text-stone-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary text-center tracking-[0.5em] text-xl font-mono"
+									className="w-full px-3 py-2 bg-white dark:bg-stone-800 border border-stone-300 dark:border-stone-700 rounded-lg text-stone-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 dark:focus:ring-offset-stone-950 transition-all text-center tracking-[0.5em] text-xl font-mono"
 									placeholder="000000"
 									maxLength={6}
 								/>
@@ -1026,7 +1026,7 @@ export default function MyPage() {
 									autoFocus
 									value={newName}
 									onChange={(e) => setNewName(e.target.value)}
-									className="w-full px-3 py-2 bg-white dark:bg-stone-800 border border-stone-300 dark:border-stone-700 rounded-lg text-stone-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary"
+									className="w-full px-3 py-2 bg-white dark:bg-stone-800 border border-stone-300 dark:border-stone-700 rounded-lg text-stone-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 dark:focus:ring-offset-stone-950 transition-all"
 									placeholder="お名前"
 								/>
 							</div>
@@ -1047,7 +1047,7 @@ export default function MyPage() {
 									required
 									value={newEmail}
 									onChange={(e) => setNewEmail(e.target.value)}
-									className="w-full px-3 py-2 bg-white dark:bg-stone-800 border border-stone-300 dark:border-stone-700 rounded-lg text-stone-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary"
+									className="w-full px-3 py-2 bg-white dark:bg-stone-800 border border-stone-300 dark:border-stone-700 rounded-lg text-stone-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 dark:focus:ring-offset-stone-950 transition-all"
 									placeholder="メールアドレス"
 								/>
 							</div>

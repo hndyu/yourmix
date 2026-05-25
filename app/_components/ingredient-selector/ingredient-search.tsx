@@ -69,7 +69,7 @@ const IngredientSearch = React.forwardRef<
 				ref={inputRef}
 				id="ingredient-search"
 				type="search"
-				className="block w-full pl-10 pr-10 py-3 bg-white dark:bg-stone-900 border border-stone-300 dark:border-stone-800 rounded-xl text-stone-900 dark:text-stone-200 placeholder-stone-400 dark:placeholder-stone-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 dark:focus-visible:ring-offset-stone-950 transition-all shadow-inner"
+				className="block w-full pl-10 pr-10 py-3 bg-white dark:bg-stone-900 border border-stone-300 dark:border-stone-800 rounded-xl text-stone-900 dark:text-stone-200 placeholder-stone-400 dark:placeholder-stone-500 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 dark:focus:ring-offset-stone-950 transition-all shadow-inner"
 				placeholder="材料名で検索..."
 				value={value}
 				onChange={(e) => onChange(e.target.value)}

@@ -197,7 +197,7 @@ export default function SignInForm({
 									required
 									// biome-ignore lint/a11y/noAutofocus: 2FA inputs should be focused for better UX
 									autoFocus
-									className="w-full bg-white dark:bg-stone-950 border border-stone-300 dark:border-stone-800 rounded-lg px-4 py-3 text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-primary text-center tracking-widest text-xl font-mono uppercase"
+									className="w-full bg-white dark:bg-stone-950 border border-stone-300 dark:border-stone-800 rounded-lg px-4 py-3 text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 dark:focus:ring-offset-stone-950 transition-all text-center tracking-widest text-xl font-mono uppercase"
 									placeholder="XXXXXXXX"
 									value={backupCode}
 									onChange={(e) => setBackupCode(e.target.value)}
@@ -225,7 +225,7 @@ export default function SignInForm({
 										// biome-ignore lint/a11y/noAutofocus: 2FA inputs should be focused for better UX
 										autoFocus
 										required
-										className="w-full bg-white dark:bg-stone-950 border border-stone-300 dark:border-stone-800 rounded-lg px-4 py-3 text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-primary text-center tracking-[0.5em] text-2xl font-mono"
+										className="w-full bg-white dark:bg-stone-950 border border-stone-300 dark:border-stone-800 rounded-lg px-4 py-3 text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 dark:focus:ring-offset-stone-950 transition-all text-center tracking-[0.5em] text-2xl font-mono"
 										placeholder="000000"
 										maxLength={6}
 										value={twoFactorCode}
@@ -237,7 +237,7 @@ export default function SignInForm({
 									<input
 										id="trust-device"
 										type="checkbox"
-										className="w-4 h-4 rounded border-stone-300 text-primary focus:ring-primary"
+										className="w-4 h-4 rounded border-stone-300 text-primary focus:ring-primary focus:ring-offset-2 dark:focus:ring-offset-stone-950 transition-all"
 										checked={isTrustedDevice}
 										onChange={(e) => setIsTrustedDevice(e.target.checked)}
 									/>
@@ -336,7 +336,7 @@ export default function SignInForm({
 							id="email"
 							type="email"
 							required
-							className="w-full bg-white dark:bg-stone-950 border border-stone-300 dark:border-stone-800 rounded-lg px-4 py-2 text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+							className="w-full bg-white dark:bg-stone-950 border border-stone-300 dark:border-stone-800 rounded-lg px-4 py-2 text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 dark:focus:ring-offset-stone-950 transition-all"
 							placeholder="example@email.com"
 							value={email}
 							onChange={(e) => setEmail(e.target.value)}
@@ -360,7 +360,7 @@ export default function SignInForm({
 								id="password"
 								type={showPassword ? "text" : "password"}
 								required
-								className="w-full bg-white dark:bg-stone-950 border border-stone-300 dark:border-stone-800 rounded-lg pl-4 pr-10 py-2 text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+								className="w-full bg-white dark:bg-stone-950 border border-stone-300 dark:border-stone-800 rounded-lg pl-4 pr-10 py-2 text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 dark:focus:ring-offset-stone-950 transition-all"
 								value={password}
 								onChange={(e) => setPassword(e.target.value)}
 								data-testid="password-input"
@@ -368,8 +368,13 @@ export default function SignInForm({
 							<button
 								type="button"
 								onClick={() => setShowPassword(!showPassword)}
-								className="absolute inset-y-0 right-0 pr-3 flex items-center text-stone-400 hover:text-stone-600 dark:text-stone-500 dark:hover:text-stone-300 transition-colors focus-visible:outline-none focus-visible:text-primary"
+								className="absolute inset-y-0 right-0 pr-3 flex items-center text-stone-400 hover:text-stone-600 dark:text-stone-500 dark:hover:text-stone-300 transition-all active:scale-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1 dark:focus-visible:ring-offset-stone-950 rounded-lg"
 								aria-label={
+									showPassword
+										? "パスワードを非表示にする"
+										: "パスワードを表示する"
+								}
+								title={
 									showPassword
 										? "パスワードを非表示にする"
 										: "パスワードを表示する"
