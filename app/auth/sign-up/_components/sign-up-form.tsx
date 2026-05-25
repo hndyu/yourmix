@@ -107,7 +107,7 @@ export default function SignUpForm({
 							id="name"
 							type="text"
 							required
-							className="w-full bg-white dark:bg-stone-950 border border-stone-300 dark:border-stone-800 rounded-lg px-4 py-2 text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+							className="w-full bg-white dark:bg-stone-950 border border-stone-300 dark:border-stone-800 rounded-lg px-4 py-2 text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 dark:focus:ring-offset-stone-950 transition-all"
 							value={name}
 							onChange={(e) => setName(e.target.value)}
 							data-testid="name-input"
@@ -129,7 +129,7 @@ export default function SignUpForm({
 							id="email"
 							type="email"
 							required
-							className="w-full bg-white dark:bg-stone-950 border border-stone-300 dark:border-stone-800 rounded-lg px-4 py-2 text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+							className="w-full bg-white dark:bg-stone-950 border border-stone-300 dark:border-stone-800 rounded-lg px-4 py-2 text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 dark:focus:ring-offset-stone-950 transition-all"
 							value={email}
 							onChange={(e) => setEmail(e.target.value)}
 							data-testid="email-input"
@@ -152,7 +152,7 @@ export default function SignUpForm({
 								id="password"
 								type={showPassword ? "text" : "password"}
 								required
-								className="w-full bg-white dark:bg-stone-950 border border-stone-300 dark:border-stone-800 rounded-lg pl-4 pr-10 py-2 text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+								className="w-full bg-white dark:bg-stone-950 border border-stone-300 dark:border-stone-800 rounded-lg pl-4 pr-10 py-2 text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 dark:focus:ring-offset-stone-950 transition-all"
 								value={password}
 								onChange={(e) => setPassword(e.target.value)}
 								data-testid="password-input"
@@ -160,8 +160,13 @@ export default function SignUpForm({
 							<button
 								type="button"
 								onClick={() => setShowPassword(!showPassword)}
-								className="absolute inset-y-0 right-0 pr-3 flex items-center text-stone-400 hover:text-stone-600 dark:text-stone-500 dark:hover:text-stone-300 transition-colors focus-visible:outline-none focus-visible:text-primary"
+								className="absolute inset-y-0 right-0 pr-3 flex items-center text-stone-400 hover:text-stone-600 dark:text-stone-500 dark:hover:text-stone-300 transition-all active:scale-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1 dark:focus-visible:ring-offset-stone-950 rounded-lg"
 								aria-label={
+									showPassword
+										? "パスワードを非表示にする"
+										: "パスワードを表示する"
+								}
+								title={
 									showPassword
 										? "パスワードを非表示にする"
 										: "パスワードを表示する"
@@ -178,7 +183,7 @@ export default function SignUpForm({
 							<input
 								id="terms"
 								type="checkbox"
-								className="h-4 w-4 rounded border-stone-300 dark:border-stone-800 bg-white dark:bg-stone-950 text-primary focus:ring-primary checked:bg-primary"
+								className="h-4 w-4 rounded border-stone-300 dark:border-stone-800 bg-white dark:bg-stone-950 text-primary focus:ring-primary focus:ring-offset-2 dark:focus:ring-offset-stone-950 transition-all checked:bg-primary"
 								checked={termsAgreed}
 								onChange={(e) => {
 									setTermsAgreed(e.target.checked);
