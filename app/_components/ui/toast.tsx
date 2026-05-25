@@ -64,6 +64,7 @@ export function Toast({
 					onClick={onClose}
 					className="ml-2 -mr-1 p-1 rounded-full hover:bg-white/20 transition-all active:scale-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
 					aria-label="閉じる"
+					title="閉じる"
 				>
 					<X size={18} aria-hidden="true" />
 				</button>
