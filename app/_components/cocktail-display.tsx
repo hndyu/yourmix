@@ -233,7 +233,8 @@ export default function CocktailDisplay({
 											<button
 												type="button"
 												aria-label={`${tag.name}の説明を表示`}
-												className="pr-2 shrink-0 hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-full"
+												title={`${tag.name}の説明を表示`}
+												className="group pr-2 shrink-0 hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-full"
 												onClick={() => {
 													setToastState({
 														open: true,
@@ -244,7 +245,7 @@ export default function CocktailDisplay({
 											>
 												<HelpCircle
 													size={16}
-													className="shrink-0"
+													className="shrink-0 transition-transform group-hover:rotate-12"
 													aria-hidden="true"
 												/>
 											</button>
@@ -265,18 +266,26 @@ export default function CocktailDisplay({
 								<button
 									type="button"
 									onClick={handleShare}
-									className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold transition-all duration-200 active:scale-95 min-w-[100px] justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 dark:focus-visible:ring-offset-stone-950 ${
+									className={`group flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold transition-all duration-200 active:scale-95 min-w-[100px] justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 dark:focus-visible:ring-offset-stone-950 ${
 										isCopied
 											? "bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 border border-green-200 dark:border-green-800"
 											: "bg-secondary text-foreground hover:bg-secondary/80"
 									}`}
 								>
 									{isWebShareSupported ? (
-										<Share2 size={18} aria-hidden="true" />
+										<Share2
+											size={18}
+											aria-hidden="true"
+											className="transition-transform group-hover:rotate-12"
+										/>
 									) : isCopied ? (
 										<Check size={18} aria-hidden="true" />
 									) : (
-										<Copy size={18} aria-hidden="true" />
+										<Copy
+											size={18}
+											aria-hidden="true"
+											className="transition-transform group-hover:rotate-12"
+										/>
 									)}
 									{isWebShareSupported ? "共有" : isCopied ? "完了" : "コピー"}
 								</button>
