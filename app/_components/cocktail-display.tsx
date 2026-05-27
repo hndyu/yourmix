@@ -59,6 +59,7 @@ export default function CocktailDisplay({
 		: [];
 	const [isWebShareSupported, setIsWebShareSupported] = React.useState(false);
 	const [isCopied, setIsCopied] = React.useState(false);
+	const [isDescriptionCopied, setIsDescriptionCopied] = React.useState(false);
 	const [completedSteps, setCompletedSteps] = React.useState<Set<number>>(
 		new Set(),
 	);
@@ -78,12 +79,16 @@ export default function CocktailDisplay({
 	}, []);
 
 	const copyTimeoutRef = React.useRef<NodeJS.Timeout | null>(null);
+	const copyDescriptionTimeoutRef = React.useRef<NodeJS.Timeout | null>(null);
 
 	// Cleanup timeout on unmount
 	React.useEffect(() => {
 		return () => {
 			if (copyTimeoutRef.current) {
 				clearTimeout(copyTimeoutRef.current);
+			}
+			if (copyDescriptionTimeoutRef.current) {
+				clearTimeout(copyDescriptionTimeoutRef.current);
 			}
 		};
 	}, []);
@@ -113,6 +118,33 @@ export default function CocktailDisplay({
 				open: true,
 				message: "コピーしました!",
 				severity: "success",
+			});
+		}
+	};
+
+	const handleCopyDescription = async () => {
+		if (!cocktail.description) return;
+		try {
+			await navigator.clipboard.writeText(cocktail.description);
+			setIsDescriptionCopied(true);
+			if (copyDescriptionTimeoutRef.current) {
+				clearTimeout(copyDescriptionTimeoutRef.current);
+			}
+			copyDescriptionTimeoutRef.current = setTimeout(
+				() => setIsDescriptionCopied(false),
+				2000,
+			);
+			setToastState({
+				open: true,
+				message: "説明文をコピーしました!",
+				severity: "success",
+			});
+		} catch (err) {
+			console.error("Failed to copy description: ", err);
+			setToastState({
+				open: true,
+				message: "コピーに失敗しました",
+				severity: "error",
 			});
 		}
 	};
@@ -206,12 +238,33 @@ export default function CocktailDisplay({
 									{cocktail.name}
 								</h2>
 							)}
-							<p
-								id={descriptionId}
-								className="text-muted-foreground text-lg leading-relaxed italic"
-							>
-								{cocktail.description}
-							</p>
+							{cocktail.description && (
+								<div className="flex items-start gap-2 group/desc">
+									<p
+										id={descriptionId}
+										className="text-muted-foreground text-lg leading-relaxed italic flex-1"
+									>
+										{cocktail.description}
+									</p>
+									<button
+										type="button"
+										onClick={handleCopyDescription}
+										className={`shrink-0 p-1.5 rounded-lg transition-all active:scale-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 dark:focus-visible:ring-offset-stone-950 ${
+											isDescriptionCopied
+												? "text-green-500 bg-green-500/10"
+												: "text-muted-foreground hover:text-foreground hover:bg-secondary opacity-0 group-hover/desc:opacity-100 focus-visible:opacity-100"
+										}`}
+										aria-label="説明文をコピー"
+										title="説明文をコピー"
+									>
+										{isDescriptionCopied ? (
+											<Check size={16} aria-hidden="true" />
+										) : (
+											<Copy size={16} aria-hidden="true" />
+										)}
+									</button>
+								</div>
+							)}
 
 							{/* Tags */}
 							<div className="flex flex-wrap gap-2">
