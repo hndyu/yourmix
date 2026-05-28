@@ -57,3 +57,7 @@
 ## 2026-05-24 - Standardized Form Input Focus Experience
 **Learning:** Accessibility and visual consistency are paramount in form design. Unlike buttons, text-based inputs should provide immediate focus feedback regardless of the interaction method (mouse or keyboard). Standardizing on `focus:ring-2` with `focus:ring-offset-2` and `transition-all` ensures a high-contrast, responsive indicator that works across all themes and input devices. Additionally, enhancing icon-only toggles within inputs (like password visibility) with tactile feedback (`active:scale-90`) and native tooltips (`title`) improves both usability and discoverability.
 **Action:** Apply a consistent focus ring pattern to all form inputs (`focus:ring-2 focus:ring-primary focus:ring-offset-2 dark:focus:ring-offset-stone-950 transition-all`) and ensure nested interactive elements provide clear tactile and descriptive feedback.
+
+## 2025-05-27 - Hover-reveal Copy Buttons for Content Density
+**Learning:** For secondary actions like copying a specific text block, using a hover-reveal pattern (group-hover) helps maintain a clean UI for casual readers while providing power-user tools on demand. Immediate visual feedback (icon change + toast) is crucial to confirm the invisible action.
+**Action:** Apply `group` to containers and `opacity-0 group-hover:opacity-100` to secondary actions like copy buttons.
