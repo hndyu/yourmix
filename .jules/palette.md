@@ -61,3 +61,7 @@
 ## 2025-05-27 - Hover-reveal Copy Buttons for Content Density
 **Learning:** For secondary actions like copying a specific text block, using a hover-reveal pattern (group-hover) helps maintain a clean UI for casual readers while providing power-user tools on demand. Immediate visual feedback (icon change + toast) is crucial to confirm the invisible action.
 **Action:** Apply `group` to containers and `opacity-0 group-hover:opacity-100` to secondary actions like copy buttons.
+
+## 2026-05-29 - [Standardized Icon Micro-interactions]
+**Learning:** Subtle micro-animations on common action icons (like rotations on hover) provide immediate tactile confirmation and a sense of "delight" without overwhelming the user. Standardizing these patterns—such as a clockwise 12-degree rotation for positive/navigational actions (User, Sun/Moon, Logout) and a counter-clockwise 45-degree rotation for dismissive actions (Close 'X')—creates a cohesive and predictable interactive language across the application.
+**Action:** Consistently apply `group` to trigger containers and `transition-transform group-hover:rotate-12` (for actions) or `group-hover:-rotate-45` (for close/reset) to embedded icons.

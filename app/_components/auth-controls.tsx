@@ -109,18 +109,26 @@ export default function AuthControls() {
 						<div className="p-1">
 							<Link
 								href="/my-page"
-								className="flex items-center gap-2 px-3 py-2 text-sm text-stone-300 hover:bg-stone-800 hover:text-white focus:outline-none focus:bg-stone-800 focus:text-white focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-inset rounded-lg transition-all active:scale-[0.98]"
+								className="group flex items-center gap-2 px-3 py-2 text-sm text-stone-300 hover:bg-stone-800 hover:text-white focus:outline-none focus:bg-stone-800 focus:text-white focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-inset rounded-lg transition-all active:scale-[0.98]"
 								onClick={() => setIsOpen(false)}
 							>
-								<User size={18} className="text-stone-500" aria-hidden="true" />
+								<User
+									size={18}
+									className="text-stone-500 transition-transform group-hover:rotate-12"
+									aria-hidden="true"
+								/>
 								マイページ
 							</Link>
 							<button
 								type="button"
 								onClick={handleSignOut}
-								className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-400 hover:bg-red-500/10 hover:text-red-300 focus:outline-none focus:bg-red-500/10 focus:text-red-300 focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-inset rounded-lg transition-all active:scale-[0.98] text-left"
+								className="group w-full flex items-center gap-2 px-3 py-2 text-sm text-red-400 hover:bg-red-500/10 hover:text-red-300 focus:outline-none focus:bg-red-500/10 focus:text-red-300 focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-inset rounded-lg transition-all active:scale-[0.98] text-left"
 							>
-								<LogOut size={18} aria-hidden="true" />
+								<LogOut
+									size={18}
+									className="transition-transform group-hover:rotate-12"
+									aria-hidden="true"
+								/>
 								ログアウト
 							</button>
 						</div>
