@@ -1,12 +1,15 @@
 "use client";
 
+import { Button } from "@/app/_components/ui/button";
 import type { Category, Ingredient } from "@/app/types/cocktail";
+import { RotateCcw } from "lucide-react";
 import * as React from "react";
 import IngredientSelector from "./ingredient-selector";
 import MixButton from "./mix-button";
 
 interface MixSectionProps {
 	onMixClick: () => void;
+	onReset?: () => void;
 	ingredients: Ingredient[];
 	categories: Category[];
 	selectedIngredientIds: number[];
@@ -20,6 +23,7 @@ interface MixSectionProps {
 
 export default function MixSection({
 	onMixClick,
+	onReset,
 	ingredients,
 	categories,
 	selectedIngredientIds,
@@ -61,6 +65,24 @@ export default function MixSection({
 					showCompletionBar ? "bottom-24" : "bottom-4"
 				}`}
 			>
+				{selectedCount > 0 && onReset && (
+					<Button
+						variant="outline"
+						size="sm"
+						onClick={onReset}
+						disabled={isMixing}
+						aria-label="選択をすべてクリア"
+						title="選択をすべてクリア"
+						className="gap-2 group bg-background/80 backdrop-blur-sm rounded-full"
+					>
+						<RotateCcw
+							size={16}
+							aria-hidden="true"
+							className="group-hover:-rotate-45 transition-transform"
+						/>
+						選択をクリア
+					</Button>
+				)}
 				<div className="relative">
 					{/* Backdrop for button when sticky? Maybe simpler to just elevate it. */}
 					<div className="absolute inset-0 bg-background/80 blur-xl rounded-full -z-10" />

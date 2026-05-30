@@ -140,6 +140,7 @@ export default function CocktailMixer({
 		<>
 			<MixSection
 				onMixClick={handleMixClick}
+				onReset={handleReset}
 				ingredients={ingredients}
 				categories={categories}
 				selectedIngredientIds={selectedIngredientIds}
