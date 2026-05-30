@@ -25,14 +25,22 @@ export function ThemeToggle() {
 		<button
 			type="button"
 			onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
-			className="w-9 h-9 rounded-full flex items-center justify-center transition-all hover:bg-stone-500/10 text-stone-500 hover:text-stone-900 dark:text-stone-400 dark:hover:text-stone-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 dark:focus-visible:ring-offset-stone-950 active:scale-90"
+			className="group w-9 h-9 rounded-full flex items-center justify-center transition-all hover:bg-stone-500/10 text-stone-500 hover:text-stone-900 dark:text-stone-400 dark:hover:text-stone-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 dark:focus-visible:ring-offset-stone-950 active:scale-90"
 			aria-label={themeLabel}
 			title={themeLabel}
 		>
 			{resolvedTheme === "dark" ? (
-				<Sun size={20} aria-hidden="true" />
+				<Sun
+					size={20}
+					aria-hidden="true"
+					className="transition-transform group-hover:rotate-12"
+				/>
 			) : (
-				<Moon size={20} aria-hidden="true" />
+				<Moon
+					size={20}
+					aria-hidden="true"
+					className="transition-transform group-hover:rotate-12"
+				/>
 			)}
 		</button>
 	);

@@ -156,11 +156,15 @@ export default function DeliciousButton({
 							<button
 								type="button"
 								onClick={() => setShowLoginModal(false)}
-								className="absolute top-4 right-4 text-muted-foreground hover:text-foreground transition-all active:scale-90 p-1 rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 dark:focus-visible:ring-offset-stone-950"
+								className="group absolute top-4 right-4 text-muted-foreground hover:text-foreground transition-all active:scale-90 p-1 rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 dark:focus-visible:ring-offset-stone-950"
 								aria-label="閉じる"
 								title="閉じる"
 							>
-								<X size={20} aria-hidden="true" />
+								<X
+									size={20}
+									aria-hidden="true"
+									className="transition-transform group-hover:-rotate-45"
+								/>
 							</button>
 
 							<h3
