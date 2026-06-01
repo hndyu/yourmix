@@ -249,7 +249,7 @@ export default function CocktailDisplay({
 									<button
 										type="button"
 										onClick={handleCopyDescription}
-										className={`shrink-0 p-1.5 rounded-lg transition-all active:scale-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 dark:focus-visible:ring-offset-stone-950 ${
+										className={`group shrink-0 p-1.5 rounded-lg transition-all active:scale-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 dark:focus-visible:ring-offset-stone-950 ${
 											isDescriptionCopied
 												? "text-green-500 bg-green-500/10"
 												: "text-muted-foreground hover:text-foreground hover:bg-secondary opacity-0 group-hover/desc:opacity-100 focus-visible:opacity-100"
@@ -260,7 +260,11 @@ export default function CocktailDisplay({
 										{isDescriptionCopied ? (
 											<Check size={16} aria-hidden="true" />
 										) : (
-											<Copy size={16} aria-hidden="true" />
+											<Copy
+												size={16}
+												aria-hidden="true"
+												className="transition-transform group-hover:rotate-12"
+											/>
 										)}
 									</button>
 								</div>
@@ -401,9 +405,13 @@ export default function CocktailDisplay({
 																href={link}
 																target="_blank"
 																rel="noopener noreferrer"
-																className="inline-flex items-center gap-1 px-2 py-1 bg-secondary hover:bg-orange-100 dark:hover:bg-orange-900/30 text-orange-600 dark:text-orange-400 hover:text-orange-700 dark:hover:text-orange-300 rounded text-sm font-bold transition-all active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 dark:focus-visible:ring-offset-stone-950"
+																className="group inline-flex items-center gap-1 px-2 py-1 bg-secondary hover:bg-orange-100 dark:hover:bg-orange-900/30 text-orange-600 dark:text-orange-400 hover:text-orange-700 dark:hover:text-orange-300 rounded text-sm font-bold transition-all active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 dark:focus-visible:ring-offset-stone-950"
 															>
-																<ShoppingCart size={12} aria-hidden="true" />
+																<ShoppingCart
+																	size={12}
+																	aria-hidden="true"
+																	className="transition-transform group-hover:rotate-12"
+																/>
 																買う
 																<span className="sr-only">
 																	（新しいウィンドウで開きます）
