@@ -91,11 +91,15 @@ const IngredientSearch = React.forwardRef<
 				<button
 					type="button"
 					onClick={handleClear}
-					className="absolute inset-y-0 right-0 pr-3 flex items-center text-stone-400 hover:text-stone-600 dark:text-stone-500 dark:hover:text-stone-300 transition-all active:scale-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 dark:focus-visible:ring-offset-stone-950 rounded-full"
+					className="group absolute inset-y-0 right-0 pr-3 flex items-center text-stone-400 hover:text-stone-600 dark:text-stone-500 dark:hover:text-stone-300 transition-all active:scale-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 dark:focus-visible:ring-offset-stone-950 rounded-full"
 					aria-label="検索をクリア"
 					title="検索をクリア"
 				>
-					<XCircle size={18} aria-hidden="true" />
+					<XCircle
+						size={18}
+						aria-hidden="true"
+						className="transition-transform group-hover:-rotate-45"
+					/>
 				</button>
 			) : (
 				!isFocused && (
