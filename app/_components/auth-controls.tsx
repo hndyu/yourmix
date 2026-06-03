@@ -1,7 +1,7 @@
 "use client";
 
 import authClient from "@/app/lib/authClient";
-import { LogIn, LogOut, User } from "lucide-react";
+import { LogIn, LogOut, User, UserPlus } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
@@ -144,17 +144,29 @@ export default function AuthControls() {
 				variant="ghost"
 				size="sm"
 				href={`/auth/sign-in?callbackUrl=${encodeURIComponent(callbackUrl)}`}
-				className="px-2 sm:px-3 text-stone-600 dark:text-stone-400"
+				className="group px-2 sm:px-3 text-stone-600 dark:text-stone-400"
 				aria-label="ログイン"
+				title="ログイン"
 			>
-				<LogIn size={20} className="sm:mr-2" aria-hidden="true" />
+				<LogIn
+					size={20}
+					className="sm:mr-2 transition-transform group-hover:rotate-12"
+					aria-hidden="true"
+				/>
 				<span className="hidden sm:inline">ログイン</span>
 			</Button>
 			<Button
 				size="sm"
 				href={`/auth/sign-up?callbackUrl=${encodeURIComponent(callbackUrl)}`}
-				className="px-3 sm:px-4 font-bold"
+				className="group px-3 sm:px-4 font-bold"
+				aria-label="アカウント登録"
+				title="アカウント登録"
 			>
+				<UserPlus
+					size={20}
+					className="sm:mr-2 transition-transform group-hover:rotate-12"
+					aria-hidden="true"
+				/>
 				<span className="sm:hidden">登録</span>
 				<span className="hidden sm:inline">アカウント登録</span>
 			</Button>
