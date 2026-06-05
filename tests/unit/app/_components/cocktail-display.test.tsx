@@ -233,4 +233,35 @@ describe("CocktailDisplay Component", () => {
 		expect(firstStepButton).toHaveAttribute("aria-pressed", "false");
 		expect(screen.getByText(/ステップ 1（未完了）/)).toBeInTheDocument();
 	});
+
+	it("resets all steps when reset button is clicked", async () => {
+		render(<CocktailDisplay cocktail={mockCocktail} />);
+
+		const firstStepButton = screen.getByRole("button", {
+			name: /ステップ 1/,
+		});
+		const secondStepButton = screen.getByRole("button", {
+			name: /ステップ 2/,
+		});
+
+		// Complete two steps
+		await userEvent.click(firstStepButton);
+		await userEvent.click(secondStepButton);
+
+		expect(firstStepButton).toHaveAttribute("aria-pressed", "true");
+		expect(secondStepButton).toHaveAttribute("aria-pressed", "true");
+
+		// Find and click reset button
+		const resetButton = screen.getByRole("button", { name: "進捗をリセット" });
+		await userEvent.click(resetButton);
+
+		// Verify both steps are uncompleted
+		expect(firstStepButton).toHaveAttribute("aria-pressed", "false");
+		expect(secondStepButton).toHaveAttribute("aria-pressed", "false");
+
+		// Reset button should disappear
+		expect(
+			screen.queryByRole("button", { name: "進捗をリセット" }),
+		).not.toBeInTheDocument();
+	});
 });
