@@ -3,7 +3,7 @@
 import authClient from "@/app/lib/authClient";
 import { isValidCallbackUrl } from "@/app/lib/url";
 import { Turnstile } from "@marsidev/react-turnstile";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, UserPlus } from "lucide-react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
@@ -224,10 +224,15 @@ export default function SignUpForm({
 
 					<Button
 						type="submit"
-						className="w-full"
+						className="w-full group gap-2"
 						isLoading={isLoading}
 						data-testid="sign-up-button"
 					>
+						<UserPlus
+							size={16}
+							className="transition-transform group-hover:rotate-12"
+							aria-hidden="true"
+						/>
 						アカウント登録
 					</Button>
 				</form>

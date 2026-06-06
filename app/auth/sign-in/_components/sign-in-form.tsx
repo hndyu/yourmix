@@ -3,7 +3,7 @@
 import authClient from "@/app/lib/authClient";
 import { isValidCallbackUrl } from "@/app/lib/url";
 import { Turnstile } from "@marsidev/react-turnstile";
-import { Eye, EyeOff, KeyRound } from "lucide-react";
+import { Eye, EyeOff, KeyRound, LogIn } from "lucide-react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -253,12 +253,17 @@ export default function SignInForm({
 
 						<Button
 							type="submit"
-							className="w-full"
+							className="w-full group gap-2"
 							isLoading={isLoading}
 							disabled={
 								isBackupCodeMode ? !backupCode : twoFactorCode.length !== 6
 							}
 						>
+							<LogIn
+								size={16}
+								className="transition-transform group-hover:rotate-12"
+								aria-hidden="true"
+							/>
 							認証してログイン
 						</Button>
 
@@ -398,10 +403,15 @@ export default function SignInForm({
 
 					<Button
 						type="submit"
-						className="w-full"
+						className="w-full group gap-2"
 						isLoading={isLoading}
 						data-testid="sign-in-button"
 					>
+						<LogIn
+							size={16}
+							className="transition-transform group-hover:rotate-12"
+							aria-hidden="true"
+						/>
 						ログイン
 					</Button>
 				</form>
@@ -410,11 +420,14 @@ export default function SignInForm({
 					<Button
 						type="button"
 						variant="outline"
-						className="w-full flex items-center justify-center gap-2"
+						className="w-full flex items-center justify-center gap-2 group"
 						onClick={handlePasskeySignIn}
 						isLoading={isPasskeyLoading}
 					>
-						<KeyRound className="w-4 h-4" />
+						<KeyRound
+							className="w-4 h-4 transition-transform group-hover:rotate-12"
+							aria-hidden="true"
+						/>
 						パスキーでログイン
 					</Button>
 

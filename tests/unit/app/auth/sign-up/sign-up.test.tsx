@@ -14,6 +14,13 @@ vi.mock("next/navigation", () => ({
 	}),
 }));
 
+// Mock Lucide icons
+vi.mock("lucide-react", () => ({
+	Eye: () => <div data-testid="eye-icon">Eye Icon</div>,
+	EyeOff: () => <div data-testid="eye-off-icon">Eye Off Icon</div>,
+	UserPlus: () => <div data-testid="user-plus-icon">User Plus Icon</div>,
+}));
+
 // Mock auth-client
 vi.mock("@/app/lib/authClient", () => ({
 	default: {

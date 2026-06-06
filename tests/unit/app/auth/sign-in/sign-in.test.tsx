@@ -35,6 +35,7 @@ vi.mock("lucide-react", () => ({
 	KeyRound: () => <div data-testid="key-icon">Key Icon</div>,
 	Eye: () => <div data-testid="eye-icon">Eye Icon</div>,
 	EyeOff: () => <div data-testid="eye-off-icon">Eye Off Icon</div>,
+	LogIn: () => <div data-testid="login-icon">Log In Icon</div>,
 }));
 
 vi.mock("@marsidev/react-turnstile", () => ({
