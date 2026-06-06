@@ -4,6 +4,7 @@ import {
 	Check,
 	Copy,
 	HelpCircle,
+	RotateCcw,
 	Share2,
 	ShoppingCart,
 	Tag,
@@ -281,7 +282,7 @@ export default function CocktailDisplay({
 									>
 										<Link
 											href={`/tags/${encodeURIComponent(tag.name)}`}
-											className="flex items-center gap-1.5 px-3 py-1 hover:bg-secondary/80 hover:text-foreground transition-colors rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 dark:focus-visible:ring-offset-stone-950"
+											className="inline-flex items-center gap-1.5 px-3 py-1 hover:bg-secondary/80 hover:text-foreground transition-all active:scale-95 rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 dark:focus-visible:ring-offset-stone-950"
 										>
 											<Tag size={16} className="shrink-0" aria-hidden="true" />
 											{tag.name}
@@ -429,15 +430,33 @@ export default function CocktailDisplay({
 
 						{/* Instructions */}
 						<div>
-							<h3 className="text-2xl font-bold text-foreground mb-6 flex items-center gap-3">
-								<span
-									className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-primary text-sm"
-									aria-hidden="true"
-								>
-									B
-								</span>
-								作り方
-							</h3>
+							<div className="flex items-center justify-between mb-6">
+								<h3 className="text-2xl font-bold text-foreground flex items-center gap-3">
+									<span
+										className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-primary text-sm"
+										aria-hidden="true"
+									>
+										B
+									</span>
+									作り方
+								</h3>
+								{completedSteps.size > 0 && (
+									<button
+										type="button"
+										onClick={() => setCompletedSteps(new Set())}
+										className="group flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-muted-foreground hover:text-foreground bg-secondary/50 hover:bg-secondary rounded-full transition-all active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 dark:focus-visible:ring-offset-stone-950 animate-in fade-in zoom-in-95 duration-200"
+										aria-label="進捗をリセット"
+										title="進捗をリセット"
+									>
+										<RotateCcw
+											size={14}
+											aria-hidden="true"
+											className="transition-transform group-hover:-rotate-45"
+										/>
+										リセット
+									</button>
+								)}
+							</div>
 
 							{/* コネクターラインは ol の外でラップ div を基準に絶対配置する */}
 							<div className="relative">
@@ -458,7 +477,7 @@ export default function CocktailDisplay({
 													type="button"
 													onClick={() => toggleStep(index)}
 													aria-pressed={isStepCompleted}
-													className="flex gap-4 w-full text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-8 rounded-lg transition-all"
+													className="flex gap-4 w-full text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-8 rounded-lg transition-all active:scale-[0.98]"
 												>
 													<span className="sr-only">
 														ステップ {index + 1}

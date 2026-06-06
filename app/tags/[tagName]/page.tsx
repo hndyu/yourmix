@@ -63,7 +63,7 @@ export default async function TagPage({ params }: TagPageProps) {
 					<li className="flex items-center">
 						<Link
 							href="/"
-							className="hover:text-primary transition-all active:scale-95 rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-4 dark:focus-visible:ring-offset-stone-950"
+							className="inline-block hover:text-primary transition-all active:scale-95 rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-4 dark:focus-visible:ring-offset-stone-950"
 						>
 							ホーム
 						</Link>
