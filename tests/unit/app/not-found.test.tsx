@@ -20,12 +20,12 @@ describe("NotFound Page", () => {
 			render(<NotFound />);
 
 			expect(
-				screen.getByRole("heading", { name: "404 - ページが見つかりません" }),
+				screen.getByRole("heading", { name: /404 - ページが見つかりません/ }),
 			).toBeInTheDocument();
 
 			expect(
 				screen.getByText(
-					"お探しのページは移動または削除された可能性があります。",
+					/お探しのページは移動または削除された可能性があります。/,
 				),
 			).toBeInTheDocument();
 
