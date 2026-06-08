@@ -61,6 +61,7 @@ export default function CocktailDisplay({
 	const [isWebShareSupported, setIsWebShareSupported] = React.useState(false);
 	const [isCopied, setIsCopied] = React.useState(false);
 	const [isDescriptionCopied, setIsDescriptionCopied] = React.useState(false);
+	const [isIngredientsCopied, setIsIngredientsCopied] = React.useState(false);
 	const [completedSteps, setCompletedSteps] = React.useState<Set<number>>(
 		new Set(),
 	);
@@ -81,6 +82,7 @@ export default function CocktailDisplay({
 
 	const copyTimeoutRef = React.useRef<NodeJS.Timeout | null>(null);
 	const copyDescriptionTimeoutRef = React.useRef<NodeJS.Timeout | null>(null);
+	const copyIngredientsTimeoutRef = React.useRef<NodeJS.Timeout | null>(null);
 
 	// Cleanup timeout on unmount
 	React.useEffect(() => {
@@ -90,6 +92,9 @@ export default function CocktailDisplay({
 			}
 			if (copyDescriptionTimeoutRef.current) {
 				clearTimeout(copyDescriptionTimeoutRef.current);
+			}
+			if (copyIngredientsTimeoutRef.current) {
+				clearTimeout(copyIngredientsTimeoutRef.current);
 			}
 		};
 	}, []);
@@ -119,6 +124,35 @@ export default function CocktailDisplay({
 				open: true,
 				message: "コピーしました!",
 				severity: "success",
+			});
+		}
+	};
+
+	const handleCopyIngredients = async () => {
+		const text = displayIngredients
+			.map((item) => `${item.name}: ${item.amount}`)
+			.join("\n");
+		try {
+			await navigator.clipboard.writeText(text);
+			setIsIngredientsCopied(true);
+			if (copyIngredientsTimeoutRef.current) {
+				clearTimeout(copyIngredientsTimeoutRef.current);
+			}
+			copyIngredientsTimeoutRef.current = setTimeout(
+				() => setIsIngredientsCopied(false),
+				2000,
+			);
+			setToastState({
+				open: true,
+				message: "材料リストをコピーしました!",
+				severity: "success",
+			});
+		} catch (err) {
+			console.error("Failed to copy ingredients: ", err);
+			setToastState({
+				open: true,
+				message: "コピーに失敗しました",
+				severity: "error",
 			});
 		}
 	};
@@ -355,15 +389,39 @@ export default function CocktailDisplay({
 					<div className="grid md:grid-cols-2 gap-12">
 						{/* Ingredients */}
 						<div>
-							<h3 className="text-2xl font-bold text-foreground mb-6 flex items-center gap-3">
-								<span
-									className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-primary text-sm"
-									aria-hidden="true"
+							<div className="flex items-center justify-between mb-6">
+								<h3 className="text-2xl font-bold text-foreground flex items-center gap-3">
+									<span
+										className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-primary text-sm"
+										aria-hidden="true"
+									>
+										A
+									</span>
+									材料
+								</h3>
+								<button
+									type="button"
+									onClick={handleCopyIngredients}
+									className={`group flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold transition-all active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 dark:focus-visible:ring-offset-stone-950 rounded-full ${
+										isIngredientsCopied
+											? "text-green-600 bg-green-100 dark:bg-green-900/30 dark:text-green-400 border border-green-200 dark:border-green-800"
+											: "text-muted-foreground hover:text-foreground bg-secondary/50 hover:bg-secondary"
+									}`}
+									aria-label="材料リストをコピー"
+									title="材料リストをコピー"
 								>
-									A
-								</span>
-								材料
-							</h3>
+									{isIngredientsCopied ? (
+										<Check size={14} aria-hidden="true" />
+									) : (
+										<Copy
+											size={14}
+											aria-hidden="true"
+											className="transition-transform group-hover:rotate-12"
+										/>
+									)}
+									{isIngredientsCopied ? "コピー完了" : "リストをコピー"}
+								</button>
+							</div>
 
 							<ul className="space-y-4">
 								{displayIngredients.map((item) => (
