@@ -264,4 +264,31 @@ describe("CocktailDisplay Component", () => {
 			screen.queryByRole("button", { name: "進捗をリセット" }),
 		).not.toBeInTheDocument();
 	});
+
+	it("copies ingredients list when copy button is clicked", async () => {
+		const writeTextMock = vi.fn().mockResolvedValue(undefined);
+		Object.assign(navigator, {
+			clipboard: {
+				writeText: writeTextMock,
+			},
+		});
+
+		render(<CocktailDisplay cocktail={mockCocktail} />);
+
+		const copyListButton = screen.getByRole("button", {
+			name: "材料リストをコピー",
+		});
+		await userEvent.click(copyListButton);
+
+		// Expected format: "Name: Amount\nName: Amount"
+		const expectedText = "ジン: 45ml\nトニックウォーター: Full up";
+		expect(writeTextMock).toHaveBeenCalledWith(expectedText);
+
+		await waitFor(() => {
+			expect(
+				screen.getByText("材料リストをコピーしました!"),
+			).toBeInTheDocument();
+			expect(screen.getByText("コピー完了")).toBeInTheDocument();
+		});
+	});
 });
