@@ -77,7 +77,8 @@ const CocktailSearchResults = React.memo(function CocktailSearchResults({
 					<Link
 						key={cocktail.id}
 						href={`/recipes/${cocktail.slug}`}
-						className="group block relative bg-card border border-border rounded-3xl overflow-hidden hover:border-stone-400 dark:hover:border-stone-600 hover:bg-white dark:hover:bg-stone-900/60 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl shadow-stone-200/50 dark:shadow-black/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-4 dark:focus-visible:ring-offset-stone-950"
+						className="group block relative bg-card border border-border rounded-3xl overflow-hidden hover:border-stone-400 dark:hover:border-stone-600 hover:bg-white dark:hover:bg-stone-900/60 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl shadow-stone-200/50 dark:shadow-black/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-4 dark:focus-visible:ring-offset-stone-950 active:scale-[0.98]"
+						title={`${cocktail.name}のレシピを見る`}
 					>
 						{/* Image Area */}
 

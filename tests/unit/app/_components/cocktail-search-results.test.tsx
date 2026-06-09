@@ -10,12 +10,19 @@ vi.mock("next/link", () => ({
 		children,
 		href,
 		className,
+		title,
 	}: {
 		children: React.ReactNode;
 		href: string;
-		className?: string; // Add className
+		className?: string;
+		title?: string;
 	}) => (
-		<a href={href} className={className} data-testid="cocktail-card">
+		<a
+			href={href}
+			className={className}
+			title={title}
+			data-testid="cocktail-card"
+		>
 			{children}
 		</a>
 	),
@@ -256,10 +263,12 @@ describe("CocktailSearchResults", () => {
 		expect(bourbonChip.className).toContain("bg-primary/20");
 	});
 
-	it("links to correct detail page", () => {
+	it("links to correct detail page and has UX enhancements", () => {
 		renderComponent({});
 		const gimletLink = screen.getByText("ギムレット").closest("a");
 		expect(gimletLink).toHaveAttribute("href", "/recipes/gimlet");
+		expect(gimletLink).toHaveAttribute("title", "ギムレットのレシピを見る");
+		expect(gimletLink?.className).toContain("active:scale-[0.98]");
 	});
 
 	it("renders nothing when show=false", () => {
