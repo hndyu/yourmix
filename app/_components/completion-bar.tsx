@@ -20,7 +20,7 @@ export default function CompletionBar({
 	onViewClick,
 }: CompletionBarProps) {
 	return (
-		<div className="fixed bottom-0 inset-x-0 z-50 border-t border-border bg-background/80 backdrop-blur-xl shadow-[0_-4px_20px_rgba(0,0,0,0.08)] dark:shadow-[0_-4px_20px_rgba(0,0,0,0.3)]">
+		<div className="fixed bottom-0 inset-x-0 z-50 border-t border-border bg-background/80 backdrop-blur-xl shadow-[0_-4px_20px_rgba(0,0,0,0.08)] dark:shadow-[0_-4px_20px_rgba(0,0,0,0.3)] animate-in slide-in-from-bottom-full duration-500">
 			<div className="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
 				{isGenerating ? (
 					// AI 生成中: 実況メッセージを表示
