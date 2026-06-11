@@ -83,8 +83,12 @@ export default async function TagPage({ params }: TagPageProps) {
 			{/* ヘッダー */}
 			<div className="w-full max-w-7xl mx-auto animate-in fade-in slide-in-from-bottom-8 duration-1000">
 				<div className="text-center mb-12">
-					<div className="inline-flex items-center gap-2 px-4 py-2 bg-secondary border border-border rounded-full text-sm text-muted-foreground mb-4">
-						<Tag size={16} aria-hidden="true" />
+					<div className="group inline-flex items-center gap-2 px-4 py-2 bg-secondary border border-border rounded-full text-sm text-muted-foreground mb-4">
+						<Tag
+							size={16}
+							aria-hidden="true"
+							className="transition-transform group-hover:rotate-12"
+						/>
 						タグ
 					</div>
 					<h1 className="text-3xl md:text-4xl font-display font-bold text-foreground mb-3">
@@ -115,7 +119,8 @@ export default async function TagPage({ params }: TagPageProps) {
 							<Link
 								key={cocktail.id}
 								href={`/recipes/${cocktail.slug}`}
-								className="group block relative bg-card border border-border rounded-3xl overflow-hidden hover:border-stone-400 dark:hover:border-stone-600 hover:bg-white dark:hover:bg-stone-900/60 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl shadow-stone-200/50 dark:shadow-black/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-4 dark:focus-visible:ring-offset-stone-950"
+								className="group block relative bg-card border border-border rounded-3xl overflow-hidden hover:border-stone-400 dark:hover:border-stone-600 hover:bg-white dark:hover:bg-stone-900/60 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl shadow-stone-200/50 dark:shadow-black/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-4 dark:focus-visible:ring-offset-stone-950 active:scale-[0.98]"
+								title={`${cocktail.name}のレシピを見る`}
 							>
 								{/* 画像エリア */}
 								<div className="relative w-full aspect-[4/3] bg-stone-100/50 dark:bg-stone-950/50 flex items-center justify-center overflow-hidden">
