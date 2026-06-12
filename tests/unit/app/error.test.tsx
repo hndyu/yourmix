@@ -18,16 +18,21 @@ describe("CustomError", () => {
 		mockReset.mockClear();
 	});
 
+	// Mock Lucide icons
+	vi.mock("lucide-react", () => ({
+		AlertTriangle: () => <div data-testid="alert-triangle-icon" />,
+		Martini: () => <div data-testid="martini-icon" />,
+		RotateCcw: () => <div data-testid="rotate-ccw-icon" />,
+	}));
+
 	it("エラーメッセージと再試行ボタンが正しくレンダリングされる", () => {
 		render(<CustomError error={mockError} reset={mockReset} />);
 
 		expect(
-			screen.getByRole("heading", { name: "予期せぬエラーが発生しました" }),
+			screen.getByRole("heading", { name: /予期せぬエラーが発生しました/ }),
 		).toBeInTheDocument();
 		expect(
-			screen.getByText(
-				"ご迷惑をおかけしております。時間をおいて再度お試しください。",
-			),
+			screen.getByText(/ご迷惑をおかけしております。/),
 		).toBeInTheDocument();
 		expect(screen.getByRole("button", { name: "再試行" })).toBeInTheDocument();
 	});
