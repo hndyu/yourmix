@@ -38,7 +38,9 @@ export default function CompletionBar({
 					// AI 生成完了: 完成メッセージと「見る」ボタンを表示
 					<>
 						<p className="text-sm font-bold text-foreground animate-in fade-in duration-500">
-							<span aria-hidden="true">✨</span>{" "}
+							<span className="inline-block animate-pulse" aria-hidden="true">
+								✨
+							</span>{" "}
 							オリジナルカクテルが完成しました！
 						</p>
 						<button
@@ -50,7 +52,7 @@ export default function CompletionBar({
 						>
 							<Sparkles
 								size={16}
-								className="transition-transform group-hover:rotate-12"
+								className="animate-pulse transition-transform group-hover:rotate-12"
 								aria-hidden="true"
 							/>
 							見る
