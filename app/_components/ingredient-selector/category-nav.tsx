@@ -34,7 +34,7 @@ const CategoryNav = React.memo(function CategoryNav({
 								onClick={() => onSelectCategory(category.name)}
 								aria-current={isActive ? "location" : undefined}
 								className={`
-              flex items-center gap-3 px-4 py-3 rounded-xl transition-all text-sm font-medium whitespace-nowrap focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 dark:focus-visible:ring-offset-stone-950 active:scale-95
+              group flex items-center gap-3 px-4 py-3 rounded-xl transition-all text-sm font-medium whitespace-nowrap focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 dark:focus-visible:ring-offset-stone-950 active:scale-95
               ${
 								isActive
 									? "bg-white dark:bg-stone-800 text-primary shadow-lg shadow-black/5 dark:shadow-black/20 ring-1 ring-stone-200 dark:ring-0"
@@ -51,10 +51,14 @@ const CategoryNav = React.memo(function CategoryNav({
 											alt=""
 											width={20}
 											height={20}
-											className="w-full h-full object-cover"
+											className="w-full h-full object-cover transition-transform group-hover:rotate-12"
 										/>
 									) : (
-										<asset.value size={20} aria-hidden="true" />
+										<asset.value
+											size={20}
+											aria-hidden="true"
+											className="transition-transform group-hover:rotate-12"
+										/>
 									)}
 								</span>
 								{category.name}
