@@ -289,8 +289,12 @@ export default function CocktailDisplay({
 												? "text-green-500 bg-green-500/10"
 												: "text-muted-foreground hover:text-foreground hover:bg-secondary opacity-0 group-hover/desc:opacity-100 focus-visible:opacity-100"
 										}`}
-										aria-label="説明文をコピー"
-										title="説明文をコピー"
+										aria-label={
+											isDescriptionCopied ? "コピーしました" : "説明文をコピー"
+										}
+										title={
+											isDescriptionCopied ? "コピーしました" : "説明文をコピー"
+										}
 									>
 										{isDescriptionCopied ? (
 											<Check size={16} aria-hidden="true" />
@@ -363,6 +367,20 @@ export default function CocktailDisplay({
 											? "bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 border border-green-200 dark:border-green-800"
 											: "bg-secondary text-foreground hover:bg-secondary/80"
 									}`}
+									aria-label={
+										isWebShareSupported
+											? "共有"
+											: isCopied
+												? "コピーしました"
+												: "レシピをコピー"
+									}
+									title={
+										isWebShareSupported
+											? "共有"
+											: isCopied
+												? "コピーしました"
+												: "レシピをコピー"
+									}
 								>
 									{isWebShareSupported ? (
 										<Share2
@@ -407,8 +425,16 @@ export default function CocktailDisplay({
 											? "text-green-600 bg-green-100 dark:bg-green-900/30 dark:text-green-400 border border-green-200 dark:border-green-800"
 											: "text-muted-foreground hover:text-foreground bg-secondary/50 hover:bg-secondary"
 									}`}
-									aria-label="材料リストをコピー"
-									title="材料リストをコピー"
+									aria-label={
+										isIngredientsCopied
+											? "コピーしました"
+											: "材料リストをコピー"
+									}
+									title={
+										isIngredientsCopied
+											? "コピーしました"
+											: "材料リストをコピー"
+									}
 								>
 									{isIngredientsCopied ? (
 										<Check size={14} aria-hidden="true" />
@@ -465,6 +491,8 @@ export default function CocktailDisplay({
 																target="_blank"
 																rel="noopener noreferrer"
 																className="group inline-flex items-center gap-1 px-2 py-1 bg-secondary hover:bg-orange-100 dark:hover:bg-orange-900/30 text-orange-600 dark:text-orange-400 hover:text-orange-700 dark:hover:text-orange-300 rounded text-sm font-bold transition-all active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 dark:focus-visible:ring-offset-stone-950"
+																aria-label={`${ing.name}を探す`}
+																title={`${ing.name}を探す`}
 															>
 																<ShoppingCart
 																	size={12}
