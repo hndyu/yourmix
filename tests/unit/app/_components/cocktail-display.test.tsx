@@ -166,9 +166,15 @@ describe("CocktailDisplay Component", () => {
 
 		const links = screen.getAllByRole("link", { name: /を探す/i });
 		expect(links).toHaveLength(2);
-		expect(links[0]).toHaveAttribute("aria-label", "ジンを探す");
+		expect(links[0]).toHaveAttribute(
+			"aria-label",
+			"ジンを探す（新しいウィンドウで開きます）",
+		);
 		expect(links[0]).toHaveAttribute("href", "https://example.com/shop/ジン");
-		expect(links[1]).toHaveAttribute("aria-label", "トニックウォーターを探す");
+		expect(links[1]).toHaveAttribute(
+			"aria-label",
+			"トニックウォーターを探す（新しいウィンドウで開きます）",
+		);
 		expect(links[1]).toHaveAttribute(
 			"href",
 			"https://example.com/shop/トニックウォーター",
