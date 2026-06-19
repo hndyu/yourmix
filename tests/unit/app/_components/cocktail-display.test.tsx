@@ -151,7 +151,7 @@ describe("CocktailDisplay Component", () => {
 
 		render(<CocktailDisplay cocktail={mockCocktail} isDetailPage={true} />);
 
-		const copyButton = screen.getByRole("button", { name: "コピー" });
+		const copyButton = screen.getByRole("button", { name: "レシピをコピー" });
 		await userEvent.click(copyButton);
 
 		expect(shareUtils.shareCocktail).toHaveBeenCalledWith(mockCocktail);
@@ -164,9 +164,17 @@ describe("CocktailDisplay Component", () => {
 	it("renders affiliate links correctly", () => {
 		render(<CocktailDisplay cocktail={mockCocktail} isDetailPage />);
 
-		const links = screen.getAllByRole("link", { name: /買う/i });
+		const links = screen.getAllByRole("link", { name: /を探す/i });
 		expect(links).toHaveLength(2);
+		expect(links[0]).toHaveAttribute(
+			"aria-label",
+			"ジンを探す（新しいウィンドウで開きます）",
+		);
 		expect(links[0]).toHaveAttribute("href", "https://example.com/shop/ジン");
+		expect(links[1]).toHaveAttribute(
+			"aria-label",
+			"トニックウォーターを探す（新しいウィンドウで開きます）",
+		);
 		expect(links[1]).toHaveAttribute(
 			"href",
 			"https://example.com/shop/トニックウォーター",
@@ -176,7 +184,7 @@ describe("CocktailDisplay Component", () => {
 	it("does not render affiliate links when isDetailPage is false", () => {
 		render(<CocktailDisplay cocktail={mockCocktail} />);
 		expect(
-			screen.queryByRole("link", { name: /買う/i }),
+			screen.queryByRole("link", { name: /を探す/i }),
 		).not.toBeInTheDocument();
 	});
 
