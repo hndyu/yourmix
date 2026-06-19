@@ -4,9 +4,11 @@ import {
 	Check,
 	Copy,
 	HelpCircle,
+	Martini,
 	RotateCcw,
 	Share2,
 	ShoppingCart,
+	Sparkles,
 	Tag,
 } from "lucide-react";
 import Image from "next/image";
@@ -287,7 +289,7 @@ export default function CocktailDisplay({
 										className={`group shrink-0 p-1.5 rounded-lg transition-all active:scale-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 dark:focus-visible:ring-offset-stone-950 ${
 											isDescriptionCopied
 												? "text-green-500 bg-green-500/10"
-												: "text-muted-foreground hover:text-foreground hover:bg-secondary opacity-0 group-hover/desc:opacity-100 focus-visible:opacity-100"
+												: "text-muted-foreground hover:text-foreground hover:bg-secondary md:opacity-0 md:group-hover/desc:opacity-100 focus-visible:opacity-100"
 										}`}
 										aria-label={
 											isDescriptionCopied ? "コピーしました" : "説明文をコピー"
@@ -407,7 +409,7 @@ export default function CocktailDisplay({
 					<div className="grid md:grid-cols-2 gap-12">
 						{/* Ingredients */}
 						<div>
-							<div className="flex items-center justify-between mb-6">
+							<div className="flex items-center justify-between mb-6 group/ing">
 								<h3 className="text-2xl font-bold text-foreground flex items-center gap-3">
 									<span
 										className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-primary text-sm"
@@ -423,7 +425,7 @@ export default function CocktailDisplay({
 									className={`group flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold transition-all active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 dark:focus-visible:ring-offset-stone-950 rounded-full ${
 										isIngredientsCopied
 											? "text-green-600 bg-green-100 dark:bg-green-900/30 dark:text-green-400 border border-green-200 dark:border-green-800"
-											: "text-muted-foreground hover:text-foreground bg-secondary/50 hover:bg-secondary"
+											: "text-muted-foreground hover:text-foreground bg-secondary/50 hover:bg-secondary md:opacity-0 md:group-hover/ing:opacity-100 focus-visible:opacity-100"
 									}`}
 									aria-label={
 										isIngredientsCopied
@@ -527,7 +529,7 @@ export default function CocktailDisplay({
 									<button
 										type="button"
 										onClick={() => setCompletedSteps(new Set())}
-										className="group flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-muted-foreground hover:text-foreground bg-secondary/50 hover:bg-secondary rounded-full transition-all active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 dark:focus-visible:ring-offset-stone-950 animate-in fade-in zoom-in-95 duration-200"
+										className="group flex items-center gap-2 px-3 py-1.5 text-xs font-bold text-muted-foreground hover:text-foreground bg-secondary/50 hover:bg-secondary rounded-full transition-all active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 dark:focus-visible:ring-offset-stone-950 animate-in fade-in zoom-in-95 duration-200"
 										aria-label="進捗をリセット"
 										title="進捗をリセット"
 									>
@@ -540,6 +542,34 @@ export default function CocktailDisplay({
 									</button>
 								)}
 							</div>
+
+							{/* Success Celebration Message */}
+							{completedSteps.size === cocktailInstructions.length &&
+								cocktailInstructions.length > 0 && (
+									<div className="mb-6 p-4 bg-primary/10 border border-primary/20 rounded-2xl flex items-center justify-between gap-4 animate-in fade-in zoom-in-95 duration-500">
+										<div className="flex items-center gap-3">
+											<div
+												className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-primary-foreground shadow-lg shadow-primary/20"
+												aria-hidden="true"
+											>
+												<Martini size={20} className="animate-pulse" />
+											</div>
+											<div>
+												<p className="font-bold text-primary">
+													Cheers! カクテルの完成です
+												</p>
+												<p className="text-xs text-primary/70">
+													美味しい一杯をお楽しみください。
+												</p>
+											</div>
+										</div>
+										<Sparkles
+											className="text-primary animate-pulse hidden sm:block"
+											size={24}
+											aria-hidden="true"
+										/>
+									</div>
+								)}
 
 							{/* コネクターラインは ol の外でラップ div を基準に絶対配置する */}
 							<div className="relative">
