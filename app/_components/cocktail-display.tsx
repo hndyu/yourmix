@@ -289,7 +289,7 @@ export default function CocktailDisplay({
 										className={`group shrink-0 p-1.5 rounded-lg transition-all active:scale-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 dark:focus-visible:ring-offset-stone-950 ${
 											isDescriptionCopied
 												? "text-green-500 bg-green-500/10"
-												: "text-muted-foreground hover:text-foreground hover:bg-secondary md:opacity-0 md:group-hover/desc:opacity-100 focus-visible:opacity-100"
+												: "text-muted-foreground hover:text-foreground hover:bg-secondary [@media(hover:hover)]:opacity-0 [@media(hover:hover)]:group-hover/desc:opacity-100 focus-visible:opacity-100"
 										}`}
 										aria-label={
 											isDescriptionCopied ? "コピーしました" : "説明文をコピー"
@@ -425,7 +425,7 @@ export default function CocktailDisplay({
 									className={`group flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold transition-all active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 dark:focus-visible:ring-offset-stone-950 rounded-full ${
 										isIngredientsCopied
 											? "text-green-600 bg-green-100 dark:bg-green-900/30 dark:text-green-400 border border-green-200 dark:border-green-800"
-											: "text-muted-foreground hover:text-foreground bg-secondary/50 hover:bg-secondary md:opacity-0 md:group-hover/ing:opacity-100 focus-visible:opacity-100"
+											: "text-muted-foreground hover:text-foreground bg-secondary/50 hover:bg-secondary [@media(hover:hover)]:opacity-0 [@media(hover:hover)]:group-hover/ing:opacity-100 focus-visible:opacity-100"
 									}`}
 									aria-label={
 										isIngredientsCopied
