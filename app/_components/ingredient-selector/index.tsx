@@ -195,7 +195,7 @@ export default function IngredientSelector({
 						);
 					})}
 					{filteredIngredients.length === 0 && (
-						<div className="col-span-full text-center py-12 text-stone-500 flex flex-col items-center gap-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
+						<div className="col-span-full text-center py-12 flex flex-col items-center gap-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
 							<SearchX
 								size={48}
 								className="text-stone-300 dark:text-stone-500 mb-2"

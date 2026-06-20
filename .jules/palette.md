@@ -69,3 +69,7 @@
 ## 2026-05-29 - [Standardized Icon Micro-interactions]
 **Learning:** Subtle micro-animations on common action icons (like rotations on hover) provide immediate tactile confirmation and a sense of "delight" without overwhelming the user. Standardizing these patterns—such as a clockwise 12-degree rotation for positive/navigational actions (User, Sun/Moon, Logout) and a counter-clockwise 45-degree rotation for dismissive actions (Close 'X')—creates a cohesive and predictable interactive language across the application.
 **Action:** Consistently apply `group` to trigger containers and `transition-transform group-hover:rotate-12` (for actions) or `group-hover:-rotate-45` (for close/reset) to embedded icons.
+
+## 2026-06-19 - [Mobile-First Progressive Disclosure]
+**Learning:** Hover-reveal patterns (e.g., `group-hover:opacity-100`) are great for reducing visual clutter on desktop but fail on touch devices where hover states are unreliable or non-existent. To maintain accessibility and discoverability, secondary actions hidden behind a hover state must remain always visible on small screens.
+**Action:** When using hover-reveal patterns, always use the `md:` prefix (e.g., `md:opacity-0 md:group-hover:opacity-100`) to ensure the element is visible by default on mobile.
