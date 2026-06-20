@@ -2,5 +2,5 @@
 	"$schema": "https://unpkg.com/knip@5/schema.json",
 	"tags": ["-lintignore"],
 	"ignore": ["open-next.config.ts", "tests/bench/**/*.bench.ts"],
-	"ignoreDependencies": ["postcss"]
+	"ignoreDependencies": ["postcss", "@next/swc-win32-x64-msvc"]
 }
