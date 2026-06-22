@@ -10,13 +10,13 @@ export default function Footer() {
 				<div className="flex items-center gap-6">
 					<Link
 						href="/terms-of-service"
-						className="hover:text-stone-800 dark:hover:text-stone-300 transition-colors rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-4 dark:focus-visible:ring-offset-stone-950"
+						className="hover:text-stone-800 dark:hover:text-stone-300 transition-colors rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-4 dark:focus-visible:ring-offset-stone-950 active:scale-95 inline-block"
 					>
 						利用規約
 					</Link>
 					<Link
 						href="/privacy-policy"
-						className="hover:text-stone-800 dark:hover:text-stone-300 transition-colors rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-4 dark:focus-visible:ring-offset-stone-950"
+						className="hover:text-stone-800 dark:hover:text-stone-300 transition-colors rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-4 dark:focus-visible:ring-offset-stone-950 active:scale-95 inline-block"
 					>
 						プライバシーポリシー
 					</Link>
