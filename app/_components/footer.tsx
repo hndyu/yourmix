@@ -6,7 +6,7 @@ export default function Footer() {
 	return (
 		<footer className="w-full py-6 mt-auto border-t border-stone-300 dark:border-stone-800 bg-stone-100/50 dark:bg-stone-950/50">
 			<div className="container mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-stone-600 dark:text-stone-500">
-				<p>&copy; {new Date().getFullYear()} YourMix. All rights reserved.</p>
+				<p>&copy; 2025 YourMix. All rights reserved.</p>
 				<div className="flex items-center gap-6">
 					<Link
 						href="/terms-of-service"
