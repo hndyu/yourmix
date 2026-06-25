@@ -34,10 +34,12 @@ const IngredientCard = React.memo(
 
 		const asset = resolveAsset(ingredient.assetKey);
 
+		const selectionLabel = `${ingredient.name}を${isSelected ? "解除" : "選択"}`;
+
 		return (
 			<div
 				className={`
-      relative group flex flex-col rounded-2xl border transition-all duration-300
+      relative group flex flex-col rounded-2xl border transition-all duration-300 animate-in fade-in zoom-in-95 duration-300
       ${
 				activeState
 					? "bg-white dark:bg-stone-900 border-primary/50 shadow-lg shadow-primary/10"
@@ -50,13 +52,12 @@ const IngredientCard = React.memo(
 				<button
 					type="button"
 					aria-pressed={isSelected}
-					aria-label={`${ingredient.name} を${isSelected ? "解除" : "選択"}`}
+					aria-label={selectionLabel}
+					title={selectionLabel}
 					className={`flex flex-col p-4 flex-grow text-left w-full focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 dark:focus-visible:ring-offset-stone-950 transition-transform active:scale-[0.98] ${
 						hasDetails ? "rounded-t-2xl" : "rounded-2xl"
 					}`}
-					onClick={(e) => {
-						// Prevent toggle if clicking expand button (though expand button is outside this container now? No, below)
-						// Actually, the structure below had the expand button separate.
+					onClick={() => {
 						onToggle(ingredient);
 					}}
 				>
@@ -91,10 +92,13 @@ const IngredientCard = React.memo(
 								alt=""
 								width={48}
 								height={48}
-								className="w-full h-full object-contain"
+								className="w-full h-full object-contain transition-transform group-hover:rotate-12"
 							/>
 						) : (
-							<asset.value size={24} />
+							<asset.value
+								size={24}
+								className="transition-transform group-hover:rotate-12"
+							/>
 						)}
 					</div>
 
@@ -114,42 +118,50 @@ const IngredientCard = React.memo(
 				{/* Details Section (Accordion style within card or bottom sheet) */}
 				{hasDetails && (
 					<div className="border-t border-stone-200 dark:border-stone-800/50">
-						<button
-							type="button"
-							aria-expanded={expanded}
-							aria-label={`${ingredient.name}の銘柄・詳細を${expanded ? "閉じる" : "表示"}`}
-							className="expand-btn w-full px-4 py-2 flex items-center justify-between text-xs text-stone-600 dark:text-stone-500 hover:text-stone-800 dark:hover:text-stone-300 transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-inset active:bg-stone-100 dark:active:bg-stone-800 active:scale-[0.98] rounded-b-2xl"
-							onClick={(e) => {
-								e.stopPropagation();
-								setExpanded(!expanded);
-							}}
-						>
-							<span>
-								銘柄・詳細 ({ingredient.actualNames?.length})
-								{selectedDetailNames.length > 0 && (
-									<span className="ml-2 text-primary">
-										{selectedDetailNames.length} 選択中
+						{(() => {
+							const expandLabel = `${ingredient.name}の銘柄・詳細を${expanded ? "閉じる" : "表示"}`;
+							return (
+								<button
+									type="button"
+									aria-expanded={expanded}
+									aria-label={expandLabel}
+									title={expandLabel}
+									className="group/expand expand-btn w-full px-4 py-2 flex items-center justify-between text-xs text-stone-600 dark:text-stone-500 hover:text-stone-800 dark:hover:text-stone-300 transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-inset active:bg-stone-100 dark:active:bg-stone-800 active:scale-[0.98] rounded-b-2xl"
+									onClick={(e) => {
+										e.stopPropagation();
+										setExpanded(!expanded);
+									}}
+								>
+									<span>
+										銘柄・詳細 ({ingredient.actualNames?.length})
+										{selectedDetailNames.length > 0 && (
+											<span className="ml-2 text-primary">
+												{selectedDetailNames.length} 選択中
+											</span>
+										)}
 									</span>
-								)}
-							</span>
-							<ChevronDown
-								className={`transition-transform duration-300 ${expanded ? "rotate-180" : ""}`}
-								size={16}
-								aria-hidden="true"
-							/>
-						</button>
+									<ChevronDown
+										className={`transition-transform duration-300 ${expanded ? "rotate-180" : "group-hover/expand:rotate-12"}`}
+										size={16}
+										aria-hidden="true"
+									/>
+								</button>
+							);
+						})()}
 
 						{/* Expanded Details */}
 						{expanded && (
 							<div className="px-4 pb-4 pt-1 flex flex-wrap gap-2 animate-in slide-in-from-top-2 duration-200 bg-stone-50 dark:bg-stone-900/40 rounded-b-2xl">
 								{ingredient.actualNames?.map((name) => {
 									const isDetailSelected = selectedDetailNames.includes(name);
+									const detailLabel = `${name}を${isDetailSelected ? "解除" : "選択"}`;
 									return (
 										<button
 											key={name}
 											type="button"
 											aria-pressed={isDetailSelected}
-											aria-label={`${name}を${isDetailSelected ? "解除" : "選択"}`}
+											aria-label={detailLabel}
+											title={detailLabel}
 											onClick={(e) => {
 												e.stopPropagation();
 												onDetailToggle(ingredient, name);
