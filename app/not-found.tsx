@@ -29,7 +29,7 @@ export default function NotFound() {
 			<div className="space-y-4">
 				<h1 className="font-bold text-foreground">
 					<span
-						className="font-display text-7xl md:text-8xl text-primary/20 block mb-2 select-none"
+						className="font-display text-7xl md:text-8xl text-primary/20 block mb-2 select-none uppercase tracking-widest"
 						aria-hidden="true"
 					>
 						404
@@ -45,7 +45,16 @@ export default function NotFound() {
 				</p>
 			</div>
 
-			<Button href="/" size="lg" className="min-w-[200px]">
+			<Button
+				href="/"
+				size="lg"
+				className="min-w-[200px] gap-2 group"
+			>
+				<Martini
+					size={18}
+					aria-hidden="true"
+					className="transition-transform group-hover:rotate-12"
+				/>
 				トップページに戻る
 			</Button>
 		</div>
