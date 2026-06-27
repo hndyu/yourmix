@@ -45,11 +45,7 @@ export default function NotFound() {
 				</p>
 			</div>
 
-			<Button
-				href="/"
-				size="lg"
-				className="min-w-[200px] gap-2 group"
-			>
+			<Button href="/" size="lg" className="min-w-[200px] gap-2 group">
 				<Martini
 					size={18}
 					aria-hidden="true"
