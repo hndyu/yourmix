@@ -96,7 +96,7 @@ const IngredientSearch = React.forwardRef<
 					title="検索をクリア"
 				>
 					<XCircle
-						size={18}
+						size={16}
 						aria-hidden="true"
 						className="transition-transform group-hover:-rotate-45"
 					/>

@@ -38,10 +38,12 @@ export default function CompletionBar({
 					// AI 生成完了: 完成メッセージと「見る」ボタンを表示
 					<>
 						<p className="text-sm font-bold text-foreground animate-in fade-in duration-500">
-							<span className="inline-block animate-pulse" aria-hidden="true">
-								✨
-							</span>{" "}
-							オリジナルカクテルが完成しました！
+							<span className="inline-block animate-pulse">
+								<span className="inline-block mr-1" aria-hidden="true">
+									✨
+								</span>
+								オリジナルカクテルが完成しました！
+							</span>
 						</p>
 						<button
 							type="button"
