@@ -332,7 +332,7 @@ export default function CocktailDisplay({
 												type="button"
 												aria-label={`${tag.name}の説明を表示`}
 												title={`${tag.name}の説明を表示`}
-												className="group pr-2 shrink-0 hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-full"
+												className="group pr-2 shrink-0 hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1 dark:focus-visible:ring-offset-stone-950 rounded-full"
 												onClick={() => {
 													setToastState({
 														open: true,
@@ -439,10 +439,10 @@ export default function CocktailDisplay({
 									}
 								>
 									{isIngredientsCopied ? (
-										<Check size={14} aria-hidden="true" />
+										<Check size={16} aria-hidden="true" />
 									) : (
 										<Copy
-											size={14}
+											size={16}
 											aria-hidden="true"
 											className="transition-transform group-hover:rotate-12"
 										/>
@@ -534,7 +534,7 @@ export default function CocktailDisplay({
 										title="進捗をリセット"
 									>
 										<RotateCcw
-											size={14}
+											size={16}
 											aria-hidden="true"
 											className="transition-transform group-hover:-rotate-45"
 										/>
@@ -556,7 +556,9 @@ export default function CocktailDisplay({
 											</div>
 											<div>
 												<p className="font-bold text-primary">
-													Cheers! カクテルの完成です
+													<span className="inline-block animate-pulse">
+														Cheers! カクテルの完成です
+													</span>
 												</p>
 												<p className="text-xs text-primary/70">
 													美味しい一杯をお楽しみください。
